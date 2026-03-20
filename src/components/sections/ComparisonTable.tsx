@@ -1,3 +1,4 @@
+import React from 'react'
 import { CheckCircle2, XCircle, MinusCircle, Star } from 'lucide-react'
 
 interface ComparisonRow {
@@ -58,7 +59,7 @@ export function ComparisonTable({ competitorName, rows }: ComparisonTableProps) 
         </thead>
         <tbody>
           {Object.entries(grouped).map(([category, catRows]) => (
-            <tbody key={category}>
+            <React.Fragment key={category}>
               {Object.keys(grouped).length > 1 && (
                 <tr>
                   <td
@@ -89,7 +90,7 @@ export function ComparisonTable({ competitorName, rows }: ComparisonTableProps) 
                   </td>
                 </tr>
               ))}
-            </tbody>
+            </React.Fragment>
           ))}
         </tbody>
       </table>

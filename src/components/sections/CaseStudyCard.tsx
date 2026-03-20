@@ -35,7 +35,7 @@ export function CaseStudyCard({
   isFeatured,
   statsLight,
 }: CaseStudyCardProps) {
-  const href = `/case-studies/${typeof slug === 'string' ? slug : slug?.current || ''}`
+  const href = `/case-studies/${slug}`
   const stats = statsLight?.stats || []
 
   if (isFeatured) {

@@ -32,7 +32,7 @@ export function BlogCard({
   categories = [],
   variant = 'default',
 }: BlogCardProps) {
-  const href = `/blog/${typeof slug === 'string' ? slug : slug?.current || ''}`
+  const href = `/blog/${slug}`
 
   const formattedDate = publishedAt
     ? new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(
