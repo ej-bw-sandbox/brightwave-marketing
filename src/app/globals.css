@@ -1,18 +1,170 @@
 @import "tailwindcss";
 
 @theme {
+  /* Brightwave Brand - Amber/Gold on Dark */
   --color-brand-50: #fffbeb;
   --color-brand-100: #fef3c7;
   --color-brand-200: #fde68a;
+  --color-brand-300: #fcd34d;
   --color-brand-400: #fbbf24;
   --color-brand-500: #f59e0b;
   --color-brand-600: #d97706;
+  --color-brand-700: #b45309;
 
+  /* Surfaces */
   --color-surface: #0a0a0a;
-  --color-surface-elevated: #171717;
+  --color-surface-elevated: #141414;
+  --color-surface-overlay: #1a1a1a;
+  --color-surface-card: #111111;
+
+  /* Borders */
+  --color-border: #262626;
+  --color-border-subtle: #1f1f1f;
+  --color-border-accent: #fbbf2433;
+
+  /* Text */
   --color-text-primary: #fafafa;
   --color-text-secondary: #a3a3a3;
+  --color-text-muted: #737373;
+  --color-text-brand: #fbbf24;
 
-  --font-heading: 'Inter', sans-serif;
-  --font-body: 'Inter', sans-serif;
+  /* Status */
+  --color-success: #22c55e;
+  --color-info: #3b82f6;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+
+  /* Typography */
+  --font-heading: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+  /* Spacing scale */
+  --spacing-section: 6rem;
+  --spacing-section-sm: 4rem;
+
+  /* Radii */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+}
+
+/* Base resets */
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background-color: rgba(251, 191, 36, 0.3);
+  color: #fafafa;
+}
+
+/* Gradient utilities */
+.gradient-brand {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+}
+
+.gradient-radial-glow {
+  background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(251, 191, 36, 0.08) 0%, transparent 100%);
+}
+
+.text-gradient-brand {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Card hover effect */
+.card-hover {
+  transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  border-color: rgba(251, 191, 36, 0.2);
+}
+
+/* Prose for portable text content */
+.prose-brand {
+  color: #a3a3a3;
+  line-height: 1.75;
+}
+.prose-brand h2 {
+  color: #fafafa;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+}
+.prose-brand h3 {
+  color: #fafafa;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+.prose-brand h4 {
+  color: #fafafa;
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+.prose-brand p {
+  margin-bottom: 1.25rem;
+}
+.prose-brand a {
+  color: #fbbf24;
+  text-decoration: underline;
+  text-decoration-color: rgba(251, 191, 36, 0.4);
+  text-underline-offset: 2px;
+  transition: text-decoration-color 150ms ease;
+}
+.prose-brand a:hover {
+  text-decoration-color: #fbbf24;
+}
+.prose-brand strong {
+  color: #fafafa;
+  font-weight: 600;
+}
+.prose-brand ul,
+.prose-brand ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+.prose-brand li {
+  margin-bottom: 0.5rem;
+}
+.prose-brand ul li {
+  list-style-type: disc;
+}
+.prose-brand ol li {
+  list-style-type: decimal;
+}
+.prose-brand blockquote {
+  border-left: 3px solid #fbbf24;
+  padding-left: 1.25rem;
+  margin: 1.5rem 0;
+  color: #d4d4d4;
+  font-style: italic;
+}
+.prose-brand code {
+  background: #1a1a1a;
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+  color: #fbbf24;
+}
+.prose-brand pre {
+  background: #141414;
+  border: 1px solid #262626;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+}
+.prose-brand img {
+  border-radius: 0.5rem;
+  margin: 1.5rem 0;
 }

@@ -1,20 +1,61 @@
 import { client } from '@/lib/sanity/client'
-import { caseStudyIndexQuery } from '@/lib/sanity/queries/case-studies'
+import { CaseStudyCard } from '@/components/sections/CaseStudyCard'
+import { Hero } from '@/components/sections/Hero'
+import { CtaSection } from '@/components/sections/CtaSection'
 import type { Metadata } from 'next'
+
+const caseStudiesQuery = `{
+  "featured": *[_type == "caseStudy" && isFeatured == true][0]{
+    title, slug, excerpt, thumbnail, companyLogo, industry, firmSize, isFeatured,
+    statsLight, category->{ title }
+  },
+  "studies": *[_type == "caseStudy"] | order(publishedAt desc) {
+    title, slug, excerpt, thumbnail, companyLogo, industry, firmSize,
+    isFeaturedGrid, statsLight, category->{ title }
+  }
+}`
 
 export const metadata: Metadata = {
   title: 'Case Studies',
+  description: 'See how investment firms use Brightwave to accelerate research and due diligence.',
 }
 
-export default async function CaseStudiesIndexPage() {
-  const data = await client.fetch(caseStudyIndexQuery, { offset: 0, limit: 20 }, { next: { tags: ['caseStudy'] } })
+export default async function CaseStudiesPage() {
+  const data = await client.fetch(caseStudiesQuery, {}, { next: { tags: ['caseStudy'] } })
+  const featured = data?.featured
+  const studies = data?.studies || []
 
   return (
-    <section className="py-24 max-w-6xl mx-auto px-4">
-      <h1 className="text-4xl font-bold mb-12">Case Studies</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {/* Content cards will render here */}
-      </div>
-    </section>
+    <>
+      <Hero
+        headline="Case Studies"
+        subheadline="See how leading investment firms use Brightwave to transform their research workflows."
+        size="default"
+        gradient={false}
+      />
+
+      <section className="pb-section max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {featured && (
+          <div className="mb-12">
+            <CaseStudyCard {...featured} slug={featured.slug?.current} isFeatured />
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {studies
+            .filter((s: any) => s.slug?.current !== featured?.slug?.current)
+            .map((study: any) => (
+              <CaseStudyCard key={study.slug?.current} {...study} slug={study.slug?.current} />
+            ))}
+        </div>
+      </section>
+
+      <CtaSection
+        headline="See Brightwave in action"
+        subheadline="Schedule a personalized demo to see how Brightwave can work for your firm."
+        ctas={[{ label: 'Get a Demo', url: '/contact', style: 'primary' }]}
+        variant="brand"
+      />
+    </>
   )
 }
