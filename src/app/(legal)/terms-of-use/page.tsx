@@ -24,26 +24,26 @@ export default async function TermsOfUsePage() {
 
   return (
     <article className="py-24 max-w-4xl mx-auto px-4">
-      <h1 className="text-title-3 font-bold text-bw-gray-50 mb-4">
+      <h1 className="c-title-3 text-bw-gray-800 mb-4">
         {doc?.title || 'Terms of Use'}
       </h1>
       {doc?.effectiveDate && (
-        <p className="text-sm text-bw-gray-400 mb-8">
+        <p className="text-sm text-bw-gray-500 mb-8">
           Effective: {new Date(doc.effectiveDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
         </p>
       )}
       {doc?.body ? (
-        <div className="prose prose-invert prose-gray max-w-none">
+        <div className="prose-brand">
           <PortableTextRenderer value={doc.body} />
         </div>
       ) : (
-        <div className="text-bw-gray-300 space-y-4">
+        <div className="text-bw-gray-500 space-y-4">
           <p>
             Our terms of use are being finalized. Please check back soon for the complete terms governing your use of Brightwave.
           </p>
           <p>
             For questions, contact us at{' '}
-            <a href="mailto:legal@brightwave.io" className="text-bw-yellow-500 hover:underline">
+            <a href="mailto:legal@brightwave.io" className="text-bw-yellow-600 hover:underline">
               legal@brightwave.io
             </a>.
           </p>

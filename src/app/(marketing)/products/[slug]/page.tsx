@@ -2,6 +2,7 @@ import { client } from '@/lib/sanity/client'
 import { notFound } from 'next/navigation'
 import { PortableText } from '@portabletext/react'
 import { Hero } from '@/components/sections/Hero'
+import { CtaSection } from '@/components/sections/CtaSection'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 
@@ -55,14 +56,18 @@ export default async function ProductDetailPage({ params }: PageProps) {
       <Hero
         headline={product.title}
         subheadline={product.tagline}
+        ctas={[
+          { label: 'Try for Free', url: '/contact', style: 'primary' as const },
+          { label: 'Get a Demo', url: '/contact', style: 'secondary' as const },
+        ]}
         size="large"
-        gradient
+        image={product.heroImage}
       />
 
       {/* Description */}
       {product.description && (
         <section className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-          <div className="prose prose-invert prose-lg max-w-none prose-headings:text-bw-gray-50 prose-p:text-bw-gray-200 prose-a:text-bw-yellow-500">
+          <div className="prose-brand">
             <PortableText value={product.description} />
           </div>
         </section>
@@ -70,20 +75,23 @@ export default async function ProductDetailPage({ params }: PageProps) {
 
       {/* Features */}
       {features.length > 0 && (
-        <section className="pb-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl font-bold text-bw-gray-50 mb-8">Features</h2>
+        <section className="pb-16 max-w-site mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="eyebrow cc-no-bp mb-8">
+            <div className="block cc-primary" />
+            <span className="c-title-5">Features</span>
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((f: any) => (
               <Link
                 key={f.slug?.current}
                 href={`/features/${f.slug?.current}`}
-                className="group rounded-xl border border-bw-gray-600 bg-bw-gray-700/40 p-6 transition-colors hover:border-bw-gray-300"
+                className="group rounded-lg border border-bw-gray-200 bg-white p-6 transition-all hover:border-bw-gray-800 hover:bg-bw-gray-700"
               >
-                <h3 className="text-lg font-semibold text-bw-gray-50 group-hover:text-bw-yellow-500 transition-colors">
+                <h3 className="text-lg font-semibold text-bw-gray-800 group-hover:text-white transition-colors">
                   {f.title}
                 </h3>
                 {f.excerpt && (
-                  <p className="mt-2 text-sm text-bw-gray-300 line-clamp-2">{f.excerpt}</p>
+                  <p className="mt-2 text-sm text-bw-gray-500 line-clamp-2 group-hover:text-bw-gray-600 transition-colors">{f.excerpt}</p>
                 )}
               </Link>
             ))}
@@ -92,67 +100,82 @@ export default async function ProductDetailPage({ params }: PageProps) {
       )}
 
       {/* Roles, Industries, Use Cases */}
-      <section className="pb-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-          {roles.length > 0 && (
-            <div>
-              <h3 className="text-xs font-semibold tracking-wider text-bw-yellow-500 uppercase mb-4">
-                Roles
-              </h3>
-              <ul className="space-y-2">
-                {roles.map((r: any) => (
-                  <li key={r.slug?.current}>
-                    <Link
-                      href={`/i-am-a/${r.slug?.current}`}
-                      className="text-sm text-bw-gray-200 hover:text-bw-yellow-500 transition-colors"
-                    >
-                      {r.title}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-          {industries.length > 0 && (
-            <div>
-              <h3 className="text-xs font-semibold tracking-wider text-bw-yellow-500 uppercase mb-4">
-                Industries
-              </h3>
-              <ul className="space-y-2">
-                {industries.map((i: any) => (
-                  <li key={i.slug?.current}>
-                    <Link
-                      href={`/firm-types/${i.slug?.current}`}
-                      className="text-sm text-bw-gray-200 hover:text-bw-yellow-500 transition-colors"
-                    >
-                      {i.title}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-          {useCases.length > 0 && (
-            <div>
-              <h3 className="text-xs font-semibold tracking-wider text-bw-yellow-500 uppercase mb-4">
-                Use Cases
-              </h3>
-              <ul className="space-y-2">
-                {useCases.map((u: any) => (
-                  <li key={u.slug?.current}>
-                    <Link
-                      href={`/use-cases/${u.slug?.current}`}
-                      className="text-sm text-bw-gray-200 hover:text-bw-yellow-500 transition-colors"
-                    >
-                      {u.title}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      </section>
+      {(roles.length > 0 || industries.length > 0 || useCases.length > 0) && (
+        <section className="pb-24 max-w-site mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            {roles.length > 0 && (
+              <div>
+                <div className="eyebrow cc-no-bp mb-4">
+                  <div className="block cc-primary" />
+                  <span className="c-title-5">Roles</span>
+                </div>
+                <ul className="space-y-2">
+                  {roles.map((r: any) => (
+                    <li key={r.slug?.current}>
+                      <Link
+                        href={`/i-am-a/${r.slug?.current}`}
+                        className="text-sm text-bw-gray-600 hover:text-bw-yellow-600 transition-colors"
+                      >
+                        {r.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {industries.length > 0 && (
+              <div>
+                <div className="eyebrow cc-no-bp mb-4">
+                  <div className="block cc-primary" />
+                  <span className="c-title-5">Firm Types</span>
+                </div>
+                <ul className="space-y-2">
+                  {industries.map((i: any) => (
+                    <li key={i.slug?.current}>
+                      <Link
+                        href={`/firm-types/${i.slug?.current}`}
+                        className="text-sm text-bw-gray-600 hover:text-bw-yellow-600 transition-colors"
+                      >
+                        {i.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {useCases.length > 0 && (
+              <div>
+                <div className="eyebrow cc-no-bp mb-4">
+                  <div className="block cc-primary" />
+                  <span className="c-title-5">Use Cases</span>
+                </div>
+                <ul className="space-y-2">
+                  {useCases.map((u: any) => (
+                    <li key={u.slug?.current}>
+                      <Link
+                        href={`/use-cases/${u.slug?.current}`}
+                        className="text-sm text-bw-gray-600 hover:text-bw-yellow-600 transition-colors"
+                      >
+                        {u.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      <CtaSection
+        headline="Ready to accelerate your research?"
+        subheadline="See how Brightwave can transform your investment workflow."
+        ctas={[
+          { label: 'Schedule a Demo', url: '/contact', style: 'primary' },
+          { label: 'View Pricing', url: '/pricing', style: 'secondary' },
+        ]}
+        variant="brand"
+      />
     </>
   )
 }

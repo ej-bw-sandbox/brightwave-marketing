@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
 
 interface CtaButton {
   label: string
@@ -16,6 +15,14 @@ interface CtaSectionProps {
   variant?: 'default' | 'brand' | 'subtle'
 }
 
+function ArrowIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M1 13L13 1M13 1H3M13 1V11" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
 export function CtaSection({
   headline,
   subheadline,
@@ -24,46 +31,46 @@ export function CtaSection({
   variant = 'default',
 }: CtaSectionProps) {
   const variantStyles = {
-    default: 'bg-bw-gray-700 border-t border-b border-bw-gray-600',
-    brand: 'bg-gradient-to-br from-bw-yellow-600/20 via-bw-gray-700 to-bw-gray-700 border-t border-b border-bw-yellow-500/20',
-    subtle: 'bg-bw-gray-800',
+    default: 'bg-bw-gray-75 border-t border-b border-bw-gray-200',
+    brand: 'bg-bw-gray-75 border-t border-b border-bw-gray-200',
+    subtle: 'bg-white',
   }
 
   return (
-    <section className={`py-section ${variantStyles[variant]}`}>
+    <section className={`c-section ${variantStyles[variant]}`}>
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
-        <h2 className="text-3xl font-bold text-bw-gray-50 sm:text-4xl tracking-tight">
+        <h2 className="c-title-3 text-bw-gray-800">
           {headline}
         </h2>
         {subheadline && (
-          <p className="mt-4 text-lg text-bw-gray-200">{subheadline}</p>
+          <p className="mt-4 c-text-4 text-bw-gray-500">{subheadline}</p>
         )}
         {body && (
-          <p className="mt-3 text-bw-gray-300 max-w-2xl mx-auto">{body}</p>
+          <p className="mt-3 text-bw-gray-500 max-w-2xl mx-auto">{body}</p>
         )}
         {(ctas ?? []).length > 0 && (
-          <div className="mt-8 flex flex-wrap justify-center gap-4">
-            {(ctas ?? []).map((cta, i) => (
-              <Button
-                key={i}
-                variant={
-                  cta.style === 'secondary'
-                    ? 'secondary'
-                    : cta.style === 'ghost'
-                      ? 'ghost'
-                      : 'default'
-                }
-                size="lg"
-                asChild
-              >
+          <div className="mt-8 flex flex-wrap justify-center gap-2.5">
+            {(ctas ?? []).map((cta, i) => {
+              const isPrimary = cta.style !== 'secondary' && cta.style !== 'ghost'
+              return (
                 <Link
+                  key={i}
                   href={cta.url}
+                  className={isPrimary ? 'cta-primary' : 'cta-outline'}
                   {...(cta.openInNewTab ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                 >
-                  {cta.label}
+                  <span className="cta-label">{cta.label}</span>
+                  <div className="cta-dot">
+                    <div className="cta-dot-bg" />
+                  </div>
+                  <div className="cta-arrow-wrap">
+                    <span className="cta-arrow">
+                      <ArrowIcon />
+                    </span>
+                  </div>
                 </Link>
-              </Button>
-            ))}
+              )
+            })}
           </div>
         )}
       </div>

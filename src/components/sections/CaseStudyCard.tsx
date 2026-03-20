@@ -42,7 +42,7 @@ export function CaseStudyCard({
     return (
       <Link
         href={href}
-        className="group block rounded-xl border border-bw-gray-600 bg-bw-gray-700 overflow-hidden card-hover md:grid md:grid-cols-2 md:gap-0"
+        className="group block rounded-lg border border-bw-gray-200 bg-white overflow-hidden card-hover md:grid md:grid-cols-2 md:gap-0"
       >
         {thumbnail?.asset && (
           <div className="overflow-hidden">
@@ -67,23 +67,23 @@ export function CaseStudyCard({
               />
             )}
             {industry && (
-              <span className="text-xs font-medium text-bw-gray-300 bg-bw-gray-700 rounded-full px-3 py-1">
+              <span className="text-xs font-medium text-bw-gray-500 bg-bw-gray-75 rounded-full px-3 py-1">
                 {industry}
               </span>
             )}
           </div>
-          <h3 className="text-2xl font-bold text-bw-gray-50 group-hover:text-bw-yellow-500 transition-colors">
+          <h3 className="text-2xl font-bold text-bw-gray-800 group-hover:text-bw-yellow-600 transition-colors">
             {title}
           </h3>
           {excerpt && (
-            <p className="mt-3 text-bw-gray-200 line-clamp-3">{excerpt}</p>
+            <p className="mt-3 text-bw-gray-500 line-clamp-3">{excerpt}</p>
           )}
           {(stats ?? []).length > 0 && (
             <div className="mt-6 flex gap-8">
               {(stats ?? []).map((stat, i) => (
                 <div key={i}>
-                  <div className="text-2xl font-bold text-bw-yellow-500">{stat.value}</div>
-                  <div className="text-xs text-bw-gray-300 mt-1">{stat.label}</div>
+                  <div className="text-2xl font-bold text-bw-yellow-600">{stat.value}</div>
+                  <div className="text-xs text-bw-gray-500 mt-1">{stat.label}</div>
                 </div>
               ))}
             </div>
@@ -96,7 +96,7 @@ export function CaseStudyCard({
   return (
     <Link
       href={href}
-      className="group block rounded-xl border border-bw-gray-600 bg-bw-gray-700 overflow-hidden card-hover"
+      className="group block rounded-lg border border-bw-gray-200 bg-white overflow-hidden card-hover"
     >
       {thumbnail?.asset && (
         <div className="overflow-hidden aspect-video">
@@ -121,24 +121,24 @@ export function CaseStudyCard({
             />
           )}
           {industry && (
-            <span className="text-xs text-bw-gray-300">{industry}</span>
+            <span className="text-xs text-bw-gray-500">{industry}</span>
           )}
           {firmSize && (
-            <span className="text-xs text-bw-gray-300">{firmSize}</span>
+            <span className="text-xs text-bw-gray-500">{firmSize}</span>
           )}
         </div>
-        <h3 className="font-semibold text-bw-gray-50 group-hover:text-bw-yellow-500 transition-colors">
+        <h3 className="font-semibold text-bw-gray-800 group-hover:text-bw-yellow-600 transition-colors">
           {title}
         </h3>
         {excerpt && (
-          <p className="mt-2 text-sm text-bw-gray-200 line-clamp-2">{excerpt}</p>
+          <p className="mt-2 text-sm text-bw-gray-500 line-clamp-2">{excerpt}</p>
         )}
         {(stats ?? []).length > 0 && (
-          <div className="mt-4 flex gap-6 border-t border-bw-gray-700 pt-4">
+          <div className="mt-4 flex gap-6 border-t border-bw-gray-200 pt-4">
             {(stats ?? []).map((stat, i) => (
               <div key={i}>
-                <div className="text-lg font-bold text-bw-yellow-500">{stat.value}</div>
-                <div className="text-xs text-bw-gray-300">{stat.label}</div>
+                <div className="text-lg font-bold text-bw-yellow-600">{stat.value}</div>
+                <div className="text-xs text-bw-gray-500">{stat.label}</div>
               </div>
             ))}
           </div>

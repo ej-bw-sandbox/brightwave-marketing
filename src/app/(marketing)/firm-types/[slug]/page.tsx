@@ -1,7 +1,9 @@
 import { client } from '@/lib/sanity/client'
 import { solutionQuery, solutionSlugsQuery } from '@/lib/sanity/queries/solutions'
+import { PortableText } from '@portabletext/react'
 import { buildMetadata } from '@/lib/metadata'
 import { notFound } from 'next/navigation'
+import Link from 'next/link'
 import type { Metadata } from 'next'
 
 interface Props {
@@ -33,12 +35,23 @@ export default async function FirmTypeDetailPage({ params }: Props) {
 
   return (
     <article className="py-24 max-w-4xl mx-auto px-4">
+      <Link href="/firm-types" className="text-sm text-bw-yellow-600 hover:text-bw-yellow-700 transition-colors mb-4 inline-block">
+        &larr; All Firm Types
+      </Link>
       {doc.eyebrow && (
-        <p className="text-xs font-semibold tracking-wider text-bw-yellow-500 uppercase mb-3">{doc.eyebrow}</p>
+        <div className="eyebrow cc-no-bp mt-4 mb-3">
+          <div className="block cc-primary" />
+          <span className="c-title-5">{doc.eyebrow}</span>
+        </div>
       )}
-      <h1 className="text-title-4 font-bold text-bw-gray-50">{doc.h1 || doc.title}</h1>
+      <h1 className="c-title-3 text-bw-gray-800 mt-4">{doc.h1 || doc.title}</h1>
       {doc.tagline && (
-        <p className="mt-4 text-body-4 text-bw-gray-300">{doc.tagline}</p>
+        <p className="mt-4 c-text-3 text-bw-gray-500">{doc.tagline}</p>
+      )}
+      {doc.body && (
+        <div className="mt-10 prose-brand">
+          <PortableText value={doc.body} />
+        </div>
       )}
     </article>
   )

@@ -1,7 +1,6 @@
 import { client } from '@/lib/sanity/client'
 import { contentPostIndexQuery } from '@/lib/sanity/queries/content-posts'
 import { ContentPostCard } from './ContentPostCard'
-import { Hero } from './Hero'
 
 interface ContentPostIndexProps {
   category: string
@@ -36,9 +35,17 @@ export async function ContentPostIndex({
 
   return (
     <>
-      <Hero headline={headline} subheadline={subheadline} size="default" gradient={false} />
+      {/* Hero */}
+      <section className="c-section cc-hero">
+        <div className="c-container">
+          <div className="flex justify-between items-end gap-10 border-b border-bw-gray-200 pb-10">
+            <h1 className="c-title-1 text-bw-gray-800">{headline}</h1>
+          </div>
+          <p className="c-text-3 text-bw-gray-500 mt-10">{subheadline}</p>
+        </div>
+      </section>
 
-      <section className="pb-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="pb-24 max-w-site mx-auto px-5">
         {featured && (
           <div className="mb-12">
             <ContentPostCard
@@ -72,7 +79,7 @@ export async function ContentPostIndex({
         )}
 
         {posts.length === 0 && (
-          <p className="text-bw-gray-300 text-center py-12">
+          <p className="text-bw-gray-500 text-center py-12">
             {emptyMessage || 'No posts found.'}
           </p>
         )}

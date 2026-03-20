@@ -1,7 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { urlFor } from '@/lib/sanity/image'
-import { Button } from '@/components/ui/button'
 
 interface HeroCta {
   label: string
@@ -22,6 +21,35 @@ interface HeroProps {
   gradient?: boolean
 }
 
+function ArrowIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M1 13L13 1M13 1H3M13 1V11" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function CtaButton({ cta }: { cta: HeroCta }) {
+  const isPrimary = cta.style !== 'secondary' && cta.style !== 'ghost'
+
+  return (
+    <Link
+      href={cta.url}
+      className={isPrimary ? 'cta-primary' : 'cta-outline'}
+    >
+      <span className="cta-label">{cta.label}</span>
+      <div className="cta-dot">
+        <div className="cta-dot-bg" />
+      </div>
+      <div className="cta-arrow-wrap">
+        <span className="cta-arrow">
+          <ArrowIcon />
+        </span>
+      </div>
+    </Link>
+  )
+}
+
 export function Hero({
   headline,
   subheadline,
@@ -30,95 +58,63 @@ export function Hero({
   ctas = [],
   image,
   videoUrl,
-  align = 'center',
+  align = 'left',
   size = 'default',
-  gradient = true,
+  gradient = false,
 }: HeroProps) {
-  const isCenter = align === 'center'
   const isLarge = size === 'large'
 
   return (
-    <section className="relative overflow-hidden">
-      {gradient && (
-        <div className="absolute inset-0 gradient-radial-glow pointer-events-none" />
-      )}
-      <div
-        className={`mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 ${
-          isLarge ? 'py-24 sm:py-32 lg:py-40' : 'py-16 sm:py-20 lg:py-28'
-        } ${isCenter ? 'text-center' : ''}`}
-      >
-        <div className={isCenter ? 'mx-auto max-w-4xl' : 'grid lg:grid-cols-2 gap-12 items-center'}>
-          <div>
-            {eyebrow && (
-              <span className="inline-block text-sm font-medium tracking-wider uppercase text-bw-yellow-500 mb-4">
-                {eyebrow}
-              </span>
-            )}
-            <h1
-              className={`font-bold tracking-tight text-bw-gray-50 ${
-                isLarge ? 'text-4xl sm:text-5xl lg:text-6.5xl' : 'text-3xl sm:text-4xl lg:text-5xl'
-              }`}
-            >
-              {headline}
-            </h1>
-            {subheadline && (
-              <p
-                className={`mt-6 text-bw-gray-200 leading-relaxed ${
-                  isLarge ? 'text-lg sm:text-xl max-w-2xl' : 'text-lg max-w-xl'
-                } ${isCenter ? 'mx-auto' : ''}`}
-              >
+    <section className="c-section cc-hero">
+      <div className="c-container">
+        {/* Eyebrow */}
+        {eyebrow && (
+          <div className="eyebrow cc-no-bp">
+            <div className="block cc-primary" />
+            <span className="c-title-5">{eyebrow}</span>
+          </div>
+        )}
+
+        {/* Hero headline with bottom border */}
+        <div className="flex justify-between items-end gap-10 border-b border-bw-gray-200 pb-10">
+          <h1 className={isLarge ? 'c-title-1' : 'c-title-3'}>
+            {headline}
+          </h1>
+        </div>
+
+        {/* Subheadline + CTAs row */}
+        <div className="grid grid-cols-1 lg:grid-cols-7 gap-5 mt-10">
+          {subheadline && (
+            <div className="lg:col-span-4">
+              <p className="c-text-3 u-balance text-bw-gray-600">
                 {subheadline}
               </p>
-            )}
-            {body && (
-              <p
-                className={`mt-4 text-bw-gray-300 leading-relaxed ${
-                  isCenter ? 'mx-auto max-w-2xl' : 'max-w-xl'
-                }`}
-              >
-                {body}
-              </p>
-            )}
-            {(ctas ?? []).length > 0 && (
-              <div className={`mt-8 flex gap-4 ${isCenter ? 'justify-center' : ''}`}>
-                {(ctas ?? []).map((cta, i) => (
-                  <Button
-                    key={i}
-                    variant={cta.style === 'secondary' ? 'secondary' : cta.style === 'ghost' ? 'ghost' : 'default'}
-                    size="lg"
-                    asChild
-                  >
-                    <Link href={cta.url}>{cta.label}</Link>
-                  </Button>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {(image || videoUrl) && !isCenter && (
-            <div className="relative">
-              {image?.asset && (
-                <Image
-                  src={urlFor(image).width(800).quality(90).url()}
-                  alt=""
-                  width={800}
-                  height={500}
-                  className="rounded-xl border border-bw-gray-600"
-                  priority
-                />
-              )}
+            </div>
+          )}
+          {body && !subheadline && (
+            <div className="lg:col-span-4">
+              <p className="c-text-4 text-bw-gray-500">{body}</p>
             </div>
           )}
         </div>
 
-        {(image || videoUrl) && isCenter && image?.asset && (
-          <div className="mt-16 mx-auto max-w-5xl">
+        {(ctas ?? []).length > 0 && (
+          <div className="flex items-center gap-2.5 mt-6 mb-8 flex-wrap">
+            {(ctas ?? []).map((cta, i) => (
+              <CtaButton key={i} cta={cta} />
+            ))}
+          </div>
+        )}
+
+        {/* Image (if provided) */}
+        {image?.asset && (
+          <div className="mt-8 relative overflow-hidden rounded-lg">
             <Image
-              src={urlFor(image).width(1200).quality(90).url()}
+              src={urlFor(image).width(1400).quality(90).url()}
               alt=""
-              width={1200}
-              height={675}
-              className="rounded-xl border border-bw-gray-600 shadow-2xl shadow-black/50"
+              width={1400}
+              height={788}
+              className="w-full h-auto"
               priority
             />
           </div>

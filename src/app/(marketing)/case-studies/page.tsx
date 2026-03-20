@@ -77,7 +77,7 @@ export default async function CaseStudiesPage() {
         </div>
 
         {studies.length === 0 && (
-          <p className="text-bw-gray-300 text-center py-12">No case studies found.</p>
+          <p className="text-bw-gray-500 text-center py-12">No case studies found.</p>
         )}
       </section>
 

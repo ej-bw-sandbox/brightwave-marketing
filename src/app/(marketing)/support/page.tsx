@@ -1,6 +1,5 @@
 import { client } from '@/lib/sanity/client'
 import { PortableText } from '@portabletext/react'
-import { Hero } from '@/components/sections/Hero'
 import type { Metadata } from 'next'
 
 const supportQuery = `*[_type == "supportPage"][0]{
@@ -25,37 +24,39 @@ export default async function SupportPage() {
 
   return (
     <>
-      <Hero
-        headline={page?.title || 'Support'}
-        subheadline={page?.subtitle || 'Get help when you need it.'}
-        size="default"
-        gradient={false}
-      />
+      <section className="c-section cc-hero">
+        <div className="c-container">
+          <div className="flex justify-between items-end gap-10 border-b border-bw-gray-200 pb-10">
+            <h1 className="c-title-3 text-bw-gray-800">{page?.title || 'Support'}</h1>
+          </div>
+          <p className="c-text-3 text-bw-gray-500 mt-10">{page?.subtitle || 'Get help when you need it.'}</p>
+        </div>
+      </section>
 
-      <section className="pb-24 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="pb-24 max-w-3xl mx-auto px-5">
         {page?.body ? (
-          <div className="prose prose-invert prose-lg max-w-none prose-headings:text-bw-gray-50 prose-p:text-bw-gray-200 prose-a:text-bw-yellow-500">
+          <div className="prose-brand">
             <PortableText value={page.body} />
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-bw-gray-300 mb-6">
+            <p className="text-bw-gray-500 mb-6">
               Need help? Our team is ready to assist you.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-xl mx-auto">
               <a
                 href="mailto:support@brightwave.io"
-                className="rounded-xl border border-bw-gray-600 bg-bw-gray-700/40 p-6 text-center transition-colors hover:border-bw-gray-300"
+                className="group rounded-lg border border-bw-gray-200 bg-white p-6 text-center transition-all hover:border-bw-gray-800 hover:bg-bw-gray-700"
               >
-                <h3 className="text-lg font-semibold text-bw-gray-50">Email Support</h3>
-                <p className="mt-2 text-sm text-bw-gray-300">support@brightwave.io</p>
+                <h3 className="text-lg font-semibold text-bw-gray-800 group-hover:text-white transition-colors">Email Support</h3>
+                <p className="mt-2 text-sm text-bw-gray-500 group-hover:text-bw-gray-600 transition-colors">support@brightwave.io</p>
               </a>
               <a
                 href="/contact"
-                className="rounded-xl border border-bw-gray-600 bg-bw-gray-700/40 p-6 text-center transition-colors hover:border-bw-gray-300"
+                className="group rounded-lg border border-bw-gray-200 bg-white p-6 text-center transition-all hover:border-bw-gray-800 hover:bg-bw-gray-700"
               >
-                <h3 className="text-lg font-semibold text-bw-gray-50">Contact Us</h3>
-                <p className="mt-2 text-sm text-bw-gray-300">Get in touch with our team</p>
+                <h3 className="text-lg font-semibold text-bw-gray-800 group-hover:text-white transition-colors">Contact Us</h3>
+                <p className="mt-2 text-sm text-bw-gray-500 group-hover:text-bw-gray-600 transition-colors">Get in touch with our team</p>
               </a>
             </div>
           </div>

@@ -46,20 +46,20 @@ export default async function ResourcesIndexPage() {
           {(data ?? []).map((item: any) => {
             const subtitle = toPlainText(item.subtitle)
             return (
-              <a key={item._id} href={`/resources/${item.slug?.current || ''}`} className="group block rounded-xl border border-bw-gray-600 bg-bw-gray-700 p-6 card-hover">
+              <a key={item._id} href={`/resources/${item.slug?.current || ''}`} className="group block rounded-xl border border-bw-gray-200 bg-bw-gray-700 p-6 card-hover">
                 {item.resourceType && (
                   <span className="inline-block rounded-full bg-bw-yellow-500/10 px-3 py-1 text-xs font-medium text-bw-yellow-500 mb-3">
                     {item.resourceType}
                   </span>
                 )}
-                <h3 className="text-lg font-semibold text-bw-gray-50 group-hover:text-bw-yellow-500 transition-colors">{item.title}</h3>
-                {subtitle && <p className="mt-2 text-sm text-bw-gray-200 line-clamp-2">{subtitle}</p>}
+                <h3 className="text-lg font-semibold text-bw-gray-800 group-hover:text-bw-yellow-500 transition-colors">{item.title}</h3>
+                {subtitle && <p className="mt-2 text-sm text-bw-gray-600 line-clamp-2">{subtitle}</p>}
               </a>
             )
           })}
         </div>
         {(data ?? []).length === 0 && (
-          <p className="text-bw-gray-300 text-center py-12">No items found.</p>
+          <p className="text-bw-gray-500 text-center py-12">No items found.</p>
         )}
       </section>
 

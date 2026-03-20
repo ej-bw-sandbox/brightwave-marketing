@@ -19,7 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-bw-gray-800 text-bw-gray-50 antialiased">
+      <body className="bg-white text-bw-gray-800 antialiased">
         {children}
         <Analytics />
         <SpeedInsights />

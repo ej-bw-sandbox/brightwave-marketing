@@ -29,14 +29,14 @@ export function ContentPostDetail({ post, basePath }: ContentPostDetailProps) {
         <header className="mb-8">
           <Link
             href={basePath}
-            className="text-sm text-bw-yellow-500 hover:text-bw-yellow-400 transition-colors mb-4 inline-block"
+            className="text-sm text-bw-yellow-600 hover:text-bw-yellow-700 transition-colors mb-4 inline-block"
           >
             &larr; Back
           </Link>
 
-          <h1 className="text-4xl font-bold text-bw-gray-50 mt-4">{post.title}</h1>
+          <h1 className="text-4xl font-bold text-bw-gray-800 mt-4">{post.title}</h1>
 
-          <div className="flex items-center gap-4 mt-6 text-sm text-bw-gray-300">
+          <div className="flex items-center gap-4 mt-6 text-sm text-bw-gray-500">
             {post.author && (
               <div className="flex items-center gap-2">
                 {post.author.image && (
@@ -57,7 +57,7 @@ export function ContentPostDetail({ post, basePath }: ContentPostDetailProps) {
 
         {/* Cover image */}
         {post.coverImage && (
-          <div className="relative aspect-video overflow-hidden rounded-xl mb-10">
+          <div className="relative aspect-video overflow-hidden rounded-lg mb-10">
             <Image
               src={urlFor(post.coverImage).width(1200).height(675).url()}
               alt={post.title || ''}
@@ -70,7 +70,7 @@ export function ContentPostDetail({ post, basePath }: ContentPostDetailProps) {
 
         {/* Body */}
         {post.body && (
-          <div className="prose prose-invert prose-lg max-w-none prose-headings:text-bw-gray-50 prose-p:text-bw-gray-200 prose-a:text-bw-yellow-500 prose-strong:text-bw-gray-50">
+          <div className="prose-brand">
             <PortableText value={post.body} />
           </div>
         )}
@@ -78,8 +78,8 @@ export function ContentPostDetail({ post, basePath }: ContentPostDetailProps) {
 
       {/* Related posts */}
       {relatedPosts.length > 0 && (
-        <section className="pb-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl font-bold text-bw-gray-50 mb-8">Related Posts</h2>
+        <section className="pb-24 max-w-site mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl font-bold text-bw-gray-800 mb-8">Related Posts</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {relatedPosts.map((rp: any) => (
               <ContentPostCard

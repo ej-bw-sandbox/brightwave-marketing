@@ -44,8 +44,8 @@ export function ComparisonTable({ competitorName, rows }: ComparisonTableProps) 
     <div className="overflow-x-auto">
       <table className="w-full border-collapse">
         <thead>
-          <tr className="border-b border-bw-gray-600">
-            <th className="py-4 px-4 text-left text-sm font-semibold text-bw-gray-50">Feature</th>
+          <tr className="border-b border-bw-gray-200">
+            <th className="py-4 px-4 text-left text-sm font-semibold text-bw-gray-800">Feature</th>
             <th className="py-4 px-4 text-center text-sm font-semibold text-bw-yellow-500 w-36">
               <div className="flex items-center justify-center gap-1">
                 <Star className="h-4 w-4" />
@@ -71,7 +71,7 @@ export function ComparisonTable({ competitorName, rows }: ComparisonTableProps) 
                 </tr>
               )}
               {catRows.map((row, i) => (
-                <tr key={i} className="border-b border-bw-gray-700 hover:bg-bw-gray-700/50 transition-colors">
+                <tr key={i} className="border-b border-bw-gray-700 hover:bg-white transition-colors">
                   <td className="py-3 px-4 text-sm text-bw-gray-200">
                     {row.feature}
                     {row.note && (

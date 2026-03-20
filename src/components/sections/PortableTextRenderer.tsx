@@ -12,7 +12,7 @@ const slugRouteMap: Record<string, string> = {
   platformFeature: '/features/',
   firmType: '/firm-types/',
   icpPage: '/i-am-a/',
-  comparison: '/vs/',
+  comparison: '/comparisons/',
   resourceItem: '/resources/',
   virtualEvent: '/events/',
 }
@@ -20,29 +20,29 @@ const slugRouteMap: Record<string, string> = {
 const components: PortableTextComponents = {
   block: {
     h2: ({ children }) => (
-      <h2 className="text-2xl font-bold text-bw-gray-50 mt-10 mb-4">{children}</h2>
+      <h2 className="text-2xl font-bold text-bw-gray-800 mt-10 mb-4">{children}</h2>
     ),
     h3: ({ children }) => (
-      <h3 className="text-xl font-semibold text-bw-gray-50 mt-8 mb-3">{children}</h3>
+      <h3 className="text-xl font-semibold text-bw-gray-800 mt-8 mb-3">{children}</h3>
     ),
     h4: ({ children }) => (
-      <h4 className="text-lg font-semibold text-bw-gray-50 mt-6 mb-2">{children}</h4>
+      <h4 className="text-lg font-semibold text-bw-gray-800 mt-6 mb-2">{children}</h4>
     ),
     normal: ({ children }) => (
-      <p className="mb-5 leading-relaxed text-bw-gray-200">{children}</p>
+      <p className="mb-5 leading-relaxed text-bw-gray-600">{children}</p>
     ),
     blockquote: ({ children }) => (
-      <blockquote className="border-l-3 border-bw-yellow-500 pl-5 my-6 text-bw-gray-200 italic">
+      <blockquote className="border-l-3 border-bw-yellow-500 pl-5 my-6 text-bw-gray-600 italic">
         {children}
       </blockquote>
     ),
   },
   list: {
     bullet: ({ children }) => (
-      <ul className="list-disc pl-6 mb-5 space-y-2 text-bw-gray-200">{children}</ul>
+      <ul className="list-disc pl-6 mb-5 space-y-2 text-bw-gray-600">{children}</ul>
     ),
     number: ({ children }) => (
-      <ol className="list-decimal pl-6 mb-5 space-y-2 text-bw-gray-200">{children}</ol>
+      <ol className="list-decimal pl-6 mb-5 space-y-2 text-bw-gray-600">{children}</ol>
     ),
   },
   listItem: {
@@ -51,11 +51,11 @@ const components: PortableTextComponents = {
   },
   marks: {
     strong: ({ children }) => (
-      <strong className="font-semibold text-bw-gray-50">{children}</strong>
+      <strong className="font-semibold text-bw-gray-800">{children}</strong>
     ),
     em: ({ children }) => <em>{children}</em>,
     code: ({ children }) => (
-      <code className="bg-bw-gray-700 px-1.5 py-0.5 rounded text-sm text-bw-yellow-500">
+      <code className="bg-bw-gray-75 px-1.5 py-0.5 rounded text-sm text-bw-yellow-600">
         {children}
       </code>
     ),
@@ -71,7 +71,7 @@ const components: PortableTextComponents = {
             href={href}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-bw-yellow-500 underline decoration-bw-yellow-500/40 underline-offset-2 hover:decoration-bw-yellow-500 transition-colors"
+            className="text-bw-yellow-600 underline decoration-bw-yellow-500/40 underline-offset-2 hover:decoration-bw-yellow-500 transition-colors"
           >
             {children}
           </a>
@@ -80,7 +80,7 @@ const components: PortableTextComponents = {
       return (
         <Link
           href={href}
-          className="text-bw-yellow-500 underline decoration-bw-yellow-500/40 underline-offset-2 hover:decoration-bw-yellow-500 transition-colors"
+          className="text-bw-yellow-600 underline decoration-bw-yellow-500/40 underline-offset-2 hover:decoration-bw-yellow-500 transition-colors"
         >
           {children}
         </Link>
@@ -94,7 +94,7 @@ const components: PortableTextComponents = {
       return (
         <Link
           href={`${basePath}${slug}`}
-          className="text-bw-yellow-500 underline decoration-bw-yellow-500/40 underline-offset-2 hover:decoration-bw-yellow-500 transition-colors"
+          className="text-bw-yellow-600 underline decoration-bw-yellow-500/40 underline-offset-2 hover:decoration-bw-yellow-500 transition-colors"
         >
           {children}
         </Link>
@@ -115,7 +115,7 @@ const components: PortableTextComponents = {
             className="rounded-lg w-full"
           />
           {value.caption && (
-            <figcaption className="mt-2 text-sm text-bw-gray-300 text-center">
+            <figcaption className="mt-2 text-sm text-bw-gray-500 text-center">
               {value.caption}
             </figcaption>
           )}
@@ -133,20 +133,20 @@ const components: PortableTextComponents = {
         <aside
           className={`border-l-3 pl-4 py-3 my-6 rounded-r-md ${toneStyles[tone] || toneStyles.info}`}
         >
-          <p className="text-sm text-bw-gray-200">{value?.body}</p>
+          <p className="text-sm text-bw-gray-600">{value?.body}</p>
         </aside>
       )
     },
     codeBlock: ({ value }) => (
-      <pre className="bg-bw-gray-700 border border-bw-gray-600 rounded-lg p-4 overflow-x-auto my-6">
-        <code className="text-sm text-bw-gray-200">{value?.code}</code>
+      <pre className="bg-bw-gray-75 border border-bw-gray-200 rounded-lg p-4 overflow-x-auto my-6">
+        <code className="text-sm text-bw-gray-600">{value?.code}</code>
       </pre>
     ),
     ctaBlock: ({ value }) => {
       const styleClasses: Record<string, string> = {
         primary: 'bg-bw-yellow-500 text-bw-gray-800 hover:bg-bw-yellow-550',
-        secondary: 'bg-bw-gray-700 text-bw-gray-50 border border-bw-gray-600 hover:bg-bw-gray-700',
-        ghost: 'text-bw-yellow-500 hover:bg-bw-yellow-500/10',
+        secondary: 'bg-bw-gray-75 text-bw-gray-800 border border-bw-gray-200 hover:bg-bw-gray-700',
+        ghost: 'text-bw-yellow-600 hover:bg-bw-yellow-500/10',
       }
       return (
         <div className="my-6">
