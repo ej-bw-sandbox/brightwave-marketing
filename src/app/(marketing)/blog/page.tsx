@@ -66,7 +66,7 @@ export default async function BlogIndexPage() {
         )}
 
         {posts.length === 0 && (
-          <p className="text-text-muted text-center py-12">No blog posts found.</p>
+          <p className="text-bw-gray-300 text-center py-12">No blog posts found.</p>
         )}
       </section>
     </>

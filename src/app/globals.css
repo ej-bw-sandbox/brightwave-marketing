@@ -1,32 +1,47 @@
 @import "tailwindcss";
 
 @theme {
-  /* Brightwave Brand - Amber/Gold on Dark */
-  --color-brand-50: #fffbeb;
-  --color-brand-100: #fef3c7;
-  --color-brand-200: #fde68a;
-  --color-brand-300: #fcd34d;
-  --color-brand-400: #fbbf24;
-  --color-brand-500: #f59e0b;
-  --color-brand-600: #d97706;
-  --color-brand-700: #b45309;
+  /* Brightwave Color Primitives - extracted from www.brightwave.io */
+  --color-bw-gray-50: #ffffff;
+  --color-bw-gray-75: #eff1f5;
+  --color-bw-gray-100: #d7d8db;
+  --color-bw-gray-200: #bebfc2;
+  --color-bw-gray-300: #a5a6a8;
+  --color-bw-gray-500: #5a5b5c;
+  --color-bw-gray-600: #414142;
+  --color-bw-gray-700: #282829;
+  --color-bw-gray-800: #0f0f0f;
 
-  /* Surfaces */
-  --color-surface: #0a0a0a;
-  --color-surface-elevated: #141414;
-  --color-surface-overlay: #1a1a1a;
-  --color-surface-card: #111111;
+  --color-bw-yellow-200: #fdfdd8;
+  --color-bw-yellow-300: #f8f88b;
+  --color-bw-yellow-400: #f5f551;
+  --color-bw-yellow-500: #f2f218;
+  --color-bw-yellow-550: #e7e70d;
+  --color-bw-yellow-600: #c1c10b;
+  --color-bw-yellow-700: #878708;
+  --color-bw-yellow-800: #4d4d04;
+
+  /* Semantic Surface Colors (dark mode primary) */
+  --color-surface: var(--color-bw-gray-800);
+  --color-surface-1: var(--color-bw-gray-700);
+  --color-surface-2: var(--color-bw-gray-800);
+  --color-surface-card: var(--color-bw-gray-700);
+  --color-surface-elevated: var(--color-bw-gray-700);
+
+  /* Semantic Text */
+  --color-text-primary: var(--color-bw-gray-50);
+  --color-text-secondary: var(--color-bw-gray-200);
+  --color-text-muted: var(--color-bw-gray-300);
+  --color-text-brand: var(--color-bw-yellow-500);
 
   /* Borders */
-  --color-border: #262626;
-  --color-border-subtle: #1f1f1f;
-  --color-border-accent: #fbbf2433;
+  --color-border: var(--color-bw-gray-600);
+  --color-border-subtle: var(--color-bw-gray-700);
+  --color-border-accent: #d9d9d9;
 
-  /* Text */
-  --color-text-primary: #fafafa;
-  --color-text-secondary: #a3a3a3;
-  --color-text-muted: #737373;
-  --color-text-brand: #fbbf24;
+  /* Primary accent */
+  --color-brand-400: var(--color-bw-yellow-500);
+  --color-brand-500: var(--color-bw-yellow-550);
 
   /* Status */
   --color-success: #22c55e;
@@ -34,9 +49,9 @@
   --color-warning: #f59e0b;
   --color-error: #ef4444;
 
-  /* Typography */
-  --font-heading: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  /* Typography - PST Mail Sans from Brightwave */
+  --font-heading: "PST Mail Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-body: "PST Mail Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
 
   /* Spacing scale */
   --spacing-section: 6rem;
@@ -49,27 +64,130 @@
   --radius-xl: 1rem;
 }
 
-/* Base resets */
+/* Base styles matching www.brightwave.io */
 html {
   scroll-behavior: smooth;
 }
 
+body {
+  background-color: var(--color-bw-gray-800);
+  color: var(--color-bw-gray-50);
+  font-family: "PST Mail Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 ::selection {
-  background-color: rgba(251, 191, 36, 0.3);
-  color: #fafafa;
+  background-color: rgba(242, 242, 24, 0.3);
+  color: #ffffff;
+}
+
+/* Typography scale matching Brightwave */
+.c-title-1 {
+  font-size: 6.875rem;
+  font-weight: 500;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+}
+
+.c-title-2 {
+  font-size: 5.625rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.c-title-3 {
+  font-size: 3.75rem;
+  font-weight: 500;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+}
+
+.c-title-4 {
+  font-size: 2.25rem;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.c-title-5 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.c-text-1 {
+  font-size: 2.65rem;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+.c-text-2 {
+  font-size: 1.875rem;
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+.c-text-3 {
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 1.2;
+  max-width: 45rem;
+}
+
+.c-text-4 {
+  font-size: 1.125rem;
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+.c-text-5 {
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+/* Button styles matching Brightwave */
+.btn-outline {
+  border: 1px solid var(--color-bw-gray-50);
+  padding: 0.75rem 1.25rem;
+  color: var(--color-bw-gray-50);
+  font-weight: 500;
+  transition: background-color 0.35s, color 0.35s;
+  overflow: hidden;
+  position: relative;
+}
+.btn-outline:hover {
+  background-color: var(--color-bw-gray-50);
+  color: var(--color-bw-gray-800);
+}
+
+.btn-filled {
+  background-color: var(--color-bw-yellow-550);
+  color: var(--color-bw-gray-800);
+  padding: 0.75rem 1.25rem;
+  font-weight: 500;
+  transition: background-color 0.35s;
+  border: none;
+}
+.btn-filled:hover {
+  background-color: var(--color-bw-yellow-500);
 }
 
 /* Gradient utilities */
 .gradient-brand {
-  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+  background: linear-gradient(135deg, var(--color-bw-yellow-500) 0%, var(--color-bw-yellow-550) 100%);
 }
 
 .gradient-radial-glow {
-  background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(251, 191, 36, 0.08) 0%, transparent 100%);
+  background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(242, 242, 24, 0.06) 0%, transparent 100%);
 }
 
 .text-gradient-brand {
-  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  background: linear-gradient(135deg, var(--color-bw-yellow-500), var(--color-bw-yellow-400));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -82,30 +200,43 @@ html {
 .card-hover:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-  border-color: rgba(251, 191, 36, 0.2);
+  border-color: var(--color-bw-gray-500);
+}
+
+/* Section padding utility */
+.py-section {
+  padding-top: 6rem;
+  padding-bottom: 6rem;
+}
+
+@media (max-width: 768px) {
+  .py-section {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+  }
 }
 
 /* Prose for portable text content */
 .prose-brand {
-  color: #a3a3a3;
+  color: var(--color-bw-gray-200);
   line-height: 1.75;
 }
 .prose-brand h2 {
-  color: #fafafa;
+  color: var(--color-bw-gray-50);
   font-size: 1.5rem;
   font-weight: 700;
   margin-top: 2.5rem;
   margin-bottom: 1rem;
 }
 .prose-brand h3 {
-  color: #fafafa;
+  color: var(--color-bw-gray-50);
   font-size: 1.25rem;
   font-weight: 600;
   margin-top: 2rem;
   margin-bottom: 0.75rem;
 }
 .prose-brand h4 {
-  color: #fafafa;
+  color: var(--color-bw-gray-50);
   font-size: 1.125rem;
   font-weight: 600;
   margin-top: 1.5rem;
@@ -115,17 +246,17 @@ html {
   margin-bottom: 1.25rem;
 }
 .prose-brand a {
-  color: #fbbf24;
+  color: var(--color-bw-yellow-500);
   text-decoration: underline;
-  text-decoration-color: rgba(251, 191, 36, 0.4);
+  text-decoration-color: rgba(242, 242, 24, 0.4);
   text-underline-offset: 2px;
   transition: text-decoration-color 150ms ease;
 }
 .prose-brand a:hover {
-  text-decoration-color: #fbbf24;
+  text-decoration-color: var(--color-bw-yellow-500);
 }
 .prose-brand strong {
-  color: #fafafa;
+  color: var(--color-bw-gray-50);
   font-weight: 600;
 }
 .prose-brand ul,
@@ -143,22 +274,22 @@ html {
   list-style-type: decimal;
 }
 .prose-brand blockquote {
-  border-left: 3px solid #fbbf24;
+  border-left: 3px solid var(--color-bw-yellow-500);
   padding-left: 1.25rem;
   margin: 1.5rem 0;
-  color: #d4d4d4;
+  color: var(--color-bw-gray-100);
   font-style: italic;
 }
 .prose-brand code {
-  background: #1a1a1a;
+  background: var(--color-bw-gray-700);
   padding: 0.15rem 0.4rem;
   border-radius: 0.25rem;
   font-size: 0.875em;
-  color: #fbbf24;
+  color: var(--color-bw-yellow-500);
 }
 .prose-brand pre {
-  background: #141414;
-  border: 1px solid #262626;
+  background: var(--color-bw-gray-800);
+  border: 1px solid var(--color-bw-gray-600);
   border-radius: 0.5rem;
   padding: 1rem;
   overflow-x: auto;
@@ -167,4 +298,22 @@ html {
 .prose-brand img {
   border-radius: 0.5rem;
   margin: 1.5rem 0;
+}
+.prose-brand table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+}
+.prose-brand th {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border-bottom: 2px solid var(--color-bw-gray-600);
+  color: var(--color-bw-gray-50);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+.prose-brand td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--color-bw-gray-600);
+  font-size: 0.875rem;
 }

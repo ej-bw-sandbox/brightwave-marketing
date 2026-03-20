@@ -33,7 +33,7 @@ export default async function HomePage() {
       />
 
       {page?.metrics && page.metrics.length > 0 && (
-        <section className="border-t border-b border-border py-12">
+        <section className="border-t border-b border-bw-gray-600 py-12">
           <div className="mx-auto max-w-7xl px-4">
             <StatBar stats={page.metrics} />
           </div>

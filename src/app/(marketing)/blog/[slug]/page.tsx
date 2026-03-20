@@ -48,11 +48,11 @@ export default async function BlogPostPage({ params }: Props) {
     <article>
       <header className="py-16 sm:py-20">
         <div className="mx-auto max-w-3xl px-4 sm:px-6">
-          <div className="flex items-center gap-3 text-sm text-text-muted mb-6">
+          <div className="flex items-center gap-3 text-sm text-bw-gray-300 mb-6">
             {post.categories?.map((cat: { title: string; slug: { current: string } }) => (
               <span
                 key={cat.slug?.current}
-                className="rounded-full bg-brand-400/10 px-3 py-1 font-medium text-brand-400"
+                className="rounded-full bg-bw-yellow-500/10 px-3 py-1 font-medium text-bw-yellow-500"
               >
                 {cat.title}
               </span>
@@ -60,12 +60,12 @@ export default async function BlogPostPage({ params }: Props) {
             {formattedDate && <time>{formattedDate}</time>}
           </div>
 
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-text-primary leading-tight">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-bw-gray-50 leading-tight">
             {post.title}
           </h1>
 
           {post.excerpt && (
-            <p className="mt-6 text-lg text-text-secondary leading-relaxed">
+            <p className="mt-6 text-lg text-bw-gray-200 leading-relaxed">
               {post.excerpt}
             </p>
           )}
@@ -82,9 +82,9 @@ export default async function BlogPostPage({ params }: Props) {
                 />
               )}
               <div>
-                <div className="font-medium text-text-primary">{post.author.name}</div>
+                <div className="font-medium text-bw-gray-50">{post.author.name}</div>
                 {post.author.bio && (
-                  <div className="text-sm text-text-muted line-clamp-1">
+                  <div className="text-sm text-bw-gray-300 line-clamp-1">
                     {post.author.bio}
                   </div>
                 )}
@@ -112,9 +112,9 @@ export default async function BlogPostPage({ params }: Props) {
       </div>
 
       {post.relatedPosts?.length > 0 && (
-        <section className="border-t border-border py-24">
+        <section className="border-t border-bw-gray-600 py-24">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h2 className="text-2xl font-bold text-text-primary mb-8">
+            <h2 className="text-2xl font-bold text-bw-gray-50 mb-8">
               Related Articles
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

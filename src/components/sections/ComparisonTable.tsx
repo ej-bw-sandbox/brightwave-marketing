@@ -18,14 +18,14 @@ function ValueIcon({ value }: { value?: string }) {
   switch (value) {
     case 'yes':
     case 'superior':
-      return <CheckCircle2 className={`h-5 w-5 ${value === 'superior' ? 'text-brand-400' : 'text-success'}`} />
+      return <CheckCircle2 className={`h-5 w-5 ${value === 'superior' ? 'text-bw-yellow-500' : 'text-success'}`} />
     case 'no':
       return <XCircle className="h-5 w-5 text-error" />
     case 'partial':
     case 'limited':
       return <MinusCircle className="h-5 w-5 text-warning" />
     default:
-      return <span className="text-text-muted text-sm">{value || '-'}</span>
+      return <span className="text-bw-gray-300 text-sm">{value || '-'}</span>
   }
 }
 
@@ -44,15 +44,15 @@ export function ComparisonTable({ competitorName, rows }: ComparisonTableProps) 
     <div className="overflow-x-auto">
       <table className="w-full border-collapse">
         <thead>
-          <tr className="border-b border-border">
-            <th className="py-4 px-4 text-left text-sm font-semibold text-text-primary">Feature</th>
-            <th className="py-4 px-4 text-center text-sm font-semibold text-brand-400 w-36">
+          <tr className="border-b border-bw-gray-600">
+            <th className="py-4 px-4 text-left text-sm font-semibold text-bw-gray-50">Feature</th>
+            <th className="py-4 px-4 text-center text-sm font-semibold text-bw-yellow-500 w-36">
               <div className="flex items-center justify-center gap-1">
                 <Star className="h-4 w-4" />
                 Brightwave
               </div>
             </th>
-            <th className="py-4 px-4 text-center text-sm font-semibold text-text-secondary w-36">
+            <th className="py-4 px-4 text-center text-sm font-semibold text-bw-gray-200 w-36">
               {competitorName}
             </th>
           </tr>
@@ -64,18 +64,18 @@ export function ComparisonTable({ competitorName, rows }: ComparisonTableProps) 
                 <tr>
                   <td
                     colSpan={3}
-                    className="pt-6 pb-2 px-4 text-xs font-semibold uppercase tracking-wider text-text-muted"
+                    className="pt-6 pb-2 px-4 text-xs font-semibold uppercase tracking-wider text-bw-gray-300"
                   >
                     {category}
                   </td>
                 </tr>
               )}
               {catRows.map((row, i) => (
-                <tr key={i} className="border-b border-border-subtle hover:bg-surface-elevated/50 transition-colors">
-                  <td className="py-3 px-4 text-sm text-text-secondary">
+                <tr key={i} className="border-b border-bw-gray-700 hover:bg-bw-gray-700/50 transition-colors">
+                  <td className="py-3 px-4 text-sm text-bw-gray-200">
                     {row.feature}
                     {row.note && (
-                      <span className="block text-xs text-text-muted mt-0.5">{row.note}</span>
+                      <span className="block text-xs text-bw-gray-300 mt-0.5">{row.note}</span>
                     )}
                   </td>
                   <td className="py-3 px-4 text-center">

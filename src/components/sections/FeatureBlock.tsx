@@ -25,7 +25,7 @@ function FeatureCard({ title, slug, tagline, heroH1, heroImage, stats, tags }: F
   return (
     <Link
       href={`/features/${slug}`}
-      className="group block rounded-xl border border-border bg-surface-card p-6 card-hover"
+      className="group block rounded-xl border border-bw-gray-600 bg-bw-gray-700 p-6 card-hover"
     >
       {heroImage?.asset && (
         <div className="mb-4 overflow-hidden rounded-lg">
@@ -43,25 +43,25 @@ function FeatureCard({ title, slug, tagline, heroH1, heroImage, stats, tags }: F
           {safeTags.map((tag) => (
             <span
               key={tag}
-              className="inline-block rounded-full bg-brand-400/10 px-3 py-1 text-xs font-medium text-brand-400"
+              className="inline-block rounded-full bg-bw-yellow-500/10 px-3 py-1 text-xs font-medium text-bw-yellow-500"
             >
               {tag}
             </span>
           ))}
         </div>
       )}
-      <h3 className="text-lg font-semibold text-text-primary group-hover:text-brand-400 transition-colors">
+      <h3 className="text-lg font-semibold text-bw-gray-50 group-hover:text-bw-yellow-500 transition-colors">
         {heroH1 || title}
       </h3>
       {tagline && (
-        <p className="mt-2 text-sm text-text-secondary line-clamp-2">{tagline}</p>
+        <p className="mt-2 text-sm text-bw-gray-200 line-clamp-2">{tagline}</p>
       )}
       {safeStats.length > 0 && (
         <div className="mt-4 flex gap-6">
           {safeStats.slice(0, 3).map((stat, i) => (
             <div key={i}>
-              <div className="text-lg font-bold text-brand-400">{stat.value}</div>
-              <div className="text-xs text-text-muted">{stat.label}</div>
+              <div className="text-lg font-bold text-bw-yellow-500">{stat.value}</div>
+              <div className="text-xs text-bw-gray-300">{stat.label}</div>
             </div>
           ))}
         </div>
@@ -96,10 +96,10 @@ export function FeatureBlock({
         {(headline || subheadline) && (
           <div className="mb-12 text-center">
             {headline && (
-              <h2 className="text-3xl font-bold text-text-primary sm:text-4xl">{headline}</h2>
+              <h2 className="text-3xl font-bold text-bw-gray-50 sm:text-4xl">{headline}</h2>
             )}
             {subheadline && (
-              <p className="mt-4 text-lg text-text-secondary max-w-2xl mx-auto">{subheadline}</p>
+              <p className="mt-4 text-lg text-bw-gray-200 max-w-2xl mx-auto">{subheadline}</p>
             )}
           </div>
         )}

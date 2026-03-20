@@ -44,7 +44,7 @@ export function BlogCard({
     return (
       <Link
         href={href}
-        className="group block rounded-xl border border-border bg-surface-card overflow-hidden card-hover md:grid md:grid-cols-2 md:gap-0"
+        className="group block rounded-xl border border-bw-gray-600 bg-bw-gray-700 overflow-hidden card-hover md:grid md:grid-cols-2 md:gap-0"
       >
         {featuredImage?.asset && (
           <div className="overflow-hidden">
@@ -58,19 +58,19 @@ export function BlogCard({
           </div>
         )}
         <div className="p-8 flex flex-col justify-center">
-          <div className="flex items-center gap-3 text-xs text-text-muted mb-3">
+          <div className="flex items-center gap-3 text-xs text-bw-gray-300 mb-3">
             {postType && (
-              <span className="rounded-full bg-brand-400/10 px-2.5 py-0.5 font-medium text-brand-400 uppercase tracking-wide">
+              <span className="rounded-full bg-bw-yellow-500/10 px-2.5 py-0.5 font-medium text-bw-yellow-500 uppercase tracking-wide">
                 {postType}
               </span>
             )}
             {formattedDate && <time>{formattedDate}</time>}
           </div>
-          <h3 className="text-2xl font-bold text-text-primary group-hover:text-brand-400 transition-colors leading-tight">
+          <h3 className="text-2xl font-bold text-bw-gray-50 group-hover:text-bw-yellow-500 transition-colors leading-tight">
             {title}
           </h3>
           {excerpt && (
-            <p className="mt-3 text-text-secondary line-clamp-3">{excerpt}</p>
+            <p className="mt-3 text-bw-gray-200 line-clamp-3">{excerpt}</p>
           )}
           {author && (
             <div className="mt-4 flex items-center gap-2">
@@ -83,7 +83,7 @@ export function BlogCard({
                   className="rounded-full"
                 />
               )}
-              <span className="text-sm text-text-muted">{author.name}</span>
+              <span className="text-sm text-bw-gray-300">{author.name}</span>
             </div>
           )}
         </div>
@@ -95,13 +95,13 @@ export function BlogCard({
     return (
       <Link
         href={href}
-        className="group flex gap-4 items-start py-4 border-b border-border-subtle last:border-0"
+        className="group flex gap-4 items-start py-4 border-b border-bw-gray-700 last:border-0"
       >
         <div className="flex-1 min-w-0">
-          <h4 className="font-medium text-text-primary group-hover:text-brand-400 transition-colors line-clamp-2">
+          <h4 className="font-medium text-bw-gray-50 group-hover:text-bw-yellow-500 transition-colors line-clamp-2">
             {title}
           </h4>
-          <div className="mt-1 flex items-center gap-2 text-xs text-text-muted">
+          <div className="mt-1 flex items-center gap-2 text-xs text-bw-gray-300">
             {formattedDate && <time>{formattedDate}</time>}
             {author && <span>by {author.name}</span>}
           </div>
@@ -122,7 +122,7 @@ export function BlogCard({
   return (
     <Link
       href={href}
-      className="group block rounded-xl border border-border bg-surface-card overflow-hidden card-hover"
+      className="group block rounded-xl border border-bw-gray-600 bg-bw-gray-700 overflow-hidden card-hover"
     >
       {featuredImage?.asset && (
         <div className="overflow-hidden aspect-video">
@@ -136,19 +136,19 @@ export function BlogCard({
         </div>
       )}
       <div className="p-5">
-        <div className="flex items-center gap-3 text-xs text-text-muted mb-2">
+        <div className="flex items-center gap-3 text-xs text-bw-gray-300 mb-2">
           {(categories ?? []).length > 0 && (
-            <span className="rounded-full bg-brand-400/10 px-2.5 py-0.5 font-medium text-brand-400">
+            <span className="rounded-full bg-bw-yellow-500/10 px-2.5 py-0.5 font-medium text-bw-yellow-500">
               {(categories ?? [])[0]?.title}
             </span>
           )}
           {formattedDate && <time>{formattedDate}</time>}
         </div>
-        <h3 className="font-semibold text-text-primary group-hover:text-brand-400 transition-colors line-clamp-2">
+        <h3 className="font-semibold text-bw-gray-50 group-hover:text-bw-yellow-500 transition-colors line-clamp-2">
           {title}
         </h3>
         {excerpt && (
-          <p className="mt-2 text-sm text-text-secondary line-clamp-2">{excerpt}</p>
+          <p className="mt-2 text-sm text-bw-gray-200 line-clamp-2">{excerpt}</p>
         )}
         {author && (
           <div className="mt-3 flex items-center gap-2">
@@ -161,7 +161,7 @@ export function BlogCard({
                 className="rounded-full"
               />
             )}
-            <span className="text-xs text-text-muted">{author.name}</span>
+            <span className="text-xs text-bw-gray-300">{author.name}</span>
           </div>
         )}
       </div>

@@ -11,20 +11,20 @@ interface Testimonial {
 
 function TestimonialCard({ quote, attribution, authorName, authorImage, companyLogo }: Testimonial) {
   return (
-    <div className="rounded-xl border border-border bg-surface-card p-6 flex flex-col">
+    <div className="rounded-xl border border-bw-gray-600 bg-bw-gray-700 p-6 flex flex-col">
       <div className="mb-4">
         <svg
-          className="h-8 w-8 text-brand-400/40"
+          className="h-8 w-8 text-bw-yellow-500/40"
           fill="currentColor"
           viewBox="0 0 32 32"
         >
           <path d="M10 8c-3.3 0-6 2.7-6 6v10h10V14H8c0-1.1.9-2 2-2V8zm14 0c-3.3 0-6 2.7-6 6v10h10V14h-6c0-1.1.9-2 2-2V8z" />
         </svg>
       </div>
-      <blockquote className="flex-1 text-text-secondary leading-relaxed text-sm">
+      <blockquote className="flex-1 text-bw-gray-200 leading-relaxed text-sm">
         {quote}
       </blockquote>
-      <div className="mt-6 flex items-center gap-3 border-t border-border pt-4">
+      <div className="mt-6 flex items-center gap-3 border-t border-bw-gray-600 pt-4">
         {authorImage?.asset && (
           <Image
             src={urlFor(authorImage).width(40).height(40).url()}
@@ -36,10 +36,10 @@ function TestimonialCard({ quote, attribution, authorName, authorImage, companyL
         )}
         <div className="flex-1 min-w-0">
           {authorName && (
-            <div className="text-sm font-medium text-text-primary truncate">{authorName}</div>
+            <div className="text-sm font-medium text-bw-gray-50 truncate">{authorName}</div>
           )}
           {attribution && (
-            <div className="text-xs text-text-muted truncate">{attribution}</div>
+            <div className="text-xs text-bw-gray-300 truncate">{attribution}</div>
           )}
         </div>
         {companyLogo?.asset && (
@@ -77,10 +77,10 @@ export function TestimonialGrid({
         {(headline || subheadline) && (
           <div className="mb-12 text-center">
             {headline && (
-              <h2 className="text-3xl font-bold text-text-primary sm:text-4xl">{headline}</h2>
+              <h2 className="text-3xl font-bold text-bw-gray-50 sm:text-4xl">{headline}</h2>
             )}
             {subheadline && (
-              <p className="mt-4 text-lg text-text-secondary">{subheadline}</p>
+              <p className="mt-4 text-lg text-bw-gray-200">{subheadline}</p>
             )}
           </div>
         )}
@@ -104,17 +104,17 @@ export function TestimonialInline({ quote, attribution }: { quote: string; attri
   return (
     <div className="my-12 mx-auto max-w-3xl text-center">
       <svg
-        className="mx-auto mb-4 h-10 w-10 text-brand-400/30"
+        className="mx-auto mb-4 h-10 w-10 text-bw-yellow-500/30"
         fill="currentColor"
         viewBox="0 0 32 32"
       >
         <path d="M10 8c-3.3 0-6 2.7-6 6v10h10V14H8c0-1.1.9-2 2-2V8zm14 0c-3.3 0-6 2.7-6 6v10h10V14h-6c0-1.1.9-2 2-2V8z" />
       </svg>
-      <blockquote className="text-xl text-text-secondary italic leading-relaxed">
+      <blockquote className="text-xl text-bw-gray-200 italic leading-relaxed">
         &ldquo;{quote}&rdquo;
       </blockquote>
       {attribution && (
-        <p className="mt-4 text-sm font-medium text-text-muted">&mdash; {attribution}</p>
+        <p className="mt-4 text-sm font-medium text-bw-gray-300">&mdash; {attribution}</p>
       )}
     </div>
   )

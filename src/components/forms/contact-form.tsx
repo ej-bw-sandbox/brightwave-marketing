@@ -18,8 +18,8 @@ export function ContactForm() {
   if (state.success) {
     return (
       <div className="text-center py-12">
-        <h3 className="text-2xl font-bold text-brand-400">Thank you!</h3>
-        <p className="text-text-secondary mt-2">{state.message}</p>
+        <h3 className="text-2xl font-bold text-bw-yellow-500">Thank you!</h3>
+        <p className="text-bw-gray-200 mt-2">{state.message}</p>
       </div>
     )
   }
@@ -27,12 +27,12 @@ export function ContactForm() {
   return (
     <form action={formAction} className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
-        <input name="firstName" placeholder="First Name" required className="rounded-md border border-neutral-700 bg-surface-elevated p-3 text-sm" />
-        <input name="lastName" placeholder="Last Name" required className="rounded-md border border-neutral-700 bg-surface-elevated p-3 text-sm" />
+        <input name="firstName" placeholder="First Name" required className="rounded-md border border-bw-gray-600 bg-bw-gray-700 p-3 text-sm" />
+        <input name="lastName" placeholder="Last Name" required className="rounded-md border border-bw-gray-600 bg-bw-gray-700 p-3 text-sm" />
       </div>
-      <input name="email" type="email" placeholder="Work Email" required className="w-full rounded-md border border-neutral-700 bg-surface-elevated p-3 text-sm" />
-      <input name="company" placeholder="Company" required className="w-full rounded-md border border-neutral-700 bg-surface-elevated p-3 text-sm" />
-      <button type="submit" disabled={isPending} className="w-full rounded-md bg-brand-400 px-4 py-3 text-sm font-medium text-black hover:bg-brand-500">
+      <input name="email" type="email" placeholder="Work Email" required className="w-full rounded-md border border-bw-gray-600 bg-bw-gray-700 p-3 text-sm" />
+      <input name="company" placeholder="Company" required className="w-full rounded-md border border-bw-gray-600 bg-bw-gray-700 p-3 text-sm" />
+      <button type="submit" disabled={isPending} className="w-full rounded-md bg-bw-yellow-500 px-4 py-3 text-sm font-medium text-bw-gray-800 hover:bg-bw-yellow-550">
         {isPending ? 'Submitting...' : 'Request a Demo'}
       </button>
     </form>

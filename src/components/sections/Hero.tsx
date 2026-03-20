@@ -50,12 +50,12 @@ export function Hero({
         <div className={isCenter ? 'mx-auto max-w-4xl' : 'grid lg:grid-cols-2 gap-12 items-center'}>
           <div>
             {eyebrow && (
-              <span className="inline-block text-sm font-medium tracking-wider uppercase text-brand-400 mb-4">
+              <span className="inline-block text-sm font-medium tracking-wider uppercase text-bw-yellow-500 mb-4">
                 {eyebrow}
               </span>
             )}
             <h1
-              className={`font-bold tracking-tight text-text-primary ${
+              className={`font-bold tracking-tight text-bw-gray-50 ${
                 isLarge ? 'text-4xl sm:text-5xl lg:text-6.5xl' : 'text-3xl sm:text-4xl lg:text-5xl'
               }`}
             >
@@ -63,7 +63,7 @@ export function Hero({
             </h1>
             {subheadline && (
               <p
-                className={`mt-6 text-text-secondary leading-relaxed ${
+                className={`mt-6 text-bw-gray-200 leading-relaxed ${
                   isLarge ? 'text-lg sm:text-xl max-w-2xl' : 'text-lg max-w-xl'
                 } ${isCenter ? 'mx-auto' : ''}`}
               >
@@ -72,7 +72,7 @@ export function Hero({
             )}
             {body && (
               <p
-                className={`mt-4 text-text-muted leading-relaxed ${
+                className={`mt-4 text-bw-gray-300 leading-relaxed ${
                   isCenter ? 'mx-auto max-w-2xl' : 'max-w-xl'
                 }`}
               >
@@ -103,7 +103,7 @@ export function Hero({
                   alt=""
                   width={800}
                   height={500}
-                  className="rounded-xl border border-border"
+                  className="rounded-xl border border-bw-gray-600"
                   priority
                 />
               )}
@@ -118,7 +118,7 @@ export function Hero({
               alt=""
               width={1200}
               height={675}
-              className="rounded-xl border border-border shadow-2xl shadow-black/50"
+              className="rounded-xl border border-bw-gray-600 shadow-2xl shadow-black/50"
               priority
             />
           </div>

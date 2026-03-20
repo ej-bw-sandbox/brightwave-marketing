@@ -15,8 +15,8 @@ export function SectionWrapper({
 }: SectionWrapperProps) {
   const bgStyles = {
     default: '',
-    elevated: 'bg-surface-elevated',
-    accent: 'bg-gradient-to-b from-brand-400/5 to-transparent',
+    elevated: 'bg-bw-gray-700',
+    accent: 'bg-gradient-to-b from-bw-yellow-500/5 to-transparent',
   }
 
   const widthStyles = {
