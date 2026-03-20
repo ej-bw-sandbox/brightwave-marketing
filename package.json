@@ -58,8 +58,7 @@
     "@next/bundle-analyzer": "^15.2.0"
   },
   "engines": {
-    "node": ">=20.0.0",
-    "npm": ">=10.0.0"
+    "node": "20.x"
   },
   "packageManager": "npm@10.8.2"
 }
