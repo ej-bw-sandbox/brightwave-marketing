@@ -14,7 +14,7 @@ interface Props {
 
 export async function generateStaticParams() {
   const slugs = await client.fetch(blogSlugsQuery)
-  return slugs.map((s: { slug: string }) => ({ slug: s.slug }))
+  return (slugs ?? []).map((s: { slug: string }) => ({ slug: s.slug }))
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -118,7 +118,7 @@ export default async function BlogPostPage({ params }: Props) {
               Related Articles
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {post.relatedPosts.map(
+              {(post.relatedPosts ?? []).map(
                 (related: {
                   title: string
                   slug: { current: string }

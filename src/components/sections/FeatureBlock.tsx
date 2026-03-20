@@ -14,11 +14,14 @@ interface FeatureCardProps {
   tagline?: string
   heroH1?: string
   heroImage?: any
-  stats?: StatItem[]
-  tags?: string[]
+  stats?: StatItem[] | null
+  tags?: string[] | null
 }
 
-function FeatureCard({ title, slug, tagline, heroH1, heroImage, stats = [], tags = [] }: FeatureCardProps) {
+function FeatureCard({ title, slug, tagline, heroH1, heroImage, stats, tags }: FeatureCardProps) {
+  const safeTags = tags ?? []
+  const safeStats = stats ?? []
+
   return (
     <Link
       href={`/features/${slug}`}
@@ -35,9 +38,9 @@ function FeatureCard({ title, slug, tagline, heroH1, heroImage, stats = [], tags
           />
         </div>
       )}
-      {tags.length > 0 && (
+      {safeTags.length > 0 && (
         <div className="mb-3 flex flex-wrap gap-2">
-          {tags.map((tag) => (
+          {safeTags.map((tag) => (
             <span
               key={tag}
               className="inline-block rounded-full bg-brand-400/10 px-3 py-1 text-xs font-medium text-brand-400"
@@ -53,9 +56,9 @@ function FeatureCard({ title, slug, tagline, heroH1, heroImage, stats = [], tags
       {tagline && (
         <p className="mt-2 text-sm text-text-secondary line-clamp-2">{tagline}</p>
       )}
-      {stats.length > 0 && (
+      {safeStats.length > 0 && (
         <div className="mt-4 flex gap-6">
-          {stats.slice(0, 3).map((stat, i) => (
+          {safeStats.slice(0, 3).map((stat, i) => (
             <div key={i}>
               <div className="text-lg font-bold text-brand-400">{stat.value}</div>
               <div className="text-xs text-text-muted">{stat.label}</div>
@@ -80,6 +83,7 @@ export function FeatureBlock({
   features,
   columns = 3,
 }: FeatureBlockProps) {
+  const safeFeatures = features ?? []
   const gridCols: Record<number, string> = {
     2: 'md:grid-cols-2',
     3: 'md:grid-cols-2 lg:grid-cols-3',
@@ -100,7 +104,7 @@ export function FeatureBlock({
           </div>
         )}
         <div className={`grid grid-cols-1 gap-6 ${gridCols[columns]}`}>
-          {features.map((feature) => (
+          {safeFeatures.map((feature) => (
             <FeatureCard key={feature.slug} {...feature} />
           ))}
         </div>

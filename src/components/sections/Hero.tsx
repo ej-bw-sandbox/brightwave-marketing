@@ -79,9 +79,9 @@ export function Hero({
                 {body}
               </p>
             )}
-            {ctas.length > 0 && (
+            {(ctas ?? []).length > 0 && (
               <div className={`mt-8 flex gap-4 ${isCenter ? 'justify-center' : ''}`}>
-                {ctas.map((cta, i) => (
+                {(ctas ?? []).map((cta, i) => (
                   <Button
                     key={i}
                     variant={cta.style === 'secondary' ? 'secondary' : cta.style === 'ghost' ? 'ghost' : 'default'}

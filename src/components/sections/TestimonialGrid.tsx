@@ -69,7 +69,7 @@ export function TestimonialGrid({
   testimonials,
   columns = 3,
 }: TestimonialGridProps) {
-  if (testimonials.length === 0) return null
+  if ((testimonials ?? []).length === 0) return null
 
   return (
     <section className="py-section">
@@ -89,7 +89,7 @@ export function TestimonialGrid({
             columns === 2 ? 'md:grid-cols-2' : 'md:grid-cols-2 lg:grid-cols-3'
           }`}
         >
-          {testimonials.map((t, i) => (
+          {(testimonials ?? []).map((t, i) => (
             <TestimonialCard key={i} {...t} />
           ))}
         </div>

@@ -59,6 +59,7 @@ export default async function CaseStudiesPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {studies
+            
             .filter((s: any) => s.slug?.current !== featured?.slug?.current)
             .map((study: any) => (
               <CaseStudyCard

@@ -10,7 +10,7 @@ interface Props {
 
 export async function generateStaticParams() {
   const slugs = await client.fetch(icpSlugsQuery)
-  return slugs.map((s: { slug: string }) => ({ slug: s.slug }))
+  return (slugs ?? []).map((s: { slug: string }) => ({ slug: s.slug }))
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

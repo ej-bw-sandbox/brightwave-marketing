@@ -30,7 +30,7 @@ function ValueIcon({ value }: { value?: string }) {
 }
 
 export function ComparisonTable({ competitorName, rows }: ComparisonTableProps) {
-  if (rows.length === 0) return null
+  if ((rows ?? []).length === 0) return null
 
   // Group by category
   const grouped = rows.reduce<Record<string, ComparisonRow[]>>((acc, row) => {

@@ -10,12 +10,12 @@ interface StatBarProps {
 }
 
 export function StatBar({ stats, variant = 'default' }: StatBarProps) {
-  if (stats.length === 0) return null
+  if ((stats ?? []).length === 0) return null
 
   if (variant === 'cards') {
     return (
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {stats.map((stat, i) => (
+        {(stats ?? []).map((stat, i) => (
           <div
             key={i}
             className="rounded-xl border border-border bg-surface-card p-6 text-center"
@@ -33,7 +33,7 @@ export function StatBar({ stats, variant = 'default' }: StatBarProps) {
 
   return (
     <div className="flex flex-wrap justify-center gap-12 py-8">
-      {stats.map((stat, i) => (
+      {(stats ?? []).map((stat, i) => (
         <div key={i} className="text-center">
           <div className="text-4xl font-bold text-brand-400">{stat.value}</div>
           <div className="mt-1 text-sm text-text-secondary">{stat.label}</div>

@@ -41,9 +41,9 @@ export function CtaSection({
         {body && (
           <p className="mt-3 text-text-muted max-w-2xl mx-auto">{body}</p>
         )}
-        {ctas.length > 0 && (
+        {(ctas ?? []).length > 0 && (
           <div className="mt-8 flex flex-wrap justify-center gap-4">
-            {ctas.map((cta, i) => (
+            {(ctas ?? []).map((cta, i) => (
               <Button
                 key={i}
                 variant={

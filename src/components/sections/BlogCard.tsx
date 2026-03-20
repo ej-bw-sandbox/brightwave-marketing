@@ -137,9 +137,9 @@ export function BlogCard({
       )}
       <div className="p-5">
         <div className="flex items-center gap-3 text-xs text-text-muted mb-2">
-          {categories.length > 0 && (
+          {(categories ?? []).length > 0 && (
             <span className="rounded-full bg-brand-400/10 px-2.5 py-0.5 font-medium text-brand-400">
-              {categories[0].title}
+              {(categories ?? [])[0]?.title}
             </span>
           )}
           {formattedDate && <time>{formattedDate}</time>}
