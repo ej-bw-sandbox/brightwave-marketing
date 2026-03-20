@@ -1,8 +1,9 @@
 'use client'
 
 import Link from 'next/link'
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { BrightwaveLogo } from './logo'
+import type { PrivateMarketsNav, NavAssociation } from './header-wrapper'
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -31,10 +32,10 @@ const platformColumns: NavColumn[] = [
   {
     heading: 'CREATE',
     items: [
-      { title: 'Presentations', description: 'Build investor-grade decks', href: '/features/presentations', icon: '\uD83D\uDCCA', iconBg: 'bg-blue-900/40' },
-      { title: 'Reports', description: 'Generate deep analysis reports', href: '/features/reports', icon: '\uD83D\uDCC4', iconBg: 'bg-purple-900/40' },
-      { title: 'Artifacts', description: 'Charts, tables, and visuals', href: '/features/artifacts', icon: '\u2705', iconBg: 'bg-green-900/40' },
-      { title: 'Excel/Spreadsheets', description: 'Data analysis tools', href: '/features/excel-spreadsheets', icon: '\uD83D\uDCDD', iconBg: 'bg-gray-700/60' },
+      { title: 'Presentations', description: 'Build investor-grade decks', href: '/features/presentations', icon: '\u25A0', iconBg: 'bg-blue-900/40' },
+      { title: 'Reports', description: 'Generate deep analysis reports', href: '/features/reports', icon: '\u25A0', iconBg: 'bg-purple-900/40' },
+      { title: 'Artifacts', description: 'Charts, tables, and visuals', href: '/features/artifacts', icon: '\u25A0', iconBg: 'bg-green-900/40' },
+      { title: 'Excel/Spreadsheets', description: 'Data analysis tools', href: '/features/excel-spreadsheets', icon: '\u25A0', iconBg: 'bg-gray-700/60' },
     ],
     viewAllLabel: '...More',
     viewAllHref: '/features#create',
@@ -42,9 +43,9 @@ const platformColumns: NavColumn[] = [
   {
     heading: 'ANALYZE',
     items: [
-      { title: 'Extraction Grid', description: 'Pull data from documents', href: '/features/extraction-grid', icon: '\uD83D\uDD0D', iconBg: 'bg-teal-900/40' },
-      { title: 'Web Search', description: 'Real-time information', href: '/features/web-search', icon: '\uD83C\uDF10', iconBg: 'bg-cyan-900/40' },
-      { title: 'Public Markets Data', description: 'Financial market insights', href: '/features/public-markets-data', icon: '\uD83D\uDCC8', iconBg: 'bg-emerald-900/40' },
+      { title: 'Extraction Grid', description: 'Pull structured data from documents', href: '/features/extraction-grid', icon: '\u25A0', iconBg: 'bg-teal-900/40' },
+      { title: 'Web Search', description: 'Real-time information retrieval', href: '/features/web-search', icon: '\u25A0', iconBg: 'bg-cyan-900/40' },
+      { title: 'Public Markets Data', description: 'Financial market insights', href: '/features/public-markets-data', icon: '\u25A0', iconBg: 'bg-emerald-900/40' },
     ],
     viewAllLabel: '...More',
     viewAllHref: '/features#analyze',
@@ -52,9 +53,12 @@ const platformColumns: NavColumn[] = [
   {
     heading: 'PRODUCTIVITY',
     items: [
-      { title: 'Quick Prompts', description: 'Save time with shortcuts', href: '/features/quick-prompts', icon: '\u26A1', iconBg: 'bg-yellow-900/40' },
-      { title: 'Templates', description: 'Reusable blueprints', href: '/features/templates', icon: '\uD83D\uDCC1', iconBg: 'bg-slate-700/60' },
-      { title: 'Custom Instructions', description: 'Personalized AI behavior', href: '/features/custom-instructions', icon: '\uD83C\uDFA8', iconBg: 'bg-pink-900/40' },
+      { title: 'Quick Prompts', description: 'Save time with saved shortcuts', href: '/features/quick-prompts', icon: '\u25A0', iconBg: 'bg-yellow-900/40' },
+      { title: 'Templates', description: 'Reusable analysis blueprints', href: '/features/templates', icon: '\u25A0', iconBg: 'bg-slate-700/60' },
+      { title: 'Custom Instructions', description: 'Personalize AI behavior', href: '/features/custom-instructions', icon: '\u25A0', iconBg: 'bg-pink-900/40' },
+      { title: 'Skills', description: 'Build repeatable AI workflows', href: '/features/skills', icon: '\u25A0', iconBg: 'bg-amber-900/40' },
+      { title: 'Connected Apps', description: 'Native integrations', href: '/features/connected-apps', icon: '\u25A0', iconBg: 'bg-lime-900/40' },
+      { title: 'Sandbox Agents', description: 'Autonomous AI execution', href: '/features/sandbox-agents', icon: '\u25A0', iconBg: 'bg-rose-900/40' },
     ],
     viewAllLabel: '...More',
     viewAllHref: '/features#productivity',
@@ -62,9 +66,9 @@ const platformColumns: NavColumn[] = [
   {
     heading: 'COLLABORATE',
     items: [
-      { title: 'Team Collaboration', description: 'Work together seamlessly', href: '/features/team-collaboration', icon: '\uD83D\uDC65', iconBg: 'bg-indigo-900/40' },
-      { title: 'Sharing', description: 'Share work with anyone', href: '/features/sharing', icon: '\uD83D\uDD17', iconBg: 'bg-violet-900/40' },
-      { title: 'Integrations', description: 'Connect your tools', href: '/features/integrations', icon: '\uD83D\uDD27', iconBg: 'bg-orange-900/40' },
+      { title: 'Team Collaboration', description: 'Work together seamlessly', href: '/features/team-collaboration', icon: '\u25A0', iconBg: 'bg-indigo-900/40' },
+      { title: 'Sharing', description: 'Share work with anyone', href: '/features/sharing', icon: '\u25A0', iconBg: 'bg-violet-900/40' },
+      { title: 'Integrations', description: 'Connect your existing tools', href: '/features/integrations', icon: '\u25A0', iconBg: 'bg-orange-900/40' },
     ],
     viewAllLabel: '...More',
     viewAllHref: '/features#collaborate',
@@ -72,27 +76,10 @@ const platformColumns: NavColumn[] = [
 ]
 
 /* ------------------------------------------------------------------ */
-/*  Solutions Dropdown Data                                            */
+/*  Solutions Dropdown Data (static fallback)                          */
 /* ------------------------------------------------------------------ */
 
-const solutionCards = [
-  {
-    title: 'Private Markets',
-    description: 'For PE, VC, and alternative investors',
-    href: '/solutions/private-markets',
-    tag: 'Solution',
-    featured: true,
-  },
-  {
-    title: 'Research',
-    description: 'For research teams and analysts',
-    href: '/solutions/research',
-    tag: null,
-    featured: false,
-  },
-]
-
-const solutionColumns: NavColumn[] = [
+const fallbackSolutionColumns: NavColumn[] = [
   {
     heading: 'FOR',
     items: [
@@ -128,6 +115,56 @@ const solutionColumns: NavColumn[] = [
   },
 ]
 
+function buildSolutionColumns(pm: PrivateMarketsNav | null): NavColumn[] {
+  if (!pm) return fallbackSolutionColumns
+
+  const mapToItems = (items: NavAssociation[], basePath: string): NavItem[] =>
+    items.map((i) => ({
+      title: i.title,
+      description: '',
+      href: `${basePath}/${i.slug}`,
+      icon: '',
+      iconBg: '',
+    }))
+
+  const cols: NavColumn[] = []
+
+  if (pm.industries && pm.industries.length > 0) {
+    cols.push({
+      heading: 'FOR',
+      items: mapToItems(pm.industries, '/firm-types'),
+      viewAllLabel: '...More',
+      viewAllHref: '/firm-types',
+    })
+  } else {
+    cols.push(fallbackSolutionColumns[0])
+  }
+
+  if (pm.roles && pm.roles.length > 0) {
+    cols.push({
+      heading: 'I AM A...',
+      items: mapToItems(pm.roles, '/i-am-a'),
+      viewAllLabel: '...More',
+      viewAllHref: '/i-am-a',
+    })
+  } else {
+    cols.push(fallbackSolutionColumns[1])
+  }
+
+  if (pm.useCases && pm.useCases.length > 0) {
+    cols.push({
+      heading: 'INDUSTRIES',
+      items: mapToItems(pm.useCases, '/use-cases'),
+      viewAllLabel: '...More',
+      viewAllHref: '/use-cases',
+    })
+  } else {
+    cols.push(fallbackSolutionColumns[2])
+  }
+
+  return cols
+}
+
 /* ------------------------------------------------------------------ */
 /*  Resources Dropdown Data                                            */
 /* ------------------------------------------------------------------ */
@@ -136,24 +173,25 @@ const resourceColumns: NavColumn[] = [
   {
     heading: 'LEARN',
     items: [
-      { title: 'Blog', description: 'Industry insights and updates', href: '/blog', icon: '\uD83D\uDCF0', iconBg: 'bg-green-900/40' },
-      { title: 'Tutorials', description: 'Step-by-step guides', href: '/tutorials', icon: '\uD83C\uDF93', iconBg: 'bg-purple-900/40' },
-      { title: 'Knowledge Base', description: 'Complete documentation', href: '/knowledge-base', icon: '\uD83D\uDCDA', iconBg: 'bg-blue-900/40' },
+      { title: 'Blog', description: 'Industry insights and updates', href: '/blog', icon: '\u25A0', iconBg: 'bg-green-900/40' },
+      { title: 'Tutorials', description: 'Step-by-step guides', href: 'https://youtube.com/@brightwave', icon: '\u25A0', iconBg: 'bg-purple-900/40' },
+      { title: 'Knowledge Base', description: 'Complete documentation', href: '/knowledge-base', icon: '\u25A0', iconBg: 'bg-blue-900/40' },
     ],
   },
   {
     heading: 'RESOURCES',
     items: [
-      { title: 'Tools & Guides', description: 'Practical resources', href: '/tools-guides', icon: '\uD83D\uDEE0\uFE0F', iconBg: 'bg-orange-900/40' },
-      { title: 'Comparisons', description: 'See how we stack up', href: '/comparisons', icon: '\uD83D\uDCCA', iconBg: 'bg-cyan-900/40' },
-      { title: 'Changelog', description: 'Latest product updates', href: '/changelog', icon: '\uD83D\uDCCB', iconBg: 'bg-indigo-900/40' },
+      { title: 'Tools & Guides', description: 'Practical resources', href: '/tools-guides', icon: '\u25A0', iconBg: 'bg-orange-900/40' },
+      { title: 'Comparisons', description: 'See how we stack up', href: '/comparisons', icon: '\u25A0', iconBg: 'bg-cyan-900/40' },
+      { title: 'Release Notes', description: 'Latest product updates', href: '/release-notes', icon: '\u25A0', iconBg: 'bg-indigo-900/40' },
     ],
   },
   {
     heading: 'CONNECT',
     items: [
-      { title: 'Virtual Events', description: 'Webinars and workshops', href: '/virtual-events', icon: '\uD83C\uDF99\uFE0F', iconBg: 'bg-red-900/40' },
-      { title: 'Support', description: 'Get help when you need it', href: '/support', icon: '\uD83D\uDCAC', iconBg: 'bg-emerald-900/40' },
+      { title: 'Engineering Log', description: 'Behind the scenes', href: '/engineering-log', icon: '\u25A0', iconBg: 'bg-slate-700/60' },
+      { title: 'Virtual Events', description: 'Webinars and workshops', href: '/virtual-events', icon: '\u25A0', iconBg: 'bg-red-900/40' },
+      { title: 'Support', description: 'Get help when you need it', href: '/support', icon: '\u25A0', iconBg: 'bg-emerald-900/40' },
     ],
   },
 ]
@@ -191,13 +229,18 @@ function CloseIcon() {
 /* ------------------------------------------------------------------ */
 
 function NavItemRow({ item }: { item: NavItem }) {
+  const isExternal = item.href.startsWith('http')
+  const LinkComponent = isExternal ? 'a' : Link
+  const extraProps = isExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {}
+
   return (
-    <Link
+    <LinkComponent
       href={item.href}
       className="group flex items-start gap-3 rounded-md px-2 py-1.5 transition-colors hover:bg-bw-gray-600/50"
+      {...extraProps}
     >
       {item.icon && (
-        <span className={`mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg ${item.iconBg} text-sm`}>
+        <span className={`mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg ${item.iconBg} text-sm text-bw-gray-400`}>
           {item.icon}
         </span>
       )}
@@ -209,7 +252,7 @@ function NavItemRow({ item }: { item: NavItem }) {
           {item.description}
         </span>
       </div>
-    </Link>
+    </LinkComponent>
   )
 }
 
@@ -222,9 +265,11 @@ function NavItemRowPlain({ item }: { item: NavItem }) {
       <span className="block text-sm font-semibold text-bw-gray-50 group-hover:text-bw-yellow-500 transition-colors">
         {item.title}
       </span>
-      <span className="block text-xs text-bw-gray-300 leading-tight mt-0.5">
-        {item.description}
-      </span>
+      {item.description && (
+        <span className="block text-xs text-bw-gray-300 leading-tight mt-0.5">
+          {item.description}
+        </span>
+      )}
     </Link>
   )
 }
@@ -275,34 +320,25 @@ function PlatformPanel() {
 /*  Solutions Dropdown Panel                                           */
 /* ------------------------------------------------------------------ */
 
-function SolutionsPanel() {
+function SolutionsPanel({ solutionColumns }: { solutionColumns: NavColumn[] }) {
   return (
     <div className="p-6" style={{ minWidth: '820px' }}>
-      {/* Top: Solution cards */}
-      <div className="grid grid-cols-2 gap-4 mb-6">
-        {solutionCards.map((card) => (
-          <Link
-            key={card.href}
-            href={card.href}
-            className={`group relative block rounded-xl border p-6 transition-colors ${
-              card.featured
-                ? 'border-bw-yellow-500 bg-bw-gray-700/60 hover:bg-bw-gray-600/60'
-                : 'border-bw-gray-600 bg-bw-gray-700/40 hover:border-bw-gray-300 hover:bg-bw-gray-600/40'
-            }`}
-          >
-            <div className="flex items-start justify-between">
-              <div>
-                <h3 className="text-lg font-semibold text-bw-gray-50">{card.title}</h3>
-                <p className="mt-1 text-sm text-bw-gray-300">{card.description}</p>
-              </div>
-              {card.tag && (
-                <span className="rounded-md px-2 py-0.5 text-xs font-semibold text-bw-yellow-500">
-                  {card.tag}
-                </span>
-              )}
+      {/* Top: Single Private Markets card */}
+      <div className="mb-6">
+        <Link
+          href="/products/private-markets"
+          className="group relative block rounded-xl border border-bw-yellow-500 bg-bw-gray-700/60 p-6 transition-colors hover:bg-bw-gray-600/60"
+        >
+          <div className="flex items-start justify-between">
+            <div>
+              <h3 className="text-lg font-semibold text-bw-gray-50">Private Markets</h3>
+              <p className="mt-1 text-sm text-bw-gray-300">For PE, VC, and alternative investors</p>
             </div>
-          </Link>
-        ))}
+            <span className="rounded-md px-2 py-0.5 text-xs font-semibold text-bw-yellow-500">
+              Solution
+            </span>
+          </div>
+        </Link>
       </div>
 
       {/* Divider */}
@@ -338,24 +374,20 @@ function ResourcesPanel() {
 
 type DropdownKey = 'platform' | 'solutions' | 'resources'
 
-const panelMap: Record<DropdownKey, () => React.JSX.Element> = {
-  platform: PlatformPanel,
-  solutions: SolutionsPanel,
-  resources: ResourcesPanel,
-}
-
 function DesktopDropdown({
   label,
   panelKey,
   isOpen,
   onOpen,
   onClose,
+  solutionColumns,
 }: {
   label: string
   panelKey: DropdownKey
   isOpen: boolean
   onOpen: () => void
   onClose: () => void
+  solutionColumns?: NavColumn[]
 }) {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
@@ -368,7 +400,16 @@ function DesktopDropdown({
     timeoutRef.current = setTimeout(onClose, 200)
   }
 
-  const Panel = panelMap[panelKey]
+  const renderPanel = () => {
+    switch (panelKey) {
+      case 'platform':
+        return <PlatformPanel />
+      case 'solutions':
+        return <SolutionsPanel solutionColumns={solutionColumns ?? fallbackSolutionColumns} />
+      case 'resources':
+        return <ResourcesPanel />
+    }
+  }
 
   return (
     <div className="relative" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
@@ -387,7 +428,7 @@ function DesktopDropdown({
       {isOpen && (
         <div className="absolute left-1/2 top-full z-50 -translate-x-1/2 pt-3">
           <div className="rounded-xl border border-bw-gray-600 bg-bw-gray-800 shadow-2xl">
-            <Panel />
+            {renderPanel()}
           </div>
         </div>
       )}
@@ -399,7 +440,15 @@ function DesktopDropdown({
 /*  Mobile Menu                                                        */
 /* ------------------------------------------------------------------ */
 
-function MobileMenu({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+function MobileMenu({
+  isOpen,
+  onClose,
+  solutionColumns,
+}: {
+  isOpen: boolean
+  onClose: () => void
+  solutionColumns: NavColumn[]
+}) {
   const [expandedSection, setExpandedSection] = useState<string | null>(null)
 
   if (!isOpen) return null
@@ -433,11 +482,9 @@ function MobileMenu({ isOpen, onClose }: { isOpen: boolean; onClose: () => void 
 
           {/* Solutions */}
           <MobileSection title="Solutions" expanded={expandedSection === 'solutions'} onToggle={() => setExpandedSection(expandedSection === 'solutions' ? null : 'solutions')}>
-            {solutionCards.map((card) => (
-              <Link key={card.href} href={card.href} className="block py-1.5 text-sm font-semibold text-bw-gray-50 hover:text-bw-yellow-500" onClick={onClose}>
-                {card.title}
-              </Link>
-            ))}
+            <Link href="/products/private-markets" className="block py-1.5 text-sm font-semibold text-bw-gray-50 hover:text-bw-yellow-500" onClick={onClose}>
+              Private Markets
+            </Link>
             <div className="my-2 border-t border-bw-gray-600" />
             {solutionColumns.map((col) => (
               <div key={col.heading} className="mb-3">
@@ -524,10 +571,18 @@ function MobileSection({
 /*  Header                                                             */
 /* ------------------------------------------------------------------ */
 
-export function HeaderClient({ caseStudyCount = 0 }: { caseStudyCount?: number }) {
+export function HeaderClient({
+  caseStudyCount = 0,
+  privateMarketsNav = null,
+}: {
+  caseStudyCount?: number
+  privateMarketsNav?: PrivateMarketsNav | null
+}) {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+
+  const solutionColumns = buildSolutionColumns(privateMarketsNav)
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10)
@@ -576,6 +631,7 @@ export function HeaderClient({ caseStudyCount = 0 }: { caseStudyCount?: number }
               isOpen={openDropdown === 'solutions'}
               onOpen={() => setOpenDropdown('solutions')}
               onClose={() => setOpenDropdown(null)}
+              solutionColumns={solutionColumns}
             />
             {caseStudyCount > 0 && (
               <Link
@@ -626,7 +682,11 @@ export function HeaderClient({ caseStudyCount = 0 }: { caseStudyCount?: number }
         </div>
       </header>
 
-      <MobileMenu isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
+      <MobileMenu
+        isOpen={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
+        solutionColumns={solutionColumns}
+      />
     </>
   )
 }

@@ -1,8 +1,6 @@
 import { homepage } from './documents/homepage'
 import { aboutPage } from './documents/about'
 import { pricingPage } from './documents/pricing'
-import { blogPost } from './documents/blog-post'
-import { newsPost } from './documents/news'
 import { author } from './documents/author'
 import { category } from './documents/category'
 import { caseStudy } from './documents/case-study'
@@ -13,7 +11,6 @@ import { platformFeature } from './documents/platform-feature'
 import { useCase } from './documents/use-case'
 import { firmType } from './documents/firm-type'
 import { icpPage } from './documents/icp'
-import { releaseNote } from './documents/release-note'
 import { resourceItem } from './documents/resource'
 import { virtualEvent } from './documents/event'
 import { landingPage } from './documents/landing-page'
@@ -23,6 +20,16 @@ import { securityPage } from './documents/security-page'
 import { productPage } from './documents/product-page'
 import { enterpriseSalesPage } from './documents/enterprise-page'
 import { siteSettings } from './documents/site-settings'
+
+// New types
+import { contentPost } from './documents/content-post'
+import { product } from './documents/product'
+import { supportPage } from './documents/support-page'
+
+// Legacy types (kept for migration compatibility)
+import { blogPost } from './documents/blog-post'
+import { newsPost } from './documents/news'
+import { releaseNote } from './documents/release-note'
 
 // Objects
 import { seo } from './objects/seo-fields'
@@ -37,30 +44,43 @@ export const schemaTypes = [
   aboutPage,
   pricingPage,
   enterpriseSalesPage,
-  siteSettings,
-  // Security (2 instances)
   securityPage,
-  // Product pages (4 instances)
+  supportPage,
+  siteSettings,
+
+  // Product
+  product,
   productPage,
-  // Collections
-  blogPost,
-  newsPost,
-  author,
-  category,
-  caseStudy,
-  caseStudyCategory,
+  platformFeature,
+
+  // Solutions
+  icpPage,
+  firmType,
+  useCase,
+
+  // Resources
+  contentPost,
+  resourceItem,
   comparison,
   comparisonCategory,
-  platformFeature,
-  useCase,
-  firmType,
-  icpPage,
-  releaseNote,
-  resourceItem,
   virtualEvent,
+  caseStudy,
+  caseStudyCategory,
+  category,
+  author,
+
+  // Campaigns
   landingPage,
   abmPage,
+
+  // Legal
   legalPage,
+
+  // Legacy (kept for migration, hidden in Studio)
+  blogPost,
+  newsPost,
+  releaseNote,
+
   // Objects
   seo,
   cta,

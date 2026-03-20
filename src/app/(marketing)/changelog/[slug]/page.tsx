@@ -1,39 +1,35 @@
 import { client } from '@/lib/sanity/client'
-import { changelogQuery, changelogSlugsQuery } from '@/lib/sanity/queries/changelog'
-import { buildMetadata } from '@/lib/metadata'
+import { contentPostDetailQuery, contentPostSlugsQuery } from '@/lib/sanity/queries/content-posts'
+import { ContentPostDetail } from '@/components/sections/ContentPostDetail'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 
-interface Props {
+interface PageProps {
   params: Promise<{ slug: string }>
 }
 
 export async function generateStaticParams() {
-  const slugs = await client.fetch(changelogSlugsQuery)
+  const slugs = await client.fetch(contentPostSlugsQuery, { category: 'release-notes' })
   return (slugs ?? []).map((s: { slug: string }) => ({ slug: s.slug }))
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params
-  const doc = await client.fetch(changelogQuery, { slug }, { next: { tags: ['releaseNote'] } })
-  if (!doc) return { title: 'Not Found' }
-  return buildMetadata({
-    title: doc.title || '',
-    description: doc.seo?.metaDescription || doc.excerpt || '',
-    seo: doc.seo,
-    path: '/changelog/' + slug,
-  })
+  const post = await client.fetch(contentPostDetailQuery, { slug, category: 'release-notes' })
+  if (!post) return {}
+  return {
+    title: post.seo?.metaTitle || post.title,
+    description: post.seo?.metaDescription || post.excerpt,
+  }
 }
 
-export default async function ChangelogDetailPage({ params }: Props) {
+export default async function ChangelogDetailPage({ params }: PageProps) {
   const { slug } = await params
-  const doc = await client.fetch(changelogQuery, { slug }, { next: { tags: ['releaseNote'] } })
-
-  if (!doc) notFound()
-
-  return (
-    <article className="py-24 max-w-4xl mx-auto px-4">
-      <h1 className="text-4xl font-bold">{doc.title}</h1>
-    </article>
+  const post = await client.fetch(
+    contentPostDetailQuery,
+    { slug, category: 'release-notes' },
+    { next: { tags: ['contentPost'] } }
   )
+  if (!post) notFound()
+  return <ContentPostDetail post={post} basePath="/changelog" />
 }

@@ -6,16 +6,15 @@ import Link from 'next/link'
 import { urlFor } from '@/lib/sanity/image'
 
 const slugRouteMap: Record<string, string> = {
-  blogPost: '/blog/',
+  contentPost: '/blog/',
   caseStudy: '/case-studies/',
   useCase: '/use-cases/',
   platformFeature: '/features/',
-  firmType: '/solutions/',
-  icpPage: '/for/',
+  firmType: '/firm-types/',
+  icpPage: '/i-am-a/',
   comparison: '/vs/',
   resourceItem: '/resources/',
   virtualEvent: '/events/',
-  newsPost: '/news/',
 }
 
 const components: PortableTextComponents = {

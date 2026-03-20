@@ -9,13 +9,13 @@ interface PageProps {
 }
 
 export async function generateStaticParams() {
-  const slugs = await client.fetch(contentPostSlugsQuery, { category: 'blog' })
+  const slugs = await client.fetch(contentPostSlugsQuery, { category: 'engineering-log' })
   return (slugs ?? []).map((s: { slug: string }) => ({ slug: s.slug }))
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params
-  const post = await client.fetch(contentPostDetailQuery, { slug, category: 'blog' })
+  const post = await client.fetch(contentPostDetailQuery, { slug, category: 'engineering-log' })
   if (!post) return {}
   return {
     title: post.seo?.metaTitle || post.title,
@@ -23,13 +23,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 }
 
-export default async function BlogDetailPage({ params }: PageProps) {
+export default async function EngineeringLogDetailPage({ params }: PageProps) {
   const { slug } = await params
   const post = await client.fetch(
     contentPostDetailQuery,
-    { slug, category: 'blog' },
+    { slug, category: 'engineering-log' },
     { next: { tags: ['contentPost'] } }
   )
   if (!post) notFound()
-  return <ContentPostDetail post={post} basePath="/blog" />
+  return <ContentPostDetail post={post} basePath="/engineering-log" />
 }
