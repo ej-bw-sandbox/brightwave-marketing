@@ -6,12 +6,16 @@ import type { Metadata } from 'next'
 
 const caseStudiesQuery = `{
   "featured": *[_type == "caseStudy" && isFeatured == true][0]{
-    title, slug, excerpt, thumbnail, companyLogo, industry, firmSize, isFeatured,
-    statsLight, category->{ title }
+    title, slug, excerpt, industry, firmSize, isFeatured, statsLight,
+    thumbnail{ asset->{ _id, url, metadata { lqip, dimensions } } },
+    companyLogo{ asset->{ _id, url } },
+    category->{ title }
   },
   "studies": *[_type == "caseStudy"] | order(publishedAt desc) {
-    title, slug, excerpt, thumbnail, companyLogo, industry, firmSize,
-    isFeaturedGrid, statsLight, category->{ title }
+    title, slug, excerpt, industry, firmSize, isFeaturedGrid, statsLight,
+    thumbnail{ asset->{ _id, url, metadata { lqip, dimensions } } },
+    companyLogo{ asset->{ _id, url } },
+    category->{ title }
   }
 }`
 

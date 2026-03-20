@@ -26,7 +26,14 @@ const logoBar = {
   logos: [
     { alt: 'Fortune', src: 'https://cdn.prod.website-files.com/6703d386a4ee8baaaceaffe5/670558f7430f5cb4e46a6790_Frame%201321316806.avif' },
     { alt: 'WSJ Pro', src: 'https://cdn.prod.website-files.com/6703d386a4ee8baaaceaffe5/670558f7375a18cb62da7d3e_Frame%201321316797.avif' },
-    { alt: 'Bloomberg', src: 'https://cdn.prod.website-files.com/6703d386a4ee8baaaceaffe5/670558f7953725f0bdea202e_Frame%201321316805.avif' },
+    { alt: 'Axios', src: 'https://cdn.prod.website-files.com/6703d386a4ee8baaaceaffe5/670558f7953725f0bdea202e_Frame%201321316805.avif' },
+    { alt: 'American Banker', src: 'https://cdn.prod.website-files.com/6703d386a4ee8baaaceaffe5/67175fc18debb2e92fb9008d_american%20banker.svg' },
+    { alt: 'Fox Business', src: 'https://cdn.prod.website-files.com/6703d386a4ee8baaaceaffe5/670558f7356a61bdabba562a_Frame%201321316804.avif' },
+    { alt: 'Latent Space', src: 'https://cdn.prod.website-files.com/6703d386a4ee8baaaceaffe5/67175fc13ea6a4d457c6dc5b_latent-space.png' },
+    { alt: 'Cerebral Valley', src: 'https://cdn.prod.website-files.com/6703d386a4ee8baaaceaffe5/670558fc20f7ccd33e8fc4e0_Frame%201321316818.avif' },
+    { alt: 'TechCrunch', src: 'https://cdn.prod.website-files.com/6703d386a4ee8baaaceaffe5/6721ff61886ca73d6420b1ea_Frame%201321316819.avif' },
+    { alt: 'VentureBeat', src: 'https://cdn.prod.website-files.com/6703d386a4ee8baaaceaffe5/6721ff604be46406a7a6e3dc_Frame%201321316820.avif' },
+    { alt: 'Time', src: 'https://cdn.prod.website-files.com/6703d386a4ee8baaaceaffe5/67237840acdaffb93a5a72dc_TIme.avif' },
   ],
 }
 
@@ -234,7 +241,7 @@ export default async function HomePage() {
                       <img
                         src={feature.image}
                         alt={feature.title}
-                        className="w-16 h-16 object-contain"
+                        className="w-full h-auto max-h-[280px] object-contain"
                         loading="lazy"
                       />
                     </div>

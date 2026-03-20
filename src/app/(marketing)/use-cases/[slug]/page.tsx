@@ -1,4 +1,6 @@
+import Image from 'next/image'
 import { client } from '@/lib/sanity/client'
+import { urlFor } from '@/lib/sanity/image'
 import { useCaseQuery, useCaseSlugsQuery } from '@/lib/sanity/queries/use-cases'
 import { buildMetadata } from '@/lib/metadata'
 import { notFound } from 'next/navigation'
@@ -67,6 +69,17 @@ export default async function UsecasesDetailPage({ params }: Props) {
           )}
           {doc.h2Hero && (
             <p className="c-text-1 text-bw-gray-800 mt-10">{doc.h2Hero}</p>
+          )}
+          {doc.heroImage?.asset && (
+            <div className="relative mt-10 aspect-video overflow-hidden rounded-lg">
+              <Image
+                src={urlFor(doc.heroImage).width(1400).height(788).quality(85).url()}
+                alt={doc.title || ''}
+                fill
+                className="object-cover"
+                priority
+              />
+            </div>
           )}
         </div>
       </section>

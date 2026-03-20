@@ -1,3 +1,33 @@
+/* PST Mail Sans font faces */
+@font-face {
+  font-family: "PST Mail Sans";
+  src: url("https://cdn.prod.website-files.com/6703d386a4ee8baaaceaffe5/6703fd6c58ad90b9d631bf4b_PSTMailSans-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "PST Mail Sans";
+  src: url("https://cdn.prod.website-files.com/6703d386a4ee8baaaceaffe5/6703fd55cc1e40edecaa362f_PSTMailSans-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "PST Mail Sans";
+  src: url("https://cdn.prod.website-files.com/6703d386a4ee8baaaceaffe5/6703fd5c4b8813b3c2f3090b_PSTMailSans-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "PST Mail Sans";
+  src: url("https://cdn.prod.website-files.com/6703d386a4ee8baaaceaffe5/6703fd7aa154b8dec208ab43_PSTMailSans-Black.woff2") format("woff2");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 @import "tailwindcss";
 
 @theme {

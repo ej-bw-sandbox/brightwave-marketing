@@ -1,4 +1,6 @@
+import Image from 'next/image'
 import { client } from '@/lib/sanity/client'
+import { urlFor } from '@/lib/sanity/image'
 import { featureQuery, featureSlugsQuery } from '@/lib/sanity/queries/features'
 import { PortableText } from '@portabletext/react'
 import { buildMetadata } from '@/lib/metadata'
@@ -51,6 +53,17 @@ export default async function FeaturesDetailPage({ params }: Props) {
           </div>
           {doc.heroH1 && (
             <p className="c-text-3 text-bw-gray-500 mt-10">{doc.heroH1}</p>
+          )}
+          {doc.heroImage?.asset && (
+            <div className="relative mt-10 aspect-video overflow-hidden rounded-lg">
+              <Image
+                src={urlFor(doc.heroImage).width(1400).height(788).quality(85).url()}
+                alt={doc.title || ''}
+                fill
+                className="object-cover"
+                priority
+              />
+            </div>
           )}
         </div>
       </section>
