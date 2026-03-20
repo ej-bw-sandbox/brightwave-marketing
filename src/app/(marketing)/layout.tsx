@@ -1,6 +1,6 @@
 import Script from 'next/script'
 import { draftMode } from 'next/headers'
-import { Header } from '@/components/layout/header'
+import { Header } from '@/components/layout/header-wrapper'
 import { Footer } from '@/components/layout/footer'
 
 export default async function MarketingLayout({

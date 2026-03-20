@@ -1,7 +1,6 @@
 import { defineConfig } from 'sanity'
 import { structureTool } from 'sanity/structure'
 import { visionTool } from '@sanity/vision'
-import { presentationTool } from 'sanity/presentation'
 import { schemaTypes } from './schemaTypes'
 
 const singletonTypes = new Set([
@@ -17,8 +16,9 @@ const singletonActions = new Set(['publish', 'discardChanges', 'restore'])
 export default defineConfig({
   name: 'brightwave',
   title: 'Brightwave CMS',
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
+  projectId: 'v4tc8ohn',
+  dataset: 'production',
+  basePath: '/studio',
   plugins: [
     structureTool({
       structure: (S) =>
@@ -92,13 +92,6 @@ export default defineConfig({
             S.documentTypeListItem('legalPage').title('Legal Pages'),
             S.listItem().title('Site Settings').child(S.document().schemaType('siteSettings').documentId('siteSettings')),
           ]),
-    }),
-    presentationTool({
-      previewUrl: {
-        draftMode: {
-          enable: '/api/draft-mode/enable',
-        },
-      },
     }),
     visionTool({ defaultApiVersion: '2024-01-01' }),
   ],

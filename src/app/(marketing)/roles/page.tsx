@@ -4,18 +4,18 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Industries & Use Cases | Brightwave',
-  description: 'Discover how Brightwave accelerates research workflows across investment activities and market segments.',
+  title: 'Roles | Brightwave',
+  description: 'Brightwave is built for financial professionals across every role.',
 }
 
-const useCasesQuery = `*[_type == "useCase"] | order(title asc) {
-  _id, title, "slug": slug.current, tagline, eyebrow, excerpt
+const icpQuery = `*[_type == "icpPage"] | order(title asc) {
+  _id, title, "slug": slug.current, tagline, heroTagline, h1
 }`
 
-export default async function UseCasesPage() {
+export default async function RolesPage() {
   let data: any[] = []
   try {
-    data = await client.fetch(useCasesQuery, {}, { next: { tags: ['useCase'] } }) ?? []
+    data = await client.fetch(icpQuery, {}, { next: { tags: ['icpPage'] } }) ?? []
   } catch {
     data = []
   }
@@ -26,10 +26,10 @@ export default async function UseCasesPage() {
       <section className="px-5 pt-24 pb-16 text-center">
         <div className="mx-auto max-w-3xl">
           <h1 className="text-title-3 text-bw-gray-50 mb-4">
-            Solutions for every market
+            Built for your role
           </h1>
           <p className="text-body-4 text-bw-gray-300 max-w-2xl mx-auto">
-            Discover how Brightwave accelerates research workflows across investment activities and market segments.
+            Brightwave is designed for financial professionals across every role and level.
           </p>
         </div>
       </section>
@@ -41,15 +41,15 @@ export default async function UseCasesPage() {
             {(data ?? []).map((item: any) => (
               <Link
                 key={item._id}
-                href={`/use-cases/${item.slug || ''}`}
+                href={`/roles/${item.slug || ''}`}
                 className="group flex flex-col rounded-xl border border-bw-gray-600 bg-bw-gray-700/50 p-6 transition-all hover:border-bw-gray-300 hover:bg-bw-gray-700"
               >
                 <h3 className="text-lg font-semibold text-bw-gray-50 group-hover:text-bw-yellow-500 transition-colors">
                   {item.title}
                 </h3>
-                {(item.tagline || item.excerpt) && (
+                {(item.tagline || item.heroTagline) && (
                   <p className="mt-2 text-sm text-bw-gray-300 line-clamp-2">
-                    {item.tagline || item.excerpt}
+                    {item.tagline || item.heroTagline}
                   </p>
                 )}
                 <span className="mt-4 text-xs font-medium text-bw-yellow-500 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -59,7 +59,7 @@ export default async function UseCasesPage() {
             ))}
           </div>
           {(data ?? []).length === 0 && (
-            <p className="text-bw-gray-300 text-center py-12">No use cases found.</p>
+            <p className="text-bw-gray-300 text-center py-12">No roles found.</p>
           )}
         </div>
       </section>
