@@ -12,7 +12,12 @@ export const metadata: Metadata = {
 }
 
 export default async function HomePage() {
-  const page = await client.fetch(homepageQuery, {}, { next: { tags: ['homepage'] } })
+  let page: any = null
+  try {
+    page = await client.fetch(homepageQuery, {}, { next: { tags: ['homepage'] } })
+  } catch {
+    page = null
+  }
 
   return (
     <>
@@ -27,7 +32,6 @@ export default async function HomePage() {
         size="large"
       />
 
-      {/* Social proof metrics */}
       {page?.metrics && page.metrics.length > 0 && (
         <section className="border-t border-b border-border py-12">
           <div className="mx-auto max-w-7xl px-4">
@@ -36,7 +40,6 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* Testimonials */}
       {page?.testimonials && page.testimonials.length > 0 && (
         <TestimonialGrid
           headline="Trusted by Leading Investment Firms"
@@ -44,7 +47,6 @@ export default async function HomePage() {
         />
       )}
 
-      {/* Bottom CTA */}
       <CtaSection
         headline={page?.bottomCta?.headline || 'Ready to transform your research workflow?'}
         subheadline="See how Brightwave can accelerate your investment research."

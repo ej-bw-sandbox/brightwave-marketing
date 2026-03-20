@@ -10,10 +10,15 @@ export const metadata: Metadata = {
 }
 
 export default async function BlogIndexPage() {
-  const data = await client.fetch(blogIndexQuery, { offset: 0, limit: 20 }, { next: { tags: ['blogPost'] } })
+  let data: { posts?: any[]; total?: number; categories?: any[] } = {}
+  try {
+    data = await client.fetch(blogIndexQuery, { offset: 0, limit: 20 }, { next: { tags: ['blogPost'] } }) ?? {}
+  } catch {
+    data = {}
+  }
 
-  const posts = data?.posts || []
-  const featured = posts[0]
+  const posts = data.posts ?? []
+  const featured = posts.length > 0 ? posts[0] : null
   const remaining = posts.slice(1)
 
   return (
@@ -25,22 +30,44 @@ export default async function BlogIndexPage() {
         gradient={false}
       />
 
-      <section className="pb-section max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="pb-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {featured && (
           <div className="mb-12">
-            <BlogCard {...featured} slug={featured.slug?.current} variant="featured" />
+            <BlogCard
+              title={featured.title}
+              slug={featured.slug?.current || ''}
+              excerpt={featured.excerpt}
+              featuredImage={featured.featuredImage}
+              publishedAt={featured.publishedAt}
+              postType={featured.postType}
+              author={featured.author}
+              categories={featured.categories}
+              variant="featured"
+            />
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {remaining.map((post: any) => (
-            <BlogCard
-              key={post.slug?.current}
-              {...post}
-              slug={post.slug?.current}
-            />
-          ))}
-        </div>
+        {remaining.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {remaining.map((post: any) => (
+              <BlogCard
+                key={post.slug?.current}
+                title={post.title}
+                slug={post.slug?.current || ''}
+                excerpt={post.excerpt}
+                featuredImage={post.featuredImage}
+                publishedAt={post.publishedAt}
+                postType={post.postType}
+                author={post.author}
+                categories={post.categories}
+              />
+            ))}
+          </div>
+        )}
+
+        {posts.length === 0 && (
+          <p className="text-text-muted text-center py-12">No blog posts found.</p>
+        )}
       </section>
     </>
   )

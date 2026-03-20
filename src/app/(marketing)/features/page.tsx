@@ -14,7 +14,12 @@ export const metadata: Metadata = {
 }
 
 export default async function FeaturesPage() {
-  const features = await client.fetch(featuresQuery, {}, { next: { tags: ['platformFeature'] } })
+  let features: any[] = []
+  try {
+    features = await client.fetch(featuresQuery, {}, { next: { tags: ['platformFeature'] } }) ?? []
+  } catch {
+    features = []
+  }
 
   return (
     <>
@@ -25,7 +30,7 @@ export default async function FeaturesPage() {
         gradient={false}
       />
 
-      <FeatureBlock features={features || []} columns={3} />
+      <FeatureBlock features={features} columns={3} />
 
       <CtaSection
         headline="Experience the full platform"

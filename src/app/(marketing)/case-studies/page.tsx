@@ -21,9 +21,15 @@ export const metadata: Metadata = {
 }
 
 export default async function CaseStudiesPage() {
-  const data = await client.fetch(caseStudiesQuery, {}, { next: { tags: ['caseStudy'] } })
-  const featured = data?.featured
-  const studies = data?.studies || []
+  let data: { featured?: any; studies?: any[] } = {}
+  try {
+    data = await client.fetch(caseStudiesQuery, {}, { next: { tags: ['caseStudy'] } }) ?? {}
+  } catch {
+    data = {}
+  }
+
+  const featured = data.featured
+  const studies = data.studies ?? []
 
   return (
     <>
@@ -34,10 +40,20 @@ export default async function CaseStudiesPage() {
         gradient={false}
       />
 
-      <section className="pb-section max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="pb-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {featured && (
           <div className="mb-12">
-            <CaseStudyCard {...featured} slug={featured.slug?.current} isFeatured />
+            <CaseStudyCard
+              title={featured.title}
+              slug={featured.slug?.current || ''}
+              excerpt={featured.excerpt}
+              thumbnail={featured.thumbnail}
+              companyLogo={featured.companyLogo}
+              industry={featured.industry}
+              firmSize={featured.firmSize}
+              statsLight={featured.statsLight}
+              isFeatured
+            />
           </div>
         )}
 
@@ -45,9 +61,23 @@ export default async function CaseStudiesPage() {
           {studies
             .filter((s: any) => s.slug?.current !== featured?.slug?.current)
             .map((study: any) => (
-              <CaseStudyCard key={study.slug?.current} {...study} slug={study.slug?.current} />
+              <CaseStudyCard
+                key={study.slug?.current}
+                title={study.title}
+                slug={study.slug?.current || ''}
+                excerpt={study.excerpt}
+                thumbnail={study.thumbnail}
+                companyLogo={study.companyLogo}
+                industry={study.industry}
+                firmSize={study.firmSize}
+                statsLight={study.statsLight}
+              />
             ))}
         </div>
+
+        {studies.length === 0 && (
+          <p className="text-text-muted text-center py-12">No case studies found.</p>
+        )}
       </section>
 
       <CtaSection
