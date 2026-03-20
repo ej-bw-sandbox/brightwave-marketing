@@ -1,0 +1,67 @@
+import { defineType, defineField } from 'sanity'
+
+export const useCase = defineType({
+  name: 'useCase',
+  title: 'Use Case',
+  type: 'document',
+  fields: [
+    defineField({ name: 'title', title: 'Use Case Name', type: 'string', validation: (r) => r.required() }),
+    defineField({ name: 'slug', title: 'Slug', type: 'slug', options: { source: 'title' }, validation: (r) => r.required() }),
+    defineField({ name: 'eyebrow', title: 'Eyebrow', type: 'string' }),
+    defineField({ name: 'h1', title: 'H1', type: 'string' }),
+    defineField({ name: 'h2Hero', title: 'H2 Sub-headline', type: 'string' }),
+    defineField({ name: 'heroBody', title: 'Hero Body', type: 'blockContent' }),
+    defineField({ name: 'heroImage', title: 'Hero Image', type: 'image', options: { hotspot: true } }),
+    defineField({ name: 'excerpt', title: 'Card Excerpt', type: 'text', rows: 3 }),
+    defineField({ name: 'stats', title: 'Key Statistics', type: 'array', of: [{ type: 'stat' }], validation: (r) => r.max(3) }),
+    defineField({ name: 'challengeH2', title: 'Challenge Section Headline', type: 'string' }),
+    defineField({
+      name: 'challenges',
+      title: 'Challenges',
+      type: 'array',
+      of: [{ type: 'object', fields: [
+        { name: 'title', title: 'Challenge Title', type: 'string' },
+        { name: 'bullets', title: 'Details', type: 'blockContent' },
+      ] }],
+      validation: (r) => r.max(3),
+    }),
+    defineField({ name: 'solutionH2', title: 'Solution Section Headline', type: 'string' }),
+    defineField({
+      name: 'solutions',
+      title: 'Solutions',
+      type: 'array',
+      of: [{ type: 'object', fields: [
+        { name: 'title', title: 'Solution Title', type: 'string' },
+        { name: 'body', title: 'Body', type: 'blockContent' },
+        { name: 'image', title: 'Image', type: 'image', options: { hotspot: true } },
+      ] }],
+      validation: (r) => r.max(3),
+    }),
+    defineField({ name: 'timelineH2', title: 'Timeline Headline', type: 'string' }),
+    defineField({ name: 'beforeSteps', title: 'Before Steps', type: 'blockContent' }),
+    defineField({ name: 'beforeTotal', title: 'Before Total Time', type: 'string' }),
+    defineField({ name: 'afterSteps', title: 'After Steps', type: 'blockContent' }),
+    defineField({ name: 'afterTotal', title: 'After Total Time', type: 'string' }),
+    defineField({ name: 'featuresH2', title: 'Features Section Headline', type: 'string' }),
+    defineField({
+      name: 'featureHighlights',
+      title: 'Feature Highlights',
+      type: 'array',
+      of: [{ type: 'object', fields: [
+        { name: 'title', title: 'Title', type: 'string' },
+        { name: 'bullets', title: 'Bullets', type: 'blockContent' },
+      ] }],
+    }),
+    defineField({ name: 'testimonialQuote', title: 'Testimonial Quote', type: 'text' }),
+    defineField({ name: 'testimonialAttribution', title: 'Attribution', type: 'string' }),
+    defineField({ name: 'relatedFeatures', title: 'Related Features', type: 'array', of: [{ type: 'reference', to: [{ type: 'platformFeature' }] }] }),
+    defineField({ name: 'relatedCaseStudies', title: 'Related Case Studies', type: 'array', of: [{ type: 'reference', to: [{ type: 'caseStudy' }] }] }),
+    defineField({ name: 'relatedFirmTypes', title: 'Related Firm Types', type: 'array', of: [{ type: 'reference', to: [{ type: 'firmType' }] }] }),
+    defineField({ name: 'ctaHeadline', title: 'CTA Headline', type: 'string' }),
+    defineField({ name: 'ctaBody', title: 'CTA Body', type: 'string' }),
+    defineField({ name: 'seo', title: 'SEO', type: 'seo' }),
+  ],
+  preview: {
+    select: { title: 'title', subtitle: 'eyebrow', media: 'heroImage' },
+  },
+})
