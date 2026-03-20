@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useState, useEffect, useRef } from 'react'
 import { BrightwaveLogo } from './logo'
-import type { PrivateMarketsNav, NavAssociation } from './header-wrapper'
+import type { SolutionsNavData, NavAssociation } from './header-wrapper'
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -83,10 +83,10 @@ const fallbackSolutionColumns: NavColumn[] = [
   {
     heading: 'USE CASES',
     items: [
-      { title: 'Buy Out', description: 'Traditional buyout strategies', href: '/use-cases/buy-out', icon: '', iconBg: '' },
-      { title: 'Growth', description: 'Growth equity investing', href: '/use-cases/growth', icon: '', iconBg: '' },
-      { title: 'VC', description: 'Venture capital firms', href: '/use-cases/vc', icon: '', iconBg: '' },
-      { title: 'Wealth Management', description: 'Private wealth solutions', href: '/use-cases/wealth-management', icon: '', iconBg: '' },
+      { title: 'CIM Analysis', description: '', href: '/use-cases/cim-analysis', icon: '', iconBg: '' },
+      { title: 'Data Room Review', description: '', href: '/use-cases/data-room-review', icon: '', iconBg: '' },
+      { title: 'Due Diligence', description: '', href: '/use-cases/due-diligence', icon: '', iconBg: '' },
+      { title: 'Market Research', description: '', href: '/use-cases/market-research', icon: '', iconBg: '' },
     ],
     viewAllLabel: '...More',
     viewAllHref: '/use-cases',
@@ -94,10 +94,10 @@ const fallbackSolutionColumns: NavColumn[] = [
   {
     heading: 'I AM A...',
     items: [
-      { title: 'Associate', description: 'Entry-level professionals', href: '/i-am-a/associate', icon: '', iconBg: '' },
-      { title: 'Manager', description: 'Deal team managers', href: '/i-am-a/manager', icon: '', iconBg: '' },
-      { title: 'Principal/Director', description: 'Senior investment professionals', href: '/i-am-a/principal-director', icon: '', iconBg: '' },
-      { title: 'VP/MD', description: 'Investment leadership', href: '/i-am-a/vp-md', icon: '', iconBg: '' },
+      { title: 'Analyst', description: '', href: '/i-am-a/analyst', icon: '', iconBg: '' },
+      { title: 'Associate', description: '', href: '/i-am-a/associate', icon: '', iconBg: '' },
+      { title: 'Director', description: '', href: '/i-am-a/director', icon: '', iconBg: '' },
+      { title: 'Managing Director', description: '', href: '/i-am-a/managing-director', icon: '', iconBg: '' },
     ],
     viewAllLabel: '...More',
     viewAllHref: '/i-am-a',
@@ -105,18 +105,18 @@ const fallbackSolutionColumns: NavColumn[] = [
   {
     heading: 'FIRM TYPE',
     items: [
-      { title: 'Lower Middle Market', description: '$10M-$100M deals', href: '/firm-types/lower-middle-market', icon: '', iconBg: '' },
-      { title: 'Middle Market', description: '$100M-$500M deals', href: '/firm-types/middle-market', icon: '', iconBg: '' },
-      { title: 'Large Fund', description: '$500M-$2B AUM', href: '/firm-types/large-fund', icon: '', iconBg: '' },
-      { title: 'Mega Fund', description: '$2B+ AUM', href: '/firm-types/mega-fund', icon: '', iconBg: '' },
+      { title: 'Buyout', description: '', href: '/firm-types/buyout', icon: '', iconBg: '' },
+      { title: 'Growth Equity', description: '', href: '/firm-types/growth', icon: '', iconBg: '' },
+      { title: 'Venture Capital', description: '', href: '/firm-types/venture-capital', icon: '', iconBg: '' },
+      { title: 'Fund of Funds', description: '', href: '/firm-types/fund-of-funds', icon: '', iconBg: '' },
     ],
     viewAllLabel: '...More',
     viewAllHref: '/firm-types',
   },
 ]
 
-function buildSolutionColumns(pm: PrivateMarketsNav | null): NavColumn[] {
-  if (!pm) return fallbackSolutionColumns
+function buildSolutionColumns(data: SolutionsNavData | null): NavColumn[] {
+  if (!data) return fallbackSolutionColumns
 
   const mapToItems = (items: NavAssociation[], basePath: string): NavItem[] =>
     items.map((i) => ({
@@ -130,10 +130,10 @@ function buildSolutionColumns(pm: PrivateMarketsNav | null): NavColumn[] {
   const cols: NavColumn[] = []
 
   // Column 1: Use Cases -> /use-cases/[slug]
-  if (pm.useCases && pm.useCases.length > 0) {
+  if (data.useCases && data.useCases.length > 0) {
     cols.push({
       heading: 'USE CASES',
-      items: mapToItems(pm.useCases.slice(0, 4), '/use-cases'),
+      items: mapToItems(data.useCases.slice(0, 4), '/use-cases'),
       viewAllLabel: '...More',
       viewAllHref: '/use-cases',
     })
@@ -142,10 +142,10 @@ function buildSolutionColumns(pm: PrivateMarketsNav | null): NavColumn[] {
   }
 
   // Column 2: I am a... -> /i-am-a/[slug]
-  if (pm.roles && pm.roles.length > 0) {
+  if (data.icpPages && data.icpPages.length > 0) {
     cols.push({
       heading: 'I AM A...',
-      items: mapToItems(pm.roles.slice(0, 4), '/i-am-a'),
+      items: mapToItems(data.icpPages.slice(0, 4), '/i-am-a'),
       viewAllLabel: '...More',
       viewAllHref: '/i-am-a',
     })
@@ -154,10 +154,10 @@ function buildSolutionColumns(pm: PrivateMarketsNav | null): NavColumn[] {
   }
 
   // Column 3: Firm Type -> /firm-types/[slug]
-  if (pm.industries && pm.industries.length > 0) {
+  if (data.firmTypes && data.firmTypes.length > 0) {
     cols.push({
       heading: 'FIRM TYPE',
-      items: mapToItems(pm.industries.slice(0, 4), '/firm-types'),
+      items: mapToItems(data.firmTypes.slice(0, 4), '/firm-types'),
       viewAllLabel: '...More',
       viewAllHref: '/firm-types',
     })
@@ -312,7 +312,7 @@ function PlatformPanel() {
 function SolutionsPanel({ solutionColumns }: { solutionColumns: NavColumn[] }) {
   return (
     <div className="p-6" style={{ minWidth: '820px' }}>
-      {/* Top: Single Private Markets card — NO "Solution" badge */}
+      {/* Top: Single Private Markets card -- NO "Solution" badge */}
       <div className="mb-6">
         <Link
           href="/products/private-markets"
@@ -489,7 +489,7 @@ function MobileMenu({
             Customers
           </Link>
 
-          {/* Resources — flat list in mobile too */}
+          {/* Resources -- flat list in mobile too */}
           <MobileSection title="Resources" expanded={expandedSection === 'resources'} onToggle={() => setExpandedSection(expandedSection === 'resources' ? null : 'resources')}>
             {resourceItems.map((item) => {
               const isExternal = item.href.startsWith('http')
@@ -564,16 +564,16 @@ function MobileSection({
 
 export function HeaderClient({
   caseStudyCount = 0,
-  privateMarketsNav = null,
+  solutionsNavData = null,
 }: {
   caseStudyCount?: number
-  privateMarketsNav?: PrivateMarketsNav | null
+  solutionsNavData?: SolutionsNavData | null
 }) {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
 
-  const solutionColumns = buildSolutionColumns(privateMarketsNav)
+  const solutionColumns = buildSolutionColumns(solutionsNavData)
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10)

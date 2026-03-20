@@ -42,11 +42,11 @@ export default async function ComparisonsPage() {
                 className="group flex flex-col rounded-lg border border-bw-gray-200 bg-white p-6 transition-all hover:border-bw-gray-800 hover:bg-bw-gray-700"
               >
                 <h3 className="text-lg font-semibold text-bw-gray-800 group-hover:text-white transition-colors">
-                  {item.competitorName ? `Brightwave vs ${item.competitorName}` : item.title}
+                  {item.competitor ? `Brightwave vs ${item.competitor}` : item.title}
                 </h3>
-                {item.heroDescription && (
+                {item.summary && (
                   <p className="mt-2 text-sm text-bw-gray-500 line-clamp-2 group-hover:text-bw-gray-600 transition-colors">
-                    {item.heroDescription}
+                    {item.summary}
                   </p>
                 )}
                 <span className="mt-4 text-xs font-medium text-bw-yellow-600 opacity-0 group-hover:opacity-100 transition-opacity group-hover:text-bw-yellow-500">

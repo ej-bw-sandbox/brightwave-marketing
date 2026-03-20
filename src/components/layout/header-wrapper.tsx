@@ -3,12 +3,10 @@ import { HeaderClient } from './header-client'
 
 const caseStudyCountQuery = `count(*[_type == "caseStudy"])`
 
-const privateMarketsQuery = `*[_type == "product" && slug.current == "private-markets"][0]{
-  title,
-  tagline,
-  "roles": roles[]->{title, "slug": slug.current},
-  "industries": industries[]->{title, "slug": slug.current},
-  "useCases": useCases[]->{title, "slug": slug.current}
+const navDataQuery = `{
+  "useCases": *[_type == "useCase"] | order(title asc) [0...4] {title, "slug": slug.current},
+  "icpPages": *[_type == "icpPage"] | order(title asc) [0...4] {title, "slug": slug.current},
+  "firmTypes": *[_type == "firmType"] | order(title asc) [0...4] {title, "slug": slug.current}
 }`
 
 export interface NavAssociation {
@@ -16,34 +14,32 @@ export interface NavAssociation {
   slug: string
 }
 
-export interface PrivateMarketsNav {
-  title: string
-  tagline: string | null
-  roles: NavAssociation[]
-  industries: NavAssociation[]
+export interface SolutionsNavData {
   useCases: NavAssociation[]
+  icpPages: NavAssociation[]
+  firmTypes: NavAssociation[]
 }
 
 export async function Header() {
   let caseStudyCount = 0
-  let privateMarketsNav: PrivateMarketsNav | null = null
+  let navData: SolutionsNavData | null = null
 
   try {
-    const [count, pm] = await Promise.all([
+    const [count, data] = await Promise.all([
       client.fetch(caseStudyCountQuery, {}, { next: { tags: ['caseStudy'], revalidate: 3600 } }),
-      client.fetch(privateMarketsQuery, {}, { next: { tags: ['product'], revalidate: 3600 } }),
+      client.fetch(navDataQuery, {}, { next: { tags: ['useCase', 'icpPage', 'firmType'], revalidate: 3600 } }),
     ])
     caseStudyCount = count ?? 0
-    privateMarketsNav = pm ?? null
+    navData = data ?? null
   } catch {
     caseStudyCount = 0
-    privateMarketsNav = null
+    navData = null
   }
 
   return (
     <HeaderClient
       caseStudyCount={caseStudyCount}
-      privateMarketsNav={privateMarketsNav}
+      solutionsNavData={navData}
     />
   )
 }

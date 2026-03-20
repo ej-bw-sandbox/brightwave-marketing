@@ -2,15 +2,15 @@ import { client } from '../client'
 
 export const featureIndexQuery = `
   *[_type == "platformFeature"] | order(title asc) {
-    title, slug, tagline, tags, heroImage
+    title, slug, heroH1, tags
   }
 `
 
 export const featureQuery = `
   *[_type == "platformFeature" && slug.current == $slug][0]{
     ...,
-    relatedUseCases[]->{ title, slug, excerpt },
-    relatedFeatures[]->{ title, slug, tagline }
+    relatedUseCases[]->{ title, slug },
+    relatedFeatures[]->{ title, slug, heroH1 }
   }
 `
 

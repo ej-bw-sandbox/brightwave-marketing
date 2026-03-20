@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!doc) return { title: 'Not Found' }
   return buildMetadata({
     title: doc.title || '',
-    description: doc.seo?.metaDescription || doc.tagline || '',
+    description: doc.seo?.metaDescription || doc.heroH1 || '',
     seo: doc.seo,
     path: '/features/' + slug,
   })
@@ -38,41 +38,45 @@ export default async function FeaturesDetailPage({ params }: Props) {
 
   return (
     <>
-      <article className="py-24 max-w-4xl mx-auto px-4">
-        <Link
-          href="/features"
-          className="text-sm text-bw-yellow-600 hover:text-bw-yellow-700 transition-colors mb-4 inline-block"
-        >
-          &larr; All Features
-        </Link>
+      <section className="c-section cc-hero">
+        <div className="c-container">
+          <Link
+            href="/features"
+            className="text-sm text-bw-yellow-600 hover:text-bw-yellow-700 transition-colors mb-4 inline-block"
+          >
+            &larr; All Features
+          </Link>
+          <div className="flex justify-between items-end gap-10 border-b border-bw-gray-200 pb-10">
+            <h1 className="c-title-1 text-bw-gray-800">{doc.title}</h1>
+          </div>
+          {doc.heroH1 && (
+            <p className="c-text-3 text-bw-gray-500 mt-10">{doc.heroH1}</p>
+          )}
+        </div>
+      </section>
 
-        <h1 className="c-title-3 text-bw-gray-800 mt-4">{doc.title}</h1>
-
-        {doc.tagline && (
-          <p className="mt-4 c-text-3 text-bw-gray-500">{doc.tagline}</p>
-        )}
-
-        {doc.body && (
-          <div className="mt-10 prose-brand">
+      {doc.body && (
+        <section className="pb-24 max-w-4xl mx-auto px-5">
+          <div className="prose-brand">
             <PortableText value={doc.body} />
           </div>
-        )}
-      </article>
+        </section>
+      )}
 
       {(relatedFeatures.length > 0 || relatedUseCases.length > 0) && (
-        <section className="pb-24 max-w-site mx-auto px-4">
+        <section className="pb-24 max-w-site mx-auto px-5">
           {relatedFeatures.length > 0 && (
             <div className="mb-12">
-              <h2 className="text-xl font-bold text-bw-gray-800 mb-6">Related Features</h2>
+              <h2 className="c-title-5 text-bw-gray-800 mb-6">Related Features</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {relatedFeatures.map((f: any) => (
                   <Link
                     key={f.slug?.current}
                     href={`/features/${f.slug?.current}`}
-                    className="group rounded-lg border border-bw-gray-200 p-5 transition-all hover:border-bw-gray-800 hover:bg-bw-gray-700"
+                    className="group rounded-lg border border-bw-gray-200 p-5 transition-all hover:border-bw-gray-300"
                   >
-                    <h3 className="font-semibold text-bw-gray-800 group-hover:text-white transition-colors">{f.title}</h3>
-                    {f.tagline && <p className="mt-1 text-sm text-bw-gray-500 group-hover:text-bw-gray-600 transition-colors">{f.tagline}</p>}
+                    <h3 className="font-semibold text-bw-gray-800 group-hover:text-bw-yellow-600 transition-colors">{f.title}</h3>
+                    {f.heroH1 && <p className="mt-1 text-sm text-bw-gray-500">{f.heroH1}</p>}
                   </Link>
                 ))}
               </div>
@@ -81,16 +85,15 @@ export default async function FeaturesDetailPage({ params }: Props) {
 
           {relatedUseCases.length > 0 && (
             <div>
-              <h2 className="text-xl font-bold text-bw-gray-800 mb-6">Related Use Cases</h2>
+              <h2 className="c-title-5 text-bw-gray-800 mb-6">Related Use Cases</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {relatedUseCases.map((u: any) => (
                   <Link
                     key={u.slug?.current}
                     href={`/use-cases/${u.slug?.current}`}
-                    className="group rounded-lg border border-bw-gray-200 p-5 transition-all hover:border-bw-gray-800 hover:bg-bw-gray-700"
+                    className="group rounded-lg border border-bw-gray-200 p-5 transition-all hover:border-bw-gray-300"
                   >
-                    <h3 className="font-semibold text-bw-gray-800 group-hover:text-white transition-colors">{u.title}</h3>
-                    {u.excerpt && <p className="mt-1 text-sm text-bw-gray-500 group-hover:text-bw-gray-600 transition-colors">{u.excerpt}</p>}
+                    <h3 className="font-semibold text-bw-gray-800 group-hover:text-bw-yellow-600 transition-colors">{u.title}</h3>
                   </Link>
                 ))}
               </div>

@@ -20,8 +20,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const doc = await client.fetch(comparisonQuery, { slug }, { next: { tags: ['comparison'] } })
   if (!doc) return { title: 'Not Found' }
   return buildMetadata({
-    title: doc.competitorName ? `Brightwave vs ${doc.competitorName}` : doc.title || '',
-    description: doc.seo?.metaDescription || doc.heroDescription || '',
+    title: doc.competitor ? `Brightwave vs ${doc.competitor}` : doc.title || '',
+    description: doc.seo?.metaDescription || doc.summary || '',
     seo: doc.seo,
     path: '/comparisons/' + slug,
   })
@@ -50,11 +50,11 @@ export default async function ComparisonDetailPage({ params }: Props) {
         </Link>
 
         <h1 className="c-title-3 text-bw-gray-800 mt-4">
-          {doc.competitorName ? `Brightwave vs ${doc.competitorName}` : doc.title}
+          {doc.competitor ? `Brightwave vs ${doc.competitor}` : doc.title}
         </h1>
 
-        {doc.heroDescription && (
-          <p className="mt-4 c-text-3 text-bw-gray-500">{doc.heroDescription}</p>
+        {doc.summary && (
+          <p className="mt-4 c-text-3 text-bw-gray-500">{doc.summary}</p>
         )}
 
         {doc.body && (
@@ -75,7 +75,7 @@ export default async function ComparisonDetailPage({ params }: Props) {
                 className="group rounded-lg border border-bw-gray-200 bg-white p-6 transition-all hover:border-bw-gray-800 hover:bg-bw-gray-700"
               >
                 <h3 className="text-lg font-semibold text-bw-gray-800 group-hover:text-white transition-colors">
-                  {c.competitorName ? `vs ${c.competitorName}` : c.title}
+                  {c.competitor ? `vs ${c.competitor}` : c.title}
                 </h3>
               </Link>
             ))}

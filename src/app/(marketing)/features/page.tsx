@@ -105,7 +105,7 @@ export default async function FeaturesPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {cat.items.map((item) => {
                 const sanityData = sanityMap.get(item.slug)
-                const description = sanityData?.tagline || item.description
+                const description = sanityData?.heroH1 || item.description
                 return (
                   <Link
                     key={item.slug}

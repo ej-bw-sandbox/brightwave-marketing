@@ -3,7 +3,7 @@ import { solutionQuery, solutionSlugsQuery } from '@/lib/sanity/queries/solution
 import { PortableText } from '@portabletext/react'
 import { buildMetadata } from '@/lib/metadata'
 import { notFound } from 'next/navigation'
-import Link from 'next/link'
+import { CtaButton } from '@/components/sections/CtaButton'
 import type { Metadata } from 'next'
 
 interface Props {
@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const doc = await client.fetch(solutionQuery, { slug }, { next: { tags: ['firmType'] } })
   if (!doc) return { title: 'Not Found' }
   return buildMetadata({
-    title: doc.title || '',
+    title: doc.title || doc.name || '',
     description: doc.seo?.metaDescription || doc.tagline || '',
     seo: doc.seo,
     path: '/firm-types/' + slug,
@@ -34,25 +34,45 @@ export default async function FirmTypeDetailPage({ params }: Props) {
   if (!doc) notFound()
 
   return (
-    <article className="py-24 max-w-4xl mx-auto px-4">
-      <Link href="/firm-types" className="text-sm text-bw-yellow-600 hover:text-bw-yellow-700 transition-colors mb-4 inline-block">
-        &larr; All Firm Types
-      </Link>
-      {doc.eyebrow && (
-        <div className="eyebrow cc-no-bp mt-4 mb-3">
-          <div className="block cc-primary" />
-          <span className="c-title-5">{doc.eyebrow}</span>
+    <>
+      {/* Hero */}
+      <section className="c-section cc-hero">
+        <div className="c-container">
+          <div className="flex justify-between items-end gap-10 border-b border-bw-gray-200 pb-10">
+            <h1 className="c-title-1 text-bw-gray-800">{doc.title || doc.name}</h1>
+          </div>
+          {doc.tagline && (
+            <p className="c-text-3 text-bw-gray-500 mt-10">{doc.tagline}</p>
+          )}
         </div>
+      </section>
+
+      {/* Body */}
+      {doc.body && Array.isArray(doc.body) && (
+        <section className="c-section">
+          <div className="c-container max-w-3xl">
+            <div className="prose-brand">
+              <PortableText value={doc.body} />
+            </div>
+          </div>
+        </section>
       )}
-      <h1 className="c-title-3 text-bw-gray-800 mt-4">{doc.h1 || doc.title}</h1>
-      {doc.tagline && (
-        <p className="mt-4 c-text-3 text-bw-gray-500">{doc.tagline}</p>
-      )}
-      {doc.body && (
-        <div className="mt-10 prose-brand">
-          <PortableText value={doc.body} />
+
+      {/* CTA */}
+      <section className="c-section">
+        <div className="c-container">
+          <div className="flex flex-col gap-5">
+            <h2 className="c-title-3 text-bw-gray-800">See Brightwave in action</h2>
+            <p className="c-text-3 text-bw-gray-500">
+              Discover how Brightwave can transform your research workflow.
+            </p>
+            <div className="flex flex-wrap gap-2.5 mt-5">
+              <CtaButton label="Start Free Trial" href="https://app.brightwave.io/register" variant="primary" />
+              <CtaButton label="Get a Demo" href="/contact" variant="outline" />
+            </div>
+          </div>
         </div>
-      )}
-    </article>
+      </section>
+    </>
   )
 }
