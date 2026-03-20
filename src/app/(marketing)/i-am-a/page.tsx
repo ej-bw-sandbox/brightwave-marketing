@@ -41,7 +41,7 @@ export default async function RolesPage() {
             {(data ?? []).map((item: any) => (
               <Link
                 key={item._id}
-                href={`/roles/${item.slug || ''}`}
+                href={`/i-am-a/${item.slug || ''}`}
                 className="group flex flex-col rounded-xl border border-bw-gray-600 bg-bw-gray-700/50 p-6 transition-all hover:border-bw-gray-300 hover:bg-bw-gray-700"
               >
                 <h3 className="text-lg font-semibold text-bw-gray-50 group-hover:text-bw-yellow-500 transition-colors">

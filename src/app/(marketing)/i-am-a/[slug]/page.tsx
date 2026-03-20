@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: doc.title || '',
     description: doc.seo?.metaDescription || doc.heroTagline || '',
     seo: doc.seo,
-    path: '/roles/' + slug,
+    path: '/i-am-a/' + slug,
   })
 }
 

@@ -107,13 +107,13 @@ const solutionColumns: NavColumn[] = [
   {
     heading: 'I AM A...',
     items: [
-      { title: 'Associate', description: 'Entry-level professionals', href: '/roles/associate', icon: '', iconBg: '' },
-      { title: 'Manager', description: 'Deal team managers', href: '/roles/manager', icon: '', iconBg: '' },
-      { title: 'Principal/Director', description: 'Senior investment professionals', href: '/roles/principal-director', icon: '', iconBg: '' },
-      { title: 'VP/MD', description: 'Investment leadership', href: '/roles/vp-md', icon: '', iconBg: '' },
+      { title: 'Associate', description: 'Entry-level professionals', href: '/i-am-a/associate', icon: '', iconBg: '' },
+      { title: 'Manager', description: 'Deal team managers', href: '/i-am-a/manager', icon: '', iconBg: '' },
+      { title: 'Principal/Director', description: 'Senior investment professionals', href: '/i-am-a/principal-director', icon: '', iconBg: '' },
+      { title: 'VP/MD', description: 'Investment leadership', href: '/i-am-a/vp-md', icon: '', iconBg: '' },
     ],
     viewAllLabel: '...More',
-    viewAllHref: '/roles',
+    viewAllHref: '/i-am-a',
   },
   {
     heading: 'INDUSTRIES',
