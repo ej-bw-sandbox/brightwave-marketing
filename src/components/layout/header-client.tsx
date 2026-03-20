@@ -224,7 +224,7 @@ function NavItemRow({ item }: { item: NavItem }) {
   return (
     <LinkComponent
       href={item.href}
-      className="group flex items-start gap-3 rounded-lg bg-white px-3 py-2.5 transition-all hover:bg-bw-gray-700 hover:text-white"
+      className="group flex items-start gap-3 rounded-lg px-3 py-2.5 transition-all duration-200 hover:bg-[#333335]"
       {...extraProps}
     >
       {item.icon && (
@@ -233,10 +233,10 @@ function NavItemRow({ item }: { item: NavItem }) {
         </span>
       )}
       <div className="min-w-0">
-        <span className="block text-sm font-semibold text-bw-gray-800 group-hover:text-white transition-colors">
+        <span className="block text-sm font-semibold text-white group-hover:text-white transition-colors">
           {item.title}
         </span>
-        <span className="block text-xs text-bw-gray-500 leading-tight mt-0.5 group-hover:text-bw-gray-200 transition-colors">
+        <span className="block text-xs text-bw-gray-300 leading-tight mt-0.5 group-hover:text-bw-gray-200 transition-colors">
           {item.description}
         </span>
       </div>
@@ -248,13 +248,13 @@ function NavItemRowPlain({ item }: { item: NavItem }) {
   return (
     <Link
       href={item.href}
-      className="group block rounded-lg bg-white px-3 py-2.5 transition-all hover:bg-bw-gray-700"
+      className="group block rounded-lg px-3 py-2.5 transition-all duration-200 hover:bg-[#333335]"
     >
-      <span className="block text-sm font-semibold text-bw-gray-800 group-hover:text-white transition-colors">
+      <span className="block text-sm font-semibold text-white group-hover:text-white transition-colors">
         {item.title}
       </span>
       {item.description && (
-        <span className="block text-xs text-bw-gray-500 leading-tight mt-0.5 group-hover:text-bw-gray-200 transition-colors">
+        <span className="block text-xs text-bw-gray-300 leading-tight mt-0.5 group-hover:text-bw-gray-200 transition-colors">
           {item.description}
         </span>
       )}
@@ -270,7 +270,7 @@ function ColumnRenderer({ column, plain }: { column: NavColumn; plain?: boolean 
   const ItemComponent = plain ? NavItemRowPlain : NavItemRow
   return (
     <div className="flex flex-col">
-      <span className="px-3 pb-3 text-xs font-semibold tracking-wider text-bw-gray-500 uppercase">
+      <span className="px-3 pb-3 text-xs font-semibold tracking-wider text-[#e7e70d] uppercase">
         {column.heading}
       </span>
       <div className="flex flex-col gap-0.5">
@@ -281,7 +281,7 @@ function ColumnRenderer({ column, plain }: { column: NavColumn; plain?: boolean 
       {column.viewAllLabel && column.viewAllHref && (
         <Link
           href={column.viewAllHref}
-          className="mt-3 px-3 text-xs font-medium text-bw-gray-500 hover:text-bw-yellow-600 transition-colors"
+          className="mt-3 px-3 text-xs font-medium text-bw-gray-300 hover:text-[#e7e70d] transition-colors"
         >
           {column.viewAllLabel}
         </Link>
@@ -316,17 +316,17 @@ function SolutionsPanel({ solutionColumns }: { solutionColumns: NavColumn[] }) {
       <div className="mb-6">
         <Link
           href="/products/private-markets"
-          className="group relative block rounded-lg border border-bw-gray-800 bg-white p-6 transition-all hover:bg-bw-gray-700 hover:text-white hover:border-bw-gray-700"
+          className="group relative block rounded-lg border border-[#414142] bg-[#282829] p-6 transition-all hover:border-[#e7e70d] hover:bg-[#282829]"
         >
           <div>
-            <h3 className="text-lg font-semibold text-bw-gray-800 group-hover:text-white transition-colors">Private Markets</h3>
-            <p className="mt-1 text-sm text-bw-gray-500 group-hover:text-bw-gray-200 transition-colors">For PE, VC, and alternative investors</p>
+            <h3 className="text-lg font-semibold text-white transition-colors">Private Markets</h3>
+            <p className="mt-1 text-sm text-bw-gray-300 transition-colors">For PE, VC, and alternative investors</p>
           </div>
         </Link>
       </div>
 
       {/* Divider */}
-      <div className="border-t border-bw-gray-200 mb-6" />
+      <div className="border-t border-[#414142] mb-6" />
 
       {/* Bottom: 3 columns */}
       <div className="grid grid-cols-3 gap-6">
@@ -413,7 +413,7 @@ function DesktopDropdown({
 
       {isOpen && (
         <div className="absolute left-1/2 top-full z-50 -translate-x-1/2 pt-3">
-          <div className="rounded-xl border border-bw-gray-200 bg-bw-gray-75 shadow-xl">
+          <div className="rounded-xl border border-[#333335] bg-[#1a1a1a] shadow-2xl">
             {renderPanel()}
           </div>
         </div>
@@ -524,7 +524,7 @@ function MobileMenu({
             </Link>
             <Link
               href="/contact"
-              className="btn-nav btn-nav-outlined block text-center"
+              className="block text-center border border-[#e7e70d] bg-[#e7e70d] text-[#0f0f0f] px-5 pt-3 pb-[0.6rem] overflow-hidden text-base font-semibold leading-none transition-colors hover:bg-[#c1c10b]"
               onClick={onClose}
             >
               Start Trial
@@ -625,14 +625,12 @@ export function HeaderClient({
               onClose={() => setOpenDropdown(null)}
               solutionColumns={solutionColumns}
             />
-            {caseStudyCount > 0 && (
-              <Link
-                href="/case-studies"
-                className="px-3 py-1.5 text-sm font-medium text-bw-gray-600 transition-colors hover:text-bw-gray-800"
-              >
-                Customers
-              </Link>
-            )}
+            <Link
+              href="/case-studies"
+              className="px-3 py-1.5 text-sm font-medium text-bw-gray-600 transition-colors hover:text-bw-gray-800"
+            >
+              Customers
+            </Link>
             <DesktopDropdown
               label="Resources"
               panelKey="resources"
@@ -658,7 +656,7 @@ export function HeaderClient({
             </Link>
             <Link
               href="/contact"
-              className="btn-nav btn-nav-outlined"
+              className="border border-[#e7e70d] bg-[#e7e70d] text-[#0f0f0f] px-5 pt-3 pb-[0.6rem] overflow-hidden text-base font-semibold leading-none transition-colors hover:bg-[#c1c10b] hover:border-[#c1c10b]"
             >
               Start Trial
             </Link>

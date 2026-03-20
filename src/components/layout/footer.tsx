@@ -42,10 +42,10 @@ export function Footer() {
         <div className="bg-bw-gray-700 rounded-2xl flex flex-col relative overflow-hidden">
           {/* Decorative grid lines */}
           <div className="absolute inset-0 z-[4] grid grid-cols-4 pointer-events-none">
-            <div className="border-l border-bw-yellow-500/20" />
+            <div className="border-l border-[#f2f218]" />
             <div />
             <div />
-            <div className="border-r border-bw-yellow-500/20" />
+            <div className="border-r border-[#f2f218]" />
           </div>
 
           {/* Content */}
@@ -95,7 +95,7 @@ export function Footer() {
           </div>
 
           {/* Bottom bar */}
-          <div className="z-50 relative flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-bw-gray-200 px-10 py-6 text-sm text-bw-gray-300">
+          <div className="z-50 relative flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-bw-gray-600 px-10 py-6 text-sm text-bw-gray-300">
             <p>{new Date().getFullYear()} Brightwave, Inc. All rights reserved.</p>
             <div className="flex gap-6">
               <Link href="/privacy-policy" className="hover:text-white transition-colors">
