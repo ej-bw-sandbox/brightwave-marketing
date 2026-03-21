@@ -1,11 +1,28 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
+import { client } from '@/lib/sanity/client'
+import { eventsIndexQuery } from '@/lib/sanity/queries/events'
 
 export const metadata: Metadata = {
   title: 'Events | Brightwave',
   description: 'Upcoming events and conferences.',
 }
 
-export default function Page() {
+export default async function Page() {
+  let upcoming: any[] = []
+  let past: any[] = []
+  try {
+    const data = await client.fetch(
+      eventsIndexQuery,
+      {},
+      { next: { tags: ['virtualEvent'], revalidate: 3600 } }
+    )
+    upcoming = data?.upcoming ?? []
+    past = data?.past ?? []
+  } catch { upcoming = []; past = [] }
+
+  const allEvents = [...upcoming, ...past]
+
   return (
     <>
 <section className="c-section cc-event_hero">
@@ -26,13 +43,23 @@ export default function Page() {
       <section className="c-section cc-event-list">
         <div className="c-container">
           <div className="c-event w-dyn-list">
+            {allEvents.length > 0 ? (
             <div role="list" className="c-event-list w-dyn-items">
-              <div role="listitem" className="c-event-item w-dyn-item"><img src="/webflow-images/illustration_Investment-Intelligence-Engine_1.avif" loading="lazy" alt="" className="c-event-item_image" />
+              {allEvents.map((evt: any) => (
+              <div key={evt.slug?.current || evt.title} role="listitem" className="c-event-item w-dyn-item">
+                {evt.thumbnailImage?.asset?.url ? (
+                  <img src={evt.thumbnailImage.asset.url} loading="lazy" alt={evt.title || ''} className="c-event-item_image" />
+                ) : (
+                  <img src="/webflow-images/illustration_Investment-Intelligence-Engine_1.avif" loading="lazy" alt="" className="c-event-item_image" />
+                )}
                 <div className="c-event-item_box">
-                  <h2 className="c-title-3 w-dyn-bind-empty"></h2>
-                  <p className="c-text-4 w-dyn-bind-empty"></p>
+                  <h2 className="c-title-3">{evt.title}</h2>
+                  <p className="c-text-4">{evt.description || ''}</p>
+                  {evt.startDate && (
+                    <p className="c-text-6">{new Date(evt.startDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}{evt.city ? ` - ${evt.city}` : ''}</p>
+                  )}
                 </div>
-                <a stagger-cta="" href="#" className="cta-p-sm w-inline-block">
+                <Link stagger-cta="" href={`/events/${evt.slug?.current || ''}`} className="cta-p-sm w-inline-block">
                   <div>
                     <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">Learn More</div>
                   </div>
@@ -52,12 +79,15 @@ export default function Page() {
                         </defs>
                       </svg></div>
                   </div>
-                </a>
+                </Link>
               </div>
+              ))}
             </div>
+            ) : (
             <div className="w-dyn-empty">
               <div>No items found.</div>
             </div>
+            )}
           </div>
         </div>
       </section>

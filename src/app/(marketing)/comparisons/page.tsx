@@ -1,13 +1,24 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
+import { client } from '@/lib/sanity/client'
+import { comparisonIndexQuery } from '@/lib/sanity/queries/comparisons'
 import { LottiePlayer } from '@/components/ui/LottiePlayer'
-
 
 export const metadata: Metadata = {
   title: 'Comparisons | Brightwave',
   description: 'See how Brightwave compares.',
 }
 
-export default function Page() {
+export default async function Page() {
+  let comparisons: any[] = []
+  try {
+    comparisons = await client.fetch(
+      comparisonIndexQuery,
+      {},
+      { next: { tags: ['comparison'], revalidate: 3600 } }
+    )
+  } catch { comparisons = [] }
+
   return (
     <>
 <section className="c-section cc-comp-overview-hero">
@@ -21,28 +32,40 @@ export default function Page() {
         <div className="c-container">
           <div className="c-comparison_main-wrapper w-dyn-list">
             <div role="list" className="c-comparison_main-list w-dyn-items">
-              <div id="w-node-_7574e28f-3d63-2073-253d-b5c4ec4d9398-2e31f0aa" role="listitem" className="c-comparison_main-item w-dyn-item">
+              {comparisons.map((comp: any) => (
+              <div key={comp.slug?.current || comp.title} id="w-node-_7574e28f-3d63-2073-253d-b5c4ec4d9398-2e31f0aa" role="listitem" className="c-comparison_main-item w-dyn-item">
                 <div className="c-comparison-card">
-                  <a href="#" className="c-link-helper w-inline-block"></a>
-                  <div className="c-comparison-card_image-wrapper"><img src="https://d3e54v103j8qbb.cloudfront.net/plugins/Basic/assets/placeholder.60f9b1840c.svg" loading="lazy" alt="" className="c-comparison-card_image w-dyn-bind-empty" /></div>
+                  <Link href={`/comparisons/${comp.slug?.current || ''}`} className="c-link-helper w-inline-block"></Link>
+                  <div className="c-comparison-card_image-wrapper">
+                    {comp.competitorLogo?.asset?.url ? (
+                      <img src={comp.competitorLogo.asset.url} loading="lazy" alt={comp.competitor || ''} className="c-comparison-card_image" />
+                    ) : comp.competitorIcon?.asset?.url ? (
+                      <img src={comp.competitorIcon.asset.url} loading="lazy" alt={comp.competitor || ''} className="c-comparison-card_image" />
+                    ) : (
+                      <img src="https://d3e54v103j8qbb.cloudfront.net/plugins/Basic/assets/placeholder.60f9b1840c.svg" loading="lazy" alt="" className="c-comparison-card_image w-dyn-bind-empty" />
+                    )}
+                  </div>
                   <div className="c-comparison-card_content-wrapper">
                     <div className="c-comparison-card_tag-wrapper">
                       <div className="c-comparison-card_tag-square"></div>
                       <div className="c-comparison-card-tag">
-                        <div className="c-text-6 w-dyn-bind-empty"></div>
+                        <div className="c-text-6">{comp.competitor || ''}</div>
                       </div>
                     </div>
                     <div className="c-comparison-card_title-stack">
-                      <h2 className="c-title-5 w-dyn-bind-empty"></h2>
-                      <p className="c-text-5 w-dyn-bind-empty"></p>
+                      <h2 className="c-title-5">{comp.title}</h2>
+                      <p className="c-text-5">{comp.summary || ''}</p>
                     </div>
                   </div>
                 </div>
               </div>
+              ))}
             </div>
+            {comparisons.length === 0 && (
             <div className="w-dyn-empty">
               <div>No items found.</div>
             </div>
+            )}
           </div>
         </div>
       </section>
@@ -97,6 +120,7 @@ export default function Page() {
         </div>
       </section>
       
+    
     </>
   )
 }

@@ -1,13 +1,34 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
+import { client } from '@/lib/sanity/client'
+import { featureIndexQuery } from '@/lib/sanity/queries/features'
 import { LottiePlayer } from '@/components/ui/LottiePlayer'
-
 
 export const metadata: Metadata = {
   title: 'Investment Intelligence Engine | Brightwave',
   description: 'AI-powered platform features.',
 }
 
-export default function Page() {
+export default async function Page() {
+  let features: any[] = []
+  try {
+    features = await client.fetch(
+      featureIndexQuery,
+      {},
+      { next: { tags: ['platformFeature'], revalidate: 3600 } }
+    )
+  } catch { features = [] }
+
+  // Group features by tags
+  const tagMap: Record<string, any[]> = {}
+  features.forEach((f: any) => {
+    const tags = f.tags || ['Other']
+    tags.forEach((tag: string) => {
+      if (!tagMap[tag]) tagMap[tag] = []
+      tagMap[tag].push(f)
+    })
+  })
+
   return (
     <>
 <section className="c-section cc-center">
@@ -251,6 +272,27 @@ export default function Page() {
           <div className="grid">
             <div id="w-node-cd4b27f6-24d7-ffca-bfab-3367b9c24615-92b20e6f" className="c-title-5 u-balance">Featured in renowned publications and trusted by industry leaders.</div>
             <div id="w-node-cd4b27f6-24d7-ffca-bfab-3367b9c24617-92b20e6f" className="logos"><img src="/webflow-images/Frame-1321316806.avif" loading="eager" width={191} alt="fortune" className="logo_item" /><img src="/webflow-images/Frame-1321316797.avif" loading="eager" width={191} alt="WSJ pro" className="logo_item" /><img src="/webflow-images/Frame-1321316805.avif" loading="eager" width={191} alt="Axios" className="logo_item" /><img src="/webflow-images/american-banker.svg" loading="eager" width={191} alt="" className="logo_item" /><img src="/webflow-images/Frame-1321316804.avif" loading="eager" width={191} alt="Fox Business" className="logo_item" /><img src="/webflow-images/latent-space.png" loading="eager" width={191} alt="" className="logo_item" /><img src="/webflow-images/Frame-1321316818.avif" loading="eager" width={191} alt="Cerebral valley" className="logo_item" /><img src="/webflow-images/Frame-1321316819.avif" loading="eager" width={191} alt="" className="logo_item" /><img src="/webflow-images/Frame-1321316820.avif" loading="eager" width={191} alt="" className="logo_item" /><img src="/webflow-images/TIme.avif" loading="eager" width={191} alt="" className="logo_item" /></div>
+          </div>
+        </div>
+      </section>
+      
+    
+      <section className="c-section">
+        <div className="c-container">
+          <div className="bp40-underline">
+            <h2 className="c-title-3">All Platform Features</h2>
+          </div>
+          <div className="grid cc-collection w-dyn-items" role="list" style={{display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '2rem', marginTop: '2rem'}}>
+            {features.map((feature: any) => (
+            <div key={feature.slug?.current || feature.title} role="listitem" className="collection_card w-dyn-item">
+              <Link href={`/features/${feature.slug?.current || ''}`} className="card w-inline-block">
+                <div className="card_flex">
+                  <div className="c-title-5">{feature.title}</div>
+                  <div className="c-text-6">{feature.heroH1 || ''}</div>
+                </div>
+              </Link>
+            </div>
+            ))}
           </div>
         </div>
       </section>

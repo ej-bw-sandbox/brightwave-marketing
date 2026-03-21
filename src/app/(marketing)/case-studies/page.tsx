@@ -1,13 +1,31 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
+import { client } from '@/lib/sanity/client'
+import { caseStudyIndexQuery } from '@/lib/sanity/queries/case-studies'
 import { LottiePlayer } from '@/components/ui/LottiePlayer'
-
 
 export const metadata: Metadata = {
   title: 'Case Studies | Brightwave',
   description: 'How leading firms use Brightwave.',
 }
 
-export default function Page() {
+export default async function Page() {
+  let studies: any[] = []
+  let categories: any[] = []
+  try {
+    const data = await client.fetch(
+      caseStudyIndexQuery,
+      {},
+      { next: { tags: ['caseStudy'], revalidate: 3600 } }
+    )
+    studies = data?.studies ?? []
+    categories = data?.categories ?? []
+  } catch { studies = []; categories = [] }
+
+  const featured = studies.find((s: any) => s.isFeatured) || studies[0]
+  const support = studies.filter((s: any) => s !== featured && s.isFeaturedGrid).slice(0, 2)
+  const rest = studies.filter((s: any) => s !== featured && !support.includes(s))
+
   return (
     <>
 <section className="c-section cc-cs-overview-hero">
@@ -18,21 +36,27 @@ export default function Page() {
             </div>
             <div className="c-cs-overview-hero_wrapper">
               <div className="c-cs-overview-featured-wrapper w-dyn-list">
+                {featured ? (
                 <div role="list" className="c-cs-overview-featured-list w-dyn-items">
                   <div role="listitem" className="c-cs-overview-featured-item w-dyn-item">
                     <div className="c-comparison-template_grid cc-rel">
-                      <a href="#" className="c-link-helper w-inline-block"></a>
-                      <div id="w-node-c65826a6-c561-19ba-3d0e-8c5b67229dad-48c3bc16" className="c-cs-overview-featured_image-wrapper"><img src="https://d3e54v103j8qbb.cloudfront.net/plugins/Basic/assets/placeholder.60f9b1840c.svg" loading="lazy" alt="" className="c-cs-overview-featured_image w-dyn-bind-empty" />
+                      <Link href={`/case-studies/${featured.slug?.current || ''}`} className="c-link-helper w-inline-block"></Link>
+                      <div id="w-node-c65826a6-c561-19ba-3d0e-8c5b67229dad-48c3bc16" className="c-cs-overview-featured_image-wrapper">
+                        {featured.thumbnail?.asset?.url ? (
+                          <img src={featured.thumbnail.asset.url} loading="lazy" alt={featured.title || ''} className="c-cs-overview-featured_image" />
+                        ) : (
+                          <img src="https://d3e54v103j8qbb.cloudfront.net/plugins/Basic/assets/placeholder.60f9b1840c.svg" loading="lazy" alt="" className="c-cs-overview-featured_image w-dyn-bind-empty" />
+                        )}
                         <div className="c-cs-overview-featured_button-icon">
                           <div className="c-svg-1 w-embed"><svg width="100%" height="100%" viewBox="0 0 74 57" fill="none" xmlns="http://www.w3.org/2000/svg">
                               <path d="M36.7598 3.24967e-06L73.9316 0.0499327L73.9316 57L0.000951028 57L0.000947819 20.2931L36.7598 3.24967e-06Z" fill="#E7E70D"></path>
                               <rect x="62.9395" y="6.46875" width="4.52527" height="4.49649" fill="black"></rect>
-                              <g clipPath="url(#clip0_4312_30612)">
+                              <g clipPath="url(#clip0_cs_feat)">
                                 <path d="M36.2812 18.7721L54.1431 18.7721L54.1431 36.5204" stroke="black" strokeWidth="1.92707" strokeLinejoin="bevel"></path>
                                 <path d="M54.1405 18.7721L34.5332 38.2547" stroke="black" strokeWidth="1.92707" strokeLinejoin="bevel"></path>
                               </g>
                               <defs>
-                                <clipPath id="clip0_4312_30612">
+                                <clipPath id="clip0_cs_feat">
                                   <rect width="21.2623" height="21.1271" fill="white" transform="translate(33.8496 17.8086)"></rect>
                                 </clipPath>
                               </defs>
@@ -43,44 +67,55 @@ export default function Page() {
                         <div className="c-cs-card_title-wrapper">
                           <div className="c-cs-card_tag-wrapper">
                             <div className="c-cs-card_tag-square"></div>
-                            <div className="c-text-5 cc-weight-500 w-dyn-bind-empty"></div>
+                            <div className="c-text-5 cc-weight-500">{featured.category?.title || featured.industry || ''}</div>
                           </div>
-                          <h2 className="c-title-4 w-dyn-bind-empty"></h2>
+                          <h2 className="c-title-4">{featured.title}</h2>
                         </div>
                         <div className="c-cs-card_text-wrapper">
-                          <p className="c-text-4-no-anim w-dyn-bind-empty"></p>
+                          <p className="c-text-4-no-anim">{featured.excerpt || ''}</p>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
+                ) : (
                 <div className="w-dyn-empty">
                   <div>No items found.</div>
                 </div>
+                )}
               </div>
               <div className="c-cs-overview-support-wrapper w-dyn-list">
                 <div role="list" className="c-cs-overview-support-list w-dyn-items">
-                  <div role="listitem" className="c-cs-overview-support-item w-dyn-item">
+                  {support.map((study: any) => (
+                  <div key={study._id || study.slug?.current} role="listitem" className="c-cs-overview-support-item w-dyn-item">
                     <div className="c-cs-card_main-wrapper">
-                      <a href="#" className="c-link-helper w-inline-block"></a><img loading="lazy" src="https://d3e54v103j8qbb.cloudfront.net/plugins/Basic/assets/placeholder.60f9b1840c.svg" alt="" className="c-cs-card_image-wrapper" />
+                      <Link href={`/case-studies/${study.slug?.current || ''}`} className="c-link-helper w-inline-block"></Link>
+                      {study.thumbnail?.asset?.url ? (
+                        <img loading="lazy" src={study.thumbnail.asset.url} alt={study.title || ''} className="c-cs-card_image-wrapper" />
+                      ) : (
+                        <img loading="lazy" src="https://d3e54v103j8qbb.cloudfront.net/plugins/Basic/assets/placeholder.60f9b1840c.svg" alt="" className="c-cs-card_image-wrapper" />
+                      )}
                       <div className="c-cs-card_text-stack">
                         <div className="c-cs-card_title-wrapper">
                           <div className="c-cs-card_tag-wrapper">
                             <div className="c-cs-card_tag-square"></div>
-                            <div r-indexed="cat" className="c-text-5 cc-weight-500"></div>
+                            <div r-indexed="cat" className="c-text-5 cc-weight-500">{study.category?.title || study.industry || ''}</div>
                           </div>
-                          <h2 className="c-title-5"></h2>
+                          <h2 className="c-title-5">{study.title}</h2>
                         </div>
                         <div className="c-cs-card_text-wrapper">
-                          <p className="c-text-4-no-anim"></p>
+                          <p className="c-text-4-no-anim">{study.excerpt || ''}</p>
                         </div>
                       </div>
                     </div>
                   </div>
+                  ))}
                 </div>
+                {support.length === 0 && (
                 <div className="w-dyn-empty">
                   <div>No items found.</div>
                 </div>
+                )}
               </div>
             </div>
           </div>
@@ -93,52 +128,41 @@ export default function Page() {
               <div className="c-cs-main-list_filter-wrapper">
                 <div className="c-cs-main-list_filter-tag">
                   <div className="c-cs-card_tag-square"></div>
-                  <div className="c-title-5">Filter By</div>
-                </div>
-                <div className="c-filter-form w-form">
-                  <form id="email-form" name="email-form" data-name="Email Form" method="get" className="c-filter-form-wrapper" data-wf-page-id="6909c152bd033be948c3bc16" data-wf-element-id="3206dd62-561a-4da5-ecf8-09fefbf57987">
-                    <div className="c-filter-form-collection w-dyn-list">
-                      <div r-filter="cat" role="list" className="c-filter-form-list w-dyn-items">
-                        <div role="listitem" className="c-filter-form-item w-dyn-item"><label className="w-checkbox c-filter-form-checkbox-wrapper">
-                            <div className="w-checkbox-input w-checkbox-input--inputType-custom c-filter-form-checkbox-trigger"></div><input type="checkbox" id="checkbox" name="checkbox" data-name="Checkbox" style={{opacity: "0", position: "absolute", zIndex: "-1"}} /><span className="c-filter-form-checkbox-label w-dyn-bind-empty w-form-label" for="checkbox"></span>
-                          </label></div>
-                      </div>
-                      <div className="w-dyn-empty">
-                        <div>No items found.</div>
-                      </div>
-                    </div>
-                  </form>
-                  <div className="w-form-done">
-                    <div>Thank you! Your submission has been received!</div>
-                  </div>
-                  <div className="w-form-fail">
-                    <div>Oops! Something went wrong while submitting the form.</div>
-                  </div>
+                  <div className="c-title-5">All Case Studies</div>
                 </div>
               </div>
               <div className="c-cs-main-list_wrapper w-dyn-list">
                 <div r-filter-wrapper="1" role="list" className="c-cs-main-list_list w-dyn-items">
-                  <div id="w-node-_100a1887-17e6-7599-519d-bcda68ffafdb-48c3bc16" role="listitem" className="c-cs-main-list-item w-dyn-item">
+                  {rest.map((study: any) => (
+                  <div key={study._id || study.slug?.current} id="w-node-_100a1887-17e6-7599-519d-bcda68ffafdb-48c3bc16" role="listitem" className="c-cs-main-list-item w-dyn-item">
                     <div className="c-cs-card_main-wrapper">
-                      <a href="#" className="c-link-helper w-inline-block"></a><img loading="lazy" src="https://d3e54v103j8qbb.cloudfront.net/plugins/Basic/assets/placeholder.60f9b1840c.svg" alt="" className="c-cs-card_image-wrapper" />
+                      <Link href={`/case-studies/${study.slug?.current || ''}`} className="c-link-helper w-inline-block"></Link>
+                      {study.thumbnail?.asset?.url ? (
+                        <img loading="lazy" src={study.thumbnail.asset.url} alt={study.title || ''} className="c-cs-card_image-wrapper" />
+                      ) : (
+                        <img loading="lazy" src="https://d3e54v103j8qbb.cloudfront.net/plugins/Basic/assets/placeholder.60f9b1840c.svg" alt="" className="c-cs-card_image-wrapper" />
+                      )}
                       <div className="c-cs-card_text-stack">
                         <div className="c-cs-card_title-wrapper">
                           <div className="c-cs-card_tag-wrapper">
                             <div className="c-cs-card_tag-square"></div>
-                            <div r-indexed="cat" className="c-text-5 cc-weight-500"></div>
+                            <div r-indexed="cat" className="c-text-5 cc-weight-500">{study.category?.title || study.industry || ''}</div>
                           </div>
-                          <h2 className="c-title-5"></h2>
+                          <h2 className="c-title-5">{study.title}</h2>
                         </div>
                         <div className="c-cs-card_text-wrapper">
-                          <p className="c-text-4-no-anim"></p>
+                          <p className="c-text-4-no-anim">{study.excerpt || ''}</p>
                         </div>
                       </div>
                     </div>
                   </div>
+                  ))}
                 </div>
+                {rest.length === 0 && (
                 <div className="c-cs-main-list_item w-dyn-empty">
                   <div>No items found.</div>
                 </div>
+                )}
               </div>
             </div>
           </div>
@@ -195,6 +219,7 @@ export default function Page() {
         </div>
       </section>
       
+    
     </>
   )
 }
