@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import { LottiePlayer } from '@/components/ui/LottiePlayer'
+
 
 export const metadata: Metadata = {
   title: 'About Us | Brightwave',
@@ -19,7 +21,7 @@ export default function Page() {
             <div id="w-node-fb9c007a-cffd-4805-5614-22f256469eee-d5f55c33" className="about-lottie-panel">
               <div inject-tablet="about" className="about-lottie">
                 <div lottie-bg="" className="lottie-square">
-                  <div slice="" className="lottie-stretch" data-w-id="5cfcdba0-7525-bd66-cdd5-b4602f3af67d" data-animation-type="lottie" data-src="documents/About-Lottie-25.json" data-loop="1" data-direction="1" data-autoplay="1" data-is-ix2-target="0" data-renderer="svg" data-default-duration="0" data-duration="20"></div>
+                  <LottiePlayer src="/webflow-documents/About-Lottie-25.json" className="lottie-stretch" />
                 </div>
               </div>
             </div>
@@ -216,7 +218,7 @@ export default function Page() {
               <div id="w-node-_9b8ee08d-c6f4-ae74-a662-3b34c7325983-d5f55c33" className="career-lottie">
                 <div inject-tablet="about" className="lottie-absolute">
                   <div lottie-bg="" className="lottie-square">
-                    <div slice="" className="lottie-stretch" data-w-id="6542ca8f-c228-ba07-d603-bb492ba8ea04" data-animation-type="lottie" data-src="documents/About-Lottie-25.json" data-loop="1" data-direction="1" data-autoplay="1" data-is-ix2-target="0" data-renderer="svg" data-default-duration="0" data-duration="20"></div>
+                    <LottiePlayer src="/webflow-documents/About-Lottie-25.json" className="lottie-stretch" />
                   </div>
                 </div>
               </div>

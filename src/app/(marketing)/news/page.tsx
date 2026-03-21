@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import { LottiePlayer } from '@/components/ui/LottiePlayer'
+
 
 export const metadata: Metadata = {
   title: 'News | Brightwave',
@@ -24,7 +26,7 @@ export default function Page() {
                       <div className="svg w-embed"><svg width={74} height={57} viewBox="0 0 74 57" fill="none" xmlns="http://www.w3.org/2000/svg">
                           <path d="M36.8281 3.24967e-06L74 0.0499327L74 57L0.0693104 57L0.0693072 20.2931L36.8281 3.24967e-06Z" fill="#E7E70D"></path>
                         </svg></div>
-                      <div data-is-ix2-target="1" className="cta-lottie" data-w-id="a2e6a075-a643-8413-931e-ca81425c6cbc" data-animation-type="lottie" data-src="documents/Arrow-Lottie.json" data-loop="0" data-direction="1" data-autoplay="0" data-renderer="svg" data-default-duration="0" data-duration="0"></div>
+                      <LottiePlayer src="/webflow-documents/Arrow-Lottie.json" className="cta-lottie" loop={false} autoplay={false} />
                     </div>
                   </div>
                   <div id="w-node-e73e88d0-10c1-26c7-a42d-15a75bb1d24b-ae10989c" className="featured_right">
@@ -199,7 +201,7 @@ export default function Page() {
                     </clipPath>
                   </defs>
                 </svg>
-                <div data-is-ix2-target="1" className="cta-p-big_arrows cc-lotti" data-w-id="1cfa6afb-a27b-299d-3baa-19d0ad081838" data-animation-type="lottie" data-src="https://uploads-ssl.webflow.com/6537758130c3d278e4b6eecc/6576e8acfcf807e5bebe727c_Arrow-Lottie.json" data-loop="0" data-direction="1" data-autoplay="0" data-renderer="svg" data-default-duration="2" data-duration="0"></div><svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 74 20" fill="none" className="cta-p-big_chop">
+                <LottiePlayer src="/webflow-documents/Arrow-Lottie.json" className="cta-p-big_arrows cc-lotti" loop={false} autoplay={false} /><svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 74 20" fill="none" className="cta-p-big_chop">
                   <path d="M36.7933 20L74 19.9508L74 5.72205e-06L1.74845e-06 4.97481e-06L36.7933 20Z" fill="currentColor" className="path"></path>
                 </svg>
               </a>
@@ -207,8 +209,8 @@ export default function Page() {
           </div>
           <div lottie-bg="" className="lottie-step">
             <div lottie-bg="" className="lottie-crop">
-              <div className="lottie_cropped-desktop" data-w-id="ee46ba2d-714e-5fb7-2641-bfc6f471f78a" data-animation-type="lottie" data-src="documents/CTA-Lottie-25.json" data-loop="1" data-direction="1" data-autoplay="1" data-is-ix2-target="0" data-renderer="svg" data-default-duration="0" data-duration="20"></div>
-              <div slice="" className="lottie_cropped-mobile" data-w-id="806ac869-7326-a178-3a49-0a83ab847ac2" data-animation-type="lottie" data-src="documents/Generative-Loop-Final-25.json" data-loop="1" data-direction="1" data-autoplay="1" data-is-ix2-target="0" data-renderer="svg" data-default-duration="0" data-duration="10"></div>
+              <LottiePlayer src="/webflow-documents/CTA-Lottie-25.json" className="lottie_cropped-desktop" />
+              <LottiePlayer src="/webflow-documents/Generative-Loop-Final-25.json" className="lottie_cropped-mobile" />
             </div>
           </div>
         </div>

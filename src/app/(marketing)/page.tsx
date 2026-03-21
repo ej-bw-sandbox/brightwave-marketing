@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import { LottiePlayer } from '@/components/ui/LottiePlayer'
+
 
 export const metadata: Metadata = {
   title: 'Brightwave - AI Financial Research',
@@ -202,8 +204,8 @@ export default function HomePage() {
           <div lottie-bg="" className="lottie-reverse">
             <div className="learning-lottie">
               <div lottie-bg="" className="lottie-crop">
-                <div className="lottie_cropped-desktop" data-w-id="ee46ba2d-714e-5fb7-2641-bfc6f471f78a" data-animation-type="lottie" data-src="documents/CTA-Lottie-25.json" data-loop="1" data-direction="1" data-autoplay="1" data-is-ix2-target="0" data-renderer="svg" data-default-duration="0" data-duration="20"></div>
-                <div slice="" className="lottie_cropped-mobile" data-w-id="806ac869-7326-a178-3a49-0a83ab847ac2" data-animation-type="lottie" data-src="documents/Generative-Loop-Final-25.json" data-loop="1" data-direction="1" data-autoplay="1" data-is-ix2-target="0" data-renderer="svg" data-default-duration="0" data-duration="10"></div>
+                <LottiePlayer src="/webflow-documents/CTA-Lottie-25.json" className="lottie_cropped-desktop" />
+                <LottiePlayer src="/webflow-documents/Generative-Loop-Final-25.json" className="lottie_cropped-mobile" />
               </div>
             </div>
           </div>
@@ -373,7 +375,7 @@ export default function HomePage() {
       <section no-fade="" className="c-section">
         <div className="c-container">
           <div className="slider-wrap"><img width="294.5" loading="lazy" alt="" src="/webflow-images/testimonial.svg" className="slider_img" />
-            <div slice="" className="slider_lottie" data-w-id="64267aa6-59b1-4589-ad6d-d5d488ab6f1a" data-animation-type="lottie" data-src="documents/Testimonial-BG-25.json" data-loop="1" data-direction="1" data-autoplay="1" data-is-ix2-target="0" data-renderer="canvas" data-default-duration="0" data-duration="20"></div>
+            <LottiePlayer src="/webflow-documents/Testimonial-BG-25.json" className="slider_lottie" />
             <div className="slider w-dyn-list">
               <div slider="" role="list" className="slider_list w-dyn-items">
                 <div role="listitem" className="slider_cms-item w-dyn-item">
@@ -468,8 +470,8 @@ export default function HomePage() {
             <div>
               <div className="learning-lottie">
                 <div lottie-bg="" className="lottie-crop">
-                  <div className="lottie_cropped-desktop" data-w-id="ee46ba2d-714e-5fb7-2641-bfc6f471f78a" data-animation-type="lottie" data-src="documents/CTA-Lottie-25.json" data-loop="1" data-direction="1" data-autoplay="1" data-is-ix2-target="0" data-renderer="svg" data-default-duration="0" data-duration="20"></div>
-                  <div slice="" className="lottie_cropped-mobile" data-w-id="806ac869-7326-a178-3a49-0a83ab847ac2" data-animation-type="lottie" data-src="documents/Generative-Loop-Final-25.json" data-loop="1" data-direction="1" data-autoplay="1" data-is-ix2-target="0" data-renderer="svg" data-default-duration="0" data-duration="10"></div>
+                  <LottiePlayer src="/webflow-documents/CTA-Lottie-25.json" className="lottie_cropped-desktop" />
+                  <LottiePlayer src="/webflow-documents/Generative-Loop-Final-25.json" className="lottie_cropped-mobile" />
                 </div>
               </div>
             </div>
