@@ -19,6 +19,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        {/* Webflow CSS - loaded verbatim from the export */}
+        <link href="/webflow-css/normalize.css" rel="stylesheet" type="text/css" />
+        <link href="/webflow-css/components.css" rel="stylesheet" type="text/css" />
+        <link href="/webflow-css/brightwave.css" rel="stylesheet" type="text/css" />
+        <link href="/webflow-css/inline-overrides.css" rel="stylesheet" type="text/css" />
+      </head>
       <body className="bg-white text-bw-gray-800 antialiased">
         {children}
         <Analytics />
