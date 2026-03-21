@@ -4,26 +4,135 @@ import Link from 'next/link'
 import { useState, useEffect } from 'react'
 
 /* ------------------------------------------------------------------ */
-/*  Header Component - Ported from Webflow Export                      */
-/*  The navigation structure, classes, and dropdown behavior           */
-/*  come directly from the Webflow CSS.                                */
+/*  Header Component - Updated Nav Structure                           */
+/*  Preserves all Webflow CSS classes for styling                      */
 /* ------------------------------------------------------------------ */
+
+/* Reusable SVG sub-components */
+const ChevronSvg = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 10 6" fill="none" className="chevron">
+    <path d="M0.525391 1L5.02539 5L9.52539 1" stroke="currentColor"></path>
+  </svg>
+)
+
+const ArrowBgSvg = () => (
+  <div className="svg cc-nav-arrow-bg w-embed">
+    <svg width={54} height={51} viewBox="0 0 54 51" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path fillRule="evenodd" clipRule="evenodd" d="M54 5.6L48.75 0H6L0.375 6L0 5.6V45.4L0.375 45L6 51H48.75L54 45.4V5.6Z" fill="#E7E70D"></path>
+    </svg>
+  </div>
+)
+
+const ArrowSvgIcon = () => (
+  <div className="nav_arrow-svg w-embed">
+    <svg width={28} height={27} viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g clipPath="url(#clip0_782_8055)">
+        <path d="M14.8926 24.8372L26.2697 13.46L14.9649 2.15519" stroke="#0F0F0F" strokeWidth="1.4453" strokeLinejoin="bevel"></path>
+        <path d="M26.2663 13.4614L1.36784 13.5408" stroke="#0F0F0F" strokeWidth="2" strokeLinejoin="bevel"></path>
+      </g>
+      <defs>
+        <clipPath id="clip0_782_8055">
+          <rect width="19.1528" height="19.031" fill="white" transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 13.957 27)"></rect>
+        </clipPath>
+      </defs>
+    </svg>
+  </div>
+)
+
+const NavArrow = () => (
+  <div className="nav_arrow">
+    <ArrowBgSvg />
+    <div className="arrow-wrap cc-2"><ArrowSvgIcon /></div>
+    <div className="arrow-wrap"><ArrowSvgIcon /></div>
+  </div>
+)
+
+/* Nav item link component with Webflow arrow styling */
+function NavItem({ href, title, variant = 'cc-1', target }: { href: string; title: string; variant?: string; target?: string }) {
+  const titleClass = variant === 'cc-1' ? 'c-title-3 cc-nav-1' : variant === 'cc-2' ? 'c-title-3 cc-nav-2' : 'c-title-3 cc-nav-3'
+  return (
+    <a a-dm="" href={href} className={`nav_item ${variant} w-inline-block`} {...(target ? { target } : {})}>
+      <div className={titleClass}>{title}</div>
+      <NavArrow />
+    </a>
+  )
+}
+
+/* Dropdown link styled as simple text link (used in Resources flat list) */
+function NavDropdownLink({ href, title }: { href: string; title: string }) {
+  return (
+    <a a-dm="" href={href} className="nav_item cc-1 w-inline-block">
+      <div className="c-title-3 cc-nav-1">{title}</div>
+      <NavArrow />
+    </a>
+  )
+}
+
+/* Column header for Solutions dropdown */
+function ColumnHeader({ text }: { text: string }) {
+  return <div className="c-text-link cc-nav" style={{ opacity: 0.5, marginBottom: '0.5rem', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{text}</div>
+}
+
+interface PlatformFeature {
+  title: string
+  slug: string
+  category: string
+}
+
+interface NavAssociation {
+  title: string
+  slug: string
+}
+
+interface SolutionsNavData {
+  useCases: NavAssociation[]
+  icpPages: NavAssociation[]
+  firmTypes: NavAssociation[]
+  platformFeatures: PlatformFeature[]
+}
 
 export function HeaderClient({
   caseStudyCount = 0,
   solutionsNavData = null,
 }: {
   caseStudyCount?: number
-  solutionsNavData?: any
+  solutionsNavData?: SolutionsNavData | null
 }) {
+  /* Group platform features by category */
+  const platformGroups: Record<string, PlatformFeature[]> = {}
+  if (solutionsNavData?.platformFeatures) {
+    for (const f of solutionsNavData.platformFeatures) {
+      const cat = f.category || 'General'
+      if (!platformGroups[cat]) platformGroups[cat] = []
+      platformGroups[cat].push(f)
+    }
+  }
+
+  const useCases = solutionsNavData?.useCases ?? []
+  const icpPages = solutionsNavData?.icpPages ?? []
+  const firmTypes = solutionsNavData?.firmTypes ?? []
+
+  const resourceLinks = [
+    { title: 'Blog', href: '/blog' },
+    { title: 'News', href: '/news' },
+    { title: 'Release Notes', href: '/release-notes' },
+    { title: 'Engineering Log', href: '/engineering-log' },
+    { title: 'Events', href: '/events' },
+    { title: 'Comparisons', href: '/comparisons' },
+    { title: 'Knowledge Base', href: '/knowledge-base' },
+    { title: 'Tools & Guides', href: '/tools-guides' },
+    { title: 'Support', href: '/support' },
+  ]
+
   return (
     <>
-<div data-w-id="146090b3-a797-0b71-5c03-2ee27e68f65a" data-animation="default" data-collapse="medium" data-duration="400" data-easing="ease" data-easing2="ease" role="banner" className="nav w-nav">
+      <div data-w-id="146090b3-a797-0b71-5c03-2ee27e68f65a" data-animation="default" data-collapse="medium" data-duration="400" data-easing="ease" data-easing2="ease" role="banner" className="nav w-nav">
         <div id="cio-banner" className="cio-banner"></div>
         <div className="c-container cc-nav">
           <div className="nav_flex">
             <div className="nav-abso">
               <div className="nav-asbo_flex">
+                {/* ---- LOGO ---- */}
                 <a href="/" aria-current="page" className="nav_logo w-nav-brand w--current">
                   <div className="svg cc-onsurface-fill cc-logo w-embed"><svg width={150} height={28} viewBox="0 0 150 28" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M143.169 22.3786C139.582 22.3786 137.215 19.7896 137.215 15.8817C137.215 11.9738 139.558 9.38477 143.145 9.38477C146.899 9.38477 149.195 12.2424 148.86 16.5167H139.63C139.821 19.0324 141.137 20.4979 143.193 20.4979C144.652 20.4979 145.847 19.7651 146.278 18.5439H148.549C147.952 20.8887 145.895 22.3786 143.169 22.3786ZM139.678 14.8558H146.541C146.373 12.5844 145.154 11.2654 143.217 11.2654C141.256 11.2654 139.965 12.6088 139.678 14.8558Z" fill="#0F0F0F"></path>
@@ -42,370 +151,216 @@ export function HeaderClient({
                       <path d="M20.4326 14H23.9858C24.3088 14.3299 24.4899 14.5149 24.8129 14.8448V21.479C24.4899 21.8089 24.3088 21.9939 23.9858 22.3238H20.4326L19.6055 21.479V14.8448L20.4326 14Z" fill="#0F0F0F"></path>
                     </svg></div>
                 </a>
+
+                {/* ---- NAV MENU ---- */}
                 <nav role="navigation" className="nav_menu w-nav-menu">
                   <div className="nav_links">
-                    <div data-hover="false" data-delay="500" data-w-id="146090b3-a797-0b71-5c03-2ee27e68f664" className="nav_dropdown cc-desktop w-dropdown">
-                      <div data-w-id="146090b3-a797-0b71-5c03-2ee27e68f665" className="nav_toggle w-dropdown-toggle">
+
+                    {/* ==================== PLATFORM DROPDOWN (Desktop) ==================== */}
+                    <div data-hover="false" data-delay="500" className="nav_dropdown cc-desktop w-dropdown">
+                      <div className="nav_toggle w-dropdown-toggle">
                         <div className="text-overflow">
                           <div className="c-text-link cc-nav">Platform</div>
                           <div className="nav_line"></div>
-                        </div><svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 10 6" fill="none" className="chevron">
-                          <path d="M0.525391 1L5.02539 5L9.52539 1" stroke="currentColor"></path>
-                        </svg>
+                        </div>
+                        <ChevronSvg />
                       </div>
                       <nav a-dm="" className="nav_list w-dropdown-list">
                         <div className="nav_list-wrap">
                           <div className="nav_list-flex">
                             <div className="nav_list-flex cc-inner">
-                              <a a-dm="" data-w-id="146090b3-a797-0b71-5c03-2ee27e68f676" href="/features" className="nav_item cc-2 w-inline-block">
-                                <div className="c-title-3 cc-nav-2">Investment Intelligence Engine</div>
-                                <div className="nav_arrow">
-                                  <div className="svg cc-nav-arrow-bg w-embed"><svg width={54} height={51} viewBox="0 0 54 51" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                      <path fillRule="evenodd" clipRule="evenodd" d="M54 5.6L48.75 0H6L0.375 6L0 5.6V45.4L0.375 45L6 51H48.75L54 45.4V5.6Z" fill="#E7E70D"></path>
-                                    </svg></div>
-                                  <div className="arrow-wrap cc-2">
-                                    <div className="nav_arrow-svg w-embed"><svg width={28} height={27} viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <g clipPath="url(#clip0_782_8055)">
-                                          <path d="M14.8926 24.8372L26.2697 13.46L14.9649 2.15519" stroke="#0F0F0F" strokeWidth="1.4453" strokeLinejoin="bevel"></path>
-                                          <path d="M26.2663 13.4614L1.36784 13.5408" stroke="#0F0F0F" strokeWidth="2" strokeLinejoin="bevel"></path>
-                                        </g>
-                                        <defs>
-                                          <clipPath id="clip0_782_8055">
-                                            <rect width="19.1528" height="19.031" fill="white" transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 13.957 27)"></rect>
-                                          </clipPath>
-                                        </defs>
-                                      </svg></div>
-                                  </div>
-                                  <div className="arrow-wrap">
-                                    <div className="nav_arrow-svg w-embed"><svg width={28} height={27} viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <g clipPath="url(#clip0_782_8055)">
-                                          <path d="M14.8926 24.8372L26.2697 13.46L14.9649 2.15519" stroke="#0F0F0F" strokeWidth="1.4453" strokeLinejoin="bevel"></path>
-                                          <path d="M26.2663 13.4614L1.36784 13.5408" stroke="#0F0F0F" strokeWidth="2" strokeLinejoin="bevel"></path>
-                                        </g>
-                                        <defs>
-                                          <clipPath id="clip0_782_8055">
-                                            <rect width="19.1528" height="19.031" fill="white" transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 13.957 27)"></rect>
-                                          </clipPath>
-                                        </defs>
-                                      </svg></div>
-                                  </div>
-                                </div>
-                              </a>
-                              <a a-dm="" data-w-id="146090b3-a797-0b71-5c03-2ee27e68f67f" href="/security" className="nav_item cc-3 w-inline-block">
-                                <div className="c-title-3 cc-nav-3">Enterprise Security &amp; Compliance</div>
-                                <div className="nav_arrow">
-                                  <div className="svg cc-nav-arrow-bg w-embed"><svg width={54} height={51} viewBox="0 0 54 51" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                      <path fillRule="evenodd" clipRule="evenodd" d="M54 5.6L48.75 0H6L0.375 6L0 5.6V45.4L0.375 45L6 51H48.75L54 45.4V5.6Z" fill="#E7E70D"></path>
-                                    </svg></div>
-                                  <div className="arrow-wrap cc-2">
-                                    <div className="nav_arrow-svg w-embed"><svg width={28} height={27} viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <g clipPath="url(#clip0_782_8055)">
-                                          <path d="M14.8926 24.8372L26.2697 13.46L14.9649 2.15519" stroke="#0F0F0F" strokeWidth="1.4453" strokeLinejoin="bevel"></path>
-                                          <path d="M26.2663 13.4614L1.36784 13.5408" stroke="#0F0F0F" strokeWidth="2" strokeLinejoin="bevel"></path>
-                                        </g>
-                                        <defs>
-                                          <clipPath id="clip0_782_8055">
-                                            <rect width="19.1528" height="19.031" fill="white" transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 13.957 27)"></rect>
-                                          </clipPath>
-                                        </defs>
-                                      </svg></div>
-                                  </div>
-                                  <div className="arrow-wrap">
-                                    <div className="nav_arrow-svg w-embed"><svg width={28} height={27} viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <g clipPath="url(#clip0_782_8055)">
-                                          <path d="M14.8926 24.8372L26.2697 13.46L14.9649 2.15519" stroke="#0F0F0F" strokeWidth="1.4453" strokeLinejoin="bevel"></path>
-                                          <path d="M26.2663 13.4614L1.36784 13.5408" stroke="#0F0F0F" strokeWidth="2" strokeLinejoin="bevel"></path>
-                                        </g>
-                                        <defs>
-                                          <clipPath id="clip0_782_8055">
-                                            <rect width="19.1528" height="19.031" fill="white" transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 13.957 27)"></rect>
-                                          </clipPath>
-                                        </defs>
-                                      </svg></div>
-                                  </div>
-                                </div>
-                              </a>
+                              {Object.keys(platformGroups).length > 0 ? (
+                                Object.entries(platformGroups).map(([category, features], gi) => {
+                                  const variants = ['cc-1', 'cc-2', 'cc-3']
+                                  const shown = features.slice(0, 4)
+                                  return shown.map((f, fi) => (
+                                    <NavItem
+                                      key={`${category}-${fi}`}
+                                      href={`/features/${f.slug}`}
+                                      title={f.title}
+                                      variant={variants[(gi + fi) % 3]}
+                                    />
+                                  )).concat(
+                                    features.length > 4
+                                      ? [<NavItem key={`${category}-more`} href={`/features#${category.toLowerCase().replace(/\s+/g, '-')}`} title={`...More ${category}`} variant={variants[gi % 3]} />]
+                                      : []
+                                  )
+                                }).flat()
+                              ) : (
+                                <>
+                                  <NavItem href="/features" title="Investment Intelligence Engine" variant="cc-2" />
+                                  <NavItem href="/security" title="Enterprise Security &amp; Compliance" variant="cc-3" />
+                                </>
+                              )}
                             </div>
                           </div>
                         </div>
                       </nav>
                     </div>
-                    <div data-hover="false" data-delay="500" data-w-id="ac16cc5c-4857-2364-279f-0d7a4cd1256d" className="nav_dropdown cc-desktop w-dropdown">
-                      <div data-w-id="ac16cc5c-4857-2364-279f-0d7a4cd1256e" className="nav_toggle w-dropdown-toggle">
+
+                    {/* ==================== SOLUTIONS DROPDOWN (Desktop) ==================== */}
+                    <div data-hover="false" data-delay="500" className="nav_dropdown cc-desktop w-dropdown">
+                      <div className="nav_toggle w-dropdown-toggle">
                         <div className="text-overflow">
                           <div className="c-text-link cc-nav">Solutions</div>
                           <div className="nav_line"></div>
-                        </div><svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 10 6" fill="none" className="chevron">
-                          <path d="M0.525391 1L5.02539 5L9.52539 1" stroke="currentColor"></path>
-                        </svg>
+                        </div>
+                        <ChevronSvg />
                       </div>
                       <nav a-dm="" className="nav_list w-dropdown-list">
                         <div className="nav_list-wrap">
                           <div className="nav_list-flex">
                             <div className="nav_list-flex cc-inner">
-                              <a a-dm="" data-w-id="ac16cc5c-4857-2364-279f-0d7a4cd12579" href="/products/private-markets" className="nav_item cc-2 w-inline-block">
-                                <div className="c-title-3 cc-nav-2">Private Markets</div>
-                                <div className="nav_arrow">
-                                  <div className="svg cc-nav-arrow-bg w-embed"><svg width={54} height={51} viewBox="0 0 54 51" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                      <path fillRule="evenodd" clipRule="evenodd" d="M54 5.6L48.75 0H6L0.375 6L0 5.6V45.4L0.375 45L6 51H48.75L54 45.4V5.6Z" fill="#E7E70D"></path>
-                                    </svg></div>
-                                  <div className="arrow-wrap cc-2">
-                                    <div className="nav_arrow-svg w-embed"><svg width={28} height={27} viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <g clipPath="url(#clip0_782_8055)">
-                                          <path d="M14.8926 24.8372L26.2697 13.46L14.9649 2.15519" stroke="#0F0F0F" strokeWidth="1.4453" strokeLinejoin="bevel"></path>
-                                          <path d="M26.2663 13.4614L1.36784 13.5408" stroke="#0F0F0F" strokeWidth="2" strokeLinejoin="bevel"></path>
-                                        </g>
-                                        <defs>
-                                          <clipPath id="clip0_782_8055">
-                                            <rect width="19.1528" height="19.031" fill="white" transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 13.957 27)"></rect>
-                                          </clipPath>
-                                        </defs>
-                                      </svg></div>
-                                  </div>
-                                  <div className="arrow-wrap">
-                                    <div className="nav_arrow-svg w-embed"><svg width={28} height={27} viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <g clipPath="url(#clip0_782_8055)">
-                                          <path d="M14.8926 24.8372L26.2697 13.46L14.9649 2.15519" stroke="#0F0F0F" strokeWidth="1.4453" strokeLinejoin="bevel"></path>
-                                          <path d="M26.2663 13.4614L1.36784 13.5408" stroke="#0F0F0F" strokeWidth="2" strokeLinejoin="bevel"></path>
-                                        </g>
-                                        <defs>
-                                          <clipPath id="clip0_782_8055">
-                                            <rect width="19.1528" height="19.031" fill="white" transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 13.957 27)"></rect>
-                                          </clipPath>
-                                        </defs>
-                                      </svg></div>
-                                  </div>
-                                </div>
-                              </a>
-                              <a a-dm="" data-w-id="ac16cc5c-4857-2364-279f-0d7a4cd12581" href="/products/public-markets" className="nav_item cc-3 w-inline-block">
-                                <div className="c-title-3 cc-nav-3">Public Markets</div>
-                                <div className="nav_arrow">
-                                  <div className="svg cc-nav-arrow-bg w-embed"><svg width={54} height={51} viewBox="0 0 54 51" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                      <path fillRule="evenodd" clipRule="evenodd" d="M54 5.6L48.75 0H6L0.375 6L0 5.6V45.4L0.375 45L6 51H48.75L54 45.4V5.6Z" fill="#E7E70D"></path>
-                                    </svg></div>
-                                  <div className="arrow-wrap cc-2">
-                                    <div className="nav_arrow-svg w-embed"><svg width={28} height={27} viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <g clipPath="url(#clip0_782_8055)">
-                                          <path d="M14.8926 24.8372L26.2697 13.46L14.9649 2.15519" stroke="#0F0F0F" strokeWidth="1.4453" strokeLinejoin="bevel"></path>
-                                          <path d="M26.2663 13.4614L1.36784 13.5408" stroke="#0F0F0F" strokeWidth="2" strokeLinejoin="bevel"></path>
-                                        </g>
-                                        <defs>
-                                          <clipPath id="clip0_782_8055">
-                                            <rect width="19.1528" height="19.031" fill="white" transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 13.957 27)"></rect>
-                                          </clipPath>
-                                        </defs>
-                                      </svg></div>
-                                  </div>
-                                  <div className="arrow-wrap">
-                                    <div className="nav_arrow-svg w-embed"><svg width={28} height={27} viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <g clipPath="url(#clip0_782_8055)">
-                                          <path d="M14.8926 24.8372L26.2697 13.46L14.9649 2.15519" stroke="#0F0F0F" strokeWidth="1.4453" strokeLinejoin="bevel"></path>
-                                          <path d="M26.2663 13.4614L1.36784 13.5408" stroke="#0F0F0F" strokeWidth="2" strokeLinejoin="bevel"></path>
-                                        </g>
-                                        <defs>
-                                          <clipPath id="clip0_782_8055">
-                                            <rect width="19.1528" height="19.031" fill="white" transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 13.957 27)"></rect>
-                                          </clipPath>
-                                        </defs>
-                                      </svg></div>
-                                  </div>
-                                </div>
-                              </a>
+                              {/* Column 1: Use Cases */}
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                                <ColumnHeader text="Use Cases" />
+                                {useCases.map((uc, i) => (
+                                  <NavItem key={`uc-${i}`} href={`/use-cases/${uc.slug}`} title={uc.title} variant="cc-1" />
+                                ))}
+                              </div>
+                              {/* Column 2: I am a... */}
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                                <ColumnHeader text="I am a..." />
+                                {icpPages.map((icp, i) => (
+                                  <NavItem key={`icp-${i}`} href={`/i-am-a/${icp.slug}`} title={icp.title} variant="cc-2" />
+                                ))}
+                              </div>
+                              {/* Column 3: Firm Type */}
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                                <ColumnHeader text="Firm Type" />
+                                {firmTypes.map((ft, i) => (
+                                  <NavItem key={`ft-${i}`} href={`/firm-types/${ft.slug}`} title={ft.title} variant="cc-3" />
+                                ))}
+                              </div>
+                            </div>
+                            {/* Private Markets card */}
+                            <div style={{ marginTop: '1rem' }}>
+                              <NavItem href="/products/private-markets" title="Private Markets" variant="cc-2" />
                             </div>
                           </div>
                         </div>
                       </nav>
                     </div>
-                    <a href="/blog" className="nav_link w-inline-block">
-                      <div className="c-text-link cc-nav">Blog</div>
+
+                    {/* ==================== CUSTOMERS (Direct Link) ==================== */}
+                    <a href="/case-studies" className="nav_link w-inline-block">
+                      <div className="c-text-link cc-nav">Customers</div>
                       <div className="nav_line"></div>
                     </a>
-                    <div data-hover="false" data-delay="500" data-w-id="83771abb-9268-5d18-1c75-96be37352b7a" className="nav_dropdown cc-desktop w-dropdown">
-                      <div data-w-id="83771abb-9268-5d18-1c75-96be37352b7b" className="nav_toggle w-dropdown-toggle">
+
+                    {/* ==================== RESOURCES DROPDOWN (Desktop) ==================== */}
+                    <div data-hover="false" data-delay="500" className="nav_dropdown cc-desktop w-dropdown">
+                      <div className="nav_toggle w-dropdown-toggle">
                         <div className="text-overflow">
-                          <div className="c-text-link cc-nav">Company</div>
+                          <div className="c-text-link cc-nav">Resources</div>
                           <div className="nav_line"></div>
-                        </div><svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 10 6" fill="none" className="chevron">
-                          <path d="M0.525391 1L5.02539 5L9.52539 1" stroke="currentColor"></path>
-                        </svg>
+                        </div>
+                        <ChevronSvg />
                       </div>
                       <nav a-dm="" className="nav_list w-dropdown-list">
                         <div className="nav_list-wrap">
                           <div className="nav_list-flex">
                             <div className="nav_list-flex cc-inner">
-                              <a a-dm="" data-w-id="83771abb-9268-5d18-1c75-96be37352b86" href="/about" className="nav_item cc-1 w-inline-block">
-                                <div className="c-title-3 cc-nav-1">About</div>
-                                <div className="nav_arrow">
-                                  <div className="svg cc-nav-arrow-bg w-embed"><svg width={54} height={51} viewBox="0 0 54 51" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                      <path fillRule="evenodd" clipRule="evenodd" d="M54 5.6L48.75 0H6L0.375 6L0 5.6V45.4L0.375 45L6 51H48.75L54 45.4V5.6Z" fill="#E7E70D"></path>
-                                    </svg></div>
-                                  <div className="arrow-wrap cc-2">
-                                    <div className="nav_arrow-svg w-embed"><svg width={28} height={27} viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <g clipPath="url(#clip0_782_8055)">
-                                          <path d="M14.8926 24.8372L26.2697 13.46L14.9649 2.15519" stroke="#0F0F0F" strokeWidth="1.4453" strokeLinejoin="bevel"></path>
-                                          <path d="M26.2663 13.4614L1.36784 13.5408" stroke="#0F0F0F" strokeWidth="2" strokeLinejoin="bevel"></path>
-                                        </g>
-                                        <defs>
-                                          <clipPath id="clip0_782_8055">
-                                            <rect width="19.1528" height="19.031" fill="white" transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 13.957 27)"></rect>
-                                          </clipPath>
-                                        </defs>
-                                      </svg></div>
-                                  </div>
-                                  <div className="arrow-wrap">
-                                    <div className="nav_arrow-svg w-embed"><svg width={28} height={27} viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <g clipPath="url(#clip0_782_8055)">
-                                          <path d="M14.8926 24.8372L26.2697 13.46L14.9649 2.15519" stroke="#0F0F0F" strokeWidth="1.4453" strokeLinejoin="bevel"></path>
-                                          <path d="M26.2663 13.4614L1.36784 13.5408" stroke="#0F0F0F" strokeWidth="2" strokeLinejoin="bevel"></path>
-                                        </g>
-                                        <defs>
-                                          <clipPath id="clip0_782_8055">
-                                            <rect width="19.1528" height="19.031" fill="white" transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 13.957 27)"></rect>
-                                          </clipPath>
-                                        </defs>
-                                      </svg></div>
-                                  </div>
-                                </div>
-                              </a>
-                              <a a-dm="" data-w-id="83771abb-9268-5d18-1c75-96be37352b8e" href="https://www.linkedin.com/company/brightwaveio/jobs/" target="_blank" className="nav_item cc-2 w-inline-block">
-                                <div className="c-title-3 cc-nav-2">Careers</div>
-                                <div className="nav_arrow">
-                                  <div className="svg cc-nav-arrow-bg w-embed"><svg width={54} height={51} viewBox="0 0 54 51" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                      <path fillRule="evenodd" clipRule="evenodd" d="M54 5.6L48.75 0H6L0.375 6L0 5.6V45.4L0.375 45L6 51H48.75L54 45.4V5.6Z" fill="#E7E70D"></path>
-                                    </svg></div>
-                                  <div className="arrow-wrap cc-2">
-                                    <div className="nav_arrow-svg w-embed"><svg width={28} height={27} viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <g clipPath="url(#clip0_782_8055)">
-                                          <path d="M14.8926 24.8372L26.2697 13.46L14.9649 2.15519" stroke="#0F0F0F" strokeWidth="1.4453" strokeLinejoin="bevel"></path>
-                                          <path d="M26.2663 13.4614L1.36784 13.5408" stroke="#0F0F0F" strokeWidth="2" strokeLinejoin="bevel"></path>
-                                        </g>
-                                        <defs>
-                                          <clipPath id="clip0_782_8055">
-                                            <rect width="19.1528" height="19.031" fill="white" transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 13.957 27)"></rect>
-                                          </clipPath>
-                                        </defs>
-                                      </svg></div>
-                                  </div>
-                                  <div className="arrow-wrap">
-                                    <div className="nav_arrow-svg w-embed"><svg width={28} height={27} viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <g clipPath="url(#clip0_782_8055)">
-                                          <path d="M14.8926 24.8372L26.2697 13.46L14.9649 2.15519" stroke="#0F0F0F" strokeWidth="1.4453" strokeLinejoin="bevel"></path>
-                                          <path d="M26.2663 13.4614L1.36784 13.5408" stroke="#0F0F0F" strokeWidth="2" strokeLinejoin="bevel"></path>
-                                        </g>
-                                        <defs>
-                                          <clipPath id="clip0_782_8055">
-                                            <rect width="19.1528" height="19.031" fill="white" transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 13.957 27)"></rect>
-                                          </clipPath>
-                                        </defs>
-                                      </svg></div>
-                                  </div>
-                                </div>
-                              </a>
-                              <a a-dm="" data-w-id="83771abb-9268-5d18-1c75-96be37352b96" href="/news" className="nav_item cc-3 w-inline-block">
-                                <div className="c-title-3 cc-nav-3">News</div>
-                                <div className="nav_arrow">
-                                  <div className="svg cc-nav-arrow-bg w-embed"><svg width={54} height={51} viewBox="0 0 54 51" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                      <path fillRule="evenodd" clipRule="evenodd" d="M54 5.6L48.75 0H6L0.375 6L0 5.6V45.4L0.375 45L6 51H48.75L54 45.4V5.6Z" fill="#E7E70D"></path>
-                                    </svg></div>
-                                  <div className="arrow-wrap cc-2">
-                                    <div className="nav_arrow-svg w-embed"><svg width={28} height={27} viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <g clipPath="url(#clip0_782_8055)">
-                                          <path d="M14.8926 24.8372L26.2697 13.46L14.9649 2.15519" stroke="#0F0F0F" strokeWidth="1.4453" strokeLinejoin="bevel"></path>
-                                          <path d="M26.2663 13.4614L1.36784 13.5408" stroke="#0F0F0F" strokeWidth="2" strokeLinejoin="bevel"></path>
-                                        </g>
-                                        <defs>
-                                          <clipPath id="clip0_782_8055">
-                                            <rect width="19.1528" height="19.031" fill="white" transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 13.957 27)"></rect>
-                                          </clipPath>
-                                        </defs>
-                                      </svg></div>
-                                  </div>
-                                  <div className="arrow-wrap">
-                                    <div className="nav_arrow-svg w-embed"><svg width={28} height={27} viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <g clipPath="url(#clip0_782_8055)">
-                                          <path d="M14.8926 24.8372L26.2697 13.46L14.9649 2.15519" stroke="#0F0F0F" strokeWidth="1.4453" strokeLinejoin="bevel"></path>
-                                          <path d="M26.2663 13.4614L1.36784 13.5408" stroke="#0F0F0F" strokeWidth="2" strokeLinejoin="bevel"></path>
-                                        </g>
-                                        <defs>
-                                          <clipPath id="clip0_782_8055">
-                                            <rect width="19.1528" height="19.031" fill="white" transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 13.957 27)"></rect>
-                                          </clipPath>
-                                        </defs>
-                                      </svg></div>
-                                  </div>
-                                </div>
-                              </a>
+                              {resourceLinks.map((link, i) => {
+                                const variants = ['cc-1', 'cc-2', 'cc-3']
+                                return (
+                                  <NavItem key={`res-${i}`} href={link.href} title={link.title} variant={variants[i % 3]} />
+                                )
+                              })}
                             </div>
                           </div>
                         </div>
                       </nav>
                     </div>
-                    <div accordion="" className="nav_dropdown cc-mobile">
-                      <div className="nav_toggle">
-                        <div className="c-text-link cc-nav">Platform</div><svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 10 6" fill="none" chevron="" className="chevron">
-                          <path d="M0.525391 1L5.02539 5L9.52539 1" stroke="currentColor"></path>
-                        </svg><input accordion-checkbox="" type="checkbox" className="accordion_checkbox" />
-                      </div>
-                      <div accordion="element" className="nav_list">
-                        <div mask-height="element">
-                          <div className="mobile_items">
-                            <a href="/features" className="c-title-4">Investment Intelligence Engine</a>
-                            <a href="/security" className="c-title-4">Enterprise Security &amp; Compliance</a>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div accordion="" className="nav_dropdown cc-mobile">
-                      <div className="nav_toggle">
-                        <div className="c-text-link cc-nav">Solutions</div><svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 10 6" fill="none" chevron="" className="chevron">
-                          <path d="M0.525391 1L5.02539 5L9.52539 1" stroke="currentColor"></path>
-                        </svg><input accordion-checkbox="" type="checkbox" className="accordion_checkbox" />
-                      </div>
-                      <div accordion="element" className="nav_list">
-                        <div mask-height="element">
-                          <div className="mobile_items">
-                            <a href="/products/private-markets" className="c-title-4">Private Markets</a>
-                            <a href="/products/public-markets" className="c-title-4">Public Markets</a>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div accordion="" className="nav_dropdown cc-mobile">
-                      <div className="nav_toggle">
-                        <div className="c-text-link cc-nav">Resources</div><svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 10 6" fill="none" chevron="" className="chevron">
-                          <path d="M0.525391 1L5.02539 5L9.52539 1" stroke="currentColor"></path>
-                        </svg><input accordion-checkbox="" type="checkbox" className="accordion_checkbox" />
-                      </div>
-                      <div accordion="element" className="nav_list">
-                        <div mask-height="element">
-                          <div className="mobile_items">
-                            <a href="#" className="c-title-4 cc-hidden">Case Studies</a>
-                            <a href="/blog" className="c-title-4">Blog</a>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div accordion="" className="nav_dropdown cc-mobile">
-                      <div className="nav_toggle">
-                        <div className="c-text-link cc-nav">Company</div><svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 10 6" fill="none" chevron="" className="chevron">
-                          <path d="M0.525391 1L5.02539 5L9.52539 1" stroke="currentColor"></path>
-                        </svg><input accordion-checkbox="" type="checkbox" className="accordion_checkbox" />
-                      </div>
-                      <div accordion="element" className="nav_list">
-                        <div mask-height="element">
-                          <div className="mobile_items">
-                            <a href="/about" className="c-title-4">About</a>
-                            <a href="https://www.linkedin.com/company/brightwaveio/jobs/" target="_blank" className="c-title-4">Careers</a>
-                            <a href="/news" className="c-title-4">News</a>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+
+                    {/* ==================== PRICING (Direct Link) ==================== */}
                     <a href="/pricing" className="nav_link w-inline-block">
+                      <div className="c-text-link cc-nav">Pricing</div>
                       <div className="nav_line"></div>
                     </a>
+
+                    {/* ==================== MOBILE ACCORDIONS ==================== */}
+
+                    {/* Mobile: Platform */}
+                    <div accordion="" className="nav_dropdown cc-mobile">
+                      <div className="nav_toggle">
+                        <div className="c-text-link cc-nav">Platform</div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 10 6" fill="none" chevron="" className="chevron">
+                          <path d="M0.525391 1L5.02539 5L9.52539 1" stroke="currentColor"></path>
+                        </svg>
+                        <input accordion-checkbox="" type="checkbox" className="accordion_checkbox" />
+                      </div>
+                      <div accordion="element" className="nav_list">
+                        <div mask-height="element">
+                          <div className="mobile_items">
+                            {Object.keys(platformGroups).length > 0 ? (
+                              Object.entries(platformGroups).map(([category, features]) =>
+                                features.slice(0, 4).map((f, i) => (
+                                  <a key={`mob-plat-${category}-${i}`} href={`/features/${f.slug}`} className="c-title-4">{f.title}</a>
+                                ))
+                              ).flat()
+                            ) : (
+                              <>
+                                <a href="/features" className="c-title-4">Investment Intelligence Engine</a>
+                                <a href="/security" className="c-title-4">Enterprise Security &amp; Compliance</a>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Mobile: Solutions */}
+                    <div accordion="" className="nav_dropdown cc-mobile">
+                      <div className="nav_toggle">
+                        <div className="c-text-link cc-nav">Solutions</div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 10 6" fill="none" chevron="" className="chevron">
+                          <path d="M0.525391 1L5.02539 5L9.52539 1" stroke="currentColor"></path>
+                        </svg>
+                        <input accordion-checkbox="" type="checkbox" className="accordion_checkbox" />
+                      </div>
+                      <div accordion="element" className="nav_list">
+                        <div mask-height="element">
+                          <div className="mobile_items">
+                            {useCases.map((uc, i) => (
+                              <a key={`mob-uc-${i}`} href={`/use-cases/${uc.slug}`} className="c-title-4">{uc.title}</a>
+                            ))}
+                            {icpPages.map((icp, i) => (
+                              <a key={`mob-icp-${i}`} href={`/i-am-a/${icp.slug}`} className="c-title-4">{icp.title}</a>
+                            ))}
+                            {firmTypes.map((ft, i) => (
+                              <a key={`mob-ft-${i}`} href={`/firm-types/${ft.slug}`} className="c-title-4">{ft.title}</a>
+                            ))}
+                            <a href="/products/private-markets" className="c-title-4">Private Markets</a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Mobile: Resources */}
+                    <div accordion="" className="nav_dropdown cc-mobile">
+                      <div className="nav_toggle">
+                        <div className="c-text-link cc-nav">Resources</div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 10 6" fill="none" chevron="" className="chevron">
+                          <path d="M0.525391 1L5.02539 5L9.52539 1" stroke="currentColor"></path>
+                        </svg>
+                        <input accordion-checkbox="" type="checkbox" className="accordion_checkbox" />
+                      </div>
+                      <div accordion="element" className="nav_list">
+                        <div mask-height="element">
+                          <div className="mobile_items">
+                            {resourceLinks.map((link, i) => (
+                              <a key={`mob-res-${i}`} href={link.href} className="c-title-4">{link.title}</a>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
                   </div>
                 </nav>
+
+                {/* ---- CTAs ---- */}
                 <div className="nav_ctas">
                   <div className="nav_btns">
                     <div data-w-id="faefcd5e-5b3c-824a-01c6-d01116acb6bc" className="toggle">
@@ -421,6 +376,8 @@ export function HeaderClient({
                 </div>
               </div>
             </div>
+
+            {/* ---- HAMBURGER ---- */}
             <div className="hamburger w-nav-button">
               <div className="hamburger_inner cc-fill">
                 <div className="c-text-link cc-stagger">Menu</div>
