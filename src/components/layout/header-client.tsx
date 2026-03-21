@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { LottiePlayer } from '@/components/ui/LottiePlayer'
+
 
 
 /* ------------------------------------------------------------------ */
@@ -94,6 +94,7 @@ export function HeaderClient({
   /* ---- State ---- */
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [isDark, setIsDark] = useState(false)
   const navRef = useRef<HTMLDivElement>(null)
 
   /* Close dropdown when clicking outside */
@@ -117,6 +118,35 @@ export function HeaderClient({
     }
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [])
+
+  /* Read saved theme on mount & apply */
+  useEffect(() => {
+    const saved = localStorage.getItem('theme')
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const dark = saved ? saved === 'dark' : prefersDark
+    setIsDark(dark)
+    applyTheme(dark)
+  }, [])
+
+  function applyTheme(dark: boolean) {
+    const html = document.documentElement
+    if (dark) {
+      html.setAttribute('theme', 'dark')
+      html.classList.add('u-dark-mode')
+    } else {
+      html.removeAttribute('theme')
+      html.classList.remove('u-dark-mode')
+    }
+  }
+
+  const handleToggleTheme = useCallback(() => {
+    setIsDark(prev => {
+      const next = !prev
+      localStorage.setItem('theme', next ? 'dark' : 'light')
+      applyTheme(next)
+      return next
+    })
   }, [])
 
   const toggleDropdown = useCallback((name: string) => {
@@ -151,6 +181,7 @@ export function HeaderClient({
     { title: 'Knowledge Base', href: '/knowledge-base' },
     { title: 'Tools & Guides', href: '/tools-guides' },
     { title: 'Support', href: '/support' },
+    { title: 'Partner Program', href: '/partner-program' },
   ]
 
   return (
@@ -392,8 +423,12 @@ export function HeaderClient({
                 {/* ---- CTAs ---- */}
                 <div className="nav_ctas">
                   <div className="nav_btns">
-                    <div data-w-id="faefcd5e-5b3c-824a-01c6-d01116acb6bc" className="toggle">
-                      <LottiePlayer src="/webflow-documents/Animation---1728577640189.json" className="nav_lottie" autoplay={false} />
+                    <div data-w-id="faefcd5e-5b3c-824a-01c6-d01116acb6bc" className="toggle" onClick={handleToggleTheme} role="button" tabIndex={0} onKeyDown={e => e.key === 'Enter' && handleToggleTheme()} aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}>
+                      {isDark ? (
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                      ) : (
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                      )}
                     </div>
                     <a stagger-text-btn="" href="https://app.brightwave.io/login" className="cta-sec cc-fill w-inline-block">
                       <div stagger-link-text="light" className="c-text-link cc-stagger">Login</div>

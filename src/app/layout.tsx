@@ -25,6 +25,12 @@ export default function RootLayout({
         <link href="/webflow-css/components.css" rel="stylesheet" type="text/css" />
         <link href="/webflow-css/brightwave.css" rel="stylesheet" type="text/css" />
         <link href="/webflow-css/inline-overrides.css" rel="stylesheet" type="text/css" />
+        {/* Prevent FOUC: apply dark mode before first paint */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('theme');var d=t?t==='dark':window.matchMedia('(prefers-color-scheme:dark)').matches;if(d){document.documentElement.setAttribute('theme','dark');document.documentElement.classList.add('u-dark-mode')}}catch(e){}})()`,
+          }}
+        />
       </head>
       <body className="bg-white text-bw-gray-800 antialiased">
         {children}
