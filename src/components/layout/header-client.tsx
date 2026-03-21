@@ -380,12 +380,7 @@ export function HeaderClient({
     'Earn': ['adnetwork', 'paidsubscriptions', 'boosts', 'sponsorships', 'digitalproducts'],
   }
 
-  /* Top feature cards for Platform */
-  const topFeatures = [
-    { title: 'Newsletters', desc: 'Make a statement in the inbox with your next newsletter', icon: 'newsletters', href: '/features/newsletters' },
-    { title: 'Web Builder', desc: 'Build your digital home base. No coding required', icon: 'webbuilder', href: '/features/web-builder' },
-    { title: 'Ad Network', desc: 'Connecting premium publishers with high-quality advertisers', icon: 'adnetwork', href: '/features/ad-network' },
-  ]
+
 
   /* ---- Reusable item row for Solutions ---- */
   function SolItem({ title, href, icon }: { title: string; href: string; icon: string }) {
@@ -469,32 +464,13 @@ export function HeaderClient({
                         {/* ---- FEATURES MEGA MENU ---- */}
                         <div style={megaPanelStyle}>
                           <div style={megaInnerStyle}>
-                            {/* Top: 3 feature hero cards */}
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr auto', gap: 40 }}>
-                              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 40, gridColumn: '1 / 4' }}>
-                                {topFeatures.map((feat, i) => (
-                                  <a key={i} href={feat.href} style={{
-                                    display: 'flex', alignItems: 'flex-start', gap: 16,
-                                    textDecoration: 'none', color: MEGA_TEXT,
-                                    padding: '12px 0',
-                                    transition: 'opacity 0.15s',
-                                  }}
-                                    onMouseEnter={e => (e.currentTarget.style.opacity = '0.7')}
-                                    onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
-                                  >
-                                    <FeatureIcon name={feat.icon} />
-                                    <div>
-                                      <div style={{ fontSize: 16, fontWeight: 600, marginBottom: 6 }}>{feat.title}</div>
-                                      <div style={{ fontSize: 13, color: MEGA_TEXT_MUTED, lineHeight: 1.5 }}>{feat.desc}</div>
-                                    </div>
-                                  </a>
-                                ))}
-                              </div>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 40 }}>
+
 
                               {/* Right sidebar - featured card */}
                               <div style={{
-                                gridRow: '1 / 3',
-                                gridColumn: '4',
+                                gridRow: '1',
+                                gridColumn: '2',
                                 borderLeft: `1px solid ${MEGA_BORDER}`,
                                 paddingLeft: 40,
                                 minWidth: 280,
@@ -705,7 +681,7 @@ export function HeaderClient({
                                     padding: 32,
                                   }}>
                                     <div style={{ fontSize: 28, fontWeight: 800, lineHeight: 1.2, letterSpacing: '-0.02em', textTransform: 'uppercase' }}>
-                                      THE STATE OF<br />NEWSLETTERS
+                                      THE STATE OF AI IN<br />PRIVATE EQUITY
                                     </div>
                                     <div style={{
                                       marginTop: 20,
@@ -719,15 +695,15 @@ export function HeaderClient({
                                   </div>
                                 </div>
                                 <div style={{ fontSize: 18, fontWeight: 600, color: MEGA_TEXT, marginBottom: 8 }}>
-                                  State of Newsletters
+                                  State of AI in Private Equity
                                 </div>
                                 <div style={{ fontSize: 13, color: MEGA_TEXT_MUTED, marginBottom: 20, lineHeight: 1.5 }}>
-                                  The latest Brightwave data, trends & innovations shaping the newsletter industry
+                                  Brightwave&apos;s annual research report on how AI is transforming the private equity industry.
                                 </div>
-                                <a href="/state-of-newsletters" style={{
+                                <a href="/state-of-ai-in-private-equity" style={{
                                   color: MEGA_ACCENT, fontSize: 14, fontWeight: 500, textDecoration: 'none',
                                 }}>
-                                  Read the State of Newsletters report &rarr;
+                                  Read the Report &rarr;
                                 </a>
                               </div>
                             </div>
