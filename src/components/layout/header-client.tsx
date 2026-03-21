@@ -6,65 +6,139 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 
 
 /* ------------------------------------------------------------------ */
-/*  Header Component - Updated Nav Structure                           */
-/*  Preserves all Webflow CSS classes for styling                      */
-/*  Adds React-driven interactivity for dropdowns & mobile nav         */
+/*  Header Component - Mega-Menu Redesign                              */
+/*  Matches reference screenshots: SOLUTIONS, FEATURES, RESOURCES      */
+/*  Preserves Webflow CSS classes + React-driven dropdown interactivity*/
 /* ------------------------------------------------------------------ */
 
-/* Reusable SVG sub-components */
+/* ---- Shared inline style constants ---- */
+const MEGA_BG = '#0B0C1A'
+const MEGA_TEXT = '#ffffff'
+const MEGA_TEXT_MUTED = '#8a8f98'
+const MEGA_ACCENT = '#E7E70D'
+const MEGA_BORDER = 'rgba(255,255,255,0.08)'
+const MEGA_ICON_BG = 'rgba(255,255,255,0.04)'
+const MEGA_ICON_BORDER = 'rgba(255,255,255,0.12)'
+const MEGA_HOVER_BG = 'rgba(255,255,255,0.06)'
+
+/* ---- Reusable SVG sub-components ---- */
 const ChevronSvg = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 10 6" fill="none" className="chevron">
     <path d="M0.525391 1L5.02539 5L9.52539 1" stroke="currentColor"></path>
   </svg>
 )
 
-const ArrowBgSvg = () => (
-  <div className="svg cc-nav-arrow-bg w-embed">
-    <svg width={54} height={51} viewBox="0 0 54 51" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path fillRule="evenodd" clipRule="evenodd" d="M54 5.6L48.75 0H6L0.375 6L0 5.6V45.4L0.375 45L6 51H48.75L54 45.4V5.6Z" fill="#E7E70D"></path>
-    </svg>
-  </div>
-)
+/* Small inline icon for menu items (outlined style) */
+function MenuIcon({ name }: { name: string }) {
+  const s: React.CSSProperties = { width: 18, height: 18, flexShrink: 0, opacity: 0.7 }
+  // Simple outlined SVG icons mapped by keyword
+  const icons: Record<string, React.ReactNode> = {
+    // Solutions - I want to...
+    'influence': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M3 8l4-4 4 4"/><path d="M7 4v12"/><path d="M21 16l-4 4-4-4"/><path d="M17 20V8"/></svg>,
+    'reach': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>,
+    'inform': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>,
+    'community': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8"/><line x1="12" y1="1" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="23"/></svg>,
+    'engage': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
+    'media': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>,
+    // Solutions - I am a...
+    'journalist': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>,
+    'publisher': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>,
+    'newsroom': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="16" y2="11"/><line x1="8" y1="15" x2="12" y2="15"/></svg>,
+    'startup': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>,
+    'writer': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>,
+    'founder': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>,
+    // Solutions - Brightwave For...
+    'business': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>,
+    'creators': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>,
+    'web3': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>,
+    'health': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>,
+    'food': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>,
+    'culture': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>,
+    // Features top cards
+    'newsletters': <svg style={{width:28,height:28,flexShrink:0}} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>,
+    'webbuilder': <svg style={{width:28,height:28,flexShrink:0}} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>,
+    'adnetwork': <svg style={{width:28,height:28,flexShrink:0}} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="2"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="10"/></svg>,
+    // Features - Content
+    'editor': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>,
+    'customization': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>,
+    'ai': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>,
+    'automations': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>,
+    'polls': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>,
+    'audio': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>,
+    // Features - Growth
+    'boosts': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>,
+    'referral': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
+    'forms': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>,
+    'popups': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 8h.01"/><path d="M12 8h.01"/></svg>,
+    'magiclinks': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>,
+    'recommendations': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>,
+    // Features - Data
+    'analytics': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>,
+    'abtesting': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>,
+    'verified': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>,
+    'api': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>,
+    'segmentation': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>,
+    'surveys': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>,
+    // Features - Earn
+    'paidsubscriptions': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>,
+    'sponsorships': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>,
+    'digitalproducts': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>,
+    // Resources
+    'blog': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>,
+    'product': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>,
+    'developers': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>,
+    'tools': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>,
+    'partners': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
+    'comparisons': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>,
+    'templates': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>,
+    'events': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>,
+    'changelog': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>,
+    'spotlight': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>,
+    'support': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>,
+    'casestudies': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>,
+    'experts': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
+    'glossary': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>,
+    'news': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="16" y2="11"/><line x1="8" y1="15" x2="12" y2="15"/></svg>,
+    'releasenotes': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>,
+    'engineering': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>,
+    'knowledge': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>,
+    'partner': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>,
+  }
+  return icons[name] || <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/></svg>
+}
 
-const ArrowSvgIcon = () => (
-  <div className="nav_arrow-svg w-embed">
-    <svg width={28} height={27} viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <g clipPath="url(#clip0_782_8055)">
-        <path d="M14.8926 24.8372L26.2697 13.46L14.9649 2.15519" stroke="#0F0F0F" strokeWidth="1.4453" strokeLinejoin="bevel"></path>
-        <path d="M26.2663 13.4614L1.36784 13.5408" stroke="#0F0F0F" strokeWidth="2" strokeLinejoin="bevel"></path>
-      </g>
-      <defs>
-        <clipPath id="clip0_782_8055">
-          <rect width="19.1528" height="19.031" fill="white" transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 13.957 27)"></rect>
-        </clipPath>
-      </defs>
-    </svg>
-  </div>
-)
-
-const NavArrow = () => (
-  <div className="nav_arrow">
-    <ArrowBgSvg />
-    <div className="arrow-wrap cc-2"><ArrowSvgIcon /></div>
-    <div className="arrow-wrap"><ArrowSvgIcon /></div>
-  </div>
-)
-
-/* Nav item link component with Webflow arrow styling */
-function NavItem({ href, title, variant = 'cc-1', target }: { href: string; title: string; variant?: string; target?: string }) {
-  const titleClass = variant === 'cc-1' ? 'c-title-3 cc-nav-1' : variant === 'cc-2' ? 'c-title-3 cc-nav-2' : 'c-title-3 cc-nav-3'
+/* Large icon in rounded square for feature cards */
+function FeatureIcon({ name }: { name: string }) {
   return (
-    <a a-dm="" href={href} className={`nav_item ${variant} w-inline-block`} {...(target ? { target } : {})}>
-      <div className={titleClass}>{title}</div>
-      <NavArrow />
-    </a>
+    <div style={{
+      width: 48, height: 48, borderRadius: 12,
+      border: `1px solid ${MEGA_ICON_BORDER}`,
+      background: MEGA_ICON_BG,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      flexShrink: 0,
+      color: '#8b9cf7',
+    }}>
+      <MenuIcon name={name} />
+    </div>
   )
 }
 
-/* Column header for Solutions dropdown */
-function ColumnHeader({ text }: { text: string }) {
-  return <div className="c-text-link cc-nav" style={{ opacity: 0.5, marginBottom: '0.5rem', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{text}</div>
+/* Resource card icon (rounded square with border) */
+function ResourceIcon({ name }: { name: string }) {
+  return (
+    <div style={{
+      width: 44, height: 44, borderRadius: 10,
+      border: `1px solid ${MEGA_ICON_BORDER}`,
+      background: MEGA_ICON_BG,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      flexShrink: 0,
+      color: '#8b9cf7',
+    }}>
+      <MenuIcon name={name} />
+    </div>
+  )
 }
+
 
 interface PlatformFeature {
   title: string
@@ -172,17 +246,183 @@ export function HeaderClient({
   const firmTypes = solutionsNavData?.firmTypes ?? []
 
   const resourceLinks = [
-    { title: 'Blog', href: '/blog' },
-    { title: 'News', href: '/news' },
-    { title: 'Release Notes', href: '/release-notes' },
-    { title: 'Engineering Log', href: '/engineering-log' },
-    { title: 'Events', href: '/events' },
-    { title: 'Comparisons', href: '/comparisons' },
-    { title: 'Knowledge Base', href: '/knowledge-base' },
-    { title: 'Tools & Guides', href: '/tools-guides' },
-    { title: 'Support', href: '/support' },
-    { title: 'Partner Program', href: '/partner-program' },
+    { title: 'Blog', href: '/blog', icon: 'blog', desc: 'Best practices for scaling your newsletter' },
+    { title: 'News', href: '/news', icon: 'news', desc: 'Regularly released product updates' },
+    { title: 'Engineering Log', href: '/engineering-log', icon: 'engineering', desc: 'Technical docs and developer resources' },
+    { title: 'Tools & Guides', href: '/tools-guides', icon: 'tools', desc: 'Resources and growth assets' },
+    { title: 'Partner Program', href: '/partner-program', icon: 'partner', desc: 'Join our partner ecosystem' },
+    { title: 'Comparisons', href: '/comparisons', icon: 'comparisons', desc: 'How Brightwave stacks up against competitors' },
+    { title: 'Events', href: '/events', icon: 'events', desc: 'Live and past online events' },
+    { title: 'Release Notes', href: '/release-notes', icon: 'releasenotes', desc: 'See our latest feature launches' },
+    { title: 'Knowledge Base', href: '/knowledge-base', icon: 'knowledge', desc: 'In-depth guides and documentation' },
+    { title: 'Support', href: '/support', icon: 'support', desc: 'Product support and documentation' },
+    { title: 'Case Studies', href: '/case-studies', icon: 'casestudies', desc: 'Success stories from Brightwave customers.' },
   ]
+
+  /* ---- Shared mega-menu panel styles ---- */
+  const megaPanelStyle: React.CSSProperties = {
+    position: 'fixed',
+    left: 0,
+    right: 0,
+    top: 'var(--nav-height, 64px)',
+    background: MEGA_BG,
+    borderTop: `1px solid ${MEGA_BORDER}`,
+    zIndex: 9999,
+    overflowY: 'auto',
+    maxHeight: 'calc(100vh - var(--nav-height, 64px))',
+  }
+
+  const megaInnerStyle: React.CSSProperties = {
+    maxWidth: 1400,
+    margin: '0 auto',
+    padding: '48px 40px',
+  }
+
+  /* Solutions dropdown items */
+  const solCol1 = useCases.length > 0
+    ? useCases.map(uc => ({ title: uc.title, href: `/use-cases/${uc.slug}` }))
+    : [
+      { title: 'Influence Public Opinion', href: '/use-cases/influence-public-opinion' },
+      { title: 'Reach More Customers', href: '/use-cases/reach-more-customers' },
+      { title: 'Inform Stakeholders', href: '/use-cases/inform-stakeholders' },
+      { title: 'Connect My Local Community', href: '/use-cases/connect-my-local-community' },
+      { title: 'Engage My Audience', href: '/use-cases/engage-my-audience' },
+      { title: 'Build A Media Brand', href: '/use-cases/build-a-media-brand' },
+    ]
+  const solCol1Icons = ['influence', 'reach', 'inform', 'community', 'engage', 'media']
+
+  const solCol2 = icpPages.length > 0
+    ? icpPages.map(icp => ({ title: icp.title, href: `/i-am-a/${icp.slug}` }))
+    : [
+      { title: 'Independent Journalist', href: '/i-am-a/independent-journalist' },
+      { title: 'Publisher', href: '/i-am-a/publisher' },
+      { title: 'Newsroom', href: '/i-am-a/newsroom' },
+      { title: 'Startup', href: '/i-am-a/startup' },
+      { title: 'Writer', href: '/i-am-a/writer' },
+      { title: 'Founder', href: '/i-am-a/founder' },
+    ]
+  const solCol2Icons = ['journalist', 'publisher', 'newsroom', 'startup', 'writer', 'founder']
+
+  const solCol3 = firmTypes.length > 0
+    ? firmTypes.map(ft => ({ title: ft.title, href: `/firm-types/${ft.slug}` }))
+    : [
+      { title: 'Business', href: '/firm-types/business' },
+      { title: 'Content Creators', href: '/firm-types/content-creators' },
+      { title: 'Web 3 & Crypto', href: '/firm-types/web3-crypto' },
+      { title: 'Health & Fitness', href: '/firm-types/health-fitness' },
+      { title: 'Food', href: '/firm-types/food' },
+      { title: 'Pop Culture', href: '/firm-types/pop-culture' },
+    ]
+  const solCol3Icons = ['business', 'creators', 'web3', 'health', 'food', 'culture']
+
+  /* Feature items grouped by category */
+  const featureCategories = Object.keys(platformGroups).length > 0
+    ? Object.entries(platformGroups).map(([category, features]) => ({
+      title: category,
+      href: `/features#${category.toLowerCase().replace(/\s+/g, '-')}`,
+      items: features.map(f => ({ title: f.title, href: `/features/${f.slug}` })),
+    }))
+    : [
+      {
+        title: 'Content',
+        href: '/features#content',
+        items: [
+          { title: 'Editor', href: '/features/editor' },
+          { title: 'Customization', href: '/features/customization' },
+          { title: 'Brightwave AI', href: '/features/ai' },
+          { title: 'Automations', href: '/features/automations' },
+          { title: 'Polls', href: '/features/polls' },
+          { title: 'Audio', href: '/features/audio' },
+        ],
+      },
+      {
+        title: 'Growth',
+        href: '/features#growth',
+        items: [
+          { title: 'Boosts', href: '/features/boosts' },
+          { title: 'Referral Program', href: '/features/referral-program' },
+          { title: 'Subscribe Forms', href: '/features/subscribe-forms' },
+          { title: 'Pop-ups', href: '/features/pop-ups' },
+          { title: 'Magic Links', href: '/features/magic-links' },
+          { title: 'Recommendations', href: '/features/recommendations' },
+        ],
+      },
+      {
+        title: 'Data',
+        href: '/features#data',
+        items: [
+          { title: 'Analytics', href: '/features/analytics' },
+          { title: 'A/B Testing', href: '/features/ab-testing' },
+          { title: 'Verified Clicks', href: '/features/verified-clicks' },
+          { title: 'API & Integrations', href: '/features/api-integrations' },
+          { title: 'Segmentation', href: '/features/segmentation' },
+          { title: 'Surveys', href: '/features/surveys' },
+        ],
+      },
+      {
+        title: 'Earn',
+        href: '/features#earn',
+        items: [
+          { title: 'Ad Network', href: '/features/ad-network' },
+          { title: 'Paid Subscriptions', href: '/features/paid-subscriptions' },
+          { title: 'Boosts', href: '/features/boosts-earn' },
+          { title: 'Direct Sponsorships', href: '/features/direct-sponsorships' },
+          { title: 'Digital Products', href: '/features/digital-products' },
+        ],
+      },
+    ]
+
+  /* Category item icon mapping */
+  const catIconMap: Record<string, string[]> = {
+    'Content': ['editor', 'customization', 'ai', 'automations', 'polls', 'audio'],
+    'Growth': ['boosts', 'referral', 'forms', 'popups', 'magiclinks', 'recommendations'],
+    'Data': ['analytics', 'abtesting', 'verified', 'api', 'segmentation', 'surveys'],
+    'Earn': ['adnetwork', 'paidsubscriptions', 'boosts', 'sponsorships', 'digitalproducts'],
+  }
+
+  /* Top feature cards for Platform */
+  const topFeatures = [
+    { title: 'Newsletters', desc: 'Make a statement in the inbox with your next newsletter', icon: 'newsletters', href: '/features/newsletters' },
+    { title: 'Web Builder', desc: 'Build your digital home base. No coding required', icon: 'webbuilder', href: '/features/web-builder' },
+    { title: 'Ad Network', desc: 'Connecting premium publishers with high-quality advertisers', icon: 'adnetwork', href: '/features/ad-network' },
+  ]
+
+  /* ---- Reusable item row for Solutions ---- */
+  function SolItem({ title, href, icon }: { title: string; href: string; icon: string }) {
+    return (
+      <a href={href} style={{
+        display: 'flex', alignItems: 'center', gap: 12,
+        padding: '8px 0', color: MEGA_TEXT,
+        textDecoration: 'none', fontSize: 14, fontWeight: 400,
+        transition: 'opacity 0.15s',
+      }}
+        onMouseEnter={e => (e.currentTarget.style.opacity = '0.7')}
+        onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+      >
+        <MenuIcon name={icon} />
+        <span>{title}</span>
+      </a>
+    )
+  }
+
+  /* ---- Reusable item row for Features categories ---- */
+  function CatItem({ title, href, icon }: { title: string; href: string; icon: string }) {
+    return (
+      <a href={href} style={{
+        display: 'flex', alignItems: 'center', gap: 10,
+        padding: '6px 0', color: MEGA_TEXT,
+        textDecoration: 'none', fontSize: 14, fontWeight: 400,
+        transition: 'opacity 0.15s',
+      }}
+        onMouseEnter={e => (e.currentTarget.style.opacity = '0.7')}
+        onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+      >
+        <MenuIcon name={icon} />
+        <span>{title}</span>
+      </a>
+    )
+  }
+
 
   return (
     <>
@@ -217,7 +457,7 @@ export function HeaderClient({
                   <div className="nav_links">
 
                     {/* ==================== PLATFORM DROPDOWN (Desktop) ==================== */}
-                    <div data-hover="false" data-delay="500" className="nav_dropdown cc-desktop w-dropdown">
+                    <div data-hover="false" data-delay="500" className={`nav_dropdown cc-desktop w-dropdown${openDropdown === 'platform' ? ' w--open' : ''}`}>
                       <div className="nav_toggle w-dropdown-toggle" onClick={() => toggleDropdown('platform')} aria-expanded={openDropdown === 'platform'} role="button" tabIndex={0} onKeyDown={e => e.key === 'Enter' && toggleDropdown('platform')}>
                         <div className="text-overflow">
                           <div className="c-text-link cc-nav">Platform</div>
@@ -226,32 +466,92 @@ export function HeaderClient({
                         <ChevronSvg />
                       </div>
                       <nav a-dm="" className={`nav_list w-dropdown-list${openDropdown === 'platform' ? ' w--open' : ''}`}>
-                        <div className="nav_list-wrap">
-                          <div className="nav_list-flex">
-                            <div className="nav_list-flex cc-inner">
-                              {Object.keys(platformGroups).length > 0 ? (
-                                Object.entries(platformGroups).map(([category, features], gi) => {
-                                  const variants = ['cc-1', 'cc-2', 'cc-3']
-                                  const shown = features.slice(0, 4)
-                                  return shown.map((f, fi) => (
-                                    <NavItem
-                                      key={`${category}-${fi}`}
-                                      href={`/features/${f.slug}`}
-                                      title={f.title}
-                                      variant={variants[(gi + fi) % 3]}
-                                    />
-                                  )).concat(
-                                    features.length > 4
-                                      ? [<NavItem key={`${category}-more`} href={`/features#${category.toLowerCase().replace(/\s+/g, '-')}`} title={`...More ${category}`} variant={variants[gi % 3]} />]
-                                      : []
-                                  )
-                                }).flat()
-                              ) : (
-                                <>
-                                  <NavItem href="/features" title="Investment Intelligence Engine" variant="cc-2" />
-                                  <NavItem href="/security" title="Enterprise Security &amp; Compliance" variant="cc-3" />
-                                </>
-                              )}
+                        {/* ---- FEATURES MEGA MENU ---- */}
+                        <div style={megaPanelStyle}>
+                          <div style={megaInnerStyle}>
+                            {/* Top: 3 feature hero cards */}
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr auto', gap: 40 }}>
+                              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 40, gridColumn: '1 / 4' }}>
+                                {topFeatures.map((feat, i) => (
+                                  <a key={i} href={feat.href} style={{
+                                    display: 'flex', alignItems: 'flex-start', gap: 16,
+                                    textDecoration: 'none', color: MEGA_TEXT,
+                                    padding: '12px 0',
+                                    transition: 'opacity 0.15s',
+                                  }}
+                                    onMouseEnter={e => (e.currentTarget.style.opacity = '0.7')}
+                                    onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+                                  >
+                                    <FeatureIcon name={feat.icon} />
+                                    <div>
+                                      <div style={{ fontSize: 16, fontWeight: 600, marginBottom: 6 }}>{feat.title}</div>
+                                      <div style={{ fontSize: 13, color: MEGA_TEXT_MUTED, lineHeight: 1.5 }}>{feat.desc}</div>
+                                    </div>
+                                  </a>
+                                ))}
+                              </div>
+
+                              {/* Right sidebar - featured card */}
+                              <div style={{
+                                gridRow: '1 / 3',
+                                gridColumn: '4',
+                                borderLeft: `1px solid ${MEGA_BORDER}`,
+                                paddingLeft: 40,
+                                minWidth: 280,
+                                maxWidth: 320,
+                              }}>
+                                {/* Product screenshot placeholder */}
+                                <div style={{
+                                  width: '100%', height: 180, borderRadius: 12,
+                                  background: 'linear-gradient(135deg, #1a1b3a 0%, #2d2e5e 100%)',
+                                  border: `1px solid ${MEGA_ICON_BORDER}`,
+                                  marginBottom: 20,
+                                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                  overflow: 'hidden',
+                                }}>
+                                  <div style={{ color: MEGA_TEXT_MUTED, fontSize: 13, textAlign: 'center', padding: 20 }}>
+                                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" style={{ opacity: 0.5, marginBottom: 8, display: 'block', margin: '0 auto 8px' }}><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                                    Product Dashboard
+                                  </div>
+                                </div>
+                                <div style={{ fontSize: 18, fontWeight: 600, color: MEGA_TEXT, marginBottom: 8 }}>
+                                  Take a tour of Brightwave
+                                </div>
+                                <div style={{ fontSize: 13, color: MEGA_TEXT_MUTED, marginBottom: 20, lineHeight: 1.5 }}>
+                                  Explore the features and capabilities of Brightwave
+                                </div>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                                  <a href="/features" style={{ color: MEGA_ACCENT, fontSize: 14, fontWeight: 500, textDecoration: 'none' }}>Product Overview &rarr;</a>
+                                  <a href="/features/api-integrations" style={{ color: MEGA_ACCENT, fontSize: 14, fontWeight: 500, textDecoration: 'none' }}>Integrations &rarr;</a>
+                                  <a href="/features" style={{ color: MEGA_ACCENT, fontSize: 14, fontWeight: 500, textDecoration: 'none' }}>View all features &rarr;</a>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Divider */}
+                            <div style={{ borderTop: `1px solid ${MEGA_BORDER}`, margin: '32px 0' }} />
+
+                            {/* Bottom: Category columns */}
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 40, maxWidth: 'calc(100% - 360px)' }}>
+                              {featureCategories.map((cat, ci) => {
+                                const icons = catIconMap[cat.title] || []
+                                return (
+                                  <div key={ci}>
+                                    <a href={cat.href} style={{
+                                      display: 'flex', alignItems: 'center', gap: 6,
+                                      fontSize: 14, fontWeight: 600, color: MEGA_TEXT,
+                                      textDecoration: 'none', marginBottom: 16,
+                                    }}>
+                                      {cat.title} <span style={{ fontSize: 16 }}>&rarr;</span>
+                                    </a>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                      {cat.items.map((item, ii) => (
+                                        <CatItem key={ii} title={item.title} href={item.href} icon={icons[ii] || 'editor'} />
+                                      ))}
+                                    </div>
+                                  </div>
+                                )
+                              })}
                             </div>
                           </div>
                         </div>
@@ -259,7 +559,7 @@ export function HeaderClient({
                     </div>
 
                     {/* ==================== SOLUTIONS DROPDOWN (Desktop) ==================== */}
-                    <div data-hover="false" data-delay="500" className="nav_dropdown cc-desktop w-dropdown">
+                    <div data-hover="false" data-delay="500" className={`nav_dropdown cc-desktop w-dropdown${openDropdown === 'solutions' ? ' w--open' : ''}`}>
                       <div className="nav_toggle w-dropdown-toggle" onClick={() => toggleDropdown('solutions')} aria-expanded={openDropdown === 'solutions'} role="button" tabIndex={0} onKeyDown={e => e.key === 'Enter' && toggleDropdown('solutions')}>
                         <div className="text-overflow">
                           <div className="c-text-link cc-nav">Solutions</div>
@@ -268,34 +568,69 @@ export function HeaderClient({
                         <ChevronSvg />
                       </div>
                       <nav a-dm="" className={`nav_list w-dropdown-list${openDropdown === 'solutions' ? ' w--open' : ''}`}>
-                        <div className="nav_list-wrap">
-                          <div className="nav_list-flex">
-                            <div className="nav_list-flex cc-inner">
-                              {/* Column 1: Use Cases */}
-                              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                                <ColumnHeader text="Use Cases" />
-                                {useCases.map((uc, i) => (
-                                  <NavItem key={`uc-${i}`} href={`/use-cases/${uc.slug}`} title={uc.title} variant="cc-1" />
-                                ))}
+                        {/* ---- SOLUTIONS MEGA MENU ---- */}
+                        <div style={megaPanelStyle}>
+                          <div style={{ ...megaInnerStyle, padding: '48px 40px 40px' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 60 }}>
+                              {/* Column 1: I want to... */}
+                              <div>
+                                <div style={{
+                                  fontSize: 18, fontWeight: 600, color: MEGA_TEXT,
+                                  fontStyle: 'italic', marginBottom: 20,
+                                  fontFamily: 'Georgia, "Times New Roman", serif',
+                                }}>
+                                  I want to...
+                                </div>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                  {solCol1.map((item, i) => (
+                                    <SolItem key={i} title={item.title} href={item.href} icon={solCol1Icons[i] || 'influence'} />
+                                  ))}
+                                </div>
+                                <a href="/use-cases" style={{
+                                  display: 'inline-block', marginTop: 16,
+                                  fontSize: 13, color: MEGA_TEXT_MUTED, textDecoration: 'none',
+                                }}>View all &rarr;</a>
                               </div>
+
                               {/* Column 2: I am a... */}
-                              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                                <ColumnHeader text="I am a..." />
-                                {icpPages.map((icp, i) => (
-                                  <NavItem key={`icp-${i}`} href={`/i-am-a/${icp.slug}`} title={icp.title} variant="cc-2" />
-                                ))}
+                              <div>
+                                <div style={{
+                                  fontSize: 18, fontWeight: 600, color: MEGA_TEXT,
+                                  fontStyle: 'italic', marginBottom: 20,
+                                  fontFamily: 'Georgia, "Times New Roman", serif',
+                                }}>
+                                  I am a...
+                                </div>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                  {solCol2.map((item, i) => (
+                                    <SolItem key={i} title={item.title} href={item.href} icon={solCol2Icons[i] || 'journalist'} />
+                                  ))}
+                                </div>
+                                <a href="/i-am-a" style={{
+                                  display: 'inline-block', marginTop: 16,
+                                  fontSize: 13, color: MEGA_TEXT_MUTED, textDecoration: 'none',
+                                }}>View all &rarr;</a>
                               </div>
-                              {/* Column 3: Firm Type */}
-                              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                                <ColumnHeader text="Firm Type" />
-                                {firmTypes.map((ft, i) => (
-                                  <NavItem key={`ft-${i}`} href={`/firm-types/${ft.slug}`} title={ft.title} variant="cc-3" />
-                                ))}
+
+                              {/* Column 3: Brightwave For... */}
+                              <div>
+                                <div style={{
+                                  fontSize: 18, fontWeight: 600, color: MEGA_TEXT,
+                                  fontStyle: 'italic', marginBottom: 20,
+                                  fontFamily: 'Georgia, "Times New Roman", serif',
+                                }}>
+                                  Brightwave For...
+                                </div>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                  {solCol3.map((item, i) => (
+                                    <SolItem key={i} title={item.title} href={item.href} icon={solCol3Icons[i] || 'business'} />
+                                  ))}
+                                </div>
+                                <a href="/firm-types" style={{
+                                  display: 'inline-block', marginTop: 16,
+                                  fontSize: 13, color: MEGA_TEXT_MUTED, textDecoration: 'none',
+                                }}>View all &rarr;</a>
                               </div>
-                            </div>
-                            {/* Private Markets card */}
-                            <div style={{ marginTop: '1rem' }}>
-                              <NavItem href="/products/private-markets" title="Private Markets" variant="cc-2" />
                             </div>
                           </div>
                         </div>
@@ -309,7 +644,7 @@ export function HeaderClient({
                     </a>
 
                     {/* ==================== RESOURCES DROPDOWN (Desktop) ==================== */}
-                    <div data-hover="false" data-delay="500" className="nav_dropdown cc-desktop w-dropdown">
+                    <div data-hover="false" data-delay="500" className={`nav_dropdown cc-desktop w-dropdown${openDropdown === 'resources' ? ' w--open' : ''}`}>
                       <div className="nav_toggle w-dropdown-toggle" onClick={() => toggleDropdown('resources')} aria-expanded={openDropdown === 'resources'} role="button" tabIndex={0} onKeyDown={e => e.key === 'Enter' && toggleDropdown('resources')}>
                         <div className="text-overflow">
                           <div className="c-text-link cc-nav">Resources</div>
@@ -318,15 +653,83 @@ export function HeaderClient({
                         <ChevronSvg />
                       </div>
                       <nav a-dm="" className={`nav_list w-dropdown-list${openDropdown === 'resources' ? ' w--open' : ''}`}>
-                        <div className="nav_list-wrap">
-                          <div className="nav_list-flex">
-                            <div className="nav_list-flex cc-inner">
-                              {resourceLinks.map((link, i) => {
-                                const variants = ['cc-1', 'cc-2', 'cc-3']
-                                return (
-                                  <NavItem key={`res-${i}`} href={link.href} title={link.title} variant={variants[i % 3]} />
-                                )
-                              })}
+                        {/* ---- RESOURCES MEGA MENU ---- */}
+                        <div style={megaPanelStyle}>
+                          <div style={megaInnerStyle}>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 48 }}>
+                              {/* Left: Resource grid (3 columns) */}
+                              <div style={{
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(3, 1fr)',
+                                gap: '28px 36px',
+                              }}>
+                                {resourceLinks.map((link, i) => (
+                                  <a key={i} href={link.href} style={{
+                                    display: 'flex', alignItems: 'flex-start', gap: 14,
+                                    textDecoration: 'none', color: MEGA_TEXT,
+                                    padding: '8px 0',
+                                    transition: 'opacity 0.15s',
+                                  }}
+                                    onMouseEnter={e => (e.currentTarget.style.opacity = '0.7')}
+                                    onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+                                  >
+                                    <ResourceIcon name={link.icon} />
+                                    <div>
+                                      <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 4 }}>{link.title}</div>
+                                      <div style={{ fontSize: 13, color: MEGA_TEXT_MUTED, lineHeight: 1.5 }}>{link.desc}</div>
+                                    </div>
+                                  </a>
+                                ))}
+                              </div>
+
+                              {/* Right sidebar: Featured content */}
+                              <div style={{
+                                borderLeft: `1px solid ${MEGA_BORDER}`,
+                                paddingLeft: 40,
+                                minWidth: 300,
+                                maxWidth: 360,
+                              }}>
+                                {/* Featured image placeholder */}
+                                <div style={{
+                                  width: '100%', aspectRatio: '3/4', maxHeight: 380,
+                                  borderRadius: 12,
+                                  background: 'linear-gradient(135deg, #0d0e2a 0%, #1a1b4a 50%, #0d0e2a 100%)',
+                                  border: `1px solid ${MEGA_ICON_BORDER}`,
+                                  marginBottom: 24,
+                                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                  overflow: 'hidden',
+                                  position: 'relative',
+                                }}>
+                                  <div style={{
+                                    textAlign: 'center', color: MEGA_TEXT,
+                                    padding: 32,
+                                  }}>
+                                    <div style={{ fontSize: 28, fontWeight: 800, lineHeight: 1.2, letterSpacing: '-0.02em', textTransform: 'uppercase' }}>
+                                      THE STATE OF<br />NEWSLETTERS
+                                    </div>
+                                    <div style={{
+                                      marginTop: 20,
+                                      fontSize: 48, fontWeight: 800,
+                                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                      WebkitBackgroundClip: 'text',
+                                      WebkitTextFillColor: 'transparent',
+                                    }}>
+                                      2026
+                                    </div>
+                                  </div>
+                                </div>
+                                <div style={{ fontSize: 18, fontWeight: 600, color: MEGA_TEXT, marginBottom: 8 }}>
+                                  State of Newsletters
+                                </div>
+                                <div style={{ fontSize: 13, color: MEGA_TEXT_MUTED, marginBottom: 20, lineHeight: 1.5 }}>
+                                  The latest Brightwave data, trends & innovations shaping the newsletter industry
+                                </div>
+                                <a href="/state-of-newsletters" style={{
+                                  color: MEGA_ACCENT, fontSize: 14, fontWeight: 500, textDecoration: 'none',
+                                }}>
+                                  Read the State of Newsletters report &rarr;
+                                </a>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -453,6 +856,20 @@ export function HeaderClient({
           </div>
         </div>
       </div>
+
+      {/* Backdrop overlay when mega menu is open */}
+      {openDropdown && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            top: 'var(--nav-height, 64px)',
+            background: 'rgba(0,0,0,0.4)',
+            zIndex: 9998,
+          }}
+          onClick={() => setOpenDropdown(null)}
+        />
+      )}
     </>
   )
 }
