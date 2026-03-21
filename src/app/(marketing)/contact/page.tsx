@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import ContactForm from '@/components/forms/ContactForm'
 
 export const metadata: Metadata = {
   title: 'Contact Us | Brightwave',
@@ -67,23 +68,7 @@ export default function Page() {
               </div>
             </div>
             <div id="w-node-bd5556b5-87c1-cfbe-5a84-873f47e0ef7f-09dd82b0" className="v-40">
-              <div className="eyebrow-flex">
-                <div className="block"></div>
-                <div className="c-title-5">Tell us a bit about yourself</div>
-              </div>
-              <div className="form-hidden-classes">
-                <div className="hs-flex">
-                  <div id="hubspot-form" hubspot-form="" className="cta-hubspot-form w-embed w-script">
-                    
-                    
-                  </div>
-                  <div id="calendly-form" enable-calendly="true" className="cta-calendly-form w-embed w-script">
-                    <div className="calendly-inline-widget" data-url="https://calendly.com/d/cv3s-6tj-3wm/brightwave-intro-call" style={{minWidth: "100%", height: "700px"}}></div>
-                    
-                    
-                  </div>
-                </div>
-              </div>
+              <ContactForm />
             </div>
           </div>
         </div>
