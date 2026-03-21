@@ -385,36 +385,38 @@ export function HeaderClient({
   /* ---- Reusable item row for Solutions ---- */
   function SolItem({ title, href, icon }: { title: string; href: string; icon: string }) {
     return (
-      <a href={href} style={{
+      <Link href={href} style={{
         display: 'flex', alignItems: 'center', gap: 12,
         padding: '8px 0', color: MEGA_TEXT,
         textDecoration: 'none', fontSize: 14, fontWeight: 400,
         transition: 'opacity 0.15s',
       }}
-        onMouseEnter={e => (e.currentTarget.style.opacity = '0.7')}
-        onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+        onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '0.7')}
+        onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '1')}
+        onClick={() => setOpenDropdown(null)}
       >
         <MenuIcon name={icon} />
         <span>{title}</span>
-      </a>
+      </Link>
     )
   }
 
   /* ---- Reusable item row for Features categories ---- */
   function CatItem({ title, href, icon }: { title: string; href: string; icon: string }) {
     return (
-      <a href={href} style={{
+      <Link href={href} style={{
         display: 'flex', alignItems: 'center', gap: 10,
         padding: '6px 0', color: MEGA_TEXT,
         textDecoration: 'none', fontSize: 14, fontWeight: 400,
         transition: 'opacity 0.15s',
       }}
-        onMouseEnter={e => (e.currentTarget.style.opacity = '0.7')}
-        onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+        onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '0.7')}
+        onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '1')}
+        onClick={() => setOpenDropdown(null)}
       >
         <MenuIcon name={icon} />
         <span>{title}</span>
-      </a>
+      </Link>
     )
   }
 
@@ -465,12 +467,31 @@ export function HeaderClient({
                         <div style={megaPanelStyle}>
                           <div style={megaInnerStyle}>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 40 }}>
-
+                              {/* Left: Category columns */}
+                              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 40 }}>
+                              {featureCategories.map((cat, ci) => {
+                                const icons = catIconMap[cat.title] || []
+                                return (
+                                  <div key={ci}>
+                                    <Link href={cat.href} style={{
+                                      display: 'flex', alignItems: 'center', gap: 6,
+                                      fontSize: 14, fontWeight: 600, color: MEGA_TEXT,
+                                      textDecoration: 'none', marginBottom: 16,
+                                    }} onClick={() => setOpenDropdown(null)}>
+                                      {cat.title} <span style={{ fontSize: 16 }}>&rarr;</span>
+                                    </Link>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                      {cat.items.map((item, ii) => (
+                                        <CatItem key={ii} title={item.title} href={item.href} icon={icons[ii] || 'editor'} />
+                                      ))}
+                                    </div>
+                                  </div>
+                                )
+                              })}
+                            </div>
 
                               {/* Right sidebar - featured card */}
                               <div style={{
-                                gridRow: '1',
-                                gridColumn: '2',
                                 borderLeft: `1px solid ${MEGA_BORDER}`,
                                 paddingLeft: 40,
                                 minWidth: 280,
@@ -497,37 +518,11 @@ export function HeaderClient({
                                   Explore the features and capabilities of Brightwave
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                                  <a href="/features" style={{ color: MEGA_ACCENT, fontSize: 14, fontWeight: 500, textDecoration: 'none' }}>Product Overview &rarr;</a>
-                                  <a href="/features/api-integrations" style={{ color: MEGA_ACCENT, fontSize: 14, fontWeight: 500, textDecoration: 'none' }}>Integrations &rarr;</a>
-                                  <a href="/features" style={{ color: MEGA_ACCENT, fontSize: 14, fontWeight: 500, textDecoration: 'none' }}>View all features &rarr;</a>
+                                  <Link href="/features" style={{ color: MEGA_ACCENT, fontSize: 14, fontWeight: 500, textDecoration: 'none' }} onClick={() => setOpenDropdown(null)}>Product Overview &rarr;</Link>
+                                  <Link href="/features/api-integrations" style={{ color: MEGA_ACCENT, fontSize: 14, fontWeight: 500, textDecoration: 'none' }} onClick={() => setOpenDropdown(null)}>Integrations &rarr;</Link>
+                                  <Link href="/features" style={{ color: MEGA_ACCENT, fontSize: 14, fontWeight: 500, textDecoration: 'none' }} onClick={() => setOpenDropdown(null)}>View all features &rarr;</Link>
                                 </div>
                               </div>
-                            </div>
-
-                            {/* Divider */}
-                            <div style={{ borderTop: `1px solid ${MEGA_BORDER}`, margin: '32px 0' }} />
-
-                            {/* Bottom: Category columns */}
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 40, maxWidth: 'calc(100% - 360px)' }}>
-                              {featureCategories.map((cat, ci) => {
-                                const icons = catIconMap[cat.title] || []
-                                return (
-                                  <div key={ci}>
-                                    <a href={cat.href} style={{
-                                      display: 'flex', alignItems: 'center', gap: 6,
-                                      fontSize: 14, fontWeight: 600, color: MEGA_TEXT,
-                                      textDecoration: 'none', marginBottom: 16,
-                                    }}>
-                                      {cat.title} <span style={{ fontSize: 16 }}>&rarr;</span>
-                                    </a>
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                      {cat.items.map((item, ii) => (
-                                        <CatItem key={ii} title={item.title} href={item.href} icon={icons[ii] || 'editor'} />
-                                      ))}
-                                    </div>
-                                  </div>
-                                )
-                              })}
                             </div>
                           </div>
                         </div>
@@ -562,10 +557,10 @@ export function HeaderClient({
                                     <SolItem key={i} title={item.title} href={item.href} icon={solCol1Icons[i] || 'influence'} />
                                   ))}
                                 </div>
-                                <a href="/use-cases" style={{
+                                <Link href="/use-cases" style={{
                                   display: 'inline-block', marginTop: 16,
                                   fontSize: 13, color: MEGA_TEXT_MUTED, textDecoration: 'none',
-                                }}>View all &rarr;</a>
+                                }} onClick={() => setOpenDropdown(null)}>View all &rarr;</Link>
                               </div>
 
                               {/* Column 2: I am a... */}
@@ -582,10 +577,10 @@ export function HeaderClient({
                                     <SolItem key={i} title={item.title} href={item.href} icon={solCol2Icons[i] || 'journalist'} />
                                   ))}
                                 </div>
-                                <a href="/i-am-a" style={{
+                                <Link href="/i-am-a" style={{
                                   display: 'inline-block', marginTop: 16,
                                   fontSize: 13, color: MEGA_TEXT_MUTED, textDecoration: 'none',
-                                }}>View all &rarr;</a>
+                                }} onClick={() => setOpenDropdown(null)}>View all &rarr;</Link>
                               </div>
 
                               {/* Column 3: Brightwave For... */}
@@ -602,10 +597,10 @@ export function HeaderClient({
                                     <SolItem key={i} title={item.title} href={item.href} icon={solCol3Icons[i] || 'business'} />
                                   ))}
                                 </div>
-                                <a href="/firm-types" style={{
+                                <Link href="/firm-types" style={{
                                   display: 'inline-block', marginTop: 16,
                                   fontSize: 13, color: MEGA_TEXT_MUTED, textDecoration: 'none',
-                                }}>View all &rarr;</a>
+                                }} onClick={() => setOpenDropdown(null)}>View all &rarr;</Link>
                               </div>
                             </div>
                           </div>
@@ -640,21 +635,22 @@ export function HeaderClient({
                                 gap: '28px 36px',
                               }}>
                                 {resourceLinks.map((link, i) => (
-                                  <a key={i} href={link.href} style={{
+                                  <Link key={i} href={link.href} style={{
                                     display: 'flex', alignItems: 'flex-start', gap: 14,
                                     textDecoration: 'none', color: MEGA_TEXT,
                                     padding: '8px 0',
                                     transition: 'opacity 0.15s',
                                   }}
-                                    onMouseEnter={e => (e.currentTarget.style.opacity = '0.7')}
-                                    onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+                                    onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '0.7')}
+                                    onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '1')}
+                                    onClick={() => setOpenDropdown(null)}
                                   >
                                     <ResourceIcon name={link.icon} />
                                     <div>
                                       <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 4 }}>{link.title}</div>
                                       <div style={{ fontSize: 13, color: MEGA_TEXT_MUTED, lineHeight: 1.5 }}>{link.desc}</div>
                                     </div>
-                                  </a>
+                                  </Link>
                                 ))}
                               </div>
 
@@ -700,11 +696,11 @@ export function HeaderClient({
                                 <div style={{ fontSize: 13, color: MEGA_TEXT_MUTED, marginBottom: 20, lineHeight: 1.5 }}>
                                   Brightwave&apos;s annual research report on how AI is transforming the private equity industry.
                                 </div>
-                                <a href="/state-of-ai-in-private-equity" style={{
+                                <Link href="/state-of-ai-in-private-equity" style={{
                                   color: MEGA_ACCENT, fontSize: 14, fontWeight: 500, textDecoration: 'none',
-                                }}>
+                                }} onClick={() => setOpenDropdown(null)}>
                                   Read the Report &rarr;
-                                </a>
+                                </Link>
                               </div>
                             </div>
                           </div>

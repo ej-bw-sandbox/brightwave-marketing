@@ -677,3 +677,25 @@ select:-webkit-autofill {
   -webkit-box-shadow: 0 0 0px 1000px #EFF1F5 inset !important;
   transition: background-color 9999s ease-out !important;
 }
+/* Fix: Override Webflow nav_list z-index that breaks mega-menu click-through */
+.nav_list.w--open {
+  z-index: 10000 !important;
+  overflow: visible !important;
+}
+
+/* Fix: Paywall popup positioning and centering */
+.paywall[style*="display: block"] {
+  display: flex !important;
+  position: fixed !important;
+  inset: 0 !important;
+  justify-content: center !important;
+  align-items: center !important;
+  z-index: 2147483647 !important;
+}
+
+.sandbox-pop-up {
+  z-index: 2147483648 !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+}

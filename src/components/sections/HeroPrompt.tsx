@@ -20,62 +20,72 @@ function PopupOverlay({ isOpen, onClose }: PopupOverlayProps) {
   if (!isOpen) return null
 
   return (
-    <div
-      className="c-popup_wrapper"
-      style={{ display: 'flex' }}
-      onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
-    >
-      <div className="sandbox-pop-up" style={{ zIndex: 2147483647 }}>
+    <div id="paywall" className="paywall" style={{ display: 'block' }}>
+      <div id="overlay" className="popup-overlay" style={{ display: 'flex' }} onClick={onClose}></div>
+      <div id="popup" className="sandbox-pop-up" style={{ display: 'flex' }}>
         <div className="div-block-40">
+          <img
+            src="/webflow-images/private-markets.png"
+            loading="lazy"
+            alt="brightwave private markets logo"
+            className="image-5"
+          />
           <div className="div-block-38">
-            <div className="div-block-39">
-              <img src="/webflow-images/BW-Logo-Light.svg" alt="Brightwave" style={{ height: '2rem' }} />
+            <h1 className="heading-10">Start Your 7-Day Free Trial to Continue Exploring</h1>
+          </div>
+          <div>
+            <div className="text-block-17">
+              The professional-grade research partner built to the requirements of Private Markets professionals.<br />
             </div>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1.5rem' }}>
-            <h3 className="c-title-4">Try Brightwave for Free</h3>
-            <p className="c-text-4">
-              Experience AI-powered financial research. Sign up to access autonomous research agents, custom reports, and more.
-            </p>
-            <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
-              <a
-                href="https://app.brightwave.io/register"
-                className="submit-button"
-                style={{
-                  display: 'inline-block',
-                  padding: '0.75rem 1.5rem',
-                  backgroundColor: '#E7E70D',
-                  color: '#000',
-                  fontWeight: 700,
-                  borderRadius: '4px',
-                  textDecoration: 'none',
-                  textAlign: 'center',
-                }}
-              >
-                Sign Up Free
-              </a>
-              <button
-                onClick={onClose}
-                style={{
-                  padding: '0.75rem 1.5rem',
-                  backgroundColor: 'transparent',
-                  border: '1px solid #ccc',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  fontWeight: 500,
-                }}
-              >
-                Close
-              </button>
+          <div className="div-block-45">
+            <a
+              id="paywall-cta-btn"
+              stagger-cta=""
+              href="https://app.brightwave.io/register?type=individual"
+              className="paywall-cta w-inline-block"
+            >
+              <div>
+                <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">Start My Free Trial</div>
+              </div>
+              <div className="flip-small">
+                <div className="flip-bg"></div>
+              </div>
+              <div className="flip-big">
+                <div className="svg cta-sm-arrow w-embed">
+                  <svg width={14} height={14} viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g clipPath="url(#clip0_774_4073_popup)">
+                      <path d="M2.27832 1.625L12.3577 1.44906L12.5325 11.4643" stroke="white" strokeWidth="1.0876" strokeLinejoin="bevel"></path>
+                      <path d="M12.3563 1.44945L1.48389 12.6365" stroke="white" strokeWidth="1.0876" strokeLinejoin="bevel"></path>
+                    </g>
+                    <defs>
+                      <clipPath id="clip0_774_4073_popup">
+                        <rect width={12} height="11.9237" fill="white" transform="translate(0.896484 1.10547) rotate(-1)"></rect>
+                      </clipPath>
+                    </defs>
+                  </svg>
+                </div>
+              </div>
+            </a>
+          </div>
+          <div className="div-block-39">
+            <div className="div-block-42">
+              <div className="code-embed-6 w-embed">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect width="20" height="14" x="2" y="5" rx="2"></rect>
+                  <line x1="2" x2="22" y1="10" y2="10"></line>
+                </svg>
+              </div>
             </div>
+            <div><div>No Credit Card Required.</div></div>
           </div>
         </div>
         <div className="div-block-41">
           <img
-            src="/webflow-images/illustration_01.avif"
-            alt=""
-            className="image-5"
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            src="/webflow-images/New-thank-you-contact_1New thank you contact.avif"
+            loading="lazy"
+            alt="Brightwave mosaic accent"
+            className="image-6"
           />
         </div>
       </div>
