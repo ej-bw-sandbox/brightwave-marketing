@@ -1,13 +1,14 @@
 "use client"
 
 import Link from 'next/link'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { LottiePlayer } from '@/components/ui/LottiePlayer'
 
 
 /* ------------------------------------------------------------------ */
 /*  Header Component - Updated Nav Structure                           */
 /*  Preserves all Webflow CSS classes for styling                      */
+/*  Adds React-driven interactivity for dropdowns & mobile nav         */
 /* ------------------------------------------------------------------ */
 
 /* Reusable SVG sub-components */
@@ -60,16 +61,6 @@ function NavItem({ href, title, variant = 'cc-1', target }: { href: string; titl
   )
 }
 
-/* Dropdown link styled as simple text link (used in Resources flat list) */
-function NavDropdownLink({ href, title }: { href: string; title: string }) {
-  return (
-    <a a-dm="" href={href} className="nav_item cc-1 w-inline-block">
-      <div className="c-title-3 cc-nav-1">{title}</div>
-      <NavArrow />
-    </a>
-  )
-}
-
 /* Column header for Solutions dropdown */
 function ColumnHeader({ text }: { text: string }) {
   return <div className="c-text-link cc-nav" style={{ opacity: 0.5, marginBottom: '0.5rem', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{text}</div>
@@ -100,6 +91,42 @@ export function HeaderClient({
   caseStudyCount?: number
   solutionsNavData?: SolutionsNavData | null
 }) {
+  /* ---- State ---- */
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const navRef = useRef<HTMLDivElement>(null)
+
+  /* Close dropdown when clicking outside */
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (navRef.current && !navRef.current.contains(e.target as Node)) {
+        setOpenDropdown(null)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  /* Close dropdown on Escape */
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') {
+        setOpenDropdown(null)
+        setMobileMenuOpen(false)
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [])
+
+  const toggleDropdown = useCallback((name: string) => {
+    setOpenDropdown(prev => prev === name ? null : name)
+  }, [])
+
+  const toggleMobileMenu = useCallback(() => {
+    setMobileMenuOpen(prev => !prev)
+  }, [])
+
   /* Group platform features by category */
   const platformGroups: Record<string, PlatformFeature[]> = {}
   if (solutionsNavData?.platformFeatures) {
@@ -128,7 +155,7 @@ export function HeaderClient({
 
   return (
     <>
-      <div data-w-id="146090b3-a797-0b71-5c03-2ee27e68f65a" data-animation="default" data-collapse="medium" data-duration="400" data-easing="ease" data-easing2="ease" role="banner" className="nav w-nav">
+      <div ref={navRef} data-w-id="146090b3-a797-0b71-5c03-2ee27e68f65a" data-animation="default" data-collapse="medium" data-duration="400" data-easing="ease" data-easing2="ease" role="banner" className="nav w-nav">
         <div id="cio-banner" className="cio-banner"></div>
         <div className="c-container cc-nav">
           <div className="nav_flex">
@@ -155,19 +182,19 @@ export function HeaderClient({
                 </a>
 
                 {/* ---- NAV MENU ---- */}
-                <nav role="navigation" className="nav_menu w-nav-menu">
+                <nav role="navigation" className="nav_menu w-nav-menu" {...(mobileMenuOpen ? { 'data-nav-menu-open': '' } : {})}>
                   <div className="nav_links">
 
                     {/* ==================== PLATFORM DROPDOWN (Desktop) ==================== */}
                     <div data-hover="false" data-delay="500" className="nav_dropdown cc-desktop w-dropdown">
-                      <div className="nav_toggle w-dropdown-toggle">
+                      <div className="nav_toggle w-dropdown-toggle" onClick={() => toggleDropdown('platform')} aria-expanded={openDropdown === 'platform'} role="button" tabIndex={0} onKeyDown={e => e.key === 'Enter' && toggleDropdown('platform')}>
                         <div className="text-overflow">
                           <div className="c-text-link cc-nav">Platform</div>
                           <div className="nav_line"></div>
                         </div>
                         <ChevronSvg />
                       </div>
-                      <nav a-dm="" className="nav_list w-dropdown-list">
+                      <nav a-dm="" className={`nav_list w-dropdown-list${openDropdown === 'platform' ? ' w--open' : ''}`}>
                         <div className="nav_list-wrap">
                           <div className="nav_list-flex">
                             <div className="nav_list-flex cc-inner">
@@ -202,14 +229,14 @@ export function HeaderClient({
 
                     {/* ==================== SOLUTIONS DROPDOWN (Desktop) ==================== */}
                     <div data-hover="false" data-delay="500" className="nav_dropdown cc-desktop w-dropdown">
-                      <div className="nav_toggle w-dropdown-toggle">
+                      <div className="nav_toggle w-dropdown-toggle" onClick={() => toggleDropdown('solutions')} aria-expanded={openDropdown === 'solutions'} role="button" tabIndex={0} onKeyDown={e => e.key === 'Enter' && toggleDropdown('solutions')}>
                         <div className="text-overflow">
                           <div className="c-text-link cc-nav">Solutions</div>
                           <div className="nav_line"></div>
                         </div>
                         <ChevronSvg />
                       </div>
-                      <nav a-dm="" className="nav_list w-dropdown-list">
+                      <nav a-dm="" className={`nav_list w-dropdown-list${openDropdown === 'solutions' ? ' w--open' : ''}`}>
                         <div className="nav_list-wrap">
                           <div className="nav_list-flex">
                             <div className="nav_list-flex cc-inner">
@@ -252,14 +279,14 @@ export function HeaderClient({
 
                     {/* ==================== RESOURCES DROPDOWN (Desktop) ==================== */}
                     <div data-hover="false" data-delay="500" className="nav_dropdown cc-desktop w-dropdown">
-                      <div className="nav_toggle w-dropdown-toggle">
+                      <div className="nav_toggle w-dropdown-toggle" onClick={() => toggleDropdown('resources')} aria-expanded={openDropdown === 'resources'} role="button" tabIndex={0} onKeyDown={e => e.key === 'Enter' && toggleDropdown('resources')}>
                         <div className="text-overflow">
                           <div className="c-text-link cc-nav">Resources</div>
                           <div className="nav_line"></div>
                         </div>
                         <ChevronSvg />
                       </div>
-                      <nav a-dm="" className="nav_list w-dropdown-list">
+                      <nav a-dm="" className={`nav_list w-dropdown-list${openDropdown === 'resources' ? ' w--open' : ''}`}>
                         <div className="nav_list-wrap">
                           <div className="nav_list-flex">
                             <div className="nav_list-flex cc-inner">
@@ -380,7 +407,7 @@ export function HeaderClient({
             </div>
 
             {/* ---- HAMBURGER ---- */}
-            <div className="hamburger w-nav-button">
+            <div className={`hamburger w-nav-button${mobileMenuOpen ? ' w--open' : ''}`} onClick={toggleMobileMenu} aria-label="Toggle mobile menu" role="button" tabIndex={0} onKeyDown={e => e.key === 'Enter' && toggleMobileMenu()}>
               <div className="hamburger_inner cc-fill">
                 <div className="c-text-link cc-stagger">Menu</div>
               </div>
