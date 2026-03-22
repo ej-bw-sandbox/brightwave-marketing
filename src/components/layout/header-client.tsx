@@ -170,6 +170,7 @@ export function HeaderClient({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [isDark, setIsDark] = useState(false)
   const navRef = useRef<HTMLDivElement>(null)
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
 
 
@@ -183,6 +184,13 @@ export function HeaderClient({
     }
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [])
+
+  /* Cleanup close timer on unmount */
+  useEffect(() => {
+    return () => {
+      if (closeTimer.current) clearTimeout(closeTimer.current)
+    }
   }, [])
 
   /* Read saved theme on mount & apply */
@@ -220,6 +228,15 @@ export function HeaderClient({
 
   const toggleMobileMenu = useCallback(() => {
     setMobileMenuOpen(prev => !prev)
+  }, [])
+
+  const handleMouseEnter = useCallback((name: string) => {
+    if (closeTimer.current) clearTimeout(closeTimer.current)
+    setOpenDropdown(name)
+  }, [])
+
+  const handleMouseLeave = useCallback(() => {
+    closeTimer.current = setTimeout(() => setOpenDropdown(null), 150)
   }, [])
 
   /* Group platform features by category */
@@ -308,7 +325,9 @@ export function HeaderClient({
 
   /* Feature items grouped by category */
   const featureCategories = Object.keys(platformGroups).length > 0
-    ? Object.entries(platformGroups).map(([category, features]) => ({
+    ? Object.entries(platformGroups)
+      .filter(([category]) => category.toLowerCase() !== 'general')
+      .map(([category, features]) => ({
       title: category,
       href: `/features#${category.toLowerCase().replace(/\s+/g, '-')}`,
       items: features.map(f => ({ title: f.title, href: `/features/${f.slug}` })),
@@ -445,7 +464,7 @@ export function HeaderClient({
                   <div className="nav_links">
 
                     {/* ==================== PLATFORM DROPDOWN (Desktop) ==================== */}
-                    <div data-hover="false" data-delay="500" className={`nav_dropdown cc-desktop w-dropdown${openDropdown === 'platform' ? ' w--open' : ''}`} onMouseEnter={() => setOpenDropdown('platform')} onMouseLeave={() => setOpenDropdown(null)}>
+                    <div data-hover="false" data-delay="500" className={`nav_dropdown cc-desktop w-dropdown${openDropdown === 'platform' ? ' w--open' : ''}`} onMouseEnter={() => handleMouseEnter('platform')} onMouseLeave={handleMouseLeave}>
                       <div className="nav_toggle w-dropdown-toggle" onClick={() => toggleDropdown('platform')} aria-expanded={openDropdown === 'platform'} role="button" tabIndex={0} onKeyDown={e => e.key === 'Enter' && toggleDropdown('platform')}>
                         <div className="text-overflow">
                           <div className="c-text-link cc-nav">Platform</div>
@@ -453,7 +472,7 @@ export function HeaderClient({
                         </div>
                         <ChevronSvg />
                       </div>
-                      <nav a-dm="" className={`nav_list w-dropdown-list${openDropdown === 'platform' ? ' w--open' : ''}`}>
+                      <nav a-dm="" className={`nav_list w-dropdown-list${openDropdown === 'platform' ? ' w--open' : ''}`} onMouseEnter={() => handleMouseEnter('platform')} onMouseLeave={handleMouseLeave}>
                         {/* ---- FEATURES MEGA MENU ---- */}
                         <div style={megaPanelStyle}>
                           <div style={megaInnerStyle}>
@@ -464,7 +483,6 @@ export function HeaderClient({
                                 const icons = catIconMap[cat.title] || []
                                 return (
                                   <div key={ci}>
-                                    {cat.title !== 'General' && (
                                     <Link href={cat.href} style={{
                                       display: 'flex', alignItems: 'center', gap: 6,
                                       fontSize: 14, fontWeight: 600, color: MEGA_TEXT,
@@ -472,7 +490,6 @@ export function HeaderClient({
                                     }} onClick={() => setOpenDropdown(null)}>
                                       {cat.title} <span style={{ fontSize: 16 }}>&rarr;</span>
                                     </Link>
-                                    )}
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                                       {cat.items.map((item, ii) => (
                                         <CatItem key={ii} title={item.title} href={item.href} icon={icons[ii] || 'editor'} />
@@ -523,7 +540,7 @@ export function HeaderClient({
                     </div>
 
                     {/* ==================== SOLUTIONS DROPDOWN (Desktop) ==================== */}
-                    <div data-hover="false" data-delay="500" className={`nav_dropdown cc-desktop w-dropdown${openDropdown === 'solutions' ? ' w--open' : ''}`} onMouseEnter={() => setOpenDropdown('solutions')} onMouseLeave={() => setOpenDropdown(null)}>
+                    <div data-hover="false" data-delay="500" className={`nav_dropdown cc-desktop w-dropdown${openDropdown === 'solutions' ? ' w--open' : ''}`} onMouseEnter={() => handleMouseEnter('solutions')} onMouseLeave={handleMouseLeave}>
                       <div className="nav_toggle w-dropdown-toggle" onClick={() => toggleDropdown('solutions')} aria-expanded={openDropdown === 'solutions'} role="button" tabIndex={0} onKeyDown={e => e.key === 'Enter' && toggleDropdown('solutions')}>
                         <div className="text-overflow">
                           <div className="c-text-link cc-nav">Solutions</div>
@@ -531,7 +548,7 @@ export function HeaderClient({
                         </div>
                         <ChevronSvg />
                       </div>
-                      <nav a-dm="" className={`nav_list w-dropdown-list${openDropdown === 'solutions' ? ' w--open' : ''}`}>
+                      <nav a-dm="" className={`nav_list w-dropdown-list${openDropdown === 'solutions' ? ' w--open' : ''}`} onMouseEnter={() => handleMouseEnter('solutions')} onMouseLeave={handleMouseLeave}>
                         {/* ---- SOLUTIONS MEGA MENU ---- */}
                         <div style={megaPanelStyle}>
                           <div style={{ ...megaInnerStyle, padding: '48px 40px 40px' }}>
@@ -608,7 +625,7 @@ export function HeaderClient({
                     </a>
 
                     {/* ==================== RESOURCES DROPDOWN (Desktop) ==================== */}
-                    <div data-hover="false" data-delay="500" className={`nav_dropdown cc-desktop w-dropdown${openDropdown === 'resources' ? ' w--open' : ''}`} onMouseEnter={() => setOpenDropdown('resources')} onMouseLeave={() => setOpenDropdown(null)}>
+                    <div data-hover="false" data-delay="500" className={`nav_dropdown cc-desktop w-dropdown${openDropdown === 'resources' ? ' w--open' : ''}`} onMouseEnter={() => handleMouseEnter('resources')} onMouseLeave={handleMouseLeave}>
                       <div className="nav_toggle w-dropdown-toggle" onClick={() => toggleDropdown('resources')} aria-expanded={openDropdown === 'resources'} role="button" tabIndex={0} onKeyDown={e => e.key === 'Enter' && toggleDropdown('resources')}>
                         <div className="text-overflow">
                           <div className="c-text-link cc-nav">Resources</div>
@@ -616,7 +633,7 @@ export function HeaderClient({
                         </div>
                         <ChevronSvg />
                       </div>
-                      <nav a-dm="" className={`nav_list w-dropdown-list${openDropdown === 'resources' ? ' w--open' : ''}`}>
+                      <nav a-dm="" className={`nav_list w-dropdown-list${openDropdown === 'resources' ? ' w--open' : ''}`} onMouseEnter={() => handleMouseEnter('resources')} onMouseLeave={handleMouseLeave}>
                         {/* ---- RESOURCES MEGA MENU ---- */}
                         <div style={megaPanelStyle}>
                           <div style={megaInnerStyle}>
@@ -722,7 +739,9 @@ export function HeaderClient({
                         <div mask-height="element">
                           <div className="mobile_items">
                             {Object.keys(platformGroups).length > 0 ? (
-                              Object.entries(platformGroups).map(([category, features]) =>
+                              Object.entries(platformGroups)
+                                .filter(([category]) => category.toLowerCase() !== 'general')
+                                .map(([category, features]) =>
                                 features.slice(0, 4).map((f, i) => (
                                   <a key={`mob-plat-${category}-${i}`} href={`/features/${f.slug}`} className="c-title-4">{f.title}</a>
                                 ))
