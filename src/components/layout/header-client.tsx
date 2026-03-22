@@ -171,16 +171,7 @@ export function HeaderClient({
   const [isDark, setIsDark] = useState(false)
   const navRef = useRef<HTMLDivElement>(null)
 
-  /* Close dropdown when clicking outside */
-  useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (navRef.current && !navRef.current.contains(e.target as Node)) {
-        setOpenDropdown(null)
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
+
 
   /* Close dropdown on Escape */
   useEffect(() => {
@@ -454,7 +445,7 @@ export function HeaderClient({
                   <div className="nav_links">
 
                     {/* ==================== PLATFORM DROPDOWN (Desktop) ==================== */}
-                    <div data-hover="false" data-delay="500" className={`nav_dropdown cc-desktop w-dropdown${openDropdown === 'platform' ? ' w--open' : ''}`}>
+                    <div data-hover="false" data-delay="500" className={`nav_dropdown cc-desktop w-dropdown${openDropdown === 'platform' ? ' w--open' : ''}`} onMouseEnter={() => setOpenDropdown('platform')} onMouseLeave={() => setOpenDropdown(null)}>
                       <div className="nav_toggle w-dropdown-toggle" onClick={() => toggleDropdown('platform')} aria-expanded={openDropdown === 'platform'} role="button" tabIndex={0} onKeyDown={e => e.key === 'Enter' && toggleDropdown('platform')}>
                         <div className="text-overflow">
                           <div className="c-text-link cc-nav">Platform</div>
@@ -473,6 +464,7 @@ export function HeaderClient({
                                 const icons = catIconMap[cat.title] || []
                                 return (
                                   <div key={ci}>
+                                    {cat.title !== 'General' && (
                                     <Link href={cat.href} style={{
                                       display: 'flex', alignItems: 'center', gap: 6,
                                       fontSize: 14, fontWeight: 600, color: MEGA_TEXT,
@@ -480,6 +472,7 @@ export function HeaderClient({
                                     }} onClick={() => setOpenDropdown(null)}>
                                       {cat.title} <span style={{ fontSize: 16 }}>&rarr;</span>
                                     </Link>
+                                    )}
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                                       {cat.items.map((item, ii) => (
                                         <CatItem key={ii} title={item.title} href={item.href} icon={icons[ii] || 'editor'} />
@@ -530,7 +523,7 @@ export function HeaderClient({
                     </div>
 
                     {/* ==================== SOLUTIONS DROPDOWN (Desktop) ==================== */}
-                    <div data-hover="false" data-delay="500" className={`nav_dropdown cc-desktop w-dropdown${openDropdown === 'solutions' ? ' w--open' : ''}`}>
+                    <div data-hover="false" data-delay="500" className={`nav_dropdown cc-desktop w-dropdown${openDropdown === 'solutions' ? ' w--open' : ''}`} onMouseEnter={() => setOpenDropdown('solutions')} onMouseLeave={() => setOpenDropdown(null)}>
                       <div className="nav_toggle w-dropdown-toggle" onClick={() => toggleDropdown('solutions')} aria-expanded={openDropdown === 'solutions'} role="button" tabIndex={0} onKeyDown={e => e.key === 'Enter' && toggleDropdown('solutions')}>
                         <div className="text-overflow">
                           <div className="c-text-link cc-nav">Solutions</div>
@@ -615,7 +608,7 @@ export function HeaderClient({
                     </a>
 
                     {/* ==================== RESOURCES DROPDOWN (Desktop) ==================== */}
-                    <div data-hover="false" data-delay="500" className={`nav_dropdown cc-desktop w-dropdown${openDropdown === 'resources' ? ' w--open' : ''}`}>
+                    <div data-hover="false" data-delay="500" className={`nav_dropdown cc-desktop w-dropdown${openDropdown === 'resources' ? ' w--open' : ''}`} onMouseEnter={() => setOpenDropdown('resources')} onMouseLeave={() => setOpenDropdown(null)}>
                       <div className="nav_toggle w-dropdown-toggle" onClick={() => toggleDropdown('resources')} aria-expanded={openDropdown === 'resources'} role="button" tabIndex={0} onKeyDown={e => e.key === 'Enter' && toggleDropdown('resources')}>
                         <div className="text-overflow">
                           <div className="c-text-link cc-nav">Resources</div>
