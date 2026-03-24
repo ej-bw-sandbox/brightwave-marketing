@@ -719,7 +719,7 @@ export function HeaderClient({
                     </div>
 
                     {/* ==================== PRICING (Direct Link) ==================== */}
-                    <a href="/pricing" className="nav_link w-inline-block">
+                    <a href="/enterprise" className="nav_link w-inline-block">
                       <div className="c-text-link cc-nav">Pricing</div>
                       <div className="nav_line"></div>
                     </a>
