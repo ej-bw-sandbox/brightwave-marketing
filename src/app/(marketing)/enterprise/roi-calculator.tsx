@@ -404,7 +404,7 @@ export function RoiCalculator() {
       <style dangerouslySetInnerHTML={{ __html: CALC_CSS }} />
       <div className="bw-calc-wrapper">
         <div className="bw-calc-header">
-          <h2 className="c-title-3">Brightwave ROI Calculator</h2>
+          <h2 className="c-title-3">See How Much</h2>
           <p className="c-text-4">See how much time and money your firm could save</p>
         </div>
         <div className="bw-calc-content">

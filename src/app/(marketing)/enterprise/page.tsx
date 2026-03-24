@@ -3,7 +3,7 @@ import { LottiePlayer } from '@/components/ui/LottiePlayer'
 import { RoiCalculator } from './roi-calculator'
 
 export const metadata: Metadata = {
-  title: 'Enterprise Pricing | Brightwave',
+  title: 'Enterprise | Brightwave',
   description:
     'Turn a 5-hour CIM review into a 30-minute strategic briefing. Brightwave synthesizes filings, transcripts, and market data into actionable intelligence for private markets firms.',
 }
@@ -17,7 +17,7 @@ export default function EnterprisePricingPage() {
           <div className="ent-pricing_hero-content">
             <div className="c-ent-price_hero-wrapper">
               <div>
-                <h1 className="c-title-3">Turn a 5-Hour CIM Review Into a 30-Minute Strategic Briefing.</h1>
+                <h1 className="c-title-3">If Your Firm is Using Another AI Tool, You're Losing Carry.</h1>
               </div>
               <div className="text-cta ent-price-hero">
                 <div>
