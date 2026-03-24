@@ -308,9 +308,15 @@ const FIRM_TYPES = [
   { value: 'lower', label: 'Lower Middle Market', help: '$100M-$500M AUM' },
 ]
 
+function isValidEmail(email: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+}
+
 export function RoiCalculator() {
   const [currentStep, setCurrentStep] = useState(1)
   const [data, setData] = useState<Partial<CalcData>>({})
+  const [email, setEmail] = useState('')
+  const [businessEmail, setBusinessEmail] = useState('')
   const [results, setResults] = useState<{
     totalCostSavings: number
     totalHoursSaved: number
@@ -370,6 +376,9 @@ export function RoiCalculator() {
       addonDeals,
     })
 
+    // Move to step 6 to show results
+    setCurrentStep(6)
+
     setTimeout(() => {
       resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
     }, 100)
@@ -388,6 +397,7 @@ export function RoiCalculator() {
     !!data.seniorRate &&
     data.juniorRate >= 50 &&
     data.seniorRate >= 100
+  const isStep5Valid = isValidEmail(email) && isValidEmail(businessEmail)
 
   return (
     <>
@@ -403,6 +413,7 @@ export function RoiCalculator() {
             <div className={`bw-calc-progress-dot${currentStep >= 2 ? ' bw-complete' : ''}`} />
             <div className={`bw-calc-progress-dot${currentStep >= 3 ? ' bw-complete' : ''}`} />
             <div className={`bw-calc-progress-dot${currentStep >= 4 ? ' bw-complete' : ''}`} />
+            <div className={`bw-calc-progress-dot${currentStep >= 5 ? ' bw-complete' : ''}`} />
           </div>
 
           {/* Step 1: Firm Type */}
@@ -523,7 +534,7 @@ export function RoiCalculator() {
           </div>
 
           {/* Step 4: Labor Costs */}
-          <div className={`bw-calc-step${currentStep === 4 && !results ? ' bw-active' : ''}`}>
+          <div className={`bw-calc-step${currentStep === 4 ? ' bw-active' : ''}`}>
             <h3 className="bw-calc-step-title">What are your average labor costs?</h3>
             <div className="bw-calc-input-group">
               <label className="bw-calc-label">Average hourly rate (junior staff)</label>
@@ -595,8 +606,45 @@ export function RoiCalculator() {
               </button>
               <button
                 className="bw-calc-btn bw-calc-btn-primary"
-                onClick={calculate}
+                onClick={nextStep}
                 disabled={!isStep4Valid}
+              >
+                Next
+              </button>
+            </div>
+          </div>
+
+          {/* Step 5: Email Capture */}
+          <div className={`bw-calc-step${currentStep === 5 ? ' bw-active' : ''}`}>
+            <h3 className="bw-calc-step-title">Where should we send the impact report?</h3>
+            <div className="bw-calc-input-group">
+              <label className="bw-calc-label">Email</label>
+              <input
+                type="email"
+                className="bw-calc-input"
+                placeholder="name@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+            <div className="bw-calc-input-group">
+              <label className="bw-calc-label">Business email</label>
+              <input
+                type="email"
+                className="bw-calc-input"
+                placeholder="name@company.com"
+                value={businessEmail}
+                onChange={(e) => setBusinessEmail(e.target.value)}
+              />
+            </div>
+            <div className="bw-calc-buttons">
+              <button className="bw-calc-btn bw-calc-btn-secondary" onClick={prevStep}>
+                Back
+              </button>
+              <button
+                className="bw-calc-btn bw-calc-btn-primary"
+                onClick={calculate}
+                disabled={!isStep5Valid}
               >
                 Calculate ROI
               </button>
@@ -604,7 +652,7 @@ export function RoiCalculator() {
           </div>
 
           {/* Results */}
-          {results && (
+          {results && currentStep === 6 && (
             <div ref={resultsRef}>
               <div className="bw-calc-results">
                 <h3 className="bw-calc-results-title">Your Brightwave Impact</h3>
@@ -662,7 +710,12 @@ export function RoiCalculator() {
                   </div>
                 </div>
                 <div className="bw-calc-cta">
-                  <a href="#" className="bw-calc-cta-btn">
+                  <a
+                    href="https://calendly.com/d/cv37-bhv-664/brightwave-trial"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bw-calc-cta-btn"
+                  >
                     Schedule a Demo
                   </a>
                 </div>
