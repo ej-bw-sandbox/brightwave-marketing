@@ -29,7 +29,7 @@ const CALC_CSS = `
       no-repeat top right;
     background-size: contain;
     color: white;
-    padding: 2.375rem 2rem;
+    padding: 2.375rem 2rem 1.5rem;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
@@ -66,7 +66,7 @@ const CALC_CSS = `
   .bw-calc-progress {
     display: flex;
     gap: 8px;
-    margin-bottom: 5rem;
+    margin-bottom: 2.5rem;
   }
   .bw-calc-progress-dot {
     flex: 1;
@@ -405,7 +405,6 @@ export function RoiCalculator() {
       <div className="bw-calc-wrapper">
         <div className="bw-calc-header">
           <h2 className="c-title-3">See How Much</h2>
-          <p className="c-text-4">See how much time and money your firm could save</p>
         </div>
         <div className="bw-calc-content">
           <div className="bw-calc-progress">
