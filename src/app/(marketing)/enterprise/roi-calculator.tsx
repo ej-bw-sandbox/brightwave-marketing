@@ -315,7 +315,7 @@ function isValidEmail(email: string) {
 export function RoiCalculator() {
   const [currentStep, setCurrentStep] = useState(1)
   const [data, setData] = useState<Partial<CalcData>>({})
-  const [email, setEmail] = useState('')
+  const [name, setName] = useState('')
   const [businessEmail, setBusinessEmail] = useState('')
   const [results, setResults] = useState<{
     totalCostSavings: number
@@ -397,7 +397,7 @@ export function RoiCalculator() {
     !!data.seniorRate &&
     data.juniorRate >= 50 &&
     data.seniorRate >= 100
-  const isStep5Valid = isValidEmail(email) && isValidEmail(businessEmail)
+  const isStep5Valid = name.trim().length > 0 && isValidEmail(businessEmail)
 
   return (
     <>
@@ -618,13 +618,13 @@ export function RoiCalculator() {
           <div className={`bw-calc-step${currentStep === 5 ? ' bw-active' : ''}`}>
             <h3 className="bw-calc-step-title">Where should we send the impact report?</h3>
             <div className="bw-calc-input-group">
-              <label className="bw-calc-label">Email</label>
+              <label className="bw-calc-label">Name</label>
               <input
-                type="email"
+                type="text"
                 className="bw-calc-input"
-                placeholder="name@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Jane Smith"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
               />
             </div>
             <div className="bw-calc-input-group">
