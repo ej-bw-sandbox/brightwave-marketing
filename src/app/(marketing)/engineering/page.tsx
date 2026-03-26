@@ -5,22 +5,22 @@ import { buildMetadata } from '@/lib/metadata'
 
 export async function generateMetadata(): Promise<Metadata> {
   const doc = await client.fetch(engineeringQuery, {}, { next: { tags: ['engineeringPage'], revalidate: 3600 } })
-  if (!doc) return { title: 'Brightwave Engineering Blog' }
+  if (!doc) return {}
   return buildMetadata({
-    title: doc.title || 'Brightwave Engineering Blog',
-    description: doc.description || 'Technical deep dives from the Brightwave engineering team — how we build AI-powered financial research tools, agent systems, and infrastructure at scale.',
+    title: doc.headline,
+    description: doc.description,
     seo: doc.seo,
     path: '/engineering',
   })
 }
 
 export default async function Page() {
-  let doc: Record<string, string> | null = null
+  let doc: any = null
   try {
     doc = await client.fetch(engineeringQuery, {}, { next: { tags: ['engineeringPage'], revalidate: 3600 } })
-  } catch {
-    doc = null
-  }
+  } catch { doc = null }
+
+  if (!doc) return null
 
   return (
     <>
@@ -28,7 +28,7 @@ export default async function Page() {
             <section className="c-section cc-template">
               <div className="c-container">
                 <div className="bp40-underline">
-                  <h1 className="c-title-1">Engineering Blog</h1>
+                  <h1 className="c-title-1">{doc.headline}</h1>
                 </div>
                 <div className="w-dyn-list">
                   <div role="list" className="w-dyn-items">
@@ -47,7 +47,7 @@ export default async function Page() {
                           <div inject-landscape="featured" className="featured_top">
                             <div className="eyebrow-flex">
                               <div className="block-4"></div>
-                              <div className="c-title-5">Under the Hood</div>
+                              <div className="c-title-5">{doc.featuredEyebrow}</div>
                             </div>
                             <div className="c-title-4 w-dyn-bind-empty"></div>
                           </div>
@@ -58,7 +58,7 @@ export default async function Page() {
                     </div>
                   </div>
                   <div className="w-dyn-empty">
-                    <div>No items found.</div>
+                    <div>{doc.emptyStateText}</div>
                   </div>
                 </div>
                 <div className="collection">
@@ -68,37 +68,37 @@ export default async function Page() {
                         <div className="filters_flex">
                           <div className="eyebrow-flex">
                             <div className="block"></div>
-                            <div className="c-title-5">Search</div>
+                            <div className="c-title-5">{doc.searchLabel}</div>
                           </div>
                           <div className="search_flex">
                             <div dm-invert="" className="svg w-embed"><svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <rect width="40" height="40" rx="4" fill="#0F0F0F"></rect>
                                 <path d="M19.25 25.25C22.5637 25.25 25.25 22.5637 25.25 19.25C25.25 15.9363 22.5637 13.25 19.25 13.25C15.9363 13.25 13.25 15.9363 13.25 19.25C13.25 22.5637 15.9363 25.25 19.25 25.25Z" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
                                 <path d="M26.7498 26.7498L23.4873 23.4873" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
-                              </svg></div><input className="search_field w-input" maxLength={256} name="name-2" data-name="Name 2" r-filter="input" placeholder="Search" type="text" id="name-2" />
+                              </svg></div><input className="search_field w-input" maxLength={256} name="name-2" data-name="Name 2" r-filter="input" placeholder={doc.searchPlaceholder} type="text" id="name-2" />
                           </div>
                         </div>
                       </div>
                       <div className="filters_flex">
                         <div className="eyebrow-flex">
                           <div className="block"></div>
-                          <div className="c-title-5">Sort By</div>
+                          <div className="c-title-5">{doc.sortByLabel}</div>
                         </div>
                         <div className="search_flex">
                           <div data-delay="300" data-hover="false" fs-cmssort-element="trigger" className="filter-dropdown w-dropdown">
                             <div className="dropdown-toggle w-dropdown-toggle">
-                              <div fs-cmssort-element="dropdown-label" className="c-text-link">Date</div>
+                              <div fs-cmssort-element="dropdown-label" className="c-text-link">{doc.sortByDateLabel}</div>
                             </div>
                             <nav className="dropdown-list cc-date w-dropdown-list">
-                              <a fs-cmssort-field="update-date" href="#" className="c-text-6 cc-dropdown w-dropdown-link">Ascending</a>
-                              <a fs-cmssort-field="update-date-desc" href="#" className="c-text-6 cc-dropdown w-dropdown-link">Descending</a>
+                              <a fs-cmssort-field="update-date" href="#" className="c-text-6 cc-dropdown w-dropdown-link">{doc.sortAscendingLabel}</a>
+                              <a fs-cmssort-field="update-date-desc" href="#" className="c-text-6 cc-dropdown w-dropdown-link">{doc.sortDescendingLabel}</a>
                             </nav>
                           </div>
                           <div data-delay="300" data-hover="false" fs-cmssort-element="trigger" className="filter-dropdown cc-hide w-dropdown">
                             <div className="dropdown-toggle w-dropdown-toggle">
-                              <div className="c-text-link">Author</div>
+                              <div className="c-text-link">{doc.authorLabel}</div>
                               <div className="author-no-wrap">
-                                <div className="c-text-link"> (</div>
+                                <div className="c-text-link"> (</div>
                                 <div author-no="" className="c-text-link">0</div>
                                 <div className="c-text-link">)</div>
                               </div>
@@ -111,7 +111,7 @@ export default async function Page() {
                                     </label></div>
                                 </div>
                                 <div className="w-dyn-empty">
-                                  <div>No items found.</div>
+                                  <div>{doc.emptyStateText}</div>
                                 </div>
                               </div>
                             </nav>
@@ -120,10 +120,10 @@ export default async function Page() {
                       </div>
                     </form>
                     <div className="w-form-done">
-                      <div>Thank you! Your submission has been received!</div>
+                      <div>{doc.formSuccessMessage}</div>
                     </div>
                     <div className="w-form-fail">
-                      <div>Oops! Something went wrong while submitting the form.</div>
+                      <div>{doc.formErrorMessage}</div>
                     </div>
                   </div>
                   <div className="collection_flex">
@@ -142,7 +142,7 @@ export default async function Page() {
                         </div>
                       </div>
                       <div className="w-dyn-empty">
-                        <div>No items found.</div>
+                        <div>{doc.emptyStateText}</div>
                       </div>
                     </div>
                   </div>
@@ -152,29 +152,47 @@ export default async function Page() {
             <section className="c-section">
               <div className="c-container">
                 <div className="titles">
-                  <div className="title_flex">
-                    <div className="c-title-cta">Step</div>
-                    <div grey="" className="c-title-cta cc-grey">Into</div>
-                  </div>
-                  <div className="title_flex">
-                    <div grey="" className="c-title-cta cc-grey">THe</div>
-                    <div className="spacer"></div>
-                    <div className="c-title-cta">Future</div>
-                    <div grey="" className="c-title-cta cc-grey">OF</div>
-                  </div>
-                  <div className="title_flex cc-financial">
-                    <div className="spacer cc-financial"></div>
-                    <div>
-                      <div className="c-title-cta">FiNANCIAL</div>
-                    </div>
-                  </div>
-                  <div className="title_flex cc-stetch">
-                    <div className="c-title-cta">Research</div>
-                  </div>
+                  {doc.ctaTitleWords && (
+                    <>
+                      <div className="title_flex">
+                        {doc.ctaTitleWords[0] && (
+                          <div className="c-title-cta">{doc.ctaTitleWords[0].text}</div>
+                        )}
+                        {doc.ctaTitleWords[1] && (
+                          <div grey="" className="c-title-cta cc-grey">{doc.ctaTitleWords[1].text}</div>
+                        )}
+                      </div>
+                      <div className="title_flex">
+                        {doc.ctaTitleWords[2] && (
+                          <div grey="" className="c-title-cta cc-grey">{doc.ctaTitleWords[2].text}</div>
+                        )}
+                        <div className="spacer"></div>
+                        {doc.ctaTitleWords[3] && (
+                          <div className="c-title-cta">{doc.ctaTitleWords[3].text}</div>
+                        )}
+                        {doc.ctaTitleWords[4] && (
+                          <div grey="" className="c-title-cta cc-grey">{doc.ctaTitleWords[4].text}</div>
+                        )}
+                      </div>
+                      <div className="title_flex cc-financial">
+                        <div className="spacer cc-financial"></div>
+                        {doc.ctaTitleWords[5] && (
+                          <div>
+                            <div className="c-title-cta">{doc.ctaTitleWords[5].text}</div>
+                          </div>
+                        )}
+                      </div>
+                      <div className="title_flex cc-stetch">
+                        {doc.ctaTitleWords[6] && (
+                          <div className="c-title-cta">{doc.ctaTitleWords[6].text}</div>
+                        )}
+                      </div>
+                    </>
+                  )}
                   <div className="cta-step">
-                    <a stagger-cta-big="" data-w-id="f984e0fd-5317-bfcf-7b12-0d02f1476f56" href="contact.html" className="cta-p-big w-inline-block">
+                    <a stagger-cta-big="" data-w-id="f984e0fd-5317-bfcf-7b12-0d02f1476f56" href={doc.ctaButtonUrl} className="cta-p-big w-inline-block">
                       <div a-dm="" className="cta-p-big_top">
-                        <div stagger-cta-text-big="" className="c-text-link cc-stagger-cta">Schedule a Trial</div>
+                        <div stagger-cta-text-big="" className="c-text-link cc-stagger-cta">{doc.ctaButtonText}</div>
                       </div><svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 35 33" fill="none" className="cta-p-big_arrows cc-hide">
                         <rect width="4.52527" height="4.49649" transform="matrix(1 8.74228e-08 8.74228e-08 -1 30.0078 32.5312)" fill="currentColor"></rect>
                         <g clipPath="url(#clip0_913_4549)">

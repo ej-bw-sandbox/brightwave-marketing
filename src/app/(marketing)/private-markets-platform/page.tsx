@@ -3,24 +3,65 @@ import { client } from '@/lib/sanity/client'
 import { private_markets_platformQuery } from '@/lib/sanity/queries/private-markets-platform'
 import { buildMetadata } from '@/lib/metadata'
 
+interface PrivateMarketsPlatformPage {
+  heroHeadline: string
+  heroDescription: string
+  heroPrimaryCtaLabel: string
+  heroPrimaryCtaUrl: string
+  heroSecondaryCtaLabel: string
+  heroSecondaryCtaUrl: string
+  personas: { eyebrow: string; body: string }[]
+  benefitsEyebrow: string
+  benefitsStickyTitle: string
+  benefitsCtaLabel: string
+  benefitsCtaUrl: string
+  benefits: { title: string; description: string }[]
+  useCasesEyebrow: string
+  superchargeCtaLabel: string
+  superchargeCtaUrl: string
+  superchargeEyebrow: string
+  superchargeBody: string
+  testimonialsLabel: string
+  faqsTitle: string
+  faqs: { question: string; answer: string }[]
+  footerCtaDescription: string
+  footerCtaWords: { text: string; style: string; row: number }[]
+  footerCtaLabel: string
+  footerCtaUrl: string
+  seo?: {
+    metaTitle?: string
+    metaDescription?: string
+    ogImage?: unknown
+    noIndex?: boolean
+  }
+}
+
 export async function generateMetadata(): Promise<Metadata> {
-  const doc = await client.fetch(private_markets_platformQuery, {}, { next: { tags: ['privateMarketsPlatformPage'], revalidate: 3600 } })
-  if (!doc) return { title: 'Brightwave Private Markets | Accelerate Deal Analysis &amp; Insights' }
+  const doc = await client.fetch<PrivateMarketsPlatformPage | null>(private_markets_platformQuery, {}, { next: { tags: ['privateMarketsPlatformPage'], revalidate: 3600 } })
+  if (!doc) return {}
   return buildMetadata({
-    title: doc.title || 'Brightwave Private Markets | Accelerate Deal Analysis &amp; Insights',
-    description: doc.description || 'Transform dense deal documents into actionable insights with Brightwave. Our AI-powered platform streamlines private market diligence, saving time, reducing risk, and boosting investment confidence.',
+    title: doc.heroHeadline,
+    description: doc.heroDescription,
     seo: doc.seo,
     path: '/private-markets-platform',
   })
 }
 
 export default async function Page() {
-  let doc: Record<string, string> | null = null
+  let doc: PrivateMarketsPlatformPage | null = null
   try {
-    doc = await client.fetch(private_markets_platformQuery, {}, { next: { tags: ['privateMarketsPlatformPage'], revalidate: 3600 } })
+    doc = await client.fetch<PrivateMarketsPlatformPage | null>(private_markets_platformQuery, {}, { next: { tags: ['privateMarketsPlatformPage'], revalidate: 3600 } })
   } catch {
     doc = null
   }
+
+  if (!doc) return null
+
+  const footerRows = doc.footerCtaWords.reduce<Record<number, typeof doc.footerCtaWords>>((acc, word) => {
+    if (!acc[word.row]) acc[word.row] = []
+    acc[word.row].push(word)
+    return acc
+  }, {})
 
   return (
     <>
@@ -29,18 +70,18 @@ export default async function Page() {
               <div className="c-container">
                 <div id="w-node-_42f5fb7b-9ec6-e09c-4293-6df6e413aab3-60f5ff71" className="w-layout-layout private-markets-hero-cell wf-layout-layout">
                   <div id="w-node-_42f5fb7b-9ec6-e09c-4293-6df6e413aab5-60f5ff71" className="w-layout-cell pm-hero-heading-cell">
-                    <h1 className="c-title-2">The Fastest Path from Data Room to Decision</h1>
+                    <h1 className="c-title-2">{doc.heroHeadline}</h1>
                   </div>
-                  <div id="w-node-_42f5fb7b-9ec6-e09c-4293-6df6e413aab4-60f5ff71" className="w-layout-cell pm-hero-image-cell"><img src="/webflow-images/mock.png" loading="lazy" width="Auto" height="Auto" alt="" srcset="/webflow-images/mock-p-500.png 500w, images/mock-p-800.png 800w, images/mock-p-1080.png 1080w, images/mock-p-1600.png 1600w, images/mock-p-2000.png 2000w, images/mock.png 2427w" sizes="(max-width: 2427px) 100vw, 2427px" className="image-2" /></div>
+                  <div id="w-node-_42f5fb7b-9ec6-e09c-4293-6df6e413aab4-60f5ff71" className="w-layout-cell pm-hero-image-cell"><img src="/webflow-images/mock.png" loading="lazy" width="Auto" height="Auto" alt="" srcSet="/webflow-images/mock-p-500.png 500w, images/mock-p-800.png 800w, images/mock-p-1080.png 1080w, images/mock-p-1600.png 1600w, images/mock-p-2000.png 2000w, images/mock.png 2427w" sizes="(max-width: 2427px) 100vw, 2427px" className="image-2" /></div>
                   <div className="w-layout-cell cell-9">
                     <div className="text-cta">
                       <div className="_428">
-                        <div className="c-text-4">Turn thousands of pages of data room material into relevant, reliable intelligence. Brightwave helps you uncover crucial details and seize opportunities before anyone else.</div>
+                        <div className="c-text-4">{doc.heroDescription}</div>
                       </div>
                       <div className="h-20">
-                        <a stagger-cta="" href="pricing.html" className="cta-p-sm w-inline-block">
+                        <a stagger-cta="" href={doc.heroPrimaryCtaUrl} className="cta-p-sm w-inline-block">
                           <div>
-                            <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">Get Instant Access</div>
+                            <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">{doc.heroPrimaryCtaLabel}</div>
                           </div>
                           <div className="flip-small">
                             <div className="flip-bg"></div>
@@ -59,8 +100,8 @@ export default async function Page() {
                               </svg></div>
                           </div>
                         </a>
-                        <a stagger-cta="" href="contact.html" className="cta-p-sm cc-stroke w-inline-block">
-                          <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">Get a Bespoke Demo</div>
+                        <a stagger-cta="" href={doc.heroSecondaryCtaUrl} className="cta-p-sm cc-stroke w-inline-block">
+                          <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">{doc.heroSecondaryCtaLabel}</div>
                           <div className="flip-small">
                             <div className="flip-bg"></div>
                           </div>
@@ -93,24 +134,17 @@ export default async function Page() {
               <div className="c-container">
                 <div className="founders">
                   <div className="grid_2-col cc-20">
-                    <div className="founder cc-40">
-                      <div className="founder_top">
-                        <div slider-a-3="" className="eyebrow-flex">
-                          <div className="block"></div>
-                          <div className="c-title-5">For Analysts/Associates</div>
+                    {doc.personas.map((persona, i) => (
+                      <div key={i} className="founder cc-40">
+                        <div className="founder_top">
+                          <div slider-a-3="" className="eyebrow-flex">
+                            <div className="block"></div>
+                            <div className="c-title-5">{persona.eyebrow}</div>
+                          </div>
                         </div>
+                        <div className="c-text-3">{persona.body}</div>
                       </div>
-                      <div className="c-text-3">Every new data room feels like a maze—hundreds of pages to review, and only one hidden clause can unravel the deal. You’re racing deadlines, sacrificing sleep, and still wondering if you caught everything.</div>
-                    </div>
-                    <div className="founder cc-40">
-                      <div className="founder_top">
-                        <div slider-a-3="" className="eyebrow-flex">
-                          <div className="block"></div>
-                          <div className="c-title-5">For CIOs/Managing Directors</div>
-                        </div>
-                      </div>
-                      <div className="c-text-3">You need deals done yesterday, with zero compromise on rigor. Yet your team is drowning in documents, and even the best analyst can miss a buried landmine. Scaling thorough due diligence under pressure has never been harder.</div>
-                    </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -119,50 +153,31 @@ export default async function Page() {
               <div className="c-container">
                 <div className="eyebrow">
                   <div className="block"></div>
-                  <div className="c-title-5">Unlock High-Conviction Decisions—Faster and With Less Risk</div>
+                  <div className="c-title-5">{doc.benefitsEyebrow}</div>
                 </div>
                 <div className="grid cc-top-40">
                   <div id="w-node-f693ffbd-8859-8a84-2b5b-607e0f3954f3-60f5ff71">
                     <div className="sticky_left">
-                      <h2 className="c-title-2">With Brightwave, You Can…</h2>
+                      <h2 className="c-title-2">{doc.benefitsStickyTitle}</h2>
                       <div className="grid cc-3">
                         <div inject-tablet="sticky" id="w-node-b6281430-4b38-0296-dcda-0fe561b06f68-60f5ff71" className="cta-200">
-                          <a stagger-text-btn="" data-wf--cta-secondary-fill--variant="base" href="sandbox/private-markets.html" className="cta-sec cc-fill w-inline-block">
-                            <div stagger-link-text="light" className="c-text-link cc-stagger">Explore the Platform</div>
+                          <a stagger-text-btn="" data-wf--cta-secondary-fill--variant="base" href={doc.benefitsCtaUrl} className="cta-sec cc-fill w-inline-block">
+                            <div stagger-link-text="light" className="c-text-link cc-stagger">{doc.benefitsCtaLabel}</div>
                           </a>
                         </div>
                       </div>
                     </div>
                   </div>
                   <div id="w-node-c807bb2c-6a38-4986-26ef-a2ebd2a17ceb-60f5ff71" className="sticky_right cc-market">
-                    <div className="v-24">
-                      <div className="v-20">
-                        <div className="c-title-4">Accelerate Analysis</div>
-                        <div className="c-text-3 u-balance">Shave hours off every review cycle. Go from buried in data to needle-moving insight in minutes.</div>
+                    {doc.benefits.map((benefit, i) => (
+                      <div key={i} className="v-24">
+                        <div className="v-20">
+                          <div className="c-title-4">{benefit.title}</div>
+                          <div className="c-text-3 u-balance">{benefit.description}</div>
+                        </div>
+                        <div className="c-line"></div>
                       </div>
-                      <div className="c-line"></div>
-                    </div>
-                    <div className="v-24">
-                      <div className="v-20">
-                        <div className="c-title-4">Increase Conviction</div>
-                        <div className="c-text-3 u-balance">Rest easy knowing every critical detail is surfaced and source-verified, reducing the risk of costly oversights.</div>
-                      </div>
-                      <div className="c-line"></div>
-                    </div>
-                    <div className="v-24">
-                      <div className="v-20">
-                        <div className="c-title-4">Elevate Your Work</div>
-                        <div className="c-text-3 u-balance">Reclaim time for strategy and thesis-building. Spend less energy on tedious grunt work, more on big-picture thinking.</div>
-                      </div>
-                      <div className="c-line"></div>
-                    </div>
-                    <div className="v-24">
-                      <div className="v-20">
-                        <div className="c-title-4">Scale with Ease</div>
-                        <div className="c-text-3 u-balance">Say yes to more deals—no late nights required. Keep quality high even under tight deadlines.</div>
-                      </div>
-                      <div className="c-line"></div>
-                    </div>
+                    ))}
                     <div inject-tablet-target="sticky" className="inject-tablet cc-market"></div>
                   </div>
                 </div>
@@ -192,7 +207,7 @@ export default async function Page() {
                       </div>
                       <div className="eyebrow cc-aboslute">
                         <div className="block"></div>
-                        <div className="c-title-5">Private Market Use Cases</div>
+                        <div className="c-title-5">{doc.useCasesEyebrow}</div>
                       </div>
                     </div>
                     <div feature-slider-wrap="" id="w-node-dbccb191-09eb-2511-a637-658b370be829-60f5ff71" className="slider-ui_right">
@@ -312,9 +327,9 @@ export default async function Page() {
                   <div className="grid">
                     <div id="w-node-abe3aba9-3fc6-a67d-759c-b9e94bd06759-60f5ff71">
                       <div inject-tablet="supercharge" className="cta-182">
-                        <a stagger-cta="" href="contact.html" className="cta-p-sm w-inline-block">
+                        <a stagger-cta="" href={doc.superchargeCtaUrl} className="cta-p-sm w-inline-block">
                           <div>
-                            <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">Schedule a Demo</div>
+                            <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">{doc.superchargeCtaLabel}</div>
                           </div>
                           <div className="flip-small">
                             <div className="flip-bg"></div>
@@ -338,9 +353,9 @@ export default async function Page() {
                     <div id="w-node-_44679dc0-eae3-5136-7579-5f1ae304faad-60f5ff71" className="v-40">
                       <div className="eyebrow cc-no-bp">
                         <div className="block"></div>
-                        <div className="c-title-5">Supercharge your research process</div>
+                        <div className="c-title-5">{doc.superchargeEyebrow}</div>
                       </div>
-                      <div className="c-text-1">Brightwave supports PDFs, DOCX, XLSX, SEC filings, earnings call transcripts, investor presentations, board decks and more. Upload your files, let our AI process them, and start discovering insights immediately—no costly integrations, no steep learning curve.</div>
+                      <div className="c-text-1">{doc.superchargeBody}</div>
                       <div inject-tablet-target="supercharge" className="inject-tablet cc-market"></div>
                     </div>
                   </div>
@@ -435,7 +450,7 @@ export default async function Page() {
                     </div>
                   </div>
                   <div className="slider_test">
-                    <div className="c-title-5"><span className="hide-tablet">Customer </span>Testimonials</div>
+                    <div className="c-title-5"><span className="hide-tablet">{doc.testimonialsLabel.split(' ')[0]} </span>{doc.testimonialsLabel.split(' ').slice(1).join(' ')}</div>
                   </div><img src="/webflow-images/testimonial.svg" loading="lazy" width="294.5" alt="" className="slider_img" />
                 </div>
               </div>
@@ -443,71 +458,32 @@ export default async function Page() {
             <section className="c-section">
               <div className="c-container">
                 <div className="v-40">
-                  <h2 className="c-title-2">FAQs</h2>
+                  <h2 className="c-title-2">{doc.faqsTitle}</h2>
                   <div className="grid cc-no-gap">
                     <div id="w-node-a9e72dae-69b5-76b1-679b-ded80e5892ad-60f5ff71" className="c-line"></div>
-                    <div id="w-node-a9e72dae-69b5-76b1-679b-ded80e5892ae-60f5ff71">
-                      <div accordion="" id="w-node-_0d758a7c-5986-fc72-0a2c-7e16d285f79d-d285f79d" className="accordion">
-                        <div className="accordion_toggle">
-                          <div className="c-text-2 cc-balance">How does Brightwave ensure the accuracy of its insights?</div>
-                          <div chevron-x="" className="c-svg-2 cc-20 w-embed"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M12 5V19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
-                              <path d="M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
-                            </svg></div><input accordion-checkbox="" type="checkbox" className="accordion_checkbox" />
-                        </div>
-                        <div accordion="element" className="accordion_dropdown">
-                          <div mask-height="element">
-                            <div className="accordion_content">
-                              <div className="c-text-4 w-richtext">
-                                <p>Brightwave uses state-of-the-art entailment models to cross-verify every research finding against the source content, ensuring high accuracy and reliability of insights. The platform provides sentence-level attribution to the underlying primary sources, allowing you to trace the origin of every data point for complete transparency.<br /></p>
+                    {doc.faqs.map((faq, i) => (
+                      <div key={i} id={`w-node-faq-${i}`}>
+                        <div accordion="" id={`w-node-accordion-${i}`} className="accordion">
+                          <div className="accordion_toggle">
+                            <div className="c-text-2 cc-balance">{faq.question}</div>
+                            <div chevron-x="" className="c-svg-2 cc-20 w-embed"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 5V19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
+                                <path d="M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
+                              </svg></div><input accordion-checkbox="" type="checkbox" className="accordion_checkbox" />
+                          </div>
+                          <div accordion="element" className="accordion_dropdown">
+                            <div mask-height="element">
+                              <div className="accordion_content">
+                                <div className="c-text-4 w-richtext">
+                                  <p>{faq.answer}</p>
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
+                        <div className="c-line"></div>
                       </div>
-                    </div>
-                    <div id="w-node-a9e72dae-69b5-76b1-679b-ded80e5892b4-60f5ff71" className="c-line"></div>
-                    <div id="w-node-a9e72dae-69b5-76b1-679b-ded80e5892b5-60f5ff71">
-                      <div accordion="" id="w-node-_0d758a7c-5986-fc72-0a2c-7e16d285f79d-d285f79d" className="accordion">
-                        <div className="accordion_toggle">
-                          <div className="c-text-2 cc-balance">Can I customize the data sources for my analysis?</div>
-                          <div chevron-x="" className="c-svg-2 cc-20 w-embed"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M12 5V19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
-                              <path d="M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
-                            </svg></div><input accordion-checkbox="" type="checkbox" className="accordion_checkbox" />
-                        </div>
-                        <div accordion="element" className="accordion_dropdown">
-                          <div mask-height="element">
-                            <div className="accordion_content">
-                              <div className="c-text-4 w-richtext">
-                                <p>Absolutely. Brightwave allows you to select and prioritize data sources, tailoring the input to best suit your specific research needs. Our analysis engine can operate over your firm’s proprietary content or our own extensive library of primary sources.</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div id="w-node-a9e72dae-69b5-76b1-679b-ded80e5892ba-60f5ff71" className="c-line"></div>
-                    <div id="w-node-a9e72dae-69b5-76b1-679b-ded80e5892bb-60f5ff71">
-                      <div accordion="" id="w-node-_0d758a7c-5986-fc72-0a2c-7e16d285f79d-d285f79d" className="accordion">
-                        <div className="accordion_toggle">
-                          <div className="c-text-2 cc-balance">How secure is my data with Brightwave?</div>
-                          <div chevron-x="" className="c-svg-2 cc-20 w-embed"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M12 5V19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
-                              <path d="M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
-                            </svg></div><input accordion-checkbox="" type="checkbox" className="accordion_checkbox" />
-                        </div>
-                        <div accordion="element" className="accordion_dropdown">
-                          <div mask-height="element">
-                            <div className="accordion_content">
-                              <div className="c-text-4 w-richtext">
-                                <p>Brightwave takes your data security seriously. Founded by engineers who build systems responsible for handling the world&#x27;s most sensitive and mission-critical financial datasets, our platform is designed from the ground up to meet the stringent security and operational requirements of the most demanding enterprise clients.<br /></p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -515,27 +491,33 @@ export default async function Page() {
             <section className="c-section">
               <div className="c-container">
                 <div className="titles">
-                  <div className="title_flex">
-                    <div className="c-title-cta">Ready</div>
-                    <div grey="" className="c-title-cta cc-grey">to</div>
-                  </div>
-                  <div className="title_flex">
-                    <div className="c-text-link cc-market">Schedule your personalized Brightwave trial now and see how quickly you can turn complex diligence into confident decisions.</div>
-                    <div className="spacer"></div>
-                    <div className="c-title-cta">Transform</div>
-                  </div>
-                  <div className="title_flex">
-                    <div grey="" className="c-title-cta cc-grey">Your</div>
-                    <div className="spacer"></div>
-                    <div grey="" className="c-title-cta cc-grey">NEXT</div>
-                  </div>
-                  <div className="title_flex cc-stetch">
-                    <div className="c-title-cta">DEAL?</div>
-                  </div>
+                  {[1, 2, 3, 4].map((row) => {
+                    const words = footerRows[row] || []
+                    return (
+                      <div key={row} className={`title_flex${row === 4 ? ' cc-stetch' : ''}`}>
+                        {row === 2 && (
+                          <>
+                            <div className="c-text-link cc-market">{doc.footerCtaDescription}</div>
+                            <div className="spacer"></div>
+                          </>
+                        )}
+                        {row === 3 && words.length > 1 && (
+                          <>
+                            <div grey="" className={`c-title-cta${words[0].style === 'grey' ? ' cc-grey' : ''}`}>{words[0].text}</div>
+                            <div className="spacer"></div>
+                            <div grey="" className={`c-title-cta${words[1].style === 'grey' ? ' cc-grey' : ''}`}>{words[1].text}</div>
+                          </>
+                        )}
+                        {row === 3 ? null : words.map((word, wi) => (
+                          <div key={wi} {...(word.style === 'grey' ? { grey: '' } : {})} className={`c-title-cta${word.style === 'grey' ? ' cc-grey' : ''}`}>{word.text}</div>
+                        ))}
+                      </div>
+                    )
+                  })}
                   <div className="cta-step cc-market">
-                    <a stagger-cta-big="" data-w-id="f984e0fd-5317-bfcf-7b12-0d02f1476f56" href="https://app.brightwave.io/register?type=individual" className="cta-p-big w-inline-block">
+                    <a stagger-cta-big="" data-w-id="f984e0fd-5317-bfcf-7b12-0d02f1476f56" href={doc.footerCtaUrl} className="cta-p-big w-inline-block">
                       <div a-dm="" className="cta-p-big_top">
-                        <div stagger-cta-text-big="" className="c-text-link cc-stagger-cta">Start Your Trial</div>
+                        <div stagger-cta-text-big="" className="c-text-link cc-stagger-cta">{doc.footerCtaLabel}</div>
                       </div><svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 35 33" fill="none" className="cta-p-big_arrows cc-hide">
                         <rect width="4.52527" height="4.49649" transform="matrix(1 8.74228e-08 8.74228e-08 -1 30.0078 32.5312)" fill="currentColor"></rect>
                         <g clipPath="url(#clip0_913_4549)">

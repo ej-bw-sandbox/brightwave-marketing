@@ -1,5 +1,35 @@
 export const partnersQuery = `
   *[_type == "partnersPage"][0]{
-    title, description, body, seo
+    title,
+    description,
+    heroHeading,
+    heroSubtitlePrefix,
+    heroSubtitleBold,
+    heroSubtitleSuffix,
+    heroCta,
+    infoEyebrow,
+    infoHeading,
+    infoCardTitle,
+    infoCardBullets,
+    infoCardCta,
+    proofEyebrow,
+    proofPoints[]{
+      stat,
+      description
+    },
+    partnerListHeading,
+    partnerListCta,
+    partnerTypes,
+    calloutHeading,
+    calloutParagraphs,
+    calloutCta,
+    aboutHeading,
+    aboutParagraphs,
+    faqHeading,
+    faq[]{
+      question,
+      answer
+    },
+    seo
   }
 `

@@ -1,5 +1,14 @@
 export const referralQuery = `
   *[_type == "referralPage"][0]{
-    title, description, body, seo
+    headline,
+    supportingText,
+    linkedinUrl,
+    twitterUrl,
+    formSectionTitle,
+    calendlyUrl,
+    recentBlogsSectionTitle,
+    latestPostsSectionTitle,
+    readMoreLabel,
+    seo
   }
 `

@@ -4,23 +4,29 @@ import { thank_you_contactQuery } from '@/lib/sanity/queries/thank-you-contact'
 import { buildMetadata } from '@/lib/metadata'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const doc = await client.fetch(thank_you_contactQuery, {}, { next: { tags: ['thankYouContactPage'], revalidate: 3600 } })
-  if (!doc) return { title: 'Thank You Contact' }
-  return buildMetadata({
-    title: doc.title || 'Thank You Contact',
-    description: doc.description || '',
-    seo: doc.seo,
-    path: '/thank-you-contact',
-  })
+  try {
+    const doc = await client.fetch(thank_you_contactQuery, {}, { next: { tags: ['thankYouContactPage'], revalidate: 3600 } })
+    if (!doc) return { title: 'Thank You Contact | Brightwave' }
+    return buildMetadata({
+      title: doc.heroHeading,
+      description: doc.heroBody,
+      seo: doc.seo,
+      path: '/thank-you-contact',
+    })
+  } catch {
+    return { title: 'Thank You Contact | Brightwave' }
+  }
 }
 
 export default async function Page() {
-  let doc: Record<string, string> | null = null
+  let doc: any = null
   try {
     doc = await client.fetch(thank_you_contactQuery, {}, { next: { tags: ['thankYouContactPage'], revalidate: 3600 } })
   } catch {
     doc = null
   }
+
+  if (!doc) return null
 
   return (
     <>
@@ -444,14 +450,14 @@ export default async function Page() {
                 <div className="c-thank-you_hero_main-wrapper">
                   <div className="c-thank-you_hero_content-wrapper">
                     <div className="c-thank-you_hero_content-text-stack">
-                      <h1 className="c-title-2">Thank you for contacting Brightwave.</h1>
+                      <h1 className="c-title-2">{doc.heroHeading}</h1>
                       <div className="c-thank-you_hero_content-divider"></div>
-                      <p className="c-text-3">We have received your request and will be in touch shortly. In the meantime, explore how Brightwave is reshaping the future of financial research and due diligence by exploring our AI-powered platform.</p>
+                      <p className="c-text-3">{doc.heroBody}</p>
                     </div>
                     <div className="c-thank-you_hero_button-wrapper">
-                      <a stagger-cta="" href="https://app.brightwave.io/register?type=individual" className="cta-p-sm w-inline-block">
+                      <a stagger-cta="" href={doc.ctaUrl} className="cta-p-sm w-inline-block">
                         <div>
-                          <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">Start a Free Trial Now</div>
+                          <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">{doc.ctaText}</div>
                         </div>
                         <div className="flip-small">
                           <div className="flip-bg"></div>
@@ -472,7 +478,7 @@ export default async function Page() {
                       </a>
                     </div>
                   </div>
-                  <div className="c-thank-you_hero_image-wrapper"><img src="/webflow-images/New-thank-you-contact_1.avif" loading="lazy" alt="" className="c-thank-you_hero_image" /></div>
+                  <div className="c-thank-you_hero_image-wrapper"><img src={doc.heroImageUrl} loading="lazy" alt={doc.heroImageAlt} className="c-thank-you_hero_image" /></div>
                 </div>
               </div>
             </section>

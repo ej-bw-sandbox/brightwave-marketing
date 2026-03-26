@@ -7,20 +7,22 @@ export async function generateMetadata(): Promise<Metadata> {
   const doc = await client.fetch(engineering_citationsQuery, {}, { next: { tags: ['engineeringCitationsPage'], revalidate: 3600 } })
   if (!doc) return { title: 'Brightwave' }
   return buildMetadata({
-    title: doc.title || 'Brightwave',
-    description: doc.description || '',
+    title: doc.title,
+    description: doc.description,
     seo: doc.seo,
     path: '/engineering/citations',
   })
 }
 
 export default async function Page() {
-  let doc: Record<string, string> | null = null
+  let doc: Record<string, any> | null = null
   try {
     doc = await client.fetch(engineering_citationsQuery, {}, { next: { tags: ['engineeringCitationsPage'], revalidate: 3600 } })
   } catch {
     doc = null
   }
+
+  if (!doc) return null
 
   return (
     <>
@@ -33,7 +35,7 @@ export default async function Page() {
                       <div className="template_mobile">
                         <a href="#" className="eyebrow-flex cc-mobile w-inline-block">
                           <div className="block-4"></div>
-                          <div className="c-title-5">Go back</div>
+                          <div className="c-title-5">{doc.goBackLabel}</div>
                         </a>
                         <h1 className="c-title-3 cc-template w-dyn-bind-empty"></h1>
                       </div>
@@ -43,7 +45,7 @@ export default async function Page() {
                           <div className="c-title-5 w-dyn-bind-empty"></div>
                         </div>
                         <div className="text-flex-3">
-                          <div className="c-text-4">By</div>
+                          <div className="c-text-4">{doc.byLabel}</div>
                           <div data-w-id="265060e8-979b-f8ed-1a75-1cf4eb83515d" className="author-wrap">
                             <div className="c-text-4 w-dyn-bind-empty"></div>
                           </div>
@@ -58,10 +60,10 @@ export default async function Page() {
                   <div className="grid">
                     <div id="w-node-_265060e8-979b-f8ed-1a75-1cf4eb835165-87f78ffd">
                       <div inject-tablet="template" className="template_sticky">
-                        <div className="c-text-4">Share on</div>
+                        <div className="c-text-4">{doc.shareOnLabel}</div>
                         <div className="text-flex cc-socials">
                           <a r-share-linkedin="" href="#" className="social w-inline-block">
-                            <div className="c-text-link">LinkedIn</div><svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 9 8" fill="none" className="linkedin-svg">
+                            <div className="c-text-link">{doc.linkedinLabel}</div><svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 9 8" fill="none" className="linkedin-svg">
                               <g clipPath="url(#clip0_884_647)">
                                 <path d="M8.1123 7.08496L8.1123 0.364378L1.43446 0.364378" stroke="currentColor" strokeWidth="0.725064" strokeLinejoin="bevel"></path>
                                 <path d="M8.1123 0.365358L0.781907 7.74268" stroke="currentColor" strokeWidth="0.725064" strokeLinejoin="bevel"></path>
@@ -74,7 +76,7 @@ export default async function Page() {
                             </svg>
                           </a>
                           <a r-share-twitter="" href="#" className="social w-inline-block">
-                            <div className="c-text-link">X</div><svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 9 8" fill="none" className="linkedin-svg">
+                            <div className="c-text-link">{doc.xLabel}</div><svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 9 8" fill="none" className="linkedin-svg">
                               <g clipPath="url(#clip0_884_647)">
                                 <path d="M8.1123 7.08496L8.1123 0.364378L1.43446 0.364378" stroke="currentColor" strokeWidth="0.725064" strokeLinejoin="bevel"></path>
                                 <path d="M8.1123 0.365358L0.781907 7.74268" stroke="currentColor" strokeWidth="0.725064" strokeLinejoin="bevel"></path>
@@ -99,28 +101,28 @@ export default async function Page() {
                 <div className="c-container">
                   <div className="titles">
                     <div className="title_flex">
-                      <div className="c-title-cta">Step</div>
-                      <div grey="" className="c-title-cta cc-grey">Into</div>
+                      <div className="c-title-cta">{doc.ctaTitleLine1.word1}</div>
+                      <div grey="" className="c-title-cta cc-grey">{doc.ctaTitleLine1.word2}</div>
                     </div>
                     <div className="title_flex">
-                      <div grey="" className="c-title-cta cc-grey">THe</div>
+                      <div grey="" className="c-title-cta cc-grey">{doc.ctaTitleLine2.word1}</div>
                       <div className="spacer"></div>
-                      <div className="c-title-cta">Future</div>
-                      <div grey="" className="c-title-cta cc-grey">OF</div>
+                      <div className="c-title-cta">{doc.ctaTitleLine2.word2}</div>
+                      <div grey="" className="c-title-cta cc-grey">{doc.ctaTitleLine2.word3}</div>
                     </div>
                     <div className="title_flex cc-financial">
                       <div className="spacer cc-financial"></div>
                       <div>
-                        <div className="c-title-cta">FiNANCIAL</div>
+                        <div className="c-title-cta">{doc.ctaTitleLine3.word1}</div>
                       </div>
                     </div>
                     <div className="title_flex cc-stetch">
-                      <div className="c-title-cta">Research</div>
+                      <div className="c-title-cta">{doc.ctaTitleLine4.word1}</div>
                     </div>
                     <div className="cta-step">
-                      <a href="#" stagger-cta-big="" className="cta-p-big-5 w-inline-block">
+                      <a href={doc.ctaButtonUrl} stagger-cta-big="" className="cta-p-big-5 w-inline-block">
                         <div a-dm="" className="cta-p-big_top-3">
-                          <div stagger-cta-text-big="" className="c-text-link cc-stagger-cta">Schedule a Trial</div>
+                          <div stagger-cta-text-big="" className="c-text-link cc-stagger-cta">{doc.ctaButtonLabel}</div>
                         </div><svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 35 33" fill="none" className="cta-p-big_arrows cc-hide">
                           <rect width="4.52527" height="4.49649" transform="matrix(1 8.74228e-08 8.74228e-08 -1 30.0078 32.5312)" fill="currentColor"></rect>
                           <g clipPath="url(#clip0_913_4549)">

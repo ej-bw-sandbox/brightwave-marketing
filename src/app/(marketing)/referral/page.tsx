@@ -5,22 +5,22 @@ import { buildMetadata } from '@/lib/metadata'
 
 export async function generateMetadata(): Promise<Metadata> {
   const doc = await client.fetch(referralQuery, {}, { next: { tags: ['referralPage'], revalidate: 3600 } })
-  if (!doc) return { title: 'Refer a Colleague' }
+  if (!doc) return {}
   return buildMetadata({
-    title: doc.title || 'Refer a Colleague',
-    description: doc.description || '',
+    title: doc.headline,
+    description: doc.supportingText,
     seo: doc.seo,
     path: '/referral',
   })
 }
 
 export default async function Page() {
-  let doc: Record<string, string> | null = null
+  let doc: any = null
   try {
     doc = await client.fetch(referralQuery, {}, { next: { tags: ['referralPage'], revalidate: 3600 } })
-  } catch {
-    doc = null
-  }
+  } catch { doc = null }
+
+  if (!doc) return null
 
   return (
     <>
@@ -28,17 +28,17 @@ export default async function Page() {
             <section className="c-section cc-contact">
               <div className="c-container">
                 <div className="bp40-underline">
-                  <h1 className="c-title-1">It&#x27;s Great to Meet You.</h1>
+                  <h1 className="c-title-1">{doc.headline}</h1>
                 </div>
                 <div className="grid cc-contact">
                   <div id="w-node-ac00784f-25b5-ad00-d07d-09a4707899eb-846a10af" className="contact-flex">
                     <div className="v-20">
-                      <div className="c-text-2">You&#x27;ve been referred to Brightwave by a friend or colleague, and now we&#x27;re eager to meet you.<br /><br />Simply fill out the form, and select a time to connect with our onboarding team.<br /><br />There is no commitment or risk, your 7-day trial is completely free. </div>
+                      <div className="c-text-2">{doc.supportingText}</div>
                       <div className="c-text-4"></div>
                     </div>
                     <div className="h-16">
                       <div className="cta-182">
-                        <a stagger-cta="" href="https://www.linkedin.com/company/brightwave-io/about/" className="cta-p-sm w-inline-block">
+                        <a stagger-cta="" href={doc.linkedinUrl} className="cta-p-sm w-inline-block">
                           <div>
                             <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">LinkedIn</div>
                           </div>
@@ -61,7 +61,7 @@ export default async function Page() {
                         </a>
                       </div>
                       <div data-w-id="8a465f1d-621f-6b36-616d-e1b5181b63a0" className="cta-182">
-                        <a stagger-cta="" href="https://twitter.com/brightwaveio" className="cta-p-sm w-inline-block">
+                        <a stagger-cta="" href={doc.twitterUrl} className="cta-p-sm w-inline-block">
                           <div className="x-logo-wrap"><img src="/webflow-images/X_logos-world_2.svg" loading="lazy" alt="" className="x-logo" /><img src="/webflow-images/X_logos-world_2.svg" loading="lazy" alt="" className="x-logo cc-absolute" /></div>
                           <div className="flip-small">
                             <div className="flip-bg"></div>
@@ -86,7 +86,7 @@ export default async function Page() {
                   <div id="w-node-bd5556b5-87c1-cfbe-5a84-873f47e0ef7f-846a10af" className="v-40">
                     <div className="eyebrow-flex">
                       <div className="block"></div>
-                      <div className="c-title-5">Book Your Bespoke Onboarding</div>
+                      <div className="c-title-5">{doc.formSectionTitle}</div>
                     </div>
                     <div className="form-hidden-classes">
                       <div className="hs-flex">
@@ -95,7 +95,7 @@ export default async function Page() {
 
                         </div>
                         <div id="calendly-form" enable-calendly="true" className="cta-calendly-form w-embed w-script">{/*   Calendly inline widget begin   */}
-                          <div className="calendly-inline-widget" data-url="https://calendly.com/d/cv3s-6tj-3wm/brightwave-intro-call" style={{minWidth: '100%', height: '700px'}}></div>
+                          <div className="calendly-inline-widget" data-url={doc.calendlyUrl} style={{minWidth: '100%', height: '700px'}}></div>
 
                           {/*   Calendly inline widget end   */}
                         </div>
@@ -110,7 +110,7 @@ export default async function Page() {
                 <div className="c-container">
                   <div className="founders">
                     <div className="founders-flex">
-                      <h2 className="c-title-2">Recent Blogs</h2>
+                      <h2 className="c-title-2">{doc.recentBlogsSectionTitle}</h2>
                     </div>
                     <div className="w-dyn-list">
                       <div role="list" className="grid cc-cards w-dyn-items">
@@ -132,8 +132,8 @@ export default async function Page() {
                       </div>
                     </div>
                     <div inject-tablet="founders" className="cta-founders">
-                      <a stagger-cta="" href="blog.html" className="cta-p-sm cc-stroke w-inline-block">
-                        <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">Read More</div>
+                      <a stagger-cta="" href="/blog" className="cta-p-sm cc-stroke w-inline-block">
+                        <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">{doc.readMoreLabel}</div>
                         <div className="flip-small">
                           <div className="flip-bg"></div>
                         </div>
@@ -161,7 +161,7 @@ export default async function Page() {
                 <div className="c-container">
                   <div className="founders">
                     <div className="founders-flex">
-                      <h2 className="c-title-2">Latest Posts</h2>
+                      <h2 className="c-title-2">{doc.latestPostsSectionTitle}</h2>
                     </div>
                     <div className="w-dyn-list">
                       <div role="list" className="grid cc-cards w-dyn-items">
@@ -180,8 +180,8 @@ export default async function Page() {
                       </div>
                     </div>
                     <div inject-tablet="founders" className="cta-founders">
-                      <a stagger-cta="" href="blog.html" className="cta-p-sm cc-stroke w-inline-block">
-                        <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">Read More</div>
+                      <a stagger-cta="" href="/blog" className="cta-p-sm cc-stroke w-inline-block">
+                        <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">{doc.readMoreLabel}</div>
                         <div className="flip-small">
                           <div className="flip-bg"></div>
                         </div>

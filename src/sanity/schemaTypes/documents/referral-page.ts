@@ -2,12 +2,53 @@ import { defineType, defineField } from 'sanity'
 
 export const referralPage = defineType({
   name: 'referralPage',
-  title: 'Referral  Page',
+  title: 'Referral Page',
   type: 'document',
   fields: [
-    defineField({ name: 'title', title: 'Page Title', type: 'string' }),
-    defineField({ name: 'description', title: 'Meta Description', type: 'text', rows: 3 }),
-    defineField({ name: 'body', title: 'Page Body (HTML)', type: 'text', description: 'Full HTML body content for the page' }),
+    defineField({ name: 'headline', title: 'Headline', type: 'string' }),
+    defineField({ name: 'supportingText', title: 'Supporting Text', type: 'text', rows: 6 }),
+    defineField({
+      name: 'linkedinUrl',
+      title: 'LinkedIn URL',
+      type: 'url',
+      validation: (rule) => rule.uri({ scheme: ['https'] }),
+    }),
+    defineField({
+      name: 'twitterUrl',
+      title: 'Twitter / X URL',
+      type: 'url',
+      validation: (rule) => rule.uri({ scheme: ['https'] }),
+    }),
+    defineField({
+      name: 'formSectionTitle',
+      title: 'Form Section Title',
+      type: 'string',
+      description: 'Title above the booking/form section (e.g. "Book Your Bespoke Onboarding")',
+    }),
+    defineField({
+      name: 'calendlyUrl',
+      title: 'Calendly Embed URL',
+      type: 'url',
+      validation: (rule) => rule.uri({ scheme: ['https'] }),
+    }),
+    defineField({
+      name: 'recentBlogsSectionTitle',
+      title: 'Recent Blogs Section Title',
+      type: 'string',
+    }),
+    defineField({
+      name: 'latestPostsSectionTitle',
+      title: 'Latest Posts Section Title',
+      type: 'string',
+    }),
+    defineField({
+      name: 'readMoreLabel',
+      title: 'Read More CTA Label',
+      type: 'string',
+    }),
     defineField({ name: 'seo', title: 'SEO', type: 'seo' }),
   ],
+  preview: {
+    select: { title: 'headline' },
+  },
 })

@@ -1,5 +1,10 @@
 export const partner_termsQuery = `
   *[_type == "partnerTermsPage"][0]{
-    title, description, body, seo
+    title,
+    headerLine1,
+    headerLine2,
+    effectiveDate,
+    body,
+    seo
   }
 `
