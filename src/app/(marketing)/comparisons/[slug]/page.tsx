@@ -185,7 +185,7 @@ export default async function VsDetailPage({ params }: Props) {
                             {block.image?.asset ? (
                               <Image
                                 src={urlFor(block.image).width(800).url()}
-                                alt={block.headline || ''}
+                                alt={block.title || block.headline || ''}
                                 width={800}
                                 height={450}
                                 loading="lazy"
@@ -221,7 +221,7 @@ export default async function VsDetailPage({ params }: Props) {
                           </div>
                           <div className="c-comparison-content_card-content-wrapper">
                             <div className="c-comparison-card_title-wrapper">
-                              <h2 className="c-text-2">{block.headline || ''}</h2>
+                              <h2 className="c-text-2">{block.title || block.headline || ''}</h2>
                             </div>
                             <div className="c-comparison-card_text-wrapper">
                               {block.text ? (
@@ -391,7 +391,7 @@ export default async function VsDetailPage({ params }: Props) {
                         <div id="w-node-_7a3dce5a-ee11-9a34-0a76-ecc739e3921d-43706a8a" className="c-comparison-cell-options">
                           {row.competitorText ? (
                             <div className="c-text-5">{row.competitorText}</div>
-                          ) : row.competitorValue === 'yes' || row.competitorValue === 'superior' ? (
+                          ) : row.competitorValue === true || row.competitorValue === 'yes' || row.competitorValue === 'superior' ? (
                             <>
                               <div className="c-text-5" style={{ display: 'none' }}></div>
                               <div className="c-text-5" style={{ display: 'none' }}>-</div>
@@ -421,7 +421,7 @@ export default async function VsDetailPage({ params }: Props) {
                         <div id="w-node-_018cf748-6786-84cf-1aea-c5557d144e11-43706a8a" className="c-comparison-cell-options">
                           {row.brightwaveText ? (
                             <div className="c-text-5">{row.brightwaveText}</div>
-                          ) : row.brightwaveValue === 'yes' || row.brightwaveValue === 'superior' ? (
+                          ) : row.brightwaveValue === true || row.brightwaveValue === 'yes' || row.brightwaveValue === 'superior' ? (
                             <>
                               <div className="c-text-5" style={{ display: 'none' }}></div>
                               <div className="c-text-5" style={{ display: 'none' }}>-</div>
