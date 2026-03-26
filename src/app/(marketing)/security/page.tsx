@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { client } from '@/lib/sanity/client'
 import { securityQuery } from '@/lib/sanity/queries/security'
 import { buildMetadata } from '@/lib/metadata'
+import { LottiePlayer } from '@/components/ui/LottiePlayer'
 
 export async function generateMetadata(): Promise<Metadata> {
   const doc = await client.fetch(securityQuery, {}, { next: { tags: ['securityPage'], revalidate: 3600 } })
@@ -64,7 +65,7 @@ export default async function Page() {
                               </clipPath>
                             </defs>
                           </svg>
-                          <div data-is-ix2-target="1" className="cta-p-big_arrows cc-lotti" data-w-id="1cfa6afb-a27b-299d-3baa-19d0ad081838" data-animation-type="lottie" data-src="https://uploads-ssl.webflow.com/6537758130c3d278e4b6eecc/6576e8acfcf807e5bebe727c_Arrow-Lottie.json" data-loop="0" data-direction="1" data-autoplay="0" data-renderer="svg" data-default-duration="2" data-duration="0"></div><svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 74 20" fill="none" className="cta-p-big_chop">
+                          <LottiePlayer src="https://uploads-ssl.webflow.com/6537758130c3d278e4b6eecc/6576e8acfcf807e5bebe727c_Arrow-Lottie.json" className="cta-p-big_arrows cc-lotti" loop={false} autoplay={false} /><svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 74 20" fill="none" className="cta-p-big_chop">
                             <path d="M36.7933 20L74 19.9508L74 5.72205e-06L1.74845e-06 4.97481e-06L36.7933 20Z" fill="currentColor" className="path"></path>
                           </svg>
                         </a>
@@ -198,7 +199,7 @@ export default async function Page() {
                                 </clipPath>
                               </defs>
                             </svg>
-                            <div data-is-ix2-target="1" className="cta-p-big_arrows cc-lotti" data-w-id="1cfa6afb-a27b-299d-3baa-19d0ad081838" data-animation-type="lottie" data-src="https://uploads-ssl.webflow.com/6537758130c3d278e4b6eecc/6576e8acfcf807e5bebe727c_Arrow-Lottie.json" data-loop="0" data-direction="1" data-autoplay="0" data-renderer="svg" data-default-duration="2" data-duration="0"></div><svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 74 20" fill="none" className="cta-p-big_chop">
+                            <LottiePlayer src="https://uploads-ssl.webflow.com/6537758130c3d278e4b6eecc/6576e8acfcf807e5bebe727c_Arrow-Lottie.json" className="cta-p-big_arrows cc-lotti" loop={false} autoplay={false} /><svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 74 20" fill="none" className="cta-p-big_chop">
                               <path d="M36.7933 20L74 19.9508L74 5.72205e-06L1.74845e-06 4.97481e-06L36.7933 20Z" fill="currentColor" className="path"></path>
                             </svg>
                           </a>

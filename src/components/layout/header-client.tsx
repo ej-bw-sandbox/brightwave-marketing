@@ -174,7 +174,7 @@ export function HeaderClient({
     { title: 'Events', href: '/events', desc: 'Live and past online events', icon: Calendar },
     { title: 'Knowledge Base', href: '/knowledge-base', desc: 'In-depth guides and documentation', icon: Library },
     { title: 'News', href: '/news', desc: 'Latest updates and press coverage', icon: Newspaper },
-    { title: 'Partner Program', href: '/partner-program', desc: 'Join our partner ecosystem', icon: Handshake },
+    { title: 'Partner Program', href: '/partners', desc: 'Join our partner ecosystem', icon: Handshake },
     { title: 'Release Notes', href: '/release-notes', desc: 'See our latest feature launches', icon: Megaphone },
     { title: 'Support', href: '/support', desc: 'Product support and documentation', icon: LifeBuoy },
     { title: 'Tools & Guides', href: '/tools-guides', desc: 'Resources and growth assets', icon: Wrench },

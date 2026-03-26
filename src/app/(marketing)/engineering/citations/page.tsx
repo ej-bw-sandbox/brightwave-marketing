@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { client } from '@/lib/sanity/client'
 import { engineering_citationsQuery } from '@/lib/sanity/queries/engineering-citations'
 import { buildMetadata } from '@/lib/metadata'
+import { LottiePlayer } from '@/components/ui/LottiePlayer'
 
 export async function generateMetadata(): Promise<Metadata> {
   const doc = await client.fetch(engineering_citationsQuery, {}, { next: { tags: ['engineeringCitationsPage'], revalidate: 3600 } })
@@ -135,7 +136,7 @@ export default async function Page() {
                             </clipPath>
                           </defs>
                         </svg>
-                        <div data-is-ix2-target="1" className="cta-p-big_arrows cc-lotti" data-w-id="265060e8-979b-f8ed-1a75-1cf4eb8351d6" data-animation-type="lottie" data-src="https://uploads-ssl.webflow.com/6537758130c3d278e4b6eecc/6576e8acfcf807e5bebe727c_Arrow-Lottie.json" data-loop="0" data-direction="1" data-autoplay="0" data-renderer="svg" data-default-duration="2" data-duration="0"></div><svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 74 20" fill="none" className="cta-p-big_chop">
+                        <LottiePlayer src="https://uploads-ssl.webflow.com/6537758130c3d278e4b6eecc/6576e8acfcf807e5bebe727c_Arrow-Lottie.json" className="cta-p-big_arrows cc-lotti" loop={false} autoplay={false} /><svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 74 20" fill="none" className="cta-p-big_chop">
                           <path d="M36.7933 20L74 19.9508L74 5.72205e-06L1.74845e-06 4.97481e-06L36.7933 20Z" fill="currentColor" className="path-3"></path>
                         </svg>
                       </a>
@@ -143,8 +144,8 @@ export default async function Page() {
                   </div>
                   <div lottie-bg="" className="lottie-step-3">
                     <div lottie-bg="" className="lottie-crop-5">
-                      <div className="lottie_cropped-desktop" data-w-id="265060e8-979b-f8ed-1a75-1cf4eb8351db" data-animation-type="lottie" data-src="/webflow-documents/CTA-Lottie-25.json" data-loop="1" data-direction="1" data-autoplay="1" data-is-ix2-target="0" data-renderer="svg" data-default-duration="0" data-duration="20"></div>
-                      <div slice="" className="lottie_cropped-mobile" data-w-id="265060e8-979b-f8ed-1a75-1cf4eb8351dc" data-animation-type="lottie" data-src="/webflow-documents/Generative-Loop-Final-25.json" data-loop="1" data-direction="1" data-autoplay="1" data-is-ix2-target="0" data-renderer="svg" data-default-duration="0" data-duration="10"></div>
+                      <LottiePlayer src="/webflow-documents/CTA-Lottie-25.json" className="lottie_cropped-desktop" loop={true} autoplay={true} />
+                      <LottiePlayer src="/webflow-documents/Generative-Loop-Final-25.json" className="lottie_cropped-mobile" loop={true} autoplay={true} />
                     </div>
                   </div>
                 </div>

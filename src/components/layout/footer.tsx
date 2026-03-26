@@ -68,7 +68,7 @@ export function Footer() {
                       <a href="/events" className="c-text-5 cc-link">Events</a>
                       <a href="/knowledge-base" className="c-text-5 cc-link">Knowledge Base</a>
                       <a href="/news" className="c-text-5 cc-link">News</a>
-                      <a href="/partner-program" className="c-text-5 cc-link">Partner Program</a>
+                      <a href="/partners" className="c-text-5 cc-link">Partner Program</a>
                       <a href="/release-notes" className="c-text-5 cc-link">Release Notes</a>
                       <a href="/support" className="c-text-5 cc-link">Support</a>
                       <a href="/tools-guides" className="c-text-5 cc-link">Tools &amp; Guides</a>

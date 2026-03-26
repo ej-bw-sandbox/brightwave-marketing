@@ -3,6 +3,7 @@ import { client } from '@/lib/sanity/client'
 import { partnersQuery } from '@/lib/sanity/queries/partners'
 import { buildMetadata } from '@/lib/metadata'
 import { PortableText } from '@portabletext/react'
+import { LottiePlayer } from '@/components/ui/LottiePlayer'
 
 interface PartnersPageDoc {
   title: string
@@ -168,8 +169,8 @@ export default async function Page() {
               <section className="c-section cc-program-lottie">
                 <div className="c-container">
                   <div lottie-bg="" className="lottie-crop cc-market">
-                    <div className="lottie_cropped-desktop cc-market" data-w-id="cc0baa3b-e9a2-1dba-55e9-7f3218f7db86" data-animation-type="lottie" data-src="/webflow-documents/Generative-Loop-Final-25.json" data-loop="1" data-direction="1" data-autoplay="1" data-is-ix2-target="0" data-renderer="svg" data-default-duration="0" data-duration="10"></div>
-                    <div slice="" className="lottie_cropped-mobile" data-w-id="cc0baa3b-e9a2-1dba-55e9-7f3218f7db87" data-animation-type="lottie" data-src="/webflow-documents/Generative-Loop-Final.json" data-loop="1" data-direction="1" data-autoplay="1" data-is-ix2-target="0" data-renderer="svg" data-default-duration="0" data-duration="0"></div>
+                    <LottiePlayer src="/webflow-documents/Generative-Loop-Final-25.json" className="lottie_cropped-desktop cc-market" loop={true} autoplay={true} />
+                    <LottiePlayer src="/webflow-documents/Generative-Loop-Final.json" className="lottie_cropped-mobile" loop={true} autoplay={true} />
                   </div>
                 </div>
               </section>
@@ -259,7 +260,7 @@ export default async function Page() {
                     </div>
                     {doc.calloutCta && <CtaButton cta={doc.calloutCta} />}
                   </div>
-                  <div className="slider_lottie" data-w-id="dda6f0cd-3e94-1aef-7c22-5f6b438191f8" data-animation-type="lottie" data-src="/webflow-documents/Testimonial-BG-25.json" data-loop="1" data-direction="1" data-autoplay="1" data-is-ix2-target="0" data-renderer="svg" data-default-duration="0" data-duration="20"></div>
+                  <LottiePlayer src="/webflow-documents/Testimonial-BG-25.json" className="slider_lottie" loop={true} autoplay={true} />
                 </div>
               </div>
             </section>
@@ -275,7 +276,7 @@ export default async function Page() {
                     ))}
                   </div>
                   <div className="partner-about_image-wrapper">
-                    <div className="partner-about_lottie-wrapper" data-w-id="23010d6e-a753-b655-c05e-4a6efd93acd1" data-animation-type="lottie" data-src="/webflow-documents/About-Lottie-25.json" data-loop="0" data-direction="1" data-autoplay="1" data-is-ix2-target="0" data-renderer="svg" data-duration="0"></div>
+                    <LottiePlayer src="/webflow-documents/About-Lottie-25.json" className="partner-about_lottie-wrapper" loop={false} autoplay={true} />
                   </div>
                 </div>
               </div>

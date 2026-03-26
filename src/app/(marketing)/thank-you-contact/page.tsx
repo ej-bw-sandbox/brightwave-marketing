@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { client } from '@/lib/sanity/client'
 import { thank_you_contactQuery } from '@/lib/sanity/queries/thank-you-contact'
 import { buildMetadata } from '@/lib/metadata'
+import { LottiePlayer } from '@/components/ui/LottiePlayer'
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
@@ -422,7 +423,7 @@ export default async function Page() {
                       <div className="nav_ctas">
                         <div className="nav_btns">
                           <div data-w-id="faefcd5e-5b3c-824a-01c6-d01116acb6bc" className="toggle">
-                            <div data-is-ix2-target="1" className="nav_lottie" data-w-id="28ceacb8-4b78-f834-de1e-a515771ea564" data-animation-type="lottie" data-src="/webflow-documents/Animation---1728577640189.json" data-loop="1" data-direction="1" data-autoplay="0" data-renderer="svg" data-default-duration="0" data-duration="2.566666666666667" data-ix2-initial-state="50"></div>
+                            <LottiePlayer src="/webflow-documents/Animation---1728577640189.json" className="nav_lottie" loop={true} autoplay={false} />
                           </div>
                           <a stagger-text-btn="" href="https://app.brightwave.io/login" className="cta-sec cc-fill w-inline-block">
                             <div stagger-link-text="light" className="c-text-link cc-stagger">Login</div>
