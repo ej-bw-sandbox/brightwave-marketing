@@ -183,7 +183,7 @@ export async function POST(req: NextRequest) {
           dealstage: DEAL_STAGE,
           amount: String(dealAmount),
           hubspot_owner_id: BRADY_OWNER_ID,
-          dealtype: 'newbusiness',
+          dealtype: 'New Production',
           description: roiSummary,
           lead_score_custom: leadScore ? String(leadScore) : '',
           hs_priority: leadScore >= 7 ? 'high' : leadScore >= 4 ? 'medium' : 'low',
