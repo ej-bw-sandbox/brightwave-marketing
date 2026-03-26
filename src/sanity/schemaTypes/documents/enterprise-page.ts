@@ -160,21 +160,6 @@ export const enterpriseSalesPage = defineType({
     defineField({ name: 'formHeadline', title: 'Form Section Headline', type: 'string' }),
     defineField({ name: 'formDescription', title: 'Form Description', type: 'text' }),
 
-    // Legacy fields
-    defineField({ name: 'benefits', title: 'Key Benefits', type: 'array', of: [{ type: 'object', fields: [
-      { name: 'title', title: 'Title', type: 'string' },
-      { name: 'description', title: 'Description', type: 'text' },
-      { name: 'icon', title: 'Icon', type: 'string' },
-    ] }] }),
-    defineField({ name: 'securitySummary', title: 'Security Summary', type: 'blockContent' }),
-    defineField({ name: 'complianceBadges', title: 'Compliance Badges', type: 'array', of: [{
-      type: 'object',
-      fields: [
-        { name: 'label', title: 'Label', type: 'string' },
-        { name: 'icon', title: 'Icon', type: 'image' },
-      ],
-    }] }),
-
     // SEO
     defineField({ name: 'seo', title: 'SEO', type: 'seo' }),
   ],
