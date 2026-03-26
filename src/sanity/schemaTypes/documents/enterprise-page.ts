@@ -8,12 +8,10 @@ export const enterpriseSalesPage = defineType({
     // Hero
     defineField({ name: 'heroHeadline', title: 'Hero Headline', type: 'string' }),
     defineField({ name: 'heroSubheadline', title: 'Hero Sub-headline', type: 'text' }),
-    defineField({ name: 'heroImage', title: 'Hero Image', type: 'image', options: { hotspot: true } }),
     defineField({ name: 'heroCtas', title: 'Hero CTAs', type: 'array', of: [{ type: 'cta' }] }),
 
     // Social Proof
     defineField({ name: 'socialProofHeadline', title: 'Social Proof Headline', type: 'string' }),
-    defineField({ name: 'socialProofLogos', title: 'Enterprise Client Logos', type: 'array', of: [{ type: 'image' }] }),
 
     // Proof Points
     defineField({ name: 'proofPointsEyebrow', title: 'Proof Points Eyebrow', type: 'string' }),
@@ -52,10 +50,6 @@ export const enterpriseSalesPage = defineType({
         ],
       }],
     }),
-
-    // ROI / By the Numbers
-    defineField({ name: 'roiHeadline', title: 'ROI Section Headline', type: 'string' }),
-    defineField({ name: 'metrics', title: 'ROI Metrics', type: 'array', of: [{ type: 'stat' }] }),
 
     // By the Numbers
     defineField({ name: 'byTheNumbersHeadline', title: 'By The Numbers Headline', type: 'string' }),
@@ -155,10 +149,6 @@ export const enterpriseSalesPage = defineType({
     defineField({ name: 'footerTagline', title: 'Footer Tagline', type: 'string' }),
     defineField({ name: 'footerCtaLabel', title: 'Footer CTA Label', type: 'string' }),
     defineField({ name: 'footerCtaUrl', title: 'Footer CTA URL', type: 'string' }),
-
-    // Form
-    defineField({ name: 'formHeadline', title: 'Form Section Headline', type: 'string' }),
-    defineField({ name: 'formDescription', title: 'Form Description', type: 'text' }),
 
     // SEO
     defineField({ name: 'seo', title: 'SEO', type: 'seo' }),
