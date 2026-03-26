@@ -2,9 +2,14 @@ import { client } from '../client'
 
 export const comparisonIndexQuery = `
   *[_type == "comparison"] | order(title asc) {
-    title, slug, competitor, summary,
+    _id,
+    title,
+    slug,
+    competitorName,
+    heroDescription,
     competitorLogo{ asset->{ _id, url } },
-    competitorIcon{ asset->{ _id, url } }
+    competitorIcon{ asset->{ _id, url } },
+    comparisonCategory->{ title }
   }
 `
 
@@ -13,9 +18,24 @@ export const comparisonQuery = `
     ...,
     competitorLogo{ asset->{ _id, url } },
     competitorIcon{ asset->{ _id, url } },
+    comparisonCategory->{ title },
+    contentBlocks[]{
+      ...,
+      image{ asset->{ _id, url } },
+      icon{ asset->{ _id, url } }
+    },
+    useCaseFitItems,
+    comparisonTable,
+    faqs,
+    testimonial{
+      ...,
+      authorImage{ asset->{ _id, url } },
+      companyLogo{ asset->{ _id, url } }
+    },
     "otherComparisons": *[_type == "comparison" && slug.current != $slug] | order(title asc) [0..3] {
-      title, slug, competitor, summary,
-      competitorLogo{ asset->{ _id, url } }
+      title, slug, competitorName, heroDescription,
+      competitorLogo{ asset->{ _id, url } },
+      competitorIcon{ asset->{ _id, url } }
     }
   }
 `
