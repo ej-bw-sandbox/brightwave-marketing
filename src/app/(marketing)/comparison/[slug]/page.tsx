@@ -1,5 +1,5 @@
 import { client } from '@/lib/sanity/client'
-import { comparisonQuery, comparisonSlugsQuery } from '@/lib/sanity/queries/comparisons'
+import { comparisonQuery } from '@/lib/sanity/queries/comparisons'
 import { PortableTextRenderer } from '@/components/sections/PortableTextRenderer'
 import { buildMetadata } from '@/lib/metadata'
 import { notFound } from 'next/navigation'
@@ -7,13 +7,24 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { LottiePlayer } from '@/components/ui/LottiePlayer'
 
+const COMPARISON_SLUGS = [
+  'brightwave-vs-alphasense',
+  'brightwave-vs-blueflame-ai',
+  'brightwave-vs-boosted-ai',
+  'brightwave-vs-chatgpt',
+  'brightwave-vs-claude',
+  'brightwave-vs-daloopa-ai',
+  'brightwave-vs-hebbia',
+  'brightwave-vs-perplexity',
+  'brightwave-vs-rogo-ai',
+]
+
 interface Props {
   params: Promise<{ slug: string }>
 }
 
 export async function generateStaticParams() {
-  const slugs = await client.fetch(comparisonSlugsQuery)
-  return (slugs ?? []).map((s: { slug: string }) => ({ slug: s.slug }))
+  return COMPARISON_SLUGS.map((slug) => ({ slug }))
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -24,11 +35,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: doc.competitor ? `Brightwave vs ${doc.competitor}` : doc.title || '',
     description: doc.seo?.metaDescription || doc.summary || '',
     seo: doc.seo,
-    path: '/comparisons/' + slug,
+    path: '/comparison/' + slug,
   })
 }
 
-export default async function ComparisonDetailPage({ params }: Props) {
+export default async function ComparisonPage({ params }: Props) {
   const { slug } = await params
   const doc = await client.fetch(
     comparisonQuery,
@@ -90,12 +101,12 @@ export default async function ComparisonDetailPage({ params }: Props) {
                       <div className="flip-big">
                         <div className="svg cta-sm-arrow w-embed">
                           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <g clipPath="url(#clip0_774_4073_comp1)">
+                            <g clipPath="url(#clip0_774_4073_vs1)">
                               <path d="M2.27832 1.625L12.3577 1.44906L12.5325 11.4643" stroke="white" strokeWidth="1.0876" strokeLinejoin="bevel" />
                               <path d="M12.3563 1.44945L1.48389 12.6365" stroke="white" strokeWidth="1.0876" strokeLinejoin="bevel" />
                             </g>
                             <defs>
-                              <clipPath id="clip0_774_4073_comp1">
+                              <clipPath id="clip0_774_4073_vs1">
                                 <rect width="12" height="11.9237" fill="white" transform="translate(0.896484 1.10547) rotate(-1)" />
                               </clipPath>
                             </defs>
@@ -146,12 +157,12 @@ export default async function ComparisonDetailPage({ params }: Props) {
                       <div className="flip-big">
                         <div className="svg cta-sm-arrow w-embed">
                           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <g clipPath="url(#clip0_774_4073_comp2)">
+                            <g clipPath="url(#clip0_774_4073_vs2)">
                               <path d="M2.27832 1.625L12.3577 1.44906L12.5325 11.4643" stroke="white" strokeWidth="1.0876" strokeLinejoin="bevel" />
                               <path d="M12.3563 1.44945L1.48389 12.6365" stroke="white" strokeWidth="1.0876" strokeLinejoin="bevel" />
                             </g>
                             <defs>
-                              <clipPath id="clip0_774_4073_comp2">
+                              <clipPath id="clip0_774_4073_vs2">
                                 <rect width="12" height="11.9237" fill="white" transform="translate(0.896484 1.10547) rotate(-1)" />
                               </clipPath>
                             </defs>
@@ -167,12 +178,12 @@ export default async function ComparisonDetailPage({ params }: Props) {
                       <div className="flip-big">
                         <div className="svg cta-sm-arrow w-embed">
                           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <g clipPath="url(#clip0_774_4073_comp3)">
+                            <g clipPath="url(#clip0_774_4073_vs3)">
                               <path d="M2.27832 1.625L12.3577 1.44906L12.5325 11.4643" stroke="white" strokeWidth="1.0876" strokeLinejoin="bevel" />
                               <path d="M12.3563 1.44945L1.48389 12.6365" stroke="white" strokeWidth="1.0876" strokeLinejoin="bevel" />
                             </g>
                             <defs>
-                              <clipPath id="clip0_774_4073_comp3">
+                              <clipPath id="clip0_774_4073_vs3">
                                 <rect width="12" height="11.9237" fill="white" transform="translate(0.896484 1.10547) rotate(-1)" />
                               </clipPath>
                             </defs>
@@ -243,12 +254,12 @@ export default async function ComparisonDetailPage({ params }: Props) {
                 </div>
                 <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 35 33" fill="none" className="cta-p-big_arrows cc-hide">
                   <rect width="4.52527" height="4.49649" transform="matrix(1 8.74228e-08 8.74228e-08 -1 30.0078 32.5312)" fill="currentColor" />
-                  <g clipPath="url(#clip0_913_4549_comp)">
+                  <g clipPath="url(#clip0_913_4549_vs)">
                     <path d="M3.34961 20.228L21.2115 20.228L21.2115 2.47975" stroke="currentColor" strokeWidth="1.92707" strokeLinejoin="bevel" />
                     <path d="M21.2099 20.228L1.60254 0.745389" stroke="currentColor" strokeWidth="1.92707" strokeLinejoin="bevel" />
                   </g>
                   <defs>
-                    <clipPath id="clip0_913_4549_comp">
+                    <clipPath id="clip0_913_4549_vs">
                       <rect width="21.2623" height="21.1271" fill="currentColor" transform="matrix(1 8.74228e-08 8.74228e-08 -1 0.917969 21.1914)" />
                     </clipPath>
                   </defs>
@@ -279,7 +290,7 @@ export default async function ComparisonDetailPage({ params }: Props) {
                 {otherComparisons.map((c: any) => (
                   <div key={c.slug?.current} role="listitem" className="c-comparison_main-item w-dyn-item">
                     <div className="c-comparison-card">
-                      <Link href={`/comparisons/${c.slug?.current}`} className="c-link-helper w-inline-block"></Link>
+                      <Link href={`/comparison/${c.slug?.current}`} className="c-link-helper w-inline-block"></Link>
                       <div className="c-comparison-card_image-wrapper">
                         {c.competitorLogo?.asset?.url ? (
                           <img src={c.competitorLogo.asset.url} loading="lazy" alt={c.competitor || ''} className="c-comparison-card_image" />
