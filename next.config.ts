@@ -16,8 +16,8 @@ const nextConfig: NextConfig = {
 
   async redirects() {
     return [
-      { source: '/comparison/:slug', destination: '/vs/:slug', permanent: true },
-      { source: '/comparison', destination: '/vs', permanent: true },
+      { source: '/comparison/:slug', destination: '/comparisons/:slug', permanent: true },
+      { source: '/comparison', destination: '/comparisons', permanent: true },
     ]
   },
 

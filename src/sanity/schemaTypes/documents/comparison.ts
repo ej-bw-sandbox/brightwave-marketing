@@ -12,7 +12,7 @@ export const comparison = defineType({
       type: 'slug',
       options: { source: 'competitorName' },
       validation: (r) => r.required(),
-      description: 'URL will be /vs/[slug]',
+      description: 'URL will be /comparisons/[slug]',
     }),
     defineField({ name: 'publishedAt', title: 'Publish Date', type: 'datetime' }),
     defineField({ name: 'competitorName', title: 'Competitor Name', type: 'string', validation: (r) => r.required() }),
