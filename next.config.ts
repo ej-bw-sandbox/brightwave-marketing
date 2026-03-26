@@ -27,10 +27,13 @@ const nextConfig: NextConfig = {
         source: '/studio/:path*',
         headers: [
           { key: 'X-Robots-Tag', value: 'noindex, nofollow' },
+          { key: 'Content-Security-Policy', value: 'frame-ancestors https://*.sanity.io https://www.sanity.io' },
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
         ],
       },
       {
-        source: '/(.*)',
+        source: '/((?!studio).*)',
         headers: [
           { key: 'X-Frame-Options', value: 'DENY' },
           { key: 'X-Content-Type-Options', value: 'nosniff' },
