@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { client } from '@/lib/sanity/client'
 import { featureIndexQuery } from '@/lib/sanity/queries/features'
 import { LottiePlayer } from '@/components/ui/LottiePlayer'
+import { StepCtaSection } from '@/components/sections/StepCtaSection'
 
 export const metadata: Metadata = {
   title: 'Investment Intelligence Engine | Brightwave',
@@ -297,6 +298,7 @@ export default async function Page() {
         </div>
       </section>
       
+      <StepCtaSection />
     </>
   )
 }

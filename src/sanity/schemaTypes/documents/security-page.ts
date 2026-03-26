@@ -13,6 +13,8 @@ export const securityPage = defineType({
       options: { list: [{ title: 'Overview (/security)', value: 'overview' }, { title: 'Enterprise (/enterprise-security-compliance)', value: 'enterprise' }] },
       validation: (r) => r.required(),
     }),
+    defineField({ name: 'description', title: 'Meta Description', type: 'text', rows: 3 }),
+    defineField({ name: 'body', title: 'Page Body (HTML)', type: 'text', description: 'Full HTML body content for the page' }),
     defineField({ name: 'headline', title: 'Headline', type: 'string' }),
     defineField({ name: 'subheadline', title: 'Subheadline', type: 'text' }),
     defineField({ name: 'dateLabel', title: 'Date Label', type: 'string', description: 'e.g. "March 2024"' }),

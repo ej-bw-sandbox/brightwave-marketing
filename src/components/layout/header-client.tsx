@@ -9,6 +9,7 @@ import {
   Plug, Share2, Users, Settings, Zap, Clock, ListChecks, LayoutTemplate,
   SearchCode, PenTool, Rocket,
   BookOpen, Newspaper, Scale, Calendar, Megaphone, Library, LifeBuoy, Handshake, Wrench,
+  Sun, Moon,
 } from 'lucide-react'
 
 /* ------------------------------------------------------------------ */
@@ -94,6 +95,31 @@ export function HeaderClient({
   /* ---- State ---- */
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  /* ---- Dark mode state ---- */
+  const [isDark, setIsDark] = useState(false)
+
+  /* Sync dark mode state on mount from DOM (set by anti-FOUC script in layout.tsx) */
+  useEffect(() => {
+    const html = document.documentElement
+    const hasDark = html.getAttribute('theme') === 'dark' || html.classList.contains('u-dark-mode')
+    setIsDark(hasDark)
+  }, [])
+
+  /* Toggle dark mode handler */
+  const toggleDarkMode = useCallback(() => {
+    const html = document.documentElement
+    const newDark = !isDark
+    if (newDark) {
+      html.setAttribute('theme', 'dark')
+      html.classList.add('u-dark-mode')
+    } else {
+      html.removeAttribute('theme')
+      html.classList.remove('u-dark-mode')
+    }
+    localStorage.setItem('theme', newDark ? 'dark' : 'light')
+    setIsDark(newDark)
+  }, [isDark])
 
   /* Close dropdown on Escape */
   useEffect(() => {
@@ -613,6 +639,18 @@ export function HeaderClient({
                 {/* ---- CTAs ---- */}
                 <div className="nav_ctas">
                   <div className="nav_btns">
+                    <button
+                      onClick={toggleDarkMode}
+                      aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+                      className="toggle"
+                      type="button"
+                    >
+                      {isDark ? (
+                        <Sun size={18} strokeWidth={1.5} />
+                      ) : (
+                        <Moon size={18} strokeWidth={1.5} />
+                      )}
+                    </button>
                     <a href="https://app.brightwave.io/login" className="cta-sec cc-fill w-inline-block">
                       <div className="c-text-link cc-stagger">Login</div>
                     </a>

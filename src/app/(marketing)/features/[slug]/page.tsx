@@ -6,6 +6,7 @@ import { PortableText } from '@portabletext/react'
 import { buildMetadata } from '@/lib/metadata'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import { CtaButton } from '@/components/sections/CtaButton'
 import type { Metadata } from 'next'
 
 interface Props {
@@ -42,25 +43,25 @@ export default async function FeaturesDetailPage({ params }: Props) {
     <>
       <section className="c-section cc-hero">
         <div className="c-container">
-          <Link
-            href="/features"
-            className="text-sm text-bw-yellow-600 hover:text-bw-yellow-700 transition-colors mb-4 inline-block"
-          >
-            &larr; All Features
-          </Link>
-          <div className="flex justify-between items-end gap-10 border-b border-bw-gray-200 pb-10">
-            <h1 className="c-title-1 text-bw-gray-800">{doc.title}</h1>
+          <div className="eyebrow cc-no-bp">
+            <div className="block cc-primary" />
+            <Link href="/features" className="c-title-5">All Features</Link>
+          </div>
+          <div className="bp40-underline">
+            <h1 className="c-title-1">{doc.title}</h1>
           </div>
           {doc.heroH1 && (
-            <p className="c-text-3 text-bw-gray-500 mt-10">{doc.heroH1}</p>
+            <div className="hero_text cc-top">
+              <p className="c-text-3">{doc.heroH1}</p>
+            </div>
           )}
           {doc.heroImage?.asset && (
-            <div className="relative mt-10 aspect-video overflow-hidden rounded-lg">
+            <div className="aspect-16-9 u-overflow-hidden">
               <Image
                 src={urlFor(doc.heroImage).width(1400).height(788).quality(85).url()}
                 alt={doc.title || ''}
                 fill
-                className="object-cover"
+                className="img-cover"
                 priority
               />
             </div>
@@ -69,49 +70,57 @@ export default async function FeaturesDetailPage({ params }: Props) {
       </section>
 
       {doc.body && (
-        <section className="pb-24 max-w-4xl mx-auto px-5">
-          <div className="prose-brand">
-            <PortableText value={doc.body} />
+        <section className="c-section">
+          <div className="c-container">
+            <div className="prose-brand">
+              <PortableText value={doc.body} />
+            </div>
           </div>
         </section>
       )}
 
-      {(relatedFeatures.length > 0 || relatedUseCases.length > 0) && (
-        <section className="pb-24 max-w-site mx-auto px-5">
-          {relatedFeatures.length > 0 && (
-            <div className="mb-12">
-              <h2 className="c-title-5 text-bw-gray-800 mb-6">Related Features</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {relatedFeatures.map((f: any) => (
-                  <Link
-                    key={f.slug?.current}
-                    href={`/features/${f.slug?.current}`}
-                    className="group rounded-lg border border-bw-gray-200 p-5 transition-all hover:border-bw-gray-300"
-                  >
-                    <h3 className="font-semibold text-bw-gray-800 group-hover:text-bw-yellow-600 transition-colors">{f.title}</h3>
-                    {f.heroH1 && <p className="mt-1 text-sm text-bw-gray-500">{f.heroH1}</p>}
-                  </Link>
-                ))}
-              </div>
+      {relatedFeatures.length > 0 && (
+        <section className="c-section">
+          <div className="c-container">
+            <div className="eyebrow cc-no-bp">
+              <div className="block cc-primary" />
+              <span className="c-title-5">Related Features</span>
             </div>
-          )}
+            <div className="grid cc-collection">
+              {relatedFeatures.map((f: any) => (
+                <div key={f.slug?.current} className="collection_card">
+                  <Link href={`/features/${f.slug?.current}`} className="card w-inline-block">
+                    <div className="card_flex">
+                      <div className="c-title-5">{f.title}</div>
+                      {f.heroH1 && <div className="c-text-6">{f.heroH1}</div>}
+                    </div>
+                  </Link>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
-          {relatedUseCases.length > 0 && (
-            <div>
-              <h2 className="c-title-5 text-bw-gray-800 mb-6">Related Use Cases</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {relatedUseCases.map((u: any) => (
-                  <Link
-                    key={u.slug?.current}
-                    href={`/use-cases/${u.slug?.current}`}
-                    className="group rounded-lg border border-bw-gray-200 p-5 transition-all hover:border-bw-gray-300"
-                  >
-                    <h3 className="font-semibold text-bw-gray-800 group-hover:text-bw-yellow-600 transition-colors">{u.title}</h3>
-                  </Link>
-                ))}
-              </div>
+      {relatedUseCases.length > 0 && (
+        <section className="c-section">
+          <div className="c-container">
+            <div className="eyebrow cc-no-bp">
+              <div className="block cc-primary" />
+              <span className="c-title-5">Related Use Cases</span>
             </div>
-          )}
+            <div className="grid cc-collection">
+              {relatedUseCases.map((u: any) => (
+                <div key={u.slug?.current} className="collection_card">
+                  <Link href={`/use-cases/${u.slug?.current}`} className="card w-inline-block">
+                    <div className="card_flex">
+                      <div className="c-title-5">{u.title}</div>
+                    </div>
+                  </Link>
+                </div>
+              ))}
+            </div>
+          </div>
         </section>
       )}
     </>

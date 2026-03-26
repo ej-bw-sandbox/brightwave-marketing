@@ -21,32 +21,21 @@ interface HeroProps {
   gradient?: boolean
 }
 
-function ArrowIcon() {
+function CtaSmArrow() {
   return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M1 13L13 1M13 1H3M13 1V11" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
-}
-
-function CtaButton({ cta }: { cta: HeroCta }) {
-  const isPrimary = cta.style !== 'secondary' && cta.style !== 'ghost'
-
-  return (
-    <Link
-      href={cta.url}
-      className={isPrimary ? 'cta-primary' : 'cta-outline'}
-    >
-      <span className="cta-label">{cta.label}</span>
-      <div className="cta-dot">
-        <div className="cta-dot-bg" />
-      </div>
-      <div className="cta-arrow-wrap">
-        <span className="cta-arrow">
-          <ArrowIcon />
-        </span>
-      </div>
-    </Link>
+    <div className="svg cta-sm-arrow w-embed">
+      <svg width={14} height={14} viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g clipPath="url(#clip0_774_4073)">
+          <path d="M2.27832 1.625L12.3577 1.44906L12.5325 11.4643" stroke="white" strokeWidth="1.0876" strokeLinejoin="bevel"></path>
+          <path d="M12.3563 1.44945L1.48389 12.6365" stroke="white" strokeWidth="1.0876" strokeLinejoin="bevel"></path>
+        </g>
+        <defs>
+          <clipPath id="clip0_774_4073">
+            <rect width={12} height="11.9237" fill="white" transform="translate(0.896484 1.10547) rotate(-1)"></rect>
+          </clipPath>
+        </defs>
+      </svg>
+    </div>
   )
 }
 
@@ -57,10 +46,7 @@ export function Hero({
   eyebrow,
   ctas = [],
   image,
-  videoUrl,
-  align = 'left',
   size = 'default',
-  gradient = false,
 }: HeroProps) {
   const isLarge = size === 'large'
 
@@ -76,45 +62,62 @@ export function Hero({
         )}
 
         {/* Hero headline with bottom border */}
-        <div className="flex justify-between items-end gap-10 border-b border-bw-gray-200 pb-10">
+        <div className="bp40-underline">
           <h1 className={isLarge ? 'c-title-1' : 'c-title-3'}>
             {headline}
           </h1>
         </div>
 
-        {/* Subheadline + CTAs row */}
-        <div className="grid grid-cols-1 lg:grid-cols-7 gap-5 mt-10">
-          {subheadline && (
-            <div className="lg:col-span-4">
-              <p className="c-text-3 u-balance text-bw-gray-600">
-                {subheadline}
-              </p>
-            </div>
-          )}
-          {body && !subheadline && (
-            <div className="lg:col-span-4">
-              <p className="c-text-4 text-bw-gray-500">{body}</p>
-            </div>
-          )}
-        </div>
+        {/* Subheadline */}
+        {subheadline && (
+          <div className="hero_text cc-top">
+            <p className="c-text-3 u-balance">
+              {subheadline}
+            </p>
+          </div>
+        )}
+        {body && !subheadline && (
+          <div className="hero_text cc-top">
+            <p className="c-text-4">{body}</p>
+          </div>
+        )}
 
         {(ctas ?? []).length > 0 && (
-          <div className="flex items-center gap-2.5 mt-6 mb-8 flex-wrap">
-            {(ctas ?? []).map((cta, i) => (
-              <CtaButton key={i} cta={cta} />
-            ))}
+          <div className="hero_text cc-buttons">
+            <div className="h-20 cc-hero">
+              {(ctas ?? []).map((cta, i) => {
+                const isPrimary = cta.style !== 'secondary' && cta.style !== 'ghost'
+                return (
+                  <Link
+                    key={i}
+                    href={cta.url}
+                    className={isPrimary ? 'cta-p-sm w-inline-block' : 'cta-p-sm cc-stroke w-inline-block'}
+                  >
+                    <div>
+                      <div className="c-text-link cc-stagger-cta">{cta.label}</div>
+                    </div>
+                    <div className="flip-small">
+                      <div className="flip-bg"></div>
+                    </div>
+                    <div className="flip-big">
+                      <CtaSmArrow />
+                    </div>
+                  </Link>
+                )
+              })}
+            </div>
           </div>
         )}
 
         {/* Image (if provided) */}
         {image?.asset && (
-          <div className="mt-8 relative overflow-hidden rounded-lg">
+          <div className="aspect-16-9 u-overflow-hidden">
             <Image
               src={urlFor(image).width(1400).quality(90).url()}
               alt=""
               width={1400}
               height={788}
-              className="w-full h-auto"
+              className="img-cover"
               priority
             />
           </div>

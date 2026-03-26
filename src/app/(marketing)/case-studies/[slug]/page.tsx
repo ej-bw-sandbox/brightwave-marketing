@@ -24,18 +24,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!doc) return { title: 'Not Found' }
   return buildMetadata({
     title: doc.title || '',
-    description: doc.seo?.metaDescription || doc.excerpt || '',
+    description: doc.seo?.metaDescription || doc.heroDescription || '',
     seo: doc.seo,
     path: '/case-studies/' + slug,
   })
 }
 
-export default async function CasestudiesDetailPage({ params }: Props) {
+export default async function CaseStudyDetailPage({ params }: Props) {
   const { slug } = await params
   const doc = await client.fetch(caseStudyQuery, { slug }, { next: { tags: ['caseStudy'] } })
 
   if (!doc) notFound()
 
+  const stats = doc.stats ?? []
   const moreCaseStudies = doc.moreCaseStudies ?? []
 
   return (
@@ -43,34 +44,36 @@ export default async function CasestudiesDetailPage({ params }: Props) {
       {/* Hero */}
       <section className="c-section cc-hero">
         <div className="c-container">
-          <Link
-            href="/case-studies"
-            className="text-sm text-bw-yellow-600 hover:text-bw-yellow-700 transition-colors mb-4 inline-block"
-          >
-            &larr; All Case Studies
-          </Link>
-          <div className="flex items-start gap-6 border-b border-bw-gray-200 pb-10">
-            {doc.companyLogo?.asset && (
+          <div className="eyebrow cc-no-bp">
+            <div className="block cc-primary" />
+            <Link href="/case-studies" className="c-title-5">Case Studies</Link>
+          </div>
+          {doc.firmLogo?.asset && (
+            <div className="v-12">
               <Image
-                src={urlFor(doc.companyLogo).width(120).url()}
-                alt={doc.title || ''}
+                src={urlFor(doc.firmLogo).height(40).quality(90).url()}
+                alt={doc.firmName || ''}
                 width={120}
                 height={40}
-                className="object-contain flex-shrink-0"
+                className="img-contain"
               />
-            )}
-            <h1 className="c-title-1 text-bw-gray-800">{doc.title}</h1>
+            </div>
+          )}
+          <div className="bp40-underline">
+            <h1 className="c-title-1">{doc.title}</h1>
           </div>
           {doc.heroDescription && (
-            <p className="c-text-3 text-bw-gray-500 mt-10">{doc.heroDescription}</p>
+            <div className="hero_text cc-top">
+              <p className="c-text-3">{doc.heroDescription}</p>
+            </div>
           )}
-          {doc.thumbnail?.asset && (
-            <div className="relative mt-10 aspect-video overflow-hidden rounded-lg">
+          {doc.heroImage?.asset && (
+            <div className="aspect-16-9 u-overflow-hidden">
               <Image
-                src={urlFor(doc.thumbnail).width(1400).height(788).quality(85).url()}
+                src={urlFor(doc.heroImage).width(1400).height(788).quality(85).url()}
                 alt={doc.title || ''}
                 fill
-                className="object-cover"
+                className="img-cover"
                 priority
               />
             </div>
@@ -79,14 +82,16 @@ export default async function CasestudiesDetailPage({ params }: Props) {
       </section>
 
       {/* Stats */}
-      {doc.stats && doc.stats.length > 0 && (
+      {stats.length > 0 && (
         <section className="c-section">
           <div className="c-container">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-              {doc.stats.map((stat: any, i: number) => (
-                <div key={i} className="flex flex-col gap-2">
-                  <span className="c-title-3 text-bw-gray-800">{stat.value}</span>
-                  <span className="c-text-4 text-bw-gray-500">{stat.label}</span>
+            <div className="grid cc-collection">
+              {stats.map((stat: any, i: number) => (
+                <div key={i} className="collection_card">
+                  <div className="card_flex">
+                    <div className="c-title-3">{stat.value}</div>
+                    <div className="c-text-4">{stat.label}</div>
+                  </div>
                 </div>
               ))}
             </div>
@@ -95,43 +100,46 @@ export default async function CasestudiesDetailPage({ params }: Props) {
       )}
 
       {/* Body */}
-      {doc.body && Array.isArray(doc.body) && (
-        <section className="pb-24 max-w-4xl mx-auto px-5">
-          <div className="prose-brand">
-            <PortableText value={doc.body} />
+      {doc.body && (
+        <section className="c-section">
+          <div className="c-container">
+            <div className="prose-brand">
+              <PortableText value={doc.body} />
+            </div>
           </div>
         </section>
       )}
 
       {/* More Case Studies */}
       {moreCaseStudies.length > 0 && (
-        <section className="pb-24 max-w-site mx-auto px-5">
-          <h2 className="c-title-5 text-bw-gray-800 mb-6">More Case Studies</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {moreCaseStudies.map((cs: any) => (
-              <Link
-                key={cs.slug?.current}
-                href={`/case-studies/${cs.slug?.current}`}
-                className="group rounded-lg border border-bw-gray-200 overflow-hidden transition-all hover:border-bw-gray-300"
-              >
-                {cs.thumbnail?.asset && (
-                  <div className="aspect-video relative overflow-hidden">
-                    <Image
-                      src={urlFor(cs.thumbnail).width(400).height(225).quality(80).url()}
-                      alt={cs.title || ''}
-                      fill
-                      className="object-cover transition-transform group-hover:scale-105"
-                    />
-                  </div>
-                )}
-                <div className="p-5">
-                  <h3 className="font-semibold text-bw-gray-800 group-hover:text-bw-yellow-600 transition-colors">
-                    {cs.title}
-                  </h3>
-                  {cs.excerpt && <p className="mt-1 text-sm text-bw-gray-500 line-clamp-2">{cs.excerpt}</p>}
+        <section className="c-section">
+          <div className="c-container">
+            <div className="eyebrow cc-no-bp">
+              <div className="block cc-primary" />
+              <span className="c-title-5">More Case Studies</span>
+            </div>
+            <div className="grid cc-collection">
+              {moreCaseStudies.map((cs: any) => (
+                <div key={cs.slug?.current} className="collection_card">
+                  <Link href={`/case-studies/${cs.slug?.current}`} className="card w-inline-block">
+                    {cs.thumbnail?.asset && (
+                      <div className="aspect-4-3">
+                        <Image
+                          src={urlFor(cs.thumbnail).width(600).height(450).quality(80).url()}
+                          alt={cs.title || ''}
+                          fill
+                          className="img-cover"
+                        />
+                      </div>
+                    )}
+                    <div className="card_flex">
+                      <div className="c-title-5">{cs.title}</div>
+                      {cs.excerpt && <div className="c-text-6">{cs.excerpt}</div>}
+                    </div>
+                  </Link>
                 </div>
-              </Link>
-            ))}
+              ))}
+            </div>
           </div>
         </section>
       )}
@@ -139,14 +147,16 @@ export default async function CasestudiesDetailPage({ params }: Props) {
       {/* CTA */}
       <section className="c-section">
         <div className="c-container">
-          <div className="flex flex-col gap-5">
-            <h2 className="c-title-3 text-bw-gray-800">Ready to get started?</h2>
-            <p className="c-text-3 text-bw-gray-500">
-              See how Brightwave can transform your research workflow.
-            </p>
-            <div className="flex flex-wrap gap-2.5 mt-5">
-              <CtaButton label="Start Free Trial" href="https://app.brightwave.io/register" variant="primary" />
-              <CtaButton label="Get a Demo" href="/contact" variant="outline" />
+          <div className="v-48">
+            <div className="v-12">
+              <h2 className="c-title-3">Ready to get started?</h2>
+              <p className="c-text-3">
+                Schedule a demo and see how Brightwave transforms your research.
+              </p>
+            </div>
+            <div className="buttons">
+              <CtaButton label="Schedule a Demo" href="/contact" variant="primary" />
+              <CtaButton label="Start Free Trial" href="https://app.brightwave.io/register" variant="outline" />
             </div>
           </div>
         </div>

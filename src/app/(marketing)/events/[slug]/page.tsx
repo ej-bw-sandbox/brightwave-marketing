@@ -2,6 +2,7 @@ import { client } from '@/lib/sanity/client'
 import { eventQuery, eventSlugsQuery } from '@/lib/sanity/queries/events'
 import { buildMetadata } from '@/lib/metadata'
 import { notFound } from 'next/navigation'
+import { PortableText } from '@portabletext/react'
 import type { Metadata } from 'next'
 
 interface Props {
@@ -32,8 +33,29 @@ export default async function EventsDetailPage({ params }: Props) {
   if (!doc) notFound()
 
   return (
-    <article className="py-24 max-w-4xl mx-auto px-4">
-      <h1 className="text-4xl font-bold">{doc.title}</h1>
-    </article>
+    <>
+      <section className="c-section cc-hero">
+        <div className="c-container">
+          <div className="bp40-underline">
+            <h1 className="c-title-1">{doc.title}</h1>
+          </div>
+          {doc.excerpt && (
+            <div className="hero_text cc-top">
+              <p className="c-text-3">{doc.excerpt}</p>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {doc.body && Array.isArray(doc.body) && (
+        <section className="c-section">
+          <div className="c-container">
+            <div className="prose-brand">
+              <PortableText value={doc.body} />
+            </div>
+          </div>
+        </section>
+      )}
+    </>
   )
 }
