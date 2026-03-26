@@ -67,22 +67,6 @@ export const pricingPage = defineType({
         },
       ],
     }),
-    defineField({
-      name: 'faq',
-      title: 'FAQ Items',
-      type: 'array',
-      of: [
-        {
-          type: 'object',
-          name: 'faqItem',
-          fields: [
-            { name: 'question', title: 'Question', type: 'string', validation: (r: any) => r.required() },
-            { name: 'answer', title: 'Answer', type: 'blockContent' },
-          ],
-          preview: { select: { title: 'question' } },
-        },
-      ],
-    }),
     defineField({ name: 'seo', title: 'SEO', type: 'seo' }),
   ],
   preview: {

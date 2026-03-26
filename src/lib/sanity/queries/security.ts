@@ -5,7 +5,6 @@ export const securityQuery = `
     pillars[]{ _key, title, description, icon },
     faqHeading,
     faq[]{ _key, question, answer },
-    complianceBadges[]{ label, icon{ asset->{ url } } },
     privacyHeading,
     privacyBody,
     bottomCta{ heading, cta{ label, url, style, openInNewTab } },

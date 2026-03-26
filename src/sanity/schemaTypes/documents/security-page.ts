@@ -44,18 +44,6 @@ export const securityPage = defineType({
         ],
       }],
     }),
-    defineField({
-      name: 'complianceBadges',
-      title: 'Compliance Badges',
-      type: 'array',
-      of: [{
-        type: 'object',
-        fields: [
-          { name: 'label', title: 'Label', type: 'string' },
-          { name: 'icon', title: 'Badge Icon', type: 'image' },
-        ],
-      }],
-    }),
     defineField({ name: 'privacyHeading', title: 'Privacy Section Heading', type: 'string' }),
     defineField({ name: 'privacyBody', title: 'Privacy Section Body', type: 'blockContent' }),
     defineField({
