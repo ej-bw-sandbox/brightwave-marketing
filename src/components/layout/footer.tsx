@@ -85,15 +85,15 @@ export function Footer() {
                   <div className="footer_cat">
                     <div className="c-text-link">Comparisons</div>
                     <div className="footer_cat_spacer">
-                      <a href="/vs/brightwave-vs-alphasense" className="c-text-5 cc-link">vs. AlphaSense</a>
-                      <a href="/vs/brightwave-vs-blueflame-ai" className="c-text-5 cc-link">vs. Blueflame AI</a>
-                      <a href="/vs/brightwave-vs-boosted-ai" className="c-text-5 cc-link">vs. Boosted AI</a>
-                      <a href="/vs/brightwave-vs-chatgpt" className="c-text-5 cc-link">vs. ChatGPT</a>
-                      <a href="/vs/brightwave-vs-claude" className="c-text-5 cc-link">vs. Claude</a>
-                      <a href="/vs/brightwave-vs-daloopa-ai" className="c-text-5 cc-link">vs. Daloopa AI</a>
-                      <a href="/vs/brightwave-vs-hebbia" className="c-text-5 cc-link">vs. Hebbia</a>
-                      <a href="/vs/brightwave-vs-perplexity" className="c-text-5 cc-link">vs. Perplexity</a>
-                      <a href="/vs/brightwave-vs-rogo-ai" className="c-text-5 cc-link">vs. Rogo AI</a>
+                      <a href="/comparisons/brightwave-vs-alphasense" className="c-text-5 cc-link">vs. AlphaSense</a>
+                      <a href="/comparisons/brightwave-vs-blueflame-ai" className="c-text-5 cc-link">vs. Blueflame AI</a>
+                      <a href="/comparisons/brightwave-vs-boosted-ai" className="c-text-5 cc-link">vs. Boosted AI</a>
+                      <a href="/comparisons/brightwave-vs-chatgpt" className="c-text-5 cc-link">vs. ChatGPT</a>
+                      <a href="/comparisons/brightwave-vs-claude" className="c-text-5 cc-link">vs. Claude</a>
+                      <a href="/comparisons/brightwave-vs-daloopa-ai" className="c-text-5 cc-link">vs. Daloopa AI</a>
+                      <a href="/comparisons/brightwave-vs-hebbia" className="c-text-5 cc-link">vs. Hebbia</a>
+                      <a href="/comparisons/brightwave-vs-perplexity" className="c-text-5 cc-link">vs. Perplexity</a>
+                      <a href="/comparisons/brightwave-vs-rogo-ai" className="c-text-5 cc-link">vs. Rogo AI</a>
                     </div>
                   </div>
                 </div>
