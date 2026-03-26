@@ -47,6 +47,58 @@ export const structure: StructureResolver = (S) =>
                 .child(
                   S.document().schemaType('siteSettings').documentId('siteSettings')
                 ),
+              S.listItem()
+                .title('Partners')
+                .child(
+                  S.document().schemaType('partnersPage').documentId('partnersPage')
+                ),
+              S.listItem()
+                .title('Private Markets Platform')
+                .child(
+                  S.document()
+                    .schemaType('privateMarketsPlatformPage')
+                    .documentId('privateMarketsPlatformPage')
+                ),
+              S.listItem()
+                .title('Enterprise Security & Compliance')
+                .child(
+                  S.document()
+                    .schemaType('enterpriseSecurityCompliancePage')
+                    .documentId('enterpriseSecurityCompliancePage')
+                ),
+              S.listItem()
+                .title('Partner Terms')
+                .child(
+                  S.document()
+                    .schemaType('partnerTermsPage')
+                    .documentId('partnerTermsPage')
+                ),
+              S.listItem()
+                .title('Referral')
+                .child(
+                  S.document().schemaType('referralPage').documentId('referralPage')
+                ),
+              S.listItem()
+                .title('Thank You (Contact)')
+                .child(
+                  S.document()
+                    .schemaType('thankYouContactPage')
+                    .documentId('thankYouContactPage')
+                ),
+              S.listItem()
+                .title('Engineering')
+                .child(
+                  S.document()
+                    .schemaType('engineeringPage')
+                    .documentId('engineeringPage')
+                ),
+              S.listItem()
+                .title('Engineering: Citations')
+                .child(
+                  S.document()
+                    .schemaType('engineeringCitationsPage')
+                    .documentId('engineeringCitationsPage')
+                ),
             ])
         ),
 
