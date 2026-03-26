@@ -101,23 +101,23 @@ export default async function Page() {
                 <div className="c-container">
                   <div className="titles">
                     <div className="title_flex">
-                      <div className="c-title-cta">{doc.ctaTitleLine1.word1}</div>
-                      <div grey="" className="c-title-cta cc-grey">{doc.ctaTitleLine1.word2}</div>
+                      <div className="c-title-cta">{doc.ctaTitleLine1?.word1}</div>
+                      <div grey="" className="c-title-cta cc-grey">{doc.ctaTitleLine1?.word2}</div>
                     </div>
                     <div className="title_flex">
-                      <div grey="" className="c-title-cta cc-grey">{doc.ctaTitleLine2.word1}</div>
+                      <div grey="" className="c-title-cta cc-grey">{doc.ctaTitleLine2?.word1}</div>
                       <div className="spacer"></div>
-                      <div className="c-title-cta">{doc.ctaTitleLine2.word2}</div>
-                      <div grey="" className="c-title-cta cc-grey">{doc.ctaTitleLine2.word3}</div>
+                      <div className="c-title-cta">{doc.ctaTitleLine2?.word2}</div>
+                      <div grey="" className="c-title-cta cc-grey">{doc.ctaTitleLine2?.word3}</div>
                     </div>
                     <div className="title_flex cc-financial">
                       <div className="spacer cc-financial"></div>
                       <div>
-                        <div className="c-title-cta">{doc.ctaTitleLine3.word1}</div>
+                        <div className="c-title-cta">{doc.ctaTitleLine3?.word1}</div>
                       </div>
                     </div>
                     <div className="title_flex cc-stetch">
-                      <div className="c-title-cta">{doc.ctaTitleLine4.word1}</div>
+                      <div className="c-title-cta">{doc.ctaTitleLine4?.word1}</div>
                     </div>
                     <div className="cta-step">
                       <a href={doc.ctaButtonUrl} stagger-cta-big="" className="cta-p-big-5 w-inline-block">

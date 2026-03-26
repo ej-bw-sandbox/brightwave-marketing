@@ -80,9 +80,9 @@ export default async function Page() {
                       <div className="c-text-3">{doc.heroSubtext}</div>
                     </div>
                     <div className="buttons">
-                      <a stagger-cta="" href={doc.heroPrimaryCta.url} className="cta-p-sm w-inline-block" {...(doc.heroPrimaryCta.openInNewTab ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
+                      <a stagger-cta="" href={doc.heroPrimaryCta?.url} className="cta-p-sm w-inline-block" {...(doc.heroPrimaryCta?.openInNewTab ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
                         <div>
-                          <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">{doc.heroPrimaryCta.label}</div>
+                          <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">{doc.heroPrimaryCta?.label}</div>
                         </div>
                         <div className="flip-small">
                           <div className="flip-bg"></div>
@@ -101,8 +101,8 @@ export default async function Page() {
                             </svg></div>
                         </div>
                       </a>
-                      <a stagger-cta="" href={doc.heroSecondaryCta.url} className="cta-p-sm cc-stroke w-inline-block" {...(doc.heroSecondaryCta.openInNewTab ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
-                        <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">{doc.heroSecondaryCta.label}</div>
+                      <a stagger-cta="" href={doc.heroSecondaryCta?.url} className="cta-p-sm cc-stroke w-inline-block" {...(doc.heroSecondaryCta?.openInNewTab ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
+                        <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">{doc.heroSecondaryCta?.label}</div>
                         <div className="flip-small">
                           <div className="flip-bg"></div>
                         </div>
@@ -123,7 +123,7 @@ export default async function Page() {
                     </div>
                   </div>
                   <div className="h-20 cc-strech">
-                    {doc.heroUsps.map((usp) => (
+                    {(doc.heroUsps ?? []).map((usp) => (
                       <div key={usp._key} className="home-usp cc-40">
                         <div className="eyebrow cc-no-bp">
                           <div className="block cc-dm-light"></div>
@@ -144,7 +144,7 @@ export default async function Page() {
                     <div className="c-title-5">{doc.pillarsEyebrow}</div>
                   </div>
                   <div className="v-64 cc-stretch">
-                    {doc.pillars.map((pillar, index) => (
+                    {(doc.pillars ?? []).map((pillar, index) => (
                       <div key={pillar._key}>
                         <div className="v-line">
                           <div className="c-line"></div>
@@ -176,7 +176,7 @@ export default async function Page() {
                 <div className="v-40">
                   <h2 className="c-title-2">{doc.faqHeading}</h2>
                   <div>
-                    {doc.faqs.map((faq, index) => (
+                    {(doc.faqs ?? []).map((faq, index) => (
                       <div key={faq._key}>
                         <div id={`w-node-faq-line-${index}`} className="c-line"></div>
                         <div id={`w-node-faq-wrap-${index}`} className="accordion-wrap">

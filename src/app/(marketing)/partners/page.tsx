@@ -159,7 +159,7 @@ export default async function Page() {
                         <div className="c-text-4">{doc.heroSubtitlePrefix}<strong className="bold">{doc.heroSubtitleBold}</strong>{doc.heroSubtitleSuffix}</div>
                       </div>
                       <div className="h-20">
-                        <CtaButton cta={doc.heroCta} />
+                        {doc.heroCta && <CtaButton cta={doc.heroCta} />}
                       </div>
                     </div>
                   </div>
@@ -194,12 +194,12 @@ export default async function Page() {
                     <div className="partner-info_cta-wrapper">
                       <div className="c-text-5 w-richtext">
                         <ul role="list">
-                          {doc.infoCardBullets.map((bullet, i) => (
+                          {(doc.infoCardBullets ?? []).map((bullet, i) => (
                             <li key={i}>{bullet}</li>
                           ))}
                         </ul>
                       </div>
-                      <CtaButton cta={doc.infoCardCta} />
+                      {doc.infoCardCta && <CtaButton cta={doc.infoCardCta} />}
                     </div>
                   </div>
                 </div>
@@ -215,7 +215,7 @@ export default async function Page() {
                     </div>
                   </div>
                   <div className="partner-proof_points">
-                    {doc.proofPoints.map((point, i) => (
+                    {(doc.proofPoints ?? []).map((point, i) => (
                       <div key={i} className="partner-proof_point">
                         <h3 className="c-title-4">{point.stat}</h3>
                         <div className="c-text-4">{point.description}</div>
@@ -230,10 +230,10 @@ export default async function Page() {
                 <div className="partner-list_wrapper">
                   <div className="partner-list_title">
                     <h3 className="c-title-3">{doc.partnerListHeading}</h3>
-                    <CtaButtonStroke cta={doc.partnerListCta} />
+                    {doc.partnerListCta && <CtaButtonStroke cta={doc.partnerListCta} />}
                   </div>
                   <div className="partner-list_list-wrapper">
-                    {doc.partnerTypes.map((label, i) => (
+                    {(doc.partnerTypes ?? []).map((label, i) => (
                       <div key={i} className="partner-list_list-item">
                         <div className="partner_icon">
                           <div className="svg w-embed">{partnerIconSvgs[i] ?? null}</div>
@@ -252,12 +252,12 @@ export default async function Page() {
                     <div className="div-block-98">
                       <h2 className="c-title-3">{doc.calloutHeading}</h2>
                       <div className="div-block-99">
-                        {doc.calloutParagraphs.map((p, i) => (
+                        {(doc.calloutParagraphs ?? []).map((p, i) => (
                           <p key={i} className="c-text-4">{p}</p>
                         ))}
                       </div>
                     </div>
-                    <CtaButton cta={doc.calloutCta} />
+                    {doc.calloutCta && <CtaButton cta={doc.calloutCta} />}
                   </div>
                   <div className="slider_lottie" data-w-id="dda6f0cd-3e94-1aef-7c22-5f6b438191f8" data-animation-type="lottie" data-src="/webflow-documents/Testimonial-BG-25.json" data-loop="1" data-direction="1" data-autoplay="1" data-is-ix2-target="0" data-renderer="svg" data-default-duration="0" data-duration="20"></div>
                 </div>
@@ -270,7 +270,7 @@ export default async function Page() {
                 </div>
                 <div className="partner-about_wrapper">
                   <div className="partner-about_text-wrapper">
-                    {doc.aboutParagraphs.map((p, i) => (
+                    {(doc.aboutParagraphs ?? []).map((p, i) => (
                       <p key={i} className="c-text-4">{p}</p>
                     ))}
                   </div>
@@ -285,7 +285,7 @@ export default async function Page() {
                 <div className="v-40">
                   <h2 className="c-title-2">{doc.faqHeading}</h2>
                   <div>
-                    {doc.faq.map((item, i) => (
+                    {(doc.faq ?? []).map((item, i) => (
                       <div key={i}>
                         <div id={`w-node-faq-line-${i}`} className="c-line"></div>
                         <div id={`w-node-faq-wrap-${i}`} className="accordion-wrap">

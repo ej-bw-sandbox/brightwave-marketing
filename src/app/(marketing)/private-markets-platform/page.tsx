@@ -57,7 +57,7 @@ export default async function Page() {
 
   if (!doc) return null
 
-  const footerRows = doc.footerCtaWords.reduce<Record<number, typeof doc.footerCtaWords>>((acc, word) => {
+  const footerRows = ((doc.footerCtaWords ?? []) as any[]).reduce<Record<number, typeof doc.footerCtaWords>>((acc, word) => {
     if (!acc[word.row]) acc[word.row] = []
     acc[word.row].push(word)
     return acc
@@ -134,7 +134,7 @@ export default async function Page() {
               <div className="c-container">
                 <div className="founders">
                   <div className="grid_2-col cc-20">
-                    {doc.personas.map((persona, i) => (
+                    {(doc.personas ?? []).map((persona, i) => (
                       <div key={i} className="founder cc-40">
                         <div className="founder_top">
                           <div slider-a-3="" className="eyebrow-flex">
@@ -169,7 +169,7 @@ export default async function Page() {
                     </div>
                   </div>
                   <div id="w-node-c807bb2c-6a38-4986-26ef-a2ebd2a17ceb-60f5ff71" className="sticky_right cc-market">
-                    {doc.benefits.map((benefit, i) => (
+                    {(doc.benefits ?? []).map((benefit, i) => (
                       <div key={i} className="v-24">
                         <div className="v-20">
                           <div className="c-title-4">{benefit.title}</div>
@@ -461,7 +461,7 @@ export default async function Page() {
                   <h2 className="c-title-2">{doc.faqsTitle}</h2>
                   <div className="grid cc-no-gap">
                     <div id="w-node-a9e72dae-69b5-76b1-679b-ded80e5892ad-60f5ff71" className="c-line"></div>
-                    {doc.faqs.map((faq, i) => (
+                    {(doc.faqs ?? []).map((faq, i) => (
                       <div key={i} id={`w-node-faq-${i}`}>
                         <div accordion="" id={`w-node-accordion-${i}`} className="accordion">
                           <div className="accordion_toggle">
