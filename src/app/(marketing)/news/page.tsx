@@ -1,3 +1,4 @@
+import { StepCtaSection } from '@/components/sections/StepCtaSection'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { client } from '@/lib/sanity/client'
@@ -101,7 +102,8 @@ export default async function Page() {
           </div>
         </div>
       </section>
-      
+
+      <StepCtaSection />
     </>
   )
 }

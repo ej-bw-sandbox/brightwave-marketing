@@ -40,19 +40,21 @@ export default async function FirmTypeDetailPage({ params }: Props) {
       {/* Hero */}
       <section className="c-section cc-hero">
         <div className="c-container">
-          <div className="flex justify-between items-end gap-10 border-b border-bw-gray-200 pb-10">
-            <h1 className="c-title-1 text-bw-gray-800">{doc.title || doc.name}</h1>
+          <div className="bp40-underline">
+            <h1 className="c-title-1">{doc.title || doc.name}</h1>
           </div>
           {doc.tagline && (
-            <p className="c-text-3 text-bw-gray-500 mt-10">{doc.tagline}</p>
+            <div className="hero_text cc-top">
+              <p className="c-text-3">{doc.tagline}</p>
+            </div>
           )}
           {doc.heroImage?.asset && (
-            <div className="relative mt-10 aspect-video overflow-hidden rounded-lg">
+            <div className="aspect-16-9 u-overflow-hidden">
               <Image
                 src={urlFor(doc.heroImage).width(1400).height(788).quality(85).url()}
                 alt={doc.title || doc.name || ''}
                 fill
-                className="object-cover"
+                className="img-cover"
                 priority
               />
             </div>
@@ -63,7 +65,7 @@ export default async function FirmTypeDetailPage({ params }: Props) {
       {/* Body */}
       {doc.body && Array.isArray(doc.body) && (
         <section className="c-section">
-          <div className="c-container max-w-3xl">
+          <div className="c-container">
             <div className="prose-brand">
               <PortableText value={doc.body} />
             </div>
@@ -74,12 +76,14 @@ export default async function FirmTypeDetailPage({ params }: Props) {
       {/* CTA */}
       <section className="c-section">
         <div className="c-container">
-          <div className="flex flex-col gap-5">
-            <h2 className="c-title-3 text-bw-gray-800">See Brightwave in action</h2>
-            <p className="c-text-3 text-bw-gray-500">
-              Discover how Brightwave can transform your research workflow.
-            </p>
-            <div className="flex flex-wrap gap-2.5 mt-5">
+          <div className="v-48">
+            <div className="v-12">
+              <h2 className="c-title-3">See Brightwave in action</h2>
+              <p className="c-text-3">
+                Discover how Brightwave can transform your research workflow.
+              </p>
+            </div>
+            <div className="buttons">
               <CtaButton label="Start Free Trial" href="https://app.brightwave.io/register" variant="primary" />
               <CtaButton label="Get a Demo" href="/contact" variant="outline" />
             </div>

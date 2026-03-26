@@ -4,6 +4,7 @@ import { aboutQuery } from '@/lib/sanity/queries/about'
 import { buildMetadata } from '@/lib/metadata'
 import { RenderField } from '@/components/ui/RenderField'
 import { LottiePlayer } from '@/components/ui/LottiePlayer'
+import { StepCtaSection } from '@/components/sections/StepCtaSection'
 
 export async function generateMetadata(): Promise<Metadata> {
   const doc = await client.fetch(aboutQuery, {}, { next: { tags: ['aboutPage'], revalidate: 3600 } })
@@ -366,6 +367,7 @@ export default async function Page() {
         </section>
         <div>
           </div></div>
+      <StepCtaSection />
     </>
   )
 }

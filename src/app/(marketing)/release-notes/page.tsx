@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { client } from '@/lib/sanity/client'
 import { contentPostIndexQuery } from '@/lib/sanity/queries/content-posts'
+import { StepCtaSection } from '@/components/sections/StepCtaSection'
 import { LottiePlayer } from '@/components/ui/LottiePlayer'
 
 export const metadata: Metadata = {
@@ -100,7 +101,8 @@ export default async function Page() {
           </div>
         </div>
       </section>
-      
+
+      <StepCtaSection />
     </>
   )
 }

@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { client } from '@/lib/sanity/client'
 import { eventsIndexQuery } from '@/lib/sanity/queries/events'
+import { StepCtaSection } from '@/components/sections/StepCtaSection'
 
 export const metadata: Metadata = {
   title: 'Events | Brightwave',
@@ -92,6 +93,7 @@ export default async function Page() {
         </div>
       </section>
       
+      <StepCtaSection />
     </>
   )
 }

@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { client } from '@/lib/sanity/client'
 import { contentPostIndexQuery } from '@/lib/sanity/queries/content-posts'
 import { LottiePlayer } from '@/components/ui/LottiePlayer'
+import { StepCtaSection } from '@/components/sections/StepCtaSection'
 
 export const metadata: Metadata = {
   title: 'Engineering Log | Brightwave',
@@ -101,6 +102,7 @@ export default async function Page() {
         </div>
       </section>
       
+      <StepCtaSection />
     </>
   )
 }
