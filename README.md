@@ -16,14 +16,14 @@ The Brightwave marketing website built with Next.js 15 (App Router), Sanity Stud
 
 ```bash
 # Install dependencies
-pnpm install
+npm install
 
 # Copy environment template
 cp .env.local.example .env.local
 # Fill in values from Vercel dashboard
 
 # Start the development server
-pnpm dev
+npm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) to view the site.

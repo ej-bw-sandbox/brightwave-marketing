@@ -7,6 +7,26 @@ export const platformFeature = defineType({
   fields: [
     defineField({ name: 'title', title: 'Feature Name', type: 'string', validation: (r) => r.required() }),
     defineField({ name: 'slug', title: 'Slug', type: 'slug', options: { source: 'title' }, validation: (r) => r.required() }),
+    defineField({
+      name: 'menuLabel',
+      title: 'Menu Label',
+      type: 'string',
+      description: 'Short 1-2 word label for navigation menus (e.g. "Agentic Workflows", "Reports")',
+    }),
+    defineField({
+      name: 'menuCategory',
+      title: 'Menu Category',
+      type: 'string',
+      description: 'Category grouping for the Platform navigation dropdown',
+      options: {
+        list: [
+          { title: 'Analyze', value: 'Analyze' },
+          { title: 'Collaborate', value: 'Collaborate' },
+          { title: 'Create', value: 'Create' },
+          { title: 'Productivity', value: 'Productivity' },
+        ],
+      },
+    }),
     defineField({ name: 'tagline', title: 'Tagline', type: 'string' }),
     defineField({ name: 'heroH1', title: 'Hero H1', type: 'string' }),
     defineField({ name: 'heroBody', title: 'Hero Body', type: 'blockContent' }),

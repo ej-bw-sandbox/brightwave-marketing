@@ -41,7 +41,6 @@ export const resourceItem = defineType({
           { title: 'Due Diligence', value: 'due-diligence' },
           { title: 'Private Equity', value: 'private-equity' },
           { title: 'Private Credit', value: 'private-credit' },
-          { title: 'Public Markets', value: 'public-markets' },
           { title: 'AI in Finance', value: 'ai-finance' },
           { title: 'Portfolio Management', value: 'portfolio-management' },
         ],

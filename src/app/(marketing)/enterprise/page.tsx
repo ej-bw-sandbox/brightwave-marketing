@@ -684,27 +684,27 @@ html.wf-design-mode .num-slider_item{
                 </div>
               </div>
               <div id="w-node-_5f88d3a5-961e-345d-f130-ff55642cc454-0464d2c1" className="c-abm-temp-chal_card-list">
-                <div className="v-12 border">
+                <div className="v-12">
                   <div className="c-title-5">SSO / SAML Integration</div>
                   <div className="c-text-4">Connect to your firm's existing identity provider. One login, centralized access control.</div>
                 </div>
-                <div className="v-12 border">
+                <div className="v-12">
                   <div className="c-title-5">Role-Based Access Controls</div>
                   <div className="c-text-4">Define who can access which documents, workspaces, and outputs. Analyst-level, VP-level, and admin permissions.</div>
                 </div>
-                <div className="v-12 border">
+                <div className="v-12">
                   <div className="c-title-5">Audit Logs</div>
                   <div className="c-text-4">Full visibility into who accessed what, when, and what actions were taken. Exportable for compliance reporting.</div>
                 </div>
-                <div className="v-12 border">
+                <div className="v-12">
                   <div className="c-title-5">Data Encryption</div>
                   <div className="c-text-4">AES-256 encryption at rest, TLS 1.3 in transit. Your documents are encrypted from upload through analysis through storage.</div>
                 </div>
-                <div className="v-12 border">
+                <div className="v-12">
                   <div className="c-title-5">Data Residency Options</div>
                   <div className="c-text-4">Deploy in your preferred cloud region. US, EU, and custom residency configurations available for firms with jurisdictional requirements.</div>
                 </div>
-                <div className="v-12 border">
+                <div className="v-12">
                   <div className="c-title-5">Dedicated Tenant Architecture</div>
                   <div className="c-text-4">Enterprise customers receive isolated infrastructure. Your data is not co-mingled with other customers.</div>
                 </div>
@@ -1121,7 +1121,6 @@ html.wf-design-mode .num-slider_item{
                       <div className="c-text-link">Solutions</div>
                       <div className="footer_cat_spacer">
                         <a href="/private-markets" className="c-text-5 cc-link">Private Markets</a>
-                        <a href="/public-markets" className="c-text-5 cc-link">Public Markets</a>
                       </div>
                     </div>
                   </div>

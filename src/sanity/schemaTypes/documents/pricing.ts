@@ -12,7 +12,7 @@ export const pricingPage = defineType({
       title: 'Product Options',
       type: 'array',
       of: [{ type: 'string' }],
-      description: 'Toggle options, e.g. ["Private Markets", "Public Markets"]',
+      description: 'Toggle options, e.g. ["Private Markets"]',
     }),
     defineField({
       name: 'billingToggle',

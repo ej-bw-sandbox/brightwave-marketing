@@ -7,6 +7,7 @@ export const icpPage = defineType({
   fields: [
     defineField({ name: 'title', title: 'Persona Name', type: 'string', validation: (r) => r.required(), description: 'e.g. "Investment Analysts", "Portfolio Managers"' }),
     defineField({ name: 'slug', title: 'Slug', type: 'slug', options: { source: 'title' }, validation: (r) => r.required() }),
+    defineField({ name: 'menuLabel', title: 'Menu Label', type: 'string', description: 'Short label for navigation menus (e.g. "Analyst", "Managing Director")' }),
     defineField({ name: 'h1', title: 'H1', type: 'string' }),
     defineField({ name: 'heroTagline', title: 'Tagline', type: 'string' }),
     defineField({ name: 'heroBody', title: 'Hero Body', type: 'blockContent' }),

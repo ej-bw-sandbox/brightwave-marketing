@@ -1,4 +1,3 @@
-import Link from 'next/link'
 
 /* ------------------------------------------------------------------ */
 /*  Footer Component - Ported from Webflow Export                      */
@@ -10,85 +9,91 @@ export function Footer() {
     <>
 <section no-fade="" className="c-section cc-footer">
         <div className="c-container">
-          <div className="footer-wrap">
+          <div className="footer-wrap" style={{ maxHeight: 'none' }}>
             <div className="footer">
-              <div className="footer_content">
-                <div className="v-48 cc-footer">
-                  <div className="c-text-1">Professional-grade AI for the world&#x27;s most complex challenges.</div>
-                  <div className="invert">
-                    <div className="dark-mode-invert">
-                      <a stagger-cta="" href="/contact" className="cta-p-sm cc-stroke w-inline-block">
-                        <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">Contact us</div>
-                        <div className="flip-small">
-                          <div className="flip-bg"></div>
-                        </div>
-                        <div className="flip-big">
-                          <div className="svg cta-sm-arrow w-embed"><svg width={14} height={14} viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <g clipPath="url(#clip0_774_4073)">
-                                <path d="M2.27832 1.625L12.3577 1.44906L12.5325 11.4643" stroke="white" strokeWidth="1.0876" strokeLinejoin="bevel"></path>
-                                <path d="M12.3563 1.44945L1.48389 12.6365" stroke="white" strokeWidth="1.0876" strokeLinejoin="bevel"></path>
-                              </g>
-                              <defs>
-                                <clipPath id="clip0_774_4073">
-                                  <rect width={12} height="11.9237" fill="white" transform="translate(0.896484 1.10547) rotate(-1)"></rect>
-                                </clipPath>
-                              </defs>
+              <div className="footer_content" style={{ flexDirection: 'column', alignItems: 'stretch' }}>
+                <div className="c-text-1" style={{ marginBottom: '2.5rem' }}>Professional-grade AI for the world&#x27;s most complex challenges.</div>
+                <div className="footer_cols" style={{ gridTemplateColumns: 'repeat(5, minmax(0, 1fr))' }}>
+                  <div className="footer_cat">
+                    <div className="invert">
+                      <div className="dark-mode-invert">
+                        <a stagger-cta="" href="/contact" className="cta-p-sm cc-stroke w-inline-block">
+                          <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">Contact us</div>
+                          <div className="flip-small">
+                            <div className="flip-bg"></div>
+                          </div>
+                          <div className="flip-big">
+                            <div className="svg cta-sm-arrow w-embed"><svg width={14} height={14} viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <g clipPath="url(#clip0_774_4073)">
+                                  <path d="M2.27832 1.625L12.3577 1.44906L12.5325 11.4643" stroke="white" strokeWidth="1.0876" strokeLinejoin="bevel"></path>
+                                  <path d="M12.3563 1.44945L1.48389 12.6365" stroke="white" strokeWidth="1.0876" strokeLinejoin="bevel"></path>
+                                </g>
+                                <defs>
+                                  <clipPath id="clip0_774_4073">
+                                    <rect width={12} height="11.9237" fill="white" transform="translate(0.896484 1.10547) rotate(-1)"></rect>
+                                  </clipPath>
+                                </defs>
+                              </svg></div>
+                          </div>
+                        </a>
+                      </div>
+                    </div>
+                    <div className="mobile-btns cc-footer" style={{ marginTop: '1.5rem' }}>
+                      <div className="nav-social">
+                        <a href="https://www.linkedin.com/company/brightwave-io/about/" target="_blank" className="c-linkedin w-inline-block">
+                          <div className="svg w-embed"><svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M6.94043 5.00002C6.94017 5.53046 6.7292 6.03906 6.35394 6.41394C5.97868 6.78883 5.46986 6.99929 4.93943 6.99902C4.409 6.99876 3.90039 6.78779 3.52551 6.41253C3.15062 6.03727 2.94016 5.52846 2.94043 4.99802C2.9407 4.46759 3.15166 3.95899 3.52692 3.5841C3.90218 3.20922 4.411 2.99876 4.94143 2.99902C5.47186 2.99929 5.98047 3.21026 6.35535 3.58552C6.73024 3.96078 6.9407 4.46959 6.94043 5.00002ZM7.00043 8.48002H3.00043L3.00043 21H7.00043L7.00043 8.48002ZM13.3204 8.48002H9.34043L9.34043 21H13.2804V14.43C13.2804 10.77 18.0504 10.43 18.0504 14.43V21H22.0004L22.0004 13.07C22.0004 6.90002 14.9404 7.13002 13.2804 10.16L13.3204 8.48002Z" fill="white"></path>
                             </svg></div>
-                        </div>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-                <div className="footer_cols">
-                  <div className="v-40">
-                    <div className="footer_cat">
-                      <div className="c-text-link">Platform</div>
-                      <div className="footer_cat_spacer">
-                        <a href="/features" className="c-text-5 cc-link">Investment Intelligence Engine</a>
-                        <a href="/security" className="c-text-5 cc-link">Enterprise Trust &amp; Security</a>
-                        <a href="/release-notes" className="c-text-5 cc-link">Release Notes</a>
-                        <a href="https://docs.brightwave.io" className="c-text-5 cc-link">Knowledge Base</a>
+                        </a>
                       </div>
-                    </div>
-                    <div className="footer_cat">
-                      <div className="c-text-link">Solutions</div>
-                      <div className="footer_cat_spacer">
-                        <a href="/products/private-markets" className="c-text-5 cc-link">Private Markets</a>
-                        <a href="/products/public-markets" className="c-text-5 cc-link">Public Markets</a>
+                      <div className="nav-social">
+                        <a href="https://x.com/brightwaveio" target="_blank" className="c-x w-inline-block">
+                          <div className="svg w-embed"><svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M17.6873 3.06299L12.6913 8.77399L8.3713 3.06299H2.1123L9.5893 12.839L2.5033 20.938H5.5373L11.0063 14.688L15.7863 20.938H21.8883L14.0943 10.634L20.7193 3.06299H17.6873ZM16.6233 19.123L5.6543 4.78199H7.4573L18.3033 19.122L16.6233 19.123Z" fill="white"></path>
+                            </svg></div>
+                        </a>
                       </div>
                     </div>
                   </div>
-                  <div className="v-40">
-                    <div className="footer_cat">
-                      <div className="c-text-link">Resources</div>
-                      <div className="footer_cat_spacer">
-                        <a href="/blog" className="c-text-5 cc-link">Blog</a>
-                        <a href="/engineering-log" className="c-text-5 cc-link">Engineering Blog</a>
-                      </div>
-                    </div>
-                    <div className="footer_cat">
-                      <div className="c-text-link">Company</div>
-                      <div className="footer_cat_spacer">
-                        <a href="/about" className="c-text-5 cc-link">About</a>
-                        <a href="/news" className="c-text-5 cc-link">News</a>
-                        <a href="https://www.linkedin.com/company/brightwaveio/jobs/" className="c-text-5 cc-link">Careers</a>
-                      </div>
+                  <div className="footer_cat">
+                    <div className="c-text-link">Solutions</div>
+                    <div className="footer_cat_spacer">
+                      <a href="/private-markets/" className="c-text-5 cc-link">Private Markets</a>
                     </div>
                   </div>
-                  <div className="mobile-btns cc-footer">
-                    <div className="nav-social">
-                      <a href="https://www.linkedin.com/company/brightwave-io/about/" target="_blank" className="c-linkedin w-inline-block">
-                        <div className="svg w-embed"><svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M6.94043 5.00002C6.94017 5.53046 6.7292 6.03906 6.35394 6.41394C5.97868 6.78883 5.46986 6.99929 4.93943 6.99902C4.409 6.99876 3.90039 6.78779 3.52551 6.41253C3.15062 6.03727 2.94016 5.52846 2.94043 4.99802C2.9407 4.46759 3.15166 3.95899 3.52692 3.5841C3.90218 3.20922 4.411 2.99876 4.94143 2.99902C5.47186 2.99929 5.98047 3.21026 6.35535 3.58552C6.73024 3.96078 6.9407 4.46959 6.94043 5.00002ZM7.00043 8.48002H3.00043L3.00043 21H7.00043L7.00043 8.48002ZM13.3204 8.48002H9.34043L9.34043 21H13.2804V14.43C13.2804 10.77 18.0504 10.43 18.0504 14.43V21H22.0004L22.0004 13.07C22.0004 6.90002 14.9404 7.13002 13.2804 10.16L13.3204 8.48002Z" fill="white"></path>
-                          </svg></div>
-                      </a>
+                  <div className="footer_cat">
+                    <div className="c-text-link">Resources</div>
+                    <div className="footer_cat_spacer">
+                      <a href="/blog" className="c-text-5 cc-link">Blog</a>
+                      <a href="/events" className="c-text-5 cc-link">Events</a>
+                      <a href="/knowledge-base" className="c-text-5 cc-link">Knowledge Base</a>
+                      <a href="/news" className="c-text-5 cc-link">News</a>
+                      <a href="/partner-program" className="c-text-5 cc-link">Partner Program</a>
+                      <a href="/release-notes" className="c-text-5 cc-link">Release Notes</a>
+                      <a href="/support" className="c-text-5 cc-link">Support</a>
+                      <a href="/tools-guides" className="c-text-5 cc-link">Tools &amp; Guides</a>
                     </div>
-                    <div className="nav-social">
-                      <a href="https://x.com/brightwaveio" target="_blank" className="c-x w-inline-block">
-                        <div className="svg w-embed"><svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M17.6873 3.06299L12.6913 8.77399L8.3713 3.06299H2.1123L9.5893 12.839L2.5033 20.938H5.5373L11.0063 14.688L15.7863 20.938H21.8883L14.0943 10.634L20.7193 3.06299H17.6873ZM16.6233 19.123L5.6543 4.78199H7.4573L18.3033 19.122L16.6233 19.123Z" fill="white"></path>
-                          </svg></div>
-                      </a>
+                  </div>
+                  <div className="footer_cat">
+                    <div className="c-text-link">Company</div>
+                    <div className="footer_cat_spacer">
+                      <a href="/about" className="c-text-5 cc-link">About</a>
+                      <a href="/news" className="c-text-5 cc-link">News</a>
+                      <a href="https://www.linkedin.com/company/brightwaveio/jobs/" className="c-text-5 cc-link">Careers</a>
+                    </div>
+                  </div>
+                  <div className="footer_cat">
+                    <div className="c-text-link">Comparisons</div>
+                    <div className="footer_cat_spacer">
+                      <a href="/vs/brightwave-vs-alphasense" className="c-text-5 cc-link">vs. AlphaSense</a>
+                      <a href="/vs/brightwave-vs-blueflame-ai" className="c-text-5 cc-link">vs. Blueflame AI</a>
+                      <a href="/vs/brightwave-vs-boosted-ai" className="c-text-5 cc-link">vs. Boosted AI</a>
+                      <a href="/vs/brightwave-vs-chatgpt" className="c-text-5 cc-link">vs. ChatGPT</a>
+                      <a href="/vs/brightwave-vs-claude" className="c-text-5 cc-link">vs. Claude</a>
+                      <a href="/vs/brightwave-vs-daloopa-ai" className="c-text-5 cc-link">vs. Daloopa AI</a>
+                      <a href="/vs/brightwave-vs-hebbia" className="c-text-5 cc-link">vs. Hebbia</a>
+                      <a href="/vs/brightwave-vs-perplexity" className="c-text-5 cc-link">vs. Perplexity</a>
+                      <a href="/vs/brightwave-vs-rogo-ai" className="c-text-5 cc-link">vs. Rogo AI</a>
                     </div>
                   </div>
                 </div>
@@ -112,10 +117,10 @@ export function Footer() {
                   <path d="M111.199 101.955C142.002 105.651 162.332 128.138 162.332 159.249C162.332 194.672 135.534 218.083 95.1816 218.083H0V2.46094H87.4808C123.828 2.46094 146.931 22.483 146.931 54.2102C146.931 78.2366 133.377 96.4104 111.199 101.955ZM82.2443 92.7141C104.731 92.7141 117.36 81.0089 117.36 60.0628C117.36 39.7327 105.655 29.2596 82.5523 29.2596H30.8031V92.7141H82.2443ZM30.8031 191.284H91.4852C118.284 191.284 131.529 179.271 131.529 154.936C131.529 130.602 117.36 117.973 89.637 117.973H30.8031V191.284Z" fill="currentColor"></path>
                 </svg></div>
               <div className="emblem-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 1538 1669" fill="none" className="brightwave_emblem">
-                  <path d="M260.505 300.816L306.359 347.238V751.384L260.505 797.805H45.8869L0.00679596 751.384V347.238L45.8869 300.816H260.505Z" fill="currentColor" fill-opacity="0.35"></path>
-                  <path d="M672.07 -2.66019e-05L1173.5 507.345H1255.6L1501.89 258.154L1538 294.666V751.384L1492.12 797.805H915.059L882.142 784.005L379.097 275.03V230.764L607.199 -2.66019e-05H672.07Z" fill="currentColor" fill-opacity="0.35"></path>
-                  <path d="M1492.12 871.405L1538 917.826V1374.6L1502.07 1411.24L1255.6 1161.87H1173.5L672.278 1669H607.407L379.097 1438.03V1394.15L882.142 885.206L915.059 871.405H1492.12Z" fill="currentColor" fill-opacity="0.35"></path>
-                  <path d="M807.605 812.677V856.522L315.316 1354.61L282.4 1368.41H45.9325C37.2033 1359.58 8.7036 1330.8 0.000401625 1321.97V917.663L45.7246 871.4H321.058L379.096 812.677V453.768L415.987 416.442L807.605 812.677Z" fill="currentColor" fill-opacity="0.35"></path>
+                  <path d="M260.505 300.816L306.359 347.238V751.384L260.505 797.805H45.8869L0.00679596 751.384V347.238L45.8869 300.816H260.505Z" fill="currentColor" fillOpacity="0.35"></path>
+                  <path d="M672.07 -2.66019e-05L1173.5 507.345H1255.6L1501.89 258.154L1538 294.666V751.384L1492.12 797.805H915.059L882.142 784.005L379.097 275.03V230.764L607.199 -2.66019e-05H672.07Z" fill="currentColor" fillOpacity="0.35"></path>
+                  <path d="M1492.12 871.405L1538 917.826V1374.6L1502.07 1411.24L1255.6 1161.87H1173.5L672.278 1669H607.407L379.097 1438.03V1394.15L882.142 885.206L915.059 871.405H1492.12Z" fill="currentColor" fillOpacity="0.35"></path>
+                  <path d="M807.605 812.677V856.522L315.316 1354.61L282.4 1368.41H45.9325C37.2033 1359.58 8.7036 1330.8 0.000401625 1321.97V917.663L45.7246 871.4H321.058L379.096 812.677V453.768L415.987 416.442L807.605 812.677Z" fill="currentColor" fillOpacity="0.35"></path>
                 </svg></div>
             </div>
           </div>
@@ -132,23 +137,11 @@ export function Footer() {
               </a>
             </div>
             <div>
-              <div>2025 Brightwave Inc. All rights reserved.</div>
+              <div>2026 Brightwave Inc. All rights reserved.</div>
             </div>
           </div>
         </div>
       </section>
-      {/* Copyright bar */}
-      <div className="c-container">
-        <div className="footer_bottom-wrap">
-          <div className="footer_bottom">
-            <div className="c-text-6">&copy; {new Date().getFullYear()} Brightwave, Inc. All rights reserved.</div>
-            <div className="footer_bottom-links">
-              <Link href="/privacy-policy" className="c-text-6">Privacy Policy</Link>
-              <Link href="/terms-of-use" className="c-text-6">Terms of Use</Link>
-            </div>
-          </div>
-        </div>
-      </div>
     </>
   )
 }

@@ -7,6 +7,7 @@ export const firmType = defineType({
   fields: [
     defineField({ name: 'title', title: 'Firm Type Name', type: 'string', validation: (r) => r.required(), description: 'e.g. "Private Equity", "Venture Capital"' }),
     defineField({ name: 'slug', title: 'Slug', type: 'slug', options: { source: 'title' }, validation: (r) => r.required() }),
+    defineField({ name: 'menuLabel', title: 'Menu Label', type: 'string', description: 'Short label for navigation menus (e.g. "Mega Fund", "Middle Market")' }),
     defineField({ name: 'eyebrow', title: 'Eyebrow', type: 'string' }),
     defineField({ name: 'h1', title: 'H1', type: 'string' }),
     defineField({ name: 'h2Hero', title: 'H2 Sub-headline', type: 'string' }),

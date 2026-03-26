@@ -4,26 +4,28 @@ import { HeaderClient } from './header-client'
 const caseStudyCountQuery = `count(*[_type == "caseStudy"])`
 
 const navDataQuery = `{
-  "useCases": *[_type == "useCase"] | order(title asc) [0...4] {title, "slug": slug.current},
-  "icpPages": *[_type == "icpPage"] | order(title asc) [0...4] {title, "slug": slug.current},
-  "firmTypes": *[_type == "firmType"] | order(title asc) [0...4] {title, "slug": slug.current},
-  "platformFeatures": *[_type == "platformFeature"] | order(category asc, title asc) {title, "slug": slug.current, category}
+  "useCases": *[_type == "useCase"] | order(coalesce(menuLabel, title) asc) [0...4] {title, "menuLabel": coalesce(menuLabel, title), "slug": slug.current},
+  "icpPages": *[_type == "icpPage"] | order(coalesce(menuLabel, title) asc) [0...4] {title, "menuLabel": coalesce(menuLabel, title), "slug": slug.current},
+  "firmTypes": *[_type == "firmType"] | order(coalesce(menuLabel, title) asc) [0...4] {title, "menuLabel": coalesce(menuLabel, title), "slug": slug.current},
+  "platformFeatures": *[_type == "platformFeature" && defined(menuCategory)] | order(menuCategory asc, coalesce(menuLabel, title) asc) {title, "menuLabel": coalesce(menuLabel, title), "slug": slug.current, "category": menuCategory}
 }`
 
 export interface NavAssociation {
   title: string
+  menuLabel: string
   slug: string
 }
 
 export interface PlatformFeature {
   title: string
+  menuLabel: string
   slug: string
   category: string
 }
 
 export interface SolutionsNavData {
-  useCases: NavAssociation[]
   icpPages: NavAssociation[]
+  useCases: NavAssociation[]
   firmTypes: NavAssociation[]
   platformFeatures: PlatformFeature[]
 }
@@ -35,7 +37,7 @@ export async function Header() {
   try {
     const [count, data] = await Promise.all([
       client.fetch(caseStudyCountQuery, {}, { next: { tags: ['caseStudy'], revalidate: 3600 } }),
-      client.fetch(navDataQuery, {}, { next: { tags: ['useCase', 'icpPage', 'firmType', 'platformFeature'], revalidate: 3600 } }),
+      client.fetch(navDataQuery, {}, { next: { tags: ['icpPage', 'useCase', 'firmType', 'platformFeature'], revalidate: 3600 } }),
     ])
     caseStudyCount = count ?? 0
     navData = data ?? null

@@ -1,25 +1,62 @@
 "use client"
 
 import Link from 'next/link'
-import { useState, useEffect, useRef, useCallback } from 'react'
-
-
+import { useState, useEffect, useCallback } from 'react'
+import type { LucideIcon } from 'lucide-react'
+import {
+  Workflow, Grid3x3, Brain, Database, Search, Bot,
+  Sparkles, Sheet, Presentation, FileText, FileType,
+  Plug, Share2, Users, Settings, Zap, Clock, ListChecks, LayoutTemplate,
+  SearchCode, PenTool, Rocket,
+  BookOpen, Newspaper, Scale, Calendar, Megaphone, Library, LifeBuoy, Handshake, Wrench,
+} from 'lucide-react'
 
 /* ------------------------------------------------------------------ */
-/*  Header Component - Mega-Menu Redesign                              */
-/*  Matches reference screenshots: SOLUTIONS, FEATURES, RESOURCES      */
-/*  Preserves Webflow CSS classes + React-driven dropdown interactivity*/
+/*  Header Component - Mega-Menu                                       */
+/*  Webflow CSS classes + React-driven dropdown interactivity          */
 /* ------------------------------------------------------------------ */
 
 /* ---- Shared inline style constants ---- */
-const MEGA_BG = '#0B0C1A'
-const MEGA_TEXT = '#ffffff'
-const MEGA_TEXT_MUTED = '#8a8f98'
-const MEGA_ACCENT = '#E7E70D'
-const MEGA_BORDER = 'rgba(255,255,255,0.08)'
-const MEGA_ICON_BG = 'rgba(255,255,255,0.04)'
-const MEGA_ICON_BORDER = 'rgba(255,255,255,0.12)'
-const MEGA_HOVER_BG = 'rgba(255,255,255,0.06)'
+const MEGA_BG = '#ffffff'
+const MEGA_TEXT = '#0F0F0F'
+const MEGA_TEXT_MUTED = '#6b7280'
+const MEGA_ACCENT = '#0F0F0F'
+const MEGA_BORDER = 'rgba(0,0,0,0.08)'
+
+/* ---- Icon mappings ---- */
+const CATEGORY_ICONS: Record<string, LucideIcon> = {
+  'Analyze': SearchCode,
+  'Create': PenTool,
+  'Collaborate': Users,
+  'Productivity': Rocket,
+}
+
+const FEATURE_ICONS: Record<string, LucideIcon> = {
+  'agentic-workflows': Workflow,
+  'data-extraction-grid': Grid3x3,
+  'multi-model-intelligence': Brain,
+  'processing-volume': Database,
+  'real-time-search': Search,
+  'sandbox-agents': Bot,
+  'artifacts': Sparkles,
+  'excel-spreadsheets': Sheet,
+  'presentations': Presentation,
+  'reports': FileText,
+  'word-documents': FileType,
+  'integrations': Plug,
+  'public-sharing': Share2,
+  'team-collaboration': Users,
+  'custom-instructions': Settings,
+  'quick-prompts': Zap,
+  'scheduled-tasks': Clock,
+  'structured-planning': ListChecks,
+  'templates': LayoutTemplate,
+}
+
+function getFeatureIcon(href: string): LucideIcon | null {
+  const slug = href.split('/').pop() || ''
+  return FEATURE_ICONS[slug] || null
+}
 
 /* ---- Reusable SVG sub-components ---- */
 const ChevronSvg = () => (
@@ -28,126 +65,16 @@ const ChevronSvg = () => (
   </svg>
 )
 
-/* Small inline icon for menu items (outlined style) */
-function MenuIcon({ name }: { name: string }) {
-  const s: React.CSSProperties = { width: 18, height: 18, flexShrink: 0, opacity: 0.7 }
-  // Simple outlined SVG icons mapped by keyword
-  const icons: Record<string, React.ReactNode> = {
-    // Solutions - I want to...
-    'influence': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M3 8l4-4 4 4"/><path d="M7 4v12"/><path d="M21 16l-4 4-4-4"/><path d="M17 20V8"/></svg>,
-    'reach': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>,
-    'inform': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>,
-    'community': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8"/><line x1="12" y1="1" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="23"/></svg>,
-    'engage': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
-    'media': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>,
-    // Solutions - I am a...
-    'journalist': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>,
-    'publisher': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>,
-    'newsroom': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="16" y2="11"/><line x1="8" y1="15" x2="12" y2="15"/></svg>,
-    'startup': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>,
-    'writer': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>,
-    'founder': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>,
-    // Solutions - Brightwave For...
-    'business': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>,
-    'creators': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>,
-    'web3': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>,
-    'health': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>,
-    'food': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>,
-    'culture': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>,
-    // Features top cards
-    'newsletters': <svg style={{width:28,height:28,flexShrink:0}} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>,
-    'webbuilder': <svg style={{width:28,height:28,flexShrink:0}} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>,
-    'adnetwork': <svg style={{width:28,height:28,flexShrink:0}} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="2"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="10"/></svg>,
-    // Features - Content
-    'editor': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>,
-    'customization': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>,
-    'ai': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>,
-    'automations': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>,
-    'polls': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>,
-    'audio': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>,
-    // Features - Growth
-    'boosts': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>,
-    'referral': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
-    'forms': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>,
-    'popups': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 8h.01"/><path d="M12 8h.01"/></svg>,
-    'magiclinks': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>,
-    'recommendations': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>,
-    // Features - Data
-    'analytics': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>,
-    'abtesting': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>,
-    'verified': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>,
-    'api': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>,
-    'segmentation': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>,
-    'surveys': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>,
-    // Features - Earn
-    'paidsubscriptions': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>,
-    'sponsorships': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>,
-    'digitalproducts': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>,
-    // Resources
-    'blog': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>,
-    'product': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>,
-    'developers': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>,
-    'tools': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>,
-    'partners': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
-    'comparisons': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>,
-    'templates': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>,
-    'events': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>,
-    'changelog': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>,
-    'spotlight': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>,
-    'support': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>,
-    'casestudies': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>,
-    'experts': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
-    'glossary': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>,
-    'news': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="16" y2="11"/><line x1="8" y1="15" x2="12" y2="15"/></svg>,
-    'releasenotes': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>,
-    'engineering': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>,
-    'knowledge': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>,
-    'partner': <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>,
-  }
-  return icons[name] || <svg style={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/></svg>
-}
-
-/* Large icon in rounded square for feature cards */
-function FeatureIcon({ name }: { name: string }) {
-  return (
-    <div style={{
-      width: 48, height: 48, borderRadius: 12,
-      border: `1px solid ${MEGA_ICON_BORDER}`,
-      background: MEGA_ICON_BG,
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      flexShrink: 0,
-      color: '#8b9cf7',
-    }}>
-      <MenuIcon name={name} />
-    </div>
-  )
-}
-
-/* Resource card icon (rounded square with border) */
-function ResourceIcon({ name }: { name: string }) {
-  return (
-    <div style={{
-      width: 44, height: 44, borderRadius: 10,
-      border: `1px solid ${MEGA_ICON_BORDER}`,
-      background: MEGA_ICON_BG,
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      flexShrink: 0,
-      color: '#8b9cf7',
-    }}>
-      <MenuIcon name={name} />
-    </div>
-  )
-}
-
-
 interface PlatformFeature {
   title: string
+  menuLabel: string
   slug: string
   category: string
 }
 
 interface NavAssociation {
   title: string
+  menuLabel: string
   slug: string
 }
 
@@ -159,7 +86,6 @@ interface SolutionsNavData {
 }
 
 export function HeaderClient({
-  caseStudyCount = 0,
   solutionsNavData = null,
 }: {
   caseStudyCount?: number
@@ -168,11 +94,6 @@ export function HeaderClient({
   /* ---- State ---- */
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [isDark, setIsDark] = useState(false)
-  const navRef = useRef<HTMLDivElement>(null)
-  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-
 
   /* Close dropdown on Escape */
   useEffect(() => {
@@ -186,41 +107,18 @@ export function HeaderClient({
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [])
 
-  /* Cleanup close timer on unmount */
+  /* Close dropdown when clicking outside */
   useEffect(() => {
-    return () => {
-      if (closeTimer.current) clearTimeout(closeTimer.current)
+    if (!openDropdown) return
+    function handleClick(e: MouseEvent) {
+      const target = e.target as HTMLElement
+      if (!target.closest('.nav_dropdown')) {
+        setOpenDropdown(null)
+      }
     }
-  }, [])
-
-  /* Read saved theme on mount & apply */
-  useEffect(() => {
-    const saved = localStorage.getItem('theme')
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-    const dark = saved ? saved === 'dark' : prefersDark
-    setIsDark(dark)
-    applyTheme(dark)
-  }, [])
-
-  function applyTheme(dark: boolean) {
-    const html = document.documentElement
-    if (dark) {
-      html.setAttribute('theme', 'dark')
-      html.classList.add('u-dark-mode')
-    } else {
-      html.removeAttribute('theme')
-      html.classList.remove('u-dark-mode')
-    }
-  }
-
-  const handleToggleTheme = useCallback(() => {
-    setIsDark(prev => {
-      const next = !prev
-      localStorage.setItem('theme', next ? 'dark' : 'light')
-      applyTheme(next)
-      return next
-    })
-  }, [])
+    document.addEventListener('click', handleClick)
+    return () => document.removeEventListener('click', handleClick)
+  }, [openDropdown])
 
   const toggleDropdown = useCallback((name: string) => {
     setOpenDropdown(prev => prev === name ? null : name)
@@ -228,15 +126,6 @@ export function HeaderClient({
 
   const toggleMobileMenu = useCallback(() => {
     setMobileMenuOpen(prev => !prev)
-  }, [])
-
-  const handleMouseEnter = useCallback((name: string) => {
-    if (closeTimer.current) clearTimeout(closeTimer.current)
-    setOpenDropdown(name)
-  }, [])
-
-  const handleMouseLeave = useCallback(() => {
-    closeTimer.current = setTimeout(() => setOpenDropdown(null), 150)
   }, [])
 
   /* Group platform features by category */
@@ -249,35 +138,89 @@ export function HeaderClient({
     }
   }
 
-  const useCases = solutionsNavData?.useCases ?? []
   const icpPages = solutionsNavData?.icpPages ?? []
+  const useCases = solutionsNavData?.useCases ?? []
   const firmTypes = solutionsNavData?.firmTypes ?? []
 
-  const resourceLinks = [
-    { title: 'Blog', href: '/blog', icon: 'blog', desc: 'Best practices for scaling your newsletter' },
-    { title: 'News', href: '/news', icon: 'news', desc: 'Regularly released product updates' },
-    { title: 'Engineering Log', href: '/engineering-log', icon: 'engineering', desc: 'Technical docs and developer resources' },
-    { title: 'Tools & Guides', href: '/tools-guides', icon: 'tools', desc: 'Resources and growth assets' },
-    { title: 'Partner Program', href: '/partner-program', icon: 'partner', desc: 'Join our partner ecosystem' },
-    { title: 'Comparisons', href: '/comparisons', icon: 'comparisons', desc: 'How Brightwave stacks up against competitors' },
-    { title: 'Events', href: '/events', icon: 'events', desc: 'Live and past online events' },
-    { title: 'Release Notes', href: '/release-notes', icon: 'releasenotes', desc: 'See our latest feature launches' },
-    { title: 'Knowledge Base', href: '/knowledge-base', icon: 'knowledge', desc: 'In-depth guides and documentation' },
-    { title: 'Support', href: '/support', icon: 'support', desc: 'Product support and documentation' },
-    { title: 'Case Studies', href: '/case-studies', icon: 'casestudies', desc: 'Success stories from Brightwave customers.' },
+  const resourceLinks: { title: string; href: string; desc: string; icon: LucideIcon }[] = [
+    { title: 'Blog', href: '/blog', desc: 'Insights on AI and investment research', icon: BookOpen },
+    { title: 'Comparisons', href: '/comparisons', desc: 'How Brightwave compares to alternatives', icon: Scale },
+    { title: 'Events', href: '/events', desc: 'Live and past online events', icon: Calendar },
+    { title: 'Knowledge Base', href: '/knowledge-base', desc: 'In-depth guides and documentation', icon: Library },
+    { title: 'News', href: '/news', desc: 'Latest updates and press coverage', icon: Newspaper },
+    { title: 'Partner Program', href: '/partner-program', desc: 'Join our partner ecosystem', icon: Handshake },
+    { title: 'Release Notes', href: '/release-notes', desc: 'See our latest feature launches', icon: Megaphone },
+    { title: 'Support', href: '/support', desc: 'Product support and documentation', icon: LifeBuoy },
+    { title: 'Tools & Guides', href: '/tools-guides', desc: 'Resources and growth assets', icon: Wrench },
   ]
+
+  /* Feature categories from Sanity or fallbacks */
+  const featureCategories = Object.keys(platformGroups).length > 0
+    ? Object.entries(platformGroups)
+      .filter(([category]) => category.toLowerCase() !== 'general')
+      .map(([category, features]) => ({
+        title: category,
+        href: `/features#${category.toLowerCase().replace(/\s+/g, '-')}`,
+        items: features.map(f => ({ title: f.menuLabel || f.title, href: `/features/${f.slug}` })),
+      }))
+    : [
+      {
+        title: 'Analyze',
+        href: '/features#analyze',
+        items: [
+          { title: 'Agentic Workflows', href: '/features/agentic-workflows' },
+          { title: 'Data Extraction Grid', href: '/features/data-extraction-grid' },
+          { title: 'Multi-Model Intelligence', href: '/features/multi-model-intelligence' },
+          { title: 'Processing Volume', href: '/features/processing-volume' },
+          { title: 'Real-Time Search', href: '/features/real-time-search' },
+          { title: 'Sandbox Agents', href: '/features/sandbox-agents' },
+        ],
+      },
+      {
+        title: 'Create',
+        href: '/features#create',
+        items: [
+          { title: 'Artifacts', href: '/features/artifacts' },
+          { title: 'Excel & Spreadsheets', href: '/features/excel-spreadsheets' },
+          { title: 'Presentations', href: '/features/presentations' },
+          { title: 'Reports', href: '/features/reports' },
+          { title: 'Word Documents', href: '/features/word-documents' },
+        ],
+      },
+      {
+        title: 'Collaborate',
+        href: '/features#collaborate',
+        items: [
+          { title: 'Integrations', href: '/features/integrations' },
+          { title: 'Public Sharing', href: '/features/public-sharing' },
+          { title: 'Team Collaboration', href: '/features/team-collaboration' },
+        ],
+      },
+      {
+        title: 'Productivity',
+        href: '/features#productivity',
+        items: [
+          { title: 'Custom Instructions', href: '/features/custom-instructions' },
+          { title: 'Quick Prompts', href: '/features/quick-prompts' },
+          { title: 'Scheduled Tasks', href: '/features/scheduled-tasks' },
+          { title: 'Structured Planning', href: '/features/structured-planning' },
+          { title: 'Templates', href: '/features/templates' },
+        ],
+      },
+    ]
 
   /* ---- Shared mega-menu panel styles ---- */
   const megaPanelStyle: React.CSSProperties = {
-    position: 'fixed',
+    position: 'absolute',
     left: 0,
     right: 0,
-    top: 'var(--nav-height, 64px)',
+    top: '100%',
     background: MEGA_BG,
     borderTop: `1px solid ${MEGA_BORDER}`,
-    zIndex: 9999,
+    boxShadow: '0 8px 30px rgba(0,0,0,0.12)',
+    zIndex: 100,
     overflowY: 'auto',
-    maxHeight: 'calc(100vh - var(--nav-height, 64px))',
+    maxHeight: 'calc(100vh - 80px)',
   }
 
   const megaInnerStyle: React.CSSProperties = {
@@ -286,154 +229,9 @@ export function HeaderClient({
     padding: '48px 40px',
   }
 
-  /* Solutions dropdown items */
-  const solCol1 = useCases.length > 0
-    ? useCases.map(uc => ({ title: uc.title, href: `/use-cases/${uc.slug}` }))
-    : [
-      { title: 'Influence Public Opinion', href: '/use-cases/influence-public-opinion' },
-      { title: 'Reach More Customers', href: '/use-cases/reach-more-customers' },
-      { title: 'Inform Stakeholders', href: '/use-cases/inform-stakeholders' },
-      { title: 'Connect My Local Community', href: '/use-cases/connect-my-local-community' },
-      { title: 'Engage My Audience', href: '/use-cases/engage-my-audience' },
-      { title: 'Build A Media Brand', href: '/use-cases/build-a-media-brand' },
-    ]
-  const solCol1Icons = ['influence', 'reach', 'inform', 'community', 'engage', 'media']
-
-  const solCol2 = icpPages.length > 0
-    ? icpPages.map(icp => ({ title: icp.title, href: `/i-am-a/${icp.slug}` }))
-    : [
-      { title: 'Independent Journalist', href: '/i-am-a/independent-journalist' },
-      { title: 'Publisher', href: '/i-am-a/publisher' },
-      { title: 'Newsroom', href: '/i-am-a/newsroom' },
-      { title: 'Startup', href: '/i-am-a/startup' },
-      { title: 'Writer', href: '/i-am-a/writer' },
-      { title: 'Founder', href: '/i-am-a/founder' },
-    ]
-  const solCol2Icons = ['journalist', 'publisher', 'newsroom', 'startup', 'writer', 'founder']
-
-  const solCol3 = firmTypes.length > 0
-    ? firmTypes.map(ft => ({ title: ft.title, href: `/firm-types/${ft.slug}` }))
-    : [
-      { title: 'Business', href: '/firm-types/business' },
-      { title: 'Content Creators', href: '/firm-types/content-creators' },
-      { title: 'Web 3 & Crypto', href: '/firm-types/web3-crypto' },
-      { title: 'Health & Fitness', href: '/firm-types/health-fitness' },
-      { title: 'Food', href: '/firm-types/food' },
-      { title: 'Pop Culture', href: '/firm-types/pop-culture' },
-    ]
-  const solCol3Icons = ['business', 'creators', 'web3', 'health', 'food', 'culture']
-
-  /* Feature items grouped by category */
-  const featureCategories = Object.keys(platformGroups).length > 0
-    ? Object.entries(platformGroups)
-      .filter(([category]) => category.toLowerCase() !== 'general')
-      .map(([category, features]) => ({
-      title: category,
-      href: `/features#${category.toLowerCase().replace(/\s+/g, '-')}`,
-      items: features.map(f => ({ title: f.title, href: `/features/${f.slug}` })),
-    }))
-    : [
-      {
-        title: 'Content',
-        href: '/features#content',
-        items: [
-          { title: 'Editor', href: '/features/editor' },
-          { title: 'Customization', href: '/features/customization' },
-          { title: 'Brightwave AI', href: '/features/ai' },
-          { title: 'Automations', href: '/features/automations' },
-          { title: 'Polls', href: '/features/polls' },
-          { title: 'Audio', href: '/features/audio' },
-        ],
-      },
-      {
-        title: 'Growth',
-        href: '/features#growth',
-        items: [
-          { title: 'Boosts', href: '/features/boosts' },
-          { title: 'Referral Program', href: '/features/referral-program' },
-          { title: 'Subscribe Forms', href: '/features/subscribe-forms' },
-          { title: 'Pop-ups', href: '/features/pop-ups' },
-          { title: 'Magic Links', href: '/features/magic-links' },
-          { title: 'Recommendations', href: '/features/recommendations' },
-        ],
-      },
-      {
-        title: 'Data',
-        href: '/features#data',
-        items: [
-          { title: 'Analytics', href: '/features/analytics' },
-          { title: 'A/B Testing', href: '/features/ab-testing' },
-          { title: 'Verified Clicks', href: '/features/verified-clicks' },
-          { title: 'API & Integrations', href: '/features/api-integrations' },
-          { title: 'Segmentation', href: '/features/segmentation' },
-          { title: 'Surveys', href: '/features/surveys' },
-        ],
-      },
-      {
-        title: 'Earn',
-        href: '/features#earn',
-        items: [
-          { title: 'Ad Network', href: '/features/ad-network' },
-          { title: 'Paid Subscriptions', href: '/features/paid-subscriptions' },
-          { title: 'Boosts', href: '/features/boosts-earn' },
-          { title: 'Direct Sponsorships', href: '/features/direct-sponsorships' },
-          { title: 'Digital Products', href: '/features/digital-products' },
-        ],
-      },
-    ]
-
-  /* Category item icon mapping */
-  const catIconMap: Record<string, string[]> = {
-    'Content': ['editor', 'customization', 'ai', 'automations', 'polls', 'audio'],
-    'Growth': ['boosts', 'referral', 'forms', 'popups', 'magiclinks', 'recommendations'],
-    'Data': ['analytics', 'abtesting', 'verified', 'api', 'segmentation', 'surveys'],
-    'Earn': ['adnetwork', 'paidsubscriptions', 'boosts', 'sponsorships', 'digitalproducts'],
-  }
-
-
-
-  /* ---- Reusable item row for Solutions ---- */
-  function SolItem({ title, href, icon }: { title: string; href: string; icon: string }) {
-    return (
-      <Link href={href} style={{
-        display: 'flex', alignItems: 'center', gap: 12,
-        padding: '8px 0', color: MEGA_TEXT,
-        textDecoration: 'none', fontSize: 14, fontWeight: 400,
-        transition: 'opacity 0.15s',
-      }}
-        onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '0.7')}
-        onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '1')}
-        onClick={() => setOpenDropdown(null)}
-      >
-        <MenuIcon name={icon} />
-        <span>{title}</span>
-      </Link>
-    )
-  }
-
-  /* ---- Reusable item row for Features categories ---- */
-  function CatItem({ title, href, icon }: { title: string; href: string; icon: string }) {
-    return (
-      <Link href={href} style={{
-        display: 'flex', alignItems: 'center', gap: 10,
-        padding: '6px 0', color: MEGA_TEXT,
-        textDecoration: 'none', fontSize: 14, fontWeight: 400,
-        transition: 'opacity 0.15s',
-      }}
-        onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '0.7')}
-        onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '1')}
-        onClick={() => setOpenDropdown(null)}
-      >
-        <MenuIcon name={icon} />
-        <span>{title}</span>
-      </Link>
-    )
-  }
-
-
   return (
     <>
-      <div ref={navRef} data-w-id="146090b3-a797-0b71-5c03-2ee27e68f65a" data-animation="default" data-collapse="medium" data-duration="400" data-easing="ease" data-easing2="ease" role="banner" className="nav w-nav">
+      <div data-w-id="146090b3-a797-0b71-5c03-2ee27e68f65a" data-animation="default" data-collapse="medium" data-duration="400" data-easing="ease" data-easing2="ease" role="banner" className="nav w-nav">
         <div id="cio-banner" className="cio-banner"></div>
         <div className="c-container cc-nav">
           <div className="nav_flex">
@@ -464,7 +262,7 @@ export function HeaderClient({
                   <div className="nav_links">
 
                     {/* ==================== PLATFORM DROPDOWN (Desktop) ==================== */}
-                    <div data-hover="false" data-delay="500" className={`nav_dropdown cc-desktop w-dropdown${openDropdown === 'platform' ? ' w--open' : ''}`} onMouseEnter={() => handleMouseEnter('platform')} onMouseLeave={handleMouseLeave}>
+                    <div data-hover="false" data-delay="500" className={`nav_dropdown cc-desktop w-dropdown${openDropdown === 'platform' ? ' w--open' : ''}`}>
                       <div className="nav_toggle w-dropdown-toggle" onClick={() => toggleDropdown('platform')} aria-expanded={openDropdown === 'platform'} role="button" tabIndex={0} onKeyDown={e => e.key === 'Enter' && toggleDropdown('platform')}>
                         <div className="text-overflow">
                           <div className="c-text-link cc-nav">Platform</div>
@@ -472,75 +270,74 @@ export function HeaderClient({
                         </div>
                         <ChevronSvg />
                       </div>
-                      <nav a-dm="" className={`nav_list w-dropdown-list${openDropdown === 'platform' ? ' w--open' : ''}`} onMouseEnter={() => handleMouseEnter('platform')} onMouseLeave={handleMouseLeave}>
-                        {/* ---- FEATURES MEGA MENU ---- */}
-                        <div style={megaPanelStyle}>
-                          <div style={megaInnerStyle}>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 40 }}>
-                              {/* Left: Category columns */}
-                              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 40 }}>
-                              {featureCategories.map((cat, ci) => {
-                                const icons = catIconMap[cat.title] || []
-                                return (
-                                  <div key={ci}>
-                                    <Link href={cat.href} style={{
-                                      display: 'flex', alignItems: 'center', gap: 6,
-                                      fontSize: 14, fontWeight: 600, color: MEGA_TEXT,
-                                      textDecoration: 'none', marginBottom: 16,
-                                    }} onClick={() => setOpenDropdown(null)}>
-                                      {cat.title} <span style={{ fontSize: 16 }}>&rarr;</span>
-                                    </Link>
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                      {cat.items.map((item, ii) => (
-                                        <CatItem key={ii} title={item.title} href={item.href} icon={icons[ii] || 'editor'} />
-                                      ))}
+                      {openDropdown === 'platform' && (
+                        <nav className="nav_list w-dropdown-list w--open">
+                          <div style={megaPanelStyle}>
+                            <div style={megaInnerStyle}>
+                              <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 40 }}>
+                                {/* Left: Category columns */}
+                                <div style={{ display: 'grid', gridTemplateColumns: `repeat(${featureCategories.length}, 1fr)`, gap: 40 }}>
+                                  {featureCategories.map((cat, ci) => (
+                                    <div key={ci}>
+                                      <Link href={cat.href} style={{
+                                        display: 'flex', alignItems: 'center', gap: 8,
+                                        fontSize: 14, fontWeight: 600, color: MEGA_TEXT,
+                                        textDecoration: 'none', marginBottom: 16,
+                                      }} onClick={() => setOpenDropdown(null)}>
+                                        {(() => { const CatIcon = CATEGORY_ICONS[cat.title]; return CatIcon ? <CatIcon size={16} style={{ opacity: 0.7 }} /> : null })()}
+                                        {cat.title} <span style={{ fontSize: 16 }}>&rarr;</span>
+                                      </Link>
+                                      <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                        {cat.items.map((item, ii) => {
+                                          const ItemIcon = getFeatureIcon(item.href)
+                                          return (
+                                          <Link key={ii} href={item.href} style={{
+                                            display: 'flex', alignItems: 'center', gap: 10,
+                                            padding: '6px 0', color: MEGA_TEXT,
+                                            textDecoration: 'none', fontSize: 14, fontWeight: 400,
+                                            transition: 'opacity 0.15s',
+                                          }}
+                                            onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '0.7')}
+                                            onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '1')}
+                                            onClick={() => setOpenDropdown(null)}
+                                          >
+                                            {ItemIcon && <ItemIcon size={15} style={{ opacity: 0.5, flexShrink: 0 }} />}
+                                            <span>{item.title}</span>
+                                          </Link>
+                                          )
+                                        })}
+                                      </div>
                                     </div>
-                                  </div>
-                                )
-                              })}
-                            </div>
+                                  ))}
+                                </div>
 
-                              {/* Right sidebar - featured card */}
-                              <div style={{
-                                borderLeft: `1px solid ${MEGA_BORDER}`,
-                                paddingLeft: 40,
-                                minWidth: 280,
-                                maxWidth: 320,
-                              }}>
-                                {/* Product screenshot placeholder */}
+                                {/* Right sidebar */}
                                 <div style={{
-                                  width: '100%', height: 180, borderRadius: 12,
-                                  background: 'linear-gradient(135deg, #1a1b3a 0%, #2d2e5e 100%)',
-                                  border: `1px solid ${MEGA_ICON_BORDER}`,
-                                  marginBottom: 20,
-                                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                  overflow: 'hidden',
+                                  borderLeft: `1px solid ${MEGA_BORDER}`,
+                                  paddingLeft: 40,
+                                  minWidth: 280,
+                                  maxWidth: 320,
                                 }}>
-                                  <div style={{ color: MEGA_TEXT_MUTED, fontSize: 13, textAlign: 'center', padding: 20 }}>
-                                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" style={{ opacity: 0.5, marginBottom: 8, display: 'block', margin: '0 auto 8px' }}><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-                                    Product Dashboard
+                                  <div style={{ fontSize: 18, fontWeight: 600, color: MEGA_TEXT, marginBottom: 8 }}>
+                                    Brightwave Platform
                                   </div>
-                                </div>
-                                <div style={{ fontSize: 18, fontWeight: 600, color: MEGA_TEXT, marginBottom: 8 }}>
-                                  Take a tour of Brightwave
-                                </div>
-                                <div style={{ fontSize: 13, color: MEGA_TEXT_MUTED, marginBottom: 20, lineHeight: 1.5 }}>
-                                  Explore the features and capabilities of Brightwave
-                                </div>
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                                  <Link href="/features" style={{ color: MEGA_ACCENT, fontSize: 14, fontWeight: 500, textDecoration: 'none' }} onClick={() => setOpenDropdown(null)}>Product Overview &rarr;</Link>
-                                  <Link href="/features/api-integrations" style={{ color: MEGA_ACCENT, fontSize: 14, fontWeight: 500, textDecoration: 'none' }} onClick={() => setOpenDropdown(null)}>Integrations &rarr;</Link>
-                                  <Link href="/features" style={{ color: MEGA_ACCENT, fontSize: 14, fontWeight: 500, textDecoration: 'none' }} onClick={() => setOpenDropdown(null)}>View all features &rarr;</Link>
+                                  <div style={{ fontSize: 13, color: MEGA_TEXT_MUTED, marginBottom: 20, lineHeight: 1.5 }}>
+                                    AI-powered research and analysis for investment professionals
+                                  </div>
+                                  <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                                    <Link href="/features" style={{ color: MEGA_ACCENT, fontSize: 14, fontWeight: 500, textDecoration: 'none' }} onClick={() => setOpenDropdown(null)}>View All Features &rarr;</Link>
+                                    <Link href="/enterprise-security-compliance" style={{ color: MEGA_ACCENT, fontSize: 14, fontWeight: 500, textDecoration: 'none' }} onClick={() => setOpenDropdown(null)}>Enterprise Security &rarr;</Link>
+                                  </div>
                                 </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      </nav>
+                        </nav>
+                      )}
                     </div>
 
                     {/* ==================== SOLUTIONS DROPDOWN (Desktop) ==================== */}
-                    <div data-hover="false" data-delay="500" className={`nav_dropdown cc-desktop w-dropdown${openDropdown === 'solutions' ? ' w--open' : ''}`} onMouseEnter={() => handleMouseEnter('solutions')} onMouseLeave={handleMouseLeave}>
+                    <div data-hover="false" data-delay="500" className={`nav_dropdown cc-desktop w-dropdown${openDropdown === 'solutions' ? ' w--open' : ''}`}>
                       <div className="nav_toggle w-dropdown-toggle" onClick={() => toggleDropdown('solutions')} aria-expanded={openDropdown === 'solutions'} role="button" tabIndex={0} onKeyDown={e => e.key === 'Enter' && toggleDropdown('solutions')}>
                         <div className="text-overflow">
                           <div className="c-text-link cc-nav">Solutions</div>
@@ -548,74 +345,138 @@ export function HeaderClient({
                         </div>
                         <ChevronSvg />
                       </div>
-                      <nav a-dm="" className={`nav_list w-dropdown-list${openDropdown === 'solutions' ? ' w--open' : ''}`} onMouseEnter={() => handleMouseEnter('solutions')} onMouseLeave={handleMouseLeave}>
-                        {/* ---- SOLUTIONS MEGA MENU ---- */}
-                        <div style={megaPanelStyle}>
-                          <div style={{ ...megaInnerStyle, padding: '48px 40px 40px' }}>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 60 }}>
-                              {/* Column 1: I want to... */}
-                              <div>
-                                <div style={{
-                                  fontSize: 18, fontWeight: 600, color: MEGA_TEXT,
-                                  fontStyle: 'italic', marginBottom: 20,
-                                  fontFamily: 'Georgia, "Times New Roman", serif',
-                                }}>
-                                  I want to...
+                      {openDropdown === 'solutions' && (
+                        <nav className="nav_list w-dropdown-list w--open">
+                          <div style={megaPanelStyle}>
+                            <div style={{ ...megaInnerStyle, padding: '40px' }}>
+                              <div style={{ display: 'flex', alignItems: 'stretch', gap: 0 }}>
+                                {/* Left: Private Markets card */}
+                                <div style={{ display: 'flex', alignItems: 'center', paddingRight: 40, flexShrink: 0 }}>
+                                  <Link
+                                    href="/private-markets-platform"
+                                    onClick={() => setOpenDropdown(null)}
+                                    style={{
+                                      display: 'flex', alignItems: 'center', gap: 12,
+                                      padding: '20px 32px',
+                                      background: '#f3f4f6',
+                                      borderRadius: 8,
+                                      textDecoration: 'none',
+                                      color: MEGA_TEXT,
+                                      fontSize: 20, fontWeight: 700,
+                                      transition: 'background 0.2s',
+                                    }}
+                                    onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.background = '#e5e7eb')}
+                                    onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.background = '#f3f4f6')}
+                                  >
+                                    Private Markets
+                                  </Link>
                                 </div>
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                  {solCol1.map((item, i) => (
-                                    <SolItem key={i} title={item.title} href={item.href} icon={solCol1Icons[i] || 'influence'} />
-                                  ))}
-                                </div>
-                                <Link href="/use-cases" style={{
-                                  display: 'inline-block', marginTop: 16,
-                                  fontSize: 13, color: MEGA_TEXT_MUTED, textDecoration: 'none',
-                                }} onClick={() => setOpenDropdown(null)}>View all &rarr;</Link>
-                              </div>
 
-                              {/* Column 2: I am a... */}
-                              <div>
-                                <div style={{
-                                  fontSize: 18, fontWeight: 600, color: MEGA_TEXT,
-                                  fontStyle: 'italic', marginBottom: 20,
-                                  fontFamily: 'Georgia, "Times New Roman", serif',
-                                }}>
-                                  I am a...
-                                </div>
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                  {solCol2.map((item, i) => (
-                                    <SolItem key={i} title={item.title} href={item.href} icon={solCol2Icons[i] || 'journalist'} />
-                                  ))}
-                                </div>
-                                <Link href="/i-am-a" style={{
-                                  display: 'inline-block', marginTop: 16,
-                                  fontSize: 13, color: MEGA_TEXT_MUTED, textDecoration: 'none',
-                                }} onClick={() => setOpenDropdown(null)}>View all &rarr;</Link>
-                              </div>
+                                {/* Vertical divider */}
+                                <div style={{ width: 1, background: MEGA_BORDER, flexShrink: 0 }} />
 
-                              {/* Column 3: Brightwave For... */}
-                              <div>
-                                <div style={{
-                                  fontSize: 18, fontWeight: 600, color: MEGA_TEXT,
-                                  fontStyle: 'italic', marginBottom: 20,
-                                  fontFamily: 'Georgia, "Times New Roman", serif',
-                                }}>
-                                  Brightwave For...
+                                {/* Right: 3 columns */}
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 40, flex: 1, paddingLeft: 40 }}>
+                                  {/* I am a... */}
+                                  <div>
+                                    <div style={{ fontSize: 14, fontWeight: 600, color: MEGA_TEXT, marginBottom: 16 }}>
+                                      I am a...
+                                    </div>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                      {icpPages.length > 0 ? icpPages.map((icp, i) => (
+                                        <Link key={i} href={`/i-am-a/${icp.slug}`} style={{
+                                          display: 'flex', alignItems: 'center', gap: 8,
+                                          padding: '6px 0', color: MEGA_TEXT,
+                                          textDecoration: 'none', fontSize: 14, fontWeight: 400,
+                                          transition: 'opacity 0.15s',
+                                        }}
+                                          onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '0.7')}
+                                          onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '1')}
+                                          onClick={() => setOpenDropdown(null)}
+                                        >
+                                          <span style={{ width: 6, height: 6, borderRadius: 1, background: MEGA_TEXT_MUTED, flexShrink: 0 }} />
+                                          {icp.menuLabel || icp.title}
+                                        </Link>
+                                      )) : (
+                                        <div style={{ fontSize: 13, color: MEGA_TEXT_MUTED }}>Coming soon</div>
+                                      )}
+                                      <Link href="/i-am-a" style={{ fontSize: 13, color: MEGA_TEXT_MUTED, textDecoration: 'none', marginTop: 8, transition: 'opacity 0.15s' }}
+                                        onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '0.7')}
+                                        onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '1')}
+                                        onClick={() => setOpenDropdown(null)}
+                                      >More &rarr;</Link>
+                                    </div>
+                                  </div>
+
+                                  {/* Working on... */}
+                                  <div>
+                                    <div style={{ fontSize: 14, fontWeight: 600, color: MEGA_TEXT, marginBottom: 16 }}>
+                                      Working on...
+                                    </div>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                      {useCases.length > 0 ? useCases.map((uc, i) => (
+                                        <Link key={i} href={`/use-cases/${uc.slug}`} style={{
+                                          display: 'flex', alignItems: 'center', gap: 8,
+                                          padding: '6px 0', color: MEGA_TEXT,
+                                          textDecoration: 'none', fontSize: 14, fontWeight: 400,
+                                          transition: 'opacity 0.15s',
+                                        }}
+                                          onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '0.7')}
+                                          onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '1')}
+                                          onClick={() => setOpenDropdown(null)}
+                                        >
+                                          <span style={{ width: 6, height: 6, borderRadius: 1, background: MEGA_TEXT_MUTED, flexShrink: 0 }} />
+                                          {uc.menuLabel || uc.title}
+                                        </Link>
+                                      )) : (
+                                        <Link href="/private-markets-platform" style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 0', color: MEGA_TEXT, textDecoration: 'none', fontSize: 14 }} onClick={() => setOpenDropdown(null)}>
+                                          <span style={{ width: 6, height: 6, borderRadius: 1, background: MEGA_TEXT_MUTED, flexShrink: 0 }} /> Private Markets
+                                        </Link>
+                                      )}
+                                      <Link href="/use-cases" style={{ fontSize: 13, color: MEGA_TEXT_MUTED, textDecoration: 'none', marginTop: 8, transition: 'opacity 0.15s' }}
+                                        onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '0.7')}
+                                        onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '1')}
+                                        onClick={() => setOpenDropdown(null)}
+                                      >More &rarr;</Link>
+                                    </div>
+                                  </div>
+
+                                  {/* Working at a... */}
+                                  <div>
+                                    <div style={{ fontSize: 14, fontWeight: 600, color: MEGA_TEXT, marginBottom: 16 }}>
+                                      Working at a...
+                                    </div>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                      {firmTypes.length > 0 ? firmTypes.map((ft, i) => (
+                                        <Link key={i} href={`/firm-types/${ft.slug}`} style={{
+                                          display: 'flex', alignItems: 'center', gap: 8,
+                                          padding: '6px 0', color: MEGA_TEXT,
+                                          textDecoration: 'none', fontSize: 14, fontWeight: 400,
+                                          transition: 'opacity 0.15s',
+                                        }}
+                                          onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '0.7')}
+                                          onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '1')}
+                                          onClick={() => setOpenDropdown(null)}
+                                        >
+                                          <span style={{ width: 6, height: 6, borderRadius: 1, background: MEGA_TEXT_MUTED, flexShrink: 0 }} />
+                                          {ft.menuLabel || ft.title}
+                                        </Link>
+                                      )) : (
+                                        <div style={{ fontSize: 13, color: MEGA_TEXT_MUTED }}>Coming soon</div>
+                                      )}
+                                      <Link href="/firm-types" style={{ fontSize: 13, color: MEGA_TEXT_MUTED, textDecoration: 'none', marginTop: 8, transition: 'opacity 0.15s' }}
+                                        onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '0.7')}
+                                        onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '1')}
+                                        onClick={() => setOpenDropdown(null)}
+                                      >More &rarr;</Link>
+                                    </div>
+                                  </div>
                                 </div>
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                  {solCol3.map((item, i) => (
-                                    <SolItem key={i} title={item.title} href={item.href} icon={solCol3Icons[i] || 'business'} />
-                                  ))}
-                                </div>
-                                <Link href="/firm-types" style={{
-                                  display: 'inline-block', marginTop: 16,
-                                  fontSize: 13, color: MEGA_TEXT_MUTED, textDecoration: 'none',
-                                }} onClick={() => setOpenDropdown(null)}>View all &rarr;</Link>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      </nav>
+                        </nav>
+                      )}
                     </div>
 
                     {/* ==================== CUSTOMERS (Direct Link) ==================== */}
@@ -625,7 +486,7 @@ export function HeaderClient({
                     </a>
 
                     {/* ==================== RESOURCES DROPDOWN (Desktop) ==================== */}
-                    <div data-hover="false" data-delay="500" className={`nav_dropdown cc-desktop w-dropdown${openDropdown === 'resources' ? ' w--open' : ''}`} onMouseEnter={() => handleMouseEnter('resources')} onMouseLeave={handleMouseLeave}>
+                    <div data-hover="false" data-delay="500" className={`nav_dropdown cc-desktop w-dropdown${openDropdown === 'resources' ? ' w--open' : ''}`}>
                       <div className="nav_toggle w-dropdown-toggle" onClick={() => toggleDropdown('resources')} aria-expanded={openDropdown === 'resources'} role="button" tabIndex={0} onKeyDown={e => e.key === 'Enter' && toggleDropdown('resources')}>
                         <div className="text-overflow">
                           <div className="c-text-link cc-nav">Resources</div>
@@ -633,20 +494,20 @@ export function HeaderClient({
                         </div>
                         <ChevronSvg />
                       </div>
-                      <nav a-dm="" className={`nav_list w-dropdown-list${openDropdown === 'resources' ? ' w--open' : ''}`} onMouseEnter={() => handleMouseEnter('resources')} onMouseLeave={handleMouseLeave}>
-                        {/* ---- RESOURCES MEGA MENU ---- */}
-                        <div style={megaPanelStyle}>
-                          <div style={megaInnerStyle}>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 48 }}>
-                              {/* Left: Resource grid (3 columns) */}
+                      {openDropdown === 'resources' && (
+                        <nav className="nav_list w-dropdown-list w--open">
+                          <div style={megaPanelStyle}>
+                            <div style={megaInnerStyle}>
                               <div style={{
                                 display: 'grid',
                                 gridTemplateColumns: 'repeat(3, 1fr)',
                                 gap: '28px 36px',
                               }}>
-                                {resourceLinks.map((link, i) => (
+                                {resourceLinks.map((link, i) => {
+                                  const ResIcon = link.icon
+                                  return (
                                   <Link key={i} href={link.href} style={{
-                                    display: 'flex', alignItems: 'flex-start', gap: 14,
+                                    display: 'flex', alignItems: 'flex-start', gap: 12,
                                     textDecoration: 'none', color: MEGA_TEXT,
                                     padding: '8px 0',
                                     transition: 'opacity 0.15s',
@@ -655,67 +516,19 @@ export function HeaderClient({
                                     onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '1')}
                                     onClick={() => setOpenDropdown(null)}
                                   >
-                                    <ResourceIcon name={link.icon} />
+                                    <ResIcon size={18} style={{ opacity: 0.5, flexShrink: 0, marginTop: 2 }} />
                                     <div>
-                                      <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 4 }}>{link.title}</div>
+                                      <div style={{ fontSize: 15, fontWeight: 600 }}>{link.title}</div>
                                       <div style={{ fontSize: 13, color: MEGA_TEXT_MUTED, lineHeight: 1.5 }}>{link.desc}</div>
                                     </div>
                                   </Link>
-                                ))}
-                              </div>
-
-                              {/* Right sidebar: Featured content */}
-                              <div style={{
-                                borderLeft: `1px solid ${MEGA_BORDER}`,
-                                paddingLeft: 40,
-                                minWidth: 300,
-                                maxWidth: 360,
-                              }}>
-                                {/* Featured image placeholder */}
-                                <div style={{
-                                  width: '100%', aspectRatio: '3/4', maxHeight: 380,
-                                  borderRadius: 12,
-                                  background: 'linear-gradient(135deg, #0d0e2a 0%, #1a1b4a 50%, #0d0e2a 100%)',
-                                  border: `1px solid ${MEGA_ICON_BORDER}`,
-                                  marginBottom: 24,
-                                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                  overflow: 'hidden',
-                                  position: 'relative',
-                                }}>
-                                  <div style={{
-                                    textAlign: 'center', color: MEGA_TEXT,
-                                    padding: 32,
-                                  }}>
-                                    <div style={{ fontSize: 28, fontWeight: 800, lineHeight: 1.2, letterSpacing: '-0.02em', textTransform: 'uppercase' }}>
-                                      THE STATE OF AI IN<br />PRIVATE EQUITY
-                                    </div>
-                                    <div style={{
-                                      marginTop: 20,
-                                      fontSize: 48, fontWeight: 800,
-                                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                                      WebkitBackgroundClip: 'text',
-                                      WebkitTextFillColor: 'transparent',
-                                    }}>
-                                      2026
-                                    </div>
-                                  </div>
-                                </div>
-                                <div style={{ fontSize: 18, fontWeight: 600, color: MEGA_TEXT, marginBottom: 8 }}>
-                                  State of AI in Private Equity
-                                </div>
-                                <div style={{ fontSize: 13, color: MEGA_TEXT_MUTED, marginBottom: 20, lineHeight: 1.5 }}>
-                                  Brightwave&apos;s annual research report on how AI is transforming the private equity industry.
-                                </div>
-                                <Link href="/state-of-ai-in-private-equity" style={{
-                                  color: MEGA_ACCENT, fontSize: 14, fontWeight: 500, textDecoration: 'none',
-                                }} onClick={() => setOpenDropdown(null)}>
-                                  Read the Report &rarr;
-                                </Link>
+                                  )
+                                })}
                               </div>
                             </div>
                           </div>
-                        </div>
-                      </nav>
+                        </nav>
+                      )}
                     </div>
 
                     {/* ==================== PRICING (Direct Link) ==================== */}
@@ -727,29 +540,48 @@ export function HeaderClient({
                     {/* ==================== MOBILE ACCORDIONS ==================== */}
 
                     {/* Mobile: Platform */}
-                    <div accordion="" className="nav_dropdown cc-mobile">
+                    <div className="nav_dropdown cc-mobile">
                       <div className="nav_toggle">
                         <div className="c-text-link cc-nav">Platform</div>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 10 6" fill="none" chevron="" className="chevron">
-                          <path d="M0.525391 1L5.02539 5L9.52539 1" stroke="currentColor"></path>
-                        </svg>
-                        <input accordion-checkbox="" type="checkbox" className="accordion_checkbox" />
+                        <ChevronSvg />
+                        <input type="checkbox" className="accordion_checkbox" />
                       </div>
-                      <div accordion="element" className="nav_list">
-                        <div mask-height="element">
+                      <div className="nav_list">
+                        <div>
                           <div className="mobile_items">
-                            {Object.keys(platformGroups).length > 0 ? (
-                              Object.entries(platformGroups)
-                                .filter(([category]) => category.toLowerCase() !== 'general')
-                                .map(([category, features]) =>
-                                features.slice(0, 4).map((f, i) => (
-                                  <a key={`mob-plat-${category}-${i}`} href={`/features/${f.slug}`} className="c-title-4">{f.title}</a>
-                                ))
-                              ).flat()
-                            ) : (
+                            {featureCategories.map((cat) =>
+                              cat.items.slice(0, 4).map((item, i) => (
+                                <a key={`mob-plat-${cat.title}-${i}`} href={item.href} className="c-title-4">{item.title}</a>
+                              ))
+                            ).flat()}
+                            <a href="/features" className="c-title-4" style={{ color: MEGA_ACCENT }}>View All Features</a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Mobile: Solutions */}
+                    <div className="nav_dropdown cc-mobile">
+                      <div className="nav_toggle">
+                        <div className="c-text-link cc-nav">Solutions</div>
+                        <ChevronSvg />
+                        <input type="checkbox" className="accordion_checkbox" />
+                      </div>
+                      <div className="nav_list">
+                        <div>
+                          <div className="mobile_items">
+                            {useCases.map((uc, i) => (
+                              <a key={`mob-uc-${i}`} href={`/use-cases/${uc.slug}`} className="c-title-4">{uc.menuLabel || uc.title}</a>
+                            ))}
+                            {icpPages.map((icp, i) => (
+                              <a key={`mob-icp-${i}`} href={`/i-am-a/${icp.slug}`} className="c-title-4">{icp.menuLabel || icp.title}</a>
+                            ))}
+                            {firmTypes.map((ft, i) => (
+                              <a key={`mob-ft-${i}`} href={`/firm-types/${ft.slug}`} className="c-title-4">{ft.menuLabel || ft.title}</a>
+                            ))}
+                            {useCases.length === 0 && icpPages.length === 0 && firmTypes.length === 0 && (
                               <>
-                                <a href="/features" className="c-title-4">Investment Intelligence Engine</a>
-                                <a href="/security" className="c-title-4">Enterprise Security &amp; Compliance</a>
+                                <a href="/private-markets-platform" className="c-title-4">Private Markets</a>
                               </>
                             )}
                           </div>
@@ -757,44 +589,15 @@ export function HeaderClient({
                       </div>
                     </div>
 
-                    {/* Mobile: Solutions */}
-                    <div accordion="" className="nav_dropdown cc-mobile">
-                      <div className="nav_toggle">
-                        <div className="c-text-link cc-nav">Solutions</div>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 10 6" fill="none" chevron="" className="chevron">
-                          <path d="M0.525391 1L5.02539 5L9.52539 1" stroke="currentColor"></path>
-                        </svg>
-                        <input accordion-checkbox="" type="checkbox" className="accordion_checkbox" />
-                      </div>
-                      <div accordion="element" className="nav_list">
-                        <div mask-height="element">
-                          <div className="mobile_items">
-                            {useCases.map((uc, i) => (
-                              <a key={`mob-uc-${i}`} href={`/use-cases/${uc.slug}`} className="c-title-4">{uc.title}</a>
-                            ))}
-                            {icpPages.map((icp, i) => (
-                              <a key={`mob-icp-${i}`} href={`/i-am-a/${icp.slug}`} className="c-title-4">{icp.title}</a>
-                            ))}
-                            {firmTypes.map((ft, i) => (
-                              <a key={`mob-ft-${i}`} href={`/firm-types/${ft.slug}`} className="c-title-4">{ft.title}</a>
-                            ))}
-                            <a href="/products/private-markets" className="c-title-4">Private Markets</a>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
                     {/* Mobile: Resources */}
-                    <div accordion="" className="nav_dropdown cc-mobile">
+                    <div className="nav_dropdown cc-mobile">
                       <div className="nav_toggle">
                         <div className="c-text-link cc-nav">Resources</div>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 10 6" fill="none" chevron="" className="chevron">
-                          <path d="M0.525391 1L5.02539 5L9.52539 1" stroke="currentColor"></path>
-                        </svg>
-                        <input accordion-checkbox="" type="checkbox" className="accordion_checkbox" />
+                        <ChevronSvg />
+                        <input type="checkbox" className="accordion_checkbox" />
                       </div>
-                      <div accordion="element" className="nav_list">
-                        <div mask-height="element">
+                      <div className="nav_list">
+                        <div>
                           <div className="mobile_items">
                             {resourceLinks.map((link, i) => (
                               <a key={`mob-res-${i}`} href={link.href} className="c-title-4">{link.title}</a>
@@ -810,18 +613,11 @@ export function HeaderClient({
                 {/* ---- CTAs ---- */}
                 <div className="nav_ctas">
                   <div className="nav_btns">
-                    <div data-w-id="faefcd5e-5b3c-824a-01c6-d01116acb6bc" className="toggle" onClick={handleToggleTheme} role="button" tabIndex={0} onKeyDown={e => e.key === 'Enter' && handleToggleTheme()} aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}>
-                      {isDark ? (
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-                      ) : (
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-                      )}
-                    </div>
-                    <a stagger-text-btn="" href="https://app.brightwave.io/login" className="cta-sec cc-fill w-inline-block">
-                      <div stagger-link-text="light" className="c-text-link cc-stagger">Login</div>
+                    <a href="https://app.brightwave.io/login" className="cta-sec cc-fill w-inline-block">
+                      <div className="c-text-link cc-stagger">Login</div>
                     </a>
-                    <a stagger-text-btn="" href="/contact" className="cta-sec w-inline-block">
-                      <div stagger-link-text="dark" className="c-text-link cc-stagger">Get Started</div>
+                    <a href="/contact" className="cta-sec w-inline-block">
+                      <div className="c-text-link cc-stagger">Get Started</div>
                     </a>
                   </div>
                 </div>
@@ -849,7 +645,7 @@ export function HeaderClient({
             inset: 0,
             top: 'var(--nav-height, 64px)',
             background: 'rgba(0,0,0,0.4)',
-            zIndex: 9998,
+            zIndex: 99,
           }}
           onClick={() => setOpenDropdown(null)}
         />
