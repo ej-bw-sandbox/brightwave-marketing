@@ -17,13 +17,11 @@ import { landingPage } from './documents/landing-page'
 import { abmPage } from './documents/abm-page'
 import { legalPage } from './documents/legal-page'
 import { securityPage } from './documents/security-page'
-import { productPage } from './documents/product-page'
 import { enterpriseSalesPage } from './documents/enterprise-page'
 import { siteSettings } from './documents/site-settings'
 
 // New types
 import { contentPost } from './documents/content-post'
-import { product } from './documents/product'
 import { supportPage } from './documents/support-page'
 import { contactPage } from './documents/contact-page'
 
@@ -51,8 +49,6 @@ export const schemaTypes = [
   siteSettings,
 
   // Product
-  product,
-  productPage,
   platformFeature,
 
   // Solutions

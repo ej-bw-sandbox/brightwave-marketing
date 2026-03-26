@@ -59,9 +59,7 @@ export const structure: StructureResolver = (S) =>
           S.list()
             .title('Product')
             .items([
-              S.documentTypeListItem('product').title('Products'),
               S.documentTypeListItem('platformFeature').title('Features'),
-              S.documentTypeListItem('productPage').title('Product Pages (Legacy)'),
             ])
         ),
 
