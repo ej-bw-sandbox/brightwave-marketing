@@ -1,71 +1,101 @@
 import type { Metadata } from 'next'
+import { client } from '@/lib/sanity/client'
+import { homepageQuery } from '@/lib/sanity/queries/homepage'
+import { buildMetadata } from '@/lib/metadata'
 import { LottiePlayer } from '@/components/ui/LottiePlayer'
 import HeroPrompt from '@/components/sections/HeroPrompt'
 import KeyFeatures from '@/components/sections/KeyFeatures'
 import { LatestReleaseNotes, LatestBlogPosts } from '@/components/sections/LatestPosts'
 
+const fetchOptions = { next: { tags: ['homepage'], revalidate: 3600 } }
 
-export const metadata: Metadata = {
-  title: 'Brightwave - AI Financial Research',
-  description: 'AI-powered financial research platform for investment professionals.',
+export async function generateMetadata(): Promise<Metadata> {
+  const doc = await client.fetch(homepageQuery, {}, fetchOptions)
+  if (!doc) return { title: 'Brightwave' }
+  return buildMetadata({
+    title: doc.heroHeadline || 'Brightwave',
+    description: doc.heroSubheadline || '',
+    seo: doc.seo,
+    path: '/',
+  })
 }
 
-export default function HomePage() {
+/* ---------- inline SVGs used across CTAs ---------- */
+function CtaArrowSvg() {
+  return (
+    <svg width={14} height={14} viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g clipPath="url(#clip0_774_4073)">
+        <path d="M2.27832 1.625L12.3577 1.44906L12.5325 11.4643" stroke="white" strokeWidth="1.0876" strokeLinejoin="bevel" />
+        <path d="M12.3563 1.44945L1.48389 12.6365" stroke="white" strokeWidth="1.0876" strokeLinejoin="bevel" />
+      </g>
+      <defs>
+        <clipPath id="clip0_774_4073">
+          <rect width={12} height="11.9237" fill="white" transform="translate(0.896484 1.10547) rotate(-1)" />
+        </clipPath>
+      </defs>
+    </svg>
+  )
+}
+
+function CtaButton({ label, url, style }: { label: string; url: string; style?: string }) {
+  const isPrimary = style !== 'secondary'
   return (
     <>
-<section className="c-section cc-hero">
+      <a stagger-cta="" href={url} className={`cta-p-sm${isPrimary ? '' : ' cc-stroke'} w-inline-block`}>
+        <div>
+          <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">{label}</div>
+        </div>
+        <div className="flip-small">
+          <div className="flip-bg"></div>
+        </div>
+        <div className="flip-big">
+          <div className="svg cta-sm-arrow w-embed"><CtaArrowSvg /></div>
+        </div>
+      </a>
+      <link rel="prefetch" href={url} />
+    </>
+  )
+}
+
+export default async function HomePage() {
+  let doc: any = null
+  try {
+    doc = await client.fetch(homepageQuery, {}, fetchOptions)
+  } catch {
+    doc = null
+  }
+
+  if (!doc) return null
+
+  const heroCtas = doc.heroCtas ?? []
+  const comparisonSection = doc.comparisonSection
+  const leftStats = comparisonSection?.leftStats ?? []
+  const rightStats = comparisonSection?.rightStats ?? []
+  const beforeAfter = doc.beforeAfter
+  const beforeItems = beforeAfter?.beforeItems ?? []
+  const afterItems = beforeAfter?.afterItems ?? []
+  const exploreTitleLines = doc.exploreSectionTitleLines ?? []
+  const explorePlatformCards = doc.explorePlatformCards ?? []
+
+  return (
+    <>
+      {/* ========== HERO ========== */}
+      <section className="c-section cc-hero">
         <div className="c-container">
           <div className="hero">
-            <h1 className="c-title-1">Research agents <br />built for professionals.</h1>
+            {doc.heroHeadline && <h1 className="c-title-1">{doc.heroHeadline}</h1>}
           </div>
           <div className="grid">
             <div id="w-node-a3cb6969-1e3a-7786-457c-fdbdb4350bc1-f86f60fa" className="hero_text cc-top">
-              <div inject-tablet="hero" className="c-text-3 u-balance">Conduct in-depth research, screen thousands of documents, and create share-ready deliverables with autonomous agents that consider every detail, source every claim, and synthesize real insights. <br /></div>
+              {doc.heroSubheadline && (
+                <div inject-tablet="hero" className="c-text-3 u-balance">{doc.heroSubheadline}<br /></div>
+              )}
             </div>
             <div id="w-node-f2725423-f2dc-ef11-7810-6f4d54fb4c8e-f86f60fa" className="hero_text cc-buttons">
               <div className="h-20 cc-hero">
-                <a stagger-cta="" href="https://app.brightwave.io/register" className="cta-p-sm w-inline-block">
-                  <div>
-                    <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">Try for Free</div>
-                  </div>
-                  <div className="flip-small">
-                    <div className="flip-bg"></div>
-                  </div>
-                  <div className="flip-big">
-                    <div className="svg cta-sm-arrow w-embed"><svg width={14} height={14} viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <g clipPath="url(#clip0_774_4073)">
-                          <path d="M2.27832 1.625L12.3577 1.44906L12.5325 11.4643" stroke="white" strokeWidth="1.0876" strokeLinejoin="bevel"></path>
-                          <path d="M12.3563 1.44945L1.48389 12.6365" stroke="white" strokeWidth="1.0876" strokeLinejoin="bevel"></path>
-                        </g>
-                        <defs>
-                          <clipPath id="clip0_774_4073">
-                            <rect width={12} height="11.9237" fill="white" transform="translate(0.896484 1.10547) rotate(-1)"></rect>
-                          </clipPath>
-                        </defs>
-                      </svg></div>
-                  </div>
-                </a>
-                <link rel="prefetch" href="https://app.brightwave.io/register" />
-                <a stagger-cta="" href="/referral" className="cta-p-sm cc-stroke w-inline-block">
-                  <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">Get a Demo</div>
-                  <div className="flip-small">
-                    <div className="flip-bg"></div>
-                  </div>
-                  <div className="flip-big">
-                    <div className="svg cta-sm-arrow w-embed"><svg width={14} height={14} viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <g clipPath="url(#clip0_774_4073)">
-                          <path d="M2.27832 1.625L12.3577 1.44906L12.5325 11.4643" stroke="white" strokeWidth="1.0876" strokeLinejoin="bevel"></path>
-                          <path d="M12.3563 1.44945L1.48389 12.6365" stroke="white" strokeWidth="1.0876" strokeLinejoin="bevel"></path>
-                        </g>
-                        <defs>
-                          <clipPath id="clip0_774_4073">
-                            <rect width={12} height="11.9237" fill="white" transform="translate(0.896484 1.10547) rotate(-1)"></rect>
-                          </clipPath>
-                        </defs>
-                      </svg></div>
-                  </div>
-                </a>
-                <link rel="prefetch" href="/referral" />
+                {heroCtas.map((cta: any, i: number) => (
+                  <CtaButton key={cta._key ?? i} label={cta.label} url={cta.url} style={cta.style} />
+                ))}
               </div>
             </div>
           </div>
@@ -78,93 +108,107 @@ export default function HomePage() {
               </div>
             </div>
           </div>
-          <div className="v-20 cc-home">
-            <div className="home-usp cc-left">
-              <div className="eyebrow cc-no-bp">
-                <div className="block cc-dm-light"></div>
-                <div className="c-title-5">Traditional Process</div>
-              </div>
-              <div className="home-usp_inner">
-                <div className="v-24 cc-12-tablet">
-                  <div className="c-title-3">20 hours</div>
-                  <div className="c-text-4">Manual document review.</div>
+
+          {/* ========== COMPARISON STATS ========== */}
+          {comparisonSection && (
+            <div className="v-20 cc-home">
+              <div className="home-usp cc-left">
+                {comparisonSection.leftLabel && (
+                  <div className="eyebrow cc-no-bp">
+                    <div className="block cc-dm-light"></div>
+                    <div className="c-title-5">{comparisonSection.leftLabel}</div>
+                  </div>
+                )}
+                <div className="home-usp_inner">
+                  {leftStats.map((s: any, i: number) => (
+                    <div key={s._key ?? i} className="v-24 cc-12-tablet">
+                      {s.value && <div className="c-title-3">{s.value}</div>}
+                      {s.description && <div className="c-text-4">{s.description}</div>}
+                    </div>
+                  ))}
                 </div>
-                <div className="v-24 cc-12-tablet">
-                  <div className="c-title-3">Uncertainty</div>
-                  <div className="c-text-4">Critical details noticed too late.</div>
+              </div>
+              <div className="home-usp cc-right">
+                {comparisonSection.rightLabel && (
+                  <div className="eyebrow cc-no-bp">
+                    <div className="block cc-primary"></div>
+                    <div className="c-title-5 cc-primary">{comparisonSection.rightLabel}</div>
+                  </div>
+                )}
+                <div className="home-usp_inner">
+                  {rightStats.map((s: any, i: number) => (
+                    <div key={s._key ?? i} className="v-24 cc-12-tablet">
+                      {s.value && <div className="c-title-3">{s.value}</div>}
+                      {s.description && <div className="c-text-4">{s.description}</div>}
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
-            <div className="home-usp cc-right">
-              <div className="eyebrow cc-no-bp">
-                <div className="block cc-primary"></div>
-                <div className="c-title-5 cc-primary">With Brightwave</div>
-              </div>
-              <div className="home-usp_inner">
-                <div className="v-24 cc-12-tablet">
-                  <div className="c-title-3">5 minutes</div>
-                  <div className="c-text-4">Custom outputs on demand.</div>
-                </div>
-                <div className="v-24 cc-12-tablet">
-                  <div className="c-title-3">Confidence</div>
-                  <div className="c-text-4">No stone is left unturned.</div>
-                </div>
-              </div>
-            </div>
-          </div>
+          )}
         </div>
       </section>
+
+      {/* ========== SOCIAL PROOF LOGOS ========== */}
       <section className="c-section">
         <div className="c-container">
           <div className="grid">
-            <div id="w-node-_9b9ddfcb-6d2a-87a1-d17c-e9f678accebf-f86f60fa" className="c-title-5 u-balance">Featured in renowned publications and trusted by industry leaders.</div>
+            {doc.socialProofHeadline && (
+              <div id="w-node-_9b9ddfcb-6d2a-87a1-d17c-e9f678accebf-f86f60fa" className="c-title-5 u-balance">{doc.socialProofHeadline}</div>
+            )}
             <div id="w-node-_14d87916-2524-3389-bb0c-e4ab4b8cf925-f86f60fa" className="logos"><img src="/webflow-images/Frame-1321316806.avif" loading="eager" width={191} alt="fortune" className="logo_item" /><img src="/webflow-images/Frame-1321316797.avif" loading="eager" width={191} alt="WSJ pro" className="logo_item" /><img src="/webflow-images/Frame-1321316805.avif" loading="eager" width={191} alt="Axios" className="logo_item" /><img src="/webflow-images/american-banker.svg" loading="eager" width={191} alt="" className="logo_item" /><img src="/webflow-images/Frame-1321316804.avif" loading="eager" width={191} alt="Fox Business" className="logo_item" /><img src="/webflow-images/latent-space.png" loading="eager" width={191} alt="" className="logo_item" /><img src="/webflow-images/Frame-1321316818.avif" loading="eager" width={191} alt="Cerebral valley" className="logo_item" /><img src="/webflow-images/Frame-1321316819.avif" loading="eager" width={191} alt="" className="logo_item" /><img src="/webflow-images/Frame-1321316820.avif" loading="eager" width={191} alt="" className="logo_item" /><img src="/webflow-images/TIme.avif" loading="eager" width={191} alt="" className="logo_item" /></div>
           </div>
         </div>
       </section>
+
+      {/* ========== KEY FEATURES ========== */}
       <section className="c-section">
         <div className="c-container">
           <KeyFeatures />
         </div>
       </section>
-      <section className="c-section">
-        <div className="c-container">
-          <div className="usp-tables">
-            <div className="usp-table">
-              <div className="usp-table_top">
-                <div className="c-title-4 cc-white-dynamic">Before Brightwave</div>
+
+      {/* ========== BEFORE / AFTER TABLE ========== */}
+      {beforeAfter && (
+        <section className="c-section">
+          <div className="c-container">
+            <div className="usp-tables">
+              <div className="usp-table">
+                <div className="usp-table_top">
+                  {beforeAfter.beforeTitle && (
+                    <div className="c-title-4 cc-white-dynamic">{beforeAfter.beforeTitle}</div>
+                  )}
+                </div>
+                <div className="usp-table_bottom">
+                  {beforeItems.map((item: string, i: number) => (
+                    <div key={i}>
+                      <div className="c-text-3">{item}</div>
+                      {i < beforeItems.length - 1 && <div className="c-line"></div>}
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className="usp-table_bottom">
-                <div className="c-text-3">Critical details go missing</div>
-                <div className="c-line"></div>
-                <div className="c-text-3">Endless CTRL-F</div>
-                <div className="c-line"></div>
-                <div className="c-text-3">Short on team bandwidth</div>
-                <div className="c-line"></div>
-                <div className="c-text-3">Half-baked prompts</div>
-                <div className="c-line"></div>
-                <div className="c-text-3">Race to disseminate new information</div>
-              </div>
-            </div>
-            <div className="usp-table">
-              <div className="usp-table_top cc-brigtwave">
-                <div className="c-title-4 cc-dark">After Brightwave</div>
-              </div>
-              <div className="usp-table_bottom">
-                <div className="c-text-3">Agents surface key insights</div>
-                <div className="c-line"></div>
-                <div className="c-text-3">Synthesize across 2000+ documents</div>
-                <div className="c-line"></div>
-                <div className="c-text-3">Massive capacity unlock</div>
-                <div className="c-line"></div>
-                <div className="c-text-3">Custom research from your templates</div>
-                <div className="c-line"></div>
-                <div className="c-text-3">Self-updating, sharable outputs </div>
+              <div className="usp-table">
+                <div className="usp-table_top cc-brigtwave">
+                  {beforeAfter.afterTitle && (
+                    <div className="c-title-4 cc-dark">{beforeAfter.afterTitle}</div>
+                  )}
+                </div>
+                <div className="usp-table_bottom">
+                  {afterItems.map((item: string, i: number) => (
+                    <div key={i}>
+                      <div className="c-text-3">{item}</div>
+                      {i < afterItems.length - 1 && <div className="c-line"></div>}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
+
+      {/* ========== TESTIMONIALS ========== */}
       <section no-fade="" className="c-section">
         <div className="c-container">
           <div className="slider-wrap"><img width="294.5" loading="lazy" alt="" src="/webflow-images/testimonial.svg" className="slider_img" />
@@ -252,11 +296,15 @@ export default function HomePage() {
               </div>
             </div>
             <div className="slider_test">
-              <div className="c-title-5"><span className="hide-tablet">Customer </span>Testimonials</div>
+              {doc.testimonialsSectionLabel && (
+                <div className="c-title-5"><span className="hide-tablet">Customer </span>{doc.testimonialsSectionLabel}</div>
+              )}
             </div>
           </div>
         </div>
       </section>
+
+      {/* ========== EXPLORE THE PLATFORM ========== */}
       <section className="c-section">
         <div className="c-container">
           <div className="v-60">
@@ -268,87 +316,54 @@ export default function HomePage() {
                 </div>
               </div>
             </div>
-            <div className="titles">
-              <div className="title_flex">
-                <div className="c-title-cta">EXPLORE</div>
+            {exploreTitleLines.length > 0 && (
+              <div className="titles">
+                {exploreTitleLines.map((line: any, li: number) => (
+                  <div key={line._key ?? li} className={`title_flex${li > 0 ? ' cc-explore' : ''}`}>
+                    {(line.segments ?? []).map((seg: any, si: number) => (
+                      <div key={seg._key ?? si} className={`c-title-cta${seg.style === 'muted' ? ' cc-new-grey' : ''}`}>{seg.text}</div>
+                    ))}
+                  </div>
+                ))}
               </div>
-              <div className="title_flex cc-explore">
-                <div className="c-title-cta cc-new-grey">THE</div>
-                <div className="c-title-cta">Platform</div>
-              </div>
-            </div>
+            )}
             <div className="h-flex-20">
-              <div className="explore-item">
-                <div className="aspect-16-9">
-                  <div className="u-relative"><img src="/webflow-images/illustration_Investment-Intelligence-Engine.svg" loading="lazy" width={70} light-asset="" alt="" className="image-abso" /><img src="/webflow-images/illustration_Investment-Intelligence-Engine-1.svg" loading="lazy" width={70} dark-asset="" alt="" className="image-abso" /></div>
-                </div>
-                <div className="v-64 cc-fill">
-                  <div className="v-20 cc-explore">
-                    <div className="c-title-3">Research Intelligence Engine</div>
-                    <div className="c-text-4">Process entire data rooms and produce high-quality deliveables in minutes. Surface material factors instantly. Never miss a critical detail.</div>
+              {explorePlatformCards.map((card: any, i: number) => (
+                <div key={card._key ?? i} className="explore-item">
+                  <div className="aspect-16-9">
+                    <div className="u-relative">
+                      {card.lightImage && <img src={card.lightImage} loading="lazy" width={70} light-asset="" alt="" className="image-abso" />}
+                      {card.darkImage && <img src={card.darkImage} loading="lazy" width={70} dark-asset="" alt="" className="image-abso" />}
+                    </div>
                   </div>
-                  <a stagger-cta="" href="/investment-intelligence-engine" className="cta-p-sm w-inline-block">
-                    <div>
-                      <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">Learn more</div>
+                  <div className="v-64 cc-fill">
+                    <div className="v-20 cc-explore">
+                      {card.title && <div className="c-title-3">{card.title}</div>}
+                      {card.description && <div className="c-text-4">{card.description}</div>}
                     </div>
-                    <div className="flip-small">
-                      <div className="flip-bg"></div>
-                    </div>
-                    <div className="flip-big">
-                      <div className="svg cta-sm-arrow w-embed"><svg width={14} height={14} viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <g clipPath="url(#clip0_774_4073)">
-                            <path d="M2.27832 1.625L12.3577 1.44906L12.5325 11.4643" stroke="white" strokeWidth="1.0876" strokeLinejoin="bevel"></path>
-                            <path d="M12.3563 1.44945L1.48389 12.6365" stroke="white" strokeWidth="1.0876" strokeLinejoin="bevel"></path>
-                          </g>
-                          <defs>
-                            <clipPath id="clip0_774_4073">
-                              <rect width={12} height="11.9237" fill="white" transform="translate(0.896484 1.10547) rotate(-1)"></rect>
-                            </clipPath>
-                          </defs>
-                        </svg></div>
-                    </div>
-                  </a>
-                </div>
-              </div>
-              <div className="explore-item">
-                <div className="aspect-16-9">
-                  <div className="u-relative"><img src="/webflow-images/illustration_Enterprise-Trust--Security.svg" loading="lazy" width={70} light-asset="" alt="" className="image-abso" /><img src="/webflow-images/illustration_Enterprise-Trust--Security-1.svg" loading="lazy" width={70} dark-asset="" alt="" className="image-abso" /></div>
-                </div>
-                <div className="v-64 cc-fill">
-                  <div className="v-20 cc-explore">
-                    <div className="c-title-3">SOC 2 Type II Compliant</div>
-                    <div className="c-text-4">Exchange-grade security built by financial services veterans with robust data isolation and quality controls.</div>
+                    {card.ctaUrl && card.ctaLabel && (
+                      <a stagger-cta="" href={card.ctaUrl} className="cta-p-sm w-inline-block">
+                        <div>
+                          <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">{card.ctaLabel}</div>
+                        </div>
+                        <div className="flip-small">
+                          <div className="flip-bg"></div>
+                        </div>
+                        <div className="flip-big">
+                          <div className="svg cta-sm-arrow w-embed"><CtaArrowSvg /></div>
+                        </div>
+                      </a>
+                    )}
                   </div>
-                  <a stagger-cta="" href="/enterprise-security-compliance" className="cta-p-sm w-inline-block">
-                    <div>
-                      <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">Learn More</div>
-                    </div>
-                    <div className="flip-small">
-                      <div className="flip-bg"></div>
-                    </div>
-                    <div className="flip-big">
-                      <div className="svg cta-sm-arrow w-embed"><svg width={14} height={14} viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <g clipPath="url(#clip0_774_4073)">
-                            <path d="M2.27832 1.625L12.3577 1.44906L12.5325 11.4643" stroke="white" strokeWidth="1.0876" strokeLinejoin="bevel"></path>
-                            <path d="M12.3563 1.44945L1.48389 12.6365" stroke="white" strokeWidth="1.0876" strokeLinejoin="bevel"></path>
-                          </g>
-                          <defs>
-                            <clipPath id="clip0_774_4073">
-                              <rect width={12} height="11.9237" fill="white" transform="translate(0.896484 1.10547) rotate(-1)"></rect>
-                            </clipPath>
-                          </defs>
-                        </svg></div>
-                    </div>
-                  </a>
                 </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
       </section>
+
       <LatestReleaseNotes />
       <LatestBlogPosts />
-      
     </>
   )
 }

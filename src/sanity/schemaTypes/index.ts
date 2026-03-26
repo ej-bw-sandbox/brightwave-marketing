@@ -25,6 +25,7 @@ import { siteSettings } from './documents/site-settings'
 import { contentPost } from './documents/content-post'
 import { product } from './documents/product'
 import { supportPage } from './documents/support-page'
+import { contactPage } from './documents/contact-page'
 
 // Legacy types (kept for migration compatibility)
 import { blogPost } from './documents/blog-post'
@@ -46,6 +47,7 @@ export const schemaTypes = [
   enterpriseSalesPage,
   securityPage,
   supportPage,
+  contactPage,
   siteSettings,
 
   // Product

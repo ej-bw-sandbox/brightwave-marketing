@@ -11,6 +11,7 @@ const singletonTypes = new Set([
   'enterpriseSalesPage',
   'securityPage',
   'supportPage',
+  'contactPage',
   'siteSettings',
 ])
 

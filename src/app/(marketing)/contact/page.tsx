@@ -1,28 +1,45 @@
 import type { Metadata } from 'next'
+import { client } from '@/lib/sanity/client'
+import { contactQuery } from '@/lib/sanity/queries/contact'
+import { buildMetadata } from '@/lib/metadata'
 import ContactForm from '@/components/forms/ContactForm'
 
-export const metadata: Metadata = {
-  title: 'Contact Us | Brightwave',
-  description: 'Get in touch with the Brightwave team.',
+export async function generateMetadata(): Promise<Metadata> {
+  const doc = await client.fetch(contactQuery, {}, { next: { tags: ['contactPage'], revalidate: 3600 } })
+  if (!doc) return {}
+  return buildMetadata({
+    title: doc.headline,
+    description: doc.supportingText,
+    seo: doc.seo,
+    path: '/contact',
+  })
 }
 
-export default function Page() {
+export default async function Page() {
+  let doc: any = null
+  try {
+    doc = await client.fetch(contactQuery, {}, { next: { tags: ['contactPage'], revalidate: 3600 } })
+  } catch { doc = null }
+
   return (
     <>
 <section className="c-section cc-contact">
         <div className="c-container">
           <div className="bp40-underline">
-            <h1 className="c-title-1">Take Brightwave for a<br />Test Drive</h1>
+            {doc?.headline && <h1 className="c-title-1">{doc.headline}</h1>}
           </div>
           <div className="grid cc-contact">
             <div id="w-node-ac00784f-25b5-ad00-d07d-09a4707899eb-09dd82b0" className="contact-flex">
               <div className="v-20">
-                <div className="c-text-2"><strong>Let us know how to get in touch and we'll get you set up straight away with access to Brightwave.</strong></div>
+                {doc?.supportingText && (
+                  <div className="c-text-2"><strong>{doc.supportingText}</strong></div>
+                )}
                 <div className="c-text-4"></div>
               </div>
               <div className="h-16">
+                {doc?.linkedinUrl && (
                 <div className="cta-182">
-                  <a stagger-cta="" href="https://www.linkedin.com/company/brightwave-io/about/" className="cta-p-sm w-inline-block">
+                  <a stagger-cta="" href={doc.linkedinUrl} className="cta-p-sm w-inline-block">
                     <div>
                       <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">LinkedIn</div>
                     </div>
@@ -44,8 +61,10 @@ export default function Page() {
                     </div>
                   </a>
                 </div>
+                )}
+                {doc?.twitterUrl && (
                 <div data-w-id="8a465f1d-621f-6b36-616d-e1b5181b63a0" className="cta-182">
-                  <a stagger-cta="" href="https://twitter.com/brightwaveio" className="cta-p-sm w-inline-block">
+                  <a stagger-cta="" href={doc.twitterUrl} className="cta-p-sm w-inline-block">
                     <div className="x-logo-wrap"><img src="/webflow-images/X_logos-world_2.svg" loading="lazy" alt="" className="x-logo" /><img src="/webflow-images/X_logos-world_2.svg" loading="lazy" alt="" className="x-logo cc-absolute" /></div>
                     <div className="flip-small">
                       <div className="flip-bg"></div>
@@ -65,6 +84,7 @@ export default function Page() {
                     </div>
                   </a>
                 </div>
+                )}
               </div>
             </div>
             <div id="w-node-bd5556b5-87c1-cfbe-5a84-873f47e0ef7f-09dd82b0" className="v-40">
@@ -78,7 +98,9 @@ export default function Page() {
           <div className="c-container">
             <div className="founders">
               <div className="founders-flex">
-                <h2 className="c-title-2">Recent Blogs</h2>
+                {doc?.recentBlogsSectionTitle && (
+                  <h2 className="c-title-2">{doc.recentBlogsSectionTitle}</h2>
+                )}
               </div>
               <div className="w-dyn-list">
                 <div role="list" className="grid cc-cards w-dyn-items">
@@ -101,7 +123,9 @@ export default function Page() {
               </div>
               <div inject-tablet="founders" className="cta-founders">
                 <a stagger-cta="" href="/blog" className="cta-p-sm cc-stroke w-inline-block">
-                  <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">Read More</div>
+                  {doc?.readMoreLabel && (
+                    <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">{doc.readMoreLabel}</div>
+                  )}
                   <div className="flip-small">
                     <div className="flip-bg"></div>
                   </div>
@@ -129,7 +153,9 @@ export default function Page() {
           <div className="c-container">
             <div className="founders">
               <div className="founders-flex">
-                <h2 className="c-title-2">Latest Posts</h2>
+                {doc?.latestPostsSectionTitle && (
+                  <h2 className="c-title-2">{doc.latestPostsSectionTitle}</h2>
+                )}
               </div>
               <div className="w-dyn-list">
                 <div role="list" className="grid cc-cards w-dyn-items">
@@ -149,7 +175,9 @@ export default function Page() {
               </div>
               <div inject-tablet="founders" className="cta-founders">
                 <a stagger-cta="" href="/blog" className="cta-p-sm cc-stroke w-inline-block">
-                  <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">Read More</div>
+                  {doc?.readMoreLabel && (
+                    <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">{doc.readMoreLabel}</div>
+                  )}
                   <div className="flip-small">
                     <div className="flip-bg"></div>
                   </div>
