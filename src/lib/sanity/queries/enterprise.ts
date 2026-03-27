@@ -25,6 +25,7 @@ export const enterpriseQuery = `
       authorImage{ asset->{ _id, url } },
       companyLogo{ asset->{ _id, url } }
     },
+    roiCalcTitle, roiCalcCtaLabel, roiCalcCtaUrl,
     footerTagline, footerCtaLabel, footerCtaUrl,
     seo
   }

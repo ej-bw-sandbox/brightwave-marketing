@@ -89,7 +89,7 @@ html.wf-design-mode .num-slider_item{
               </div>
             </div>
             <div className="c-ent-price_wizard-wrapper">
-              <RoiCalculator />
+              <RoiCalculator title={doc?.roiCalcTitle || 'Get Started'} ctaLabel={doc?.roiCalcCtaLabel || 'Schedule a Demo'} ctaUrl={doc?.roiCalcCtaUrl || 'https://calendly.com/d/cv37-bhv-664/brightwave-trial'} />
             </div>
           </div>
         </div>

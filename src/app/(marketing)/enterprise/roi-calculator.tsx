@@ -215,7 +215,7 @@ const CALC_CSS = `
 
 const TOTAL_STEPS = 5
 
-export function RoiCalculator() {
+export function RoiCalculator({ title = 'See How Much', ctaLabel = 'Schedule a Demo', ctaUrl = 'https://calendly.com/d/cv37-bhv-664/brightwave-trial' }: { title?: string; ctaLabel?: string; ctaUrl?: string } = {}) {
   const [currentStep, setCurrentStep] = useState(1)
   const [data, setData] = useState<Partial<CalcData>>({ urgency: 5 })
   const [name, setName] = useState('')
@@ -334,7 +334,7 @@ export function RoiCalculator() {
       <style dangerouslySetInnerHTML={{ __html: CALC_CSS }} />
       <div className="bw-calc-wrapper">
         <div className="bw-calc-header">
-          <h2 className="c-title-3">See How Much</h2>
+          <h2 className="c-title-3">{title}</h2>
         </div>
         <div className="bw-calc-content">
           <div className="bw-calc-progress">
@@ -520,8 +520,8 @@ export function RoiCalculator() {
                   <div className="bw-calc-metric-subvalue">your team could evaluate per year</div>
                 </div>
                 <div className="bw-calc-cta">
-                  <a href="https://calendly.com/d/cv37-bhv-664/brightwave-trial" target="_blank" rel="noopener noreferrer" className="bw-calc-cta-btn">
-                    Schedule a Demo
+                  <a href={ctaUrl} target="_blank" rel="noopener noreferrer" className="bw-calc-cta-btn">
+                    {ctaLabel}
                   </a>
                 </div>
               </div>

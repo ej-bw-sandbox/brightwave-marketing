@@ -146,6 +146,12 @@ export const enterpriseSalesPage = defineType({
     defineField({ name: 'testimonials', title: 'Testimonials', type: 'array', of: [{ type: 'testimonialRef' }] }),
 
     // Footer CTA
+    // ROI Calculator
+    defineField({ name: 'roiCalcTitle', title: 'ROI Calculator Title', type: 'string', initialValue: 'Get Started' }),
+    defineField({ name: 'roiCalcCtaLabel', title: 'ROI Calculator CTA Label', type: 'string', initialValue: 'Schedule a Demo' }),
+    defineField({ name: 'roiCalcCtaUrl', title: 'ROI Calculator CTA URL', type: 'string', initialValue: 'https://calendly.com/d/cv37-bhv-664/brightwave-trial' }),
+
+    // Footer
     defineField({ name: 'footerTagline', title: 'Footer Tagline', type: 'string' }),
     defineField({ name: 'footerCtaLabel', title: 'Footer CTA Label', type: 'string' }),
     defineField({ name: 'footerCtaUrl', title: 'Footer CTA URL', type: 'string' }),
