@@ -44,7 +44,7 @@ export default async function LegalDetailPage({ params }: Props) {
       <section className="c-section cc-legal">
         <div className="c-container">
           <div className="grid cc-8">
-            <div className="legal_flex cc-gap-0">
+            <div className="legal_flex cc-gap-0" style={{ gridArea: '1 / 3 / 2 / 7' }}>
               <div className="legal_titles">
                 {titleWords.map((word: string, i: number) => (
                   <div key={i} className={`legal_title${i > 0 ? ' cc-right' : ''}`}>
