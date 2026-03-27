@@ -416,6 +416,30 @@ color:var(--lightmode--primary);
 [theme="dark"] .nav_toggle .chevron {
   color: var(--lightmode--onsurface);
 }
+/* Dark mode: toggle button (sun/moon icon) */
+.u-dark-mode .toggle,
+[theme="dark"] .toggle {
+  color: var(--lightmode--onsurface);
+}
+/* Dark mode: Login and CTA button text */
+.u-dark-mode .cta-sec .c-text-link.cc-stagger,
+[theme="dark"] .cta-sec .c-text-link.cc-stagger {
+  color: var(--lightmode--onsurface);
+}
+/* Dark mode: CTA stroke button border */
+.u-dark-mode .cta-sec,
+[theme="dark"] .cta-sec {
+  border-color: var(--lightmode--onsurface-border);
+}
+/* Dark mode: Login fill button */
+.u-dark-mode .cta-sec.cc-fill,
+[theme="dark"] .cta-sec.cc-fill {
+  background-color: var(--lightmode--onsurface);
+}
+.u-dark-mode .cta-sec.cc-fill .c-text-link.cc-stagger,
+[theme="dark"] .cta-sec.cc-fill .c-text-link.cc-stagger {
+  color: var(--lightmode--background);
+}
 /* Before/After table: fix white-on-white and white-on-yellow title text in dark mode */
 .u-dark-mode .usp-table_top .c-title-4.cc-white-dynamic {
   color: var(--colorprimitives--gray-800);

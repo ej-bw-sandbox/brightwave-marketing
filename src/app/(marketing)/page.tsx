@@ -228,12 +228,12 @@ export default async function HomePage() {
       )}
 
       {/* ========== TESTIMONIALS ========== */}
-      {(doc.testimonials ?? []).length > 0 && (
-        <section no-fade="" className="c-section">
-          <div className="c-container">
-            <div className="slider-wrap">
-              <img width="294.5" loading="lazy" alt="" src="/webflow-images/testimonial.svg" className="slider_img" />
-              <LottiePlayer src="/webflow-documents/Testimonial-BG-25.json" className="slider_lottie" />
+      <section no-fade="" className="c-section">
+        <div className="c-container">
+          <div className="slider-wrap">
+            <img width="294.5" loading="lazy" alt="" src="/webflow-images/testimonial.svg" className="slider_img" />
+            <LottiePlayer src="/webflow-documents/Testimonial-BG-25.json" className="slider_lottie" />
+            {(doc.testimonials ?? []).length > 0 ? (
               <TestimonialSlider
                 label={doc.testimonialsSectionLabel}
                 testimonials={(doc.testimonials ?? []).map((t: any) => ({
@@ -244,15 +244,21 @@ export default async function HomePage() {
                   attribution: t.authorName || undefined,
                 }))}
               />
-              <div className="slider_test">
-                {doc.testimonialsSectionLabel && (
-                  <div className="c-title-5"><span className="hide-tablet">Customer </span>{doc.testimonialsSectionLabel}</div>
-                )}
+            ) : (
+              <div className="slider w-dyn-list">
+                <div className="w-dyn-empty">
+                  <div>No testimonials yet.</div>
+                </div>
               </div>
+            )}
+            <div className="slider_test">
+              {doc.testimonialsSectionLabel && (
+                <div className="c-title-5"><span className="hide-tablet">Customer </span>{doc.testimonialsSectionLabel}</div>
+              )}
             </div>
           </div>
-        </section>
-      )}
+        </div>
+      </section>
 
       {/* ========== EXPLORE THE PLATFORM ========== */}
       <section className="c-section">

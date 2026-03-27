@@ -7,7 +7,6 @@ interface LottiePlayerProps {
   className?: string
   loop?: boolean
   autoplay?: boolean
-  /** Extra HTML attributes to forward */
   [key: string]: unknown
 }
 
@@ -28,8 +27,7 @@ export function LottiePlayer({
 
     let cancelled = false
 
-    // Dynamically import lottie-web (SVG-only light build) to keep bundle small
-    import('lottie-web/build/player/lottie_light').then((lottie) => {
+    import('lottie-web').then((lottie) => {
       if (cancelled || !container) return
 
       const anim = lottie.default.loadAnimation({
@@ -45,9 +43,7 @@ export function LottiePlayer({
       anim.addEventListener('DOMLoaded', () => {
         if (!cancelled) setLoaded(true)
       })
-    }).catch(() => {
-      /* silently ignore - the div stays empty */
-    })
+    }).catch(() => {})
 
     return () => {
       cancelled = true
