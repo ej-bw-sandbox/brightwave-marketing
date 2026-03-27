@@ -3,6 +3,7 @@ import { client } from '@/lib/sanity/client'
 import { enterpriseQuery } from '@/lib/sanity/queries/enterprise'
 import { buildMetadata } from '@/lib/metadata'
 import { LottiePlayer } from '@/components/ui/LottiePlayer'
+import { TestimonialSlider } from '@/components/ui/TestimonialSlider'
 import { RoiCalculator } from './roi-calculator'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -344,109 +345,20 @@ html.wf-design-mode .num-slider_item{
       <section no-fade="" className="c-section ent-price-slider">
         <div className="c-container">
           <div className="slider-wrap">
+            <img width="294.5" loading="lazy" alt="" src="/webflow-images/testimonial.svg" className="slider_img" />
             <LottiePlayer src="/webflow-documents/Testimonial-BG-25.json" className="slider_lottie" loop={true} autoplay={true} />
-            <div className="slider w-dyn-list">
-              <div slider="" role="list" className="slider_list w-dyn-items">
-                {(doc?.testimonials ?? []).map((t: any, i: number) => (
-                <div key={t._id ?? i} role="listitem" className="slider_cms-item w-dyn-item">
-                  <div className="slider_item">
-                    <div slider-a-1="" className="slider_flex ent-price">
-                      <div slider-a-3="" className="eyebrow-flex">
-                        <div className="block cc-primary"></div>
-                        <div className="c-title-5 cc-primary">{t.authorTitle && t.company ? `${t.authorTitle}, ${t.company}` : t.attribution || ''}</div>
-                      </div>
-                      <div slider-a-2="" className="c-text-2">{t.quote}</div>
-                    </div>
-                  </div>
-                </div>
-                ))}
-                {(doc?.testimonials ?? []).length === 0 && (
-                <div role="listitem" className="slider_cms-item w-dyn-item">
-                  <div className="slider_item">
-                    <div slider-a-1="" className="slider_flex ent-price">
-                      <div slider-a-3="" className="eyebrow-flex">
-                        <div className="block cc-primary"></div>
-                        <div className="c-title-5 cc-primary w-dyn-bind-empty"></div>
-                      </div>
-                      <div slider-a-2="" className="c-text-2 w-dyn-bind-empty"></div>
-                    </div>
-                  </div>
-                </div>
-                )}
-              </div>
-              {(doc?.testimonials ?? []).length === 0 && (
-              <div className="w-dyn-empty">
-                <div>No items found.</div>
-              </div>
-              )}
-            </div>
-            <div className="slider_arrows">
-              <div id="arrow-left" className="slider_arrow cc-prev">
-                <div className="svg cc-nav-arrow-bg w-embed"><svg width="54" height="51" viewBox="0 0 54 51" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path fillRule="evenodd" clipRule="evenodd" d="M54 5.59996L48.75 -3.8147e-05H6L0.375 5.99996L0 5.59996V45.4L0.375 45L6 51H48.75L54 45.4V5.59996Z" fill="white"></path>
-                  </svg></div>
-                <div className="arrow-wrap cc-2">
-                  <div className="nav_arrow-svg cc-slider w-embed"><svg width="28" height="27" viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <g clipPath="url(#clip0_575_3505)">
-                        <path d="M13.1074 24.8372L1.73026 13.46L13.0351 2.15519" stroke="#0F0F0F" strokeWidth="1.4453" strokeLinejoin="bevel"></path>
-                        <path d="M1.73274 13.4614L26.6312 13.5408" stroke="#0F0F0F" strokeWidth="2" strokeLinejoin="bevel"></path>
-                      </g>
-                      <defs>
-                        <clipPath id="clip0_575_3505">
-                          <rect width="19.1528" height="19.031" fill="white" transform="translate(14.043 27) rotate(-135)"></rect>
-                        </clipPath>
-                      </defs>
-                    </svg></div>
-                </div>
-                <div className="arrow-wrap">
-                  <div className="nav_arrow-svg cc-slider w-embed"><svg width="28" height="27" viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <g clipPath="url(#clip0_575_3505)">
-                        <path d="M13.1074 24.8372L1.73026 13.46L13.0351 2.15519" stroke="#0F0F0F" strokeWidth="1.4453" strokeLinejoin="bevel"></path>
-                        <path d="M1.73274 13.4614L26.6312 13.5408" stroke="#0F0F0F" strokeWidth="2" strokeLinejoin="bevel"></path>
-                      </g>
-                      <defs>
-                        <clipPath id="clip0_575_3505">
-                          <rect width="19.1528" height="19.031" fill="white" transform="translate(14.043 27) rotate(-135)"></rect>
-                        </clipPath>
-                      </defs>
-                    </svg></div>
-                </div>
-              </div>
-              <div id="arrow-right" className="slider_arrow">
-                <div className="svg cc-nav-arrow-bg w-embed"><svg width="54" height="51" viewBox="0 0 54 51" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path fillRule="evenodd" clipRule="evenodd" d="M54 5.59996L48.75 -3.8147e-05H6L0.375 5.99996L0 5.59996V45.4L0.375 45L6 51H48.75L54 45.4V5.59996Z" fill="white"></path>
-                  </svg></div>
-                <div className="arrow-wrap cc-2">
-                  <div className="nav_arrow-svg cc-slider w-embed"><svg width="28" height="27" viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <g clipPath="url(#clip0_782_8055)">
-                        <path d="M14.8926 24.8372L26.2697 13.46L14.9649 2.15519" stroke="#0F0F0F" strokeWidth="1.4453" strokeLinejoin="bevel"></path>
-                        <path d="M26.2663 13.4614L1.36784 13.5408" stroke="#0F0F0F" strokeWidth="2" strokeLinejoin="bevel"></path>
-                      </g>
-                      <defs>
-                        <clipPath id="clip0_782_8055">
-                          <rect width="19.1528" height="19.031" fill="white" transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 13.957 27)"></rect>
-                        </clipPath>
-                      </defs>
-                    </svg></div>
-                </div>
-                <div className="arrow-wrap">
-                  <div className="nav_arrow-svg cc-slider w-embed"><svg width="28" height="27" viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <g clipPath="url(#clip0_782_8055)">
-                        <path d="M14.8926 24.8372L26.2697 13.46L14.9649 2.15519" stroke="#0F0F0F" strokeWidth="1.4453" strokeLinejoin="bevel"></path>
-                        <path d="M26.2663 13.4614L1.36784 13.5408" stroke="#0F0F0F" strokeWidth="2" strokeLinejoin="bevel"></path>
-                      </g>
-                      <defs>
-                        <clipPath id="clip0_782_8055">
-                          <rect width="19.1528" height="19.031" fill="white" transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 13.957 27)"></rect>
-                        </clipPath>
-                      </defs>
-                    </svg></div>
-                </div>
-              </div>
-            </div>
+            <TestimonialSlider
+              label="Featured Quote"
+              testimonials={(doc?.testimonials ?? []).map((t: any) => ({
+                eyebrow: t.authorTitle && t.company
+                  ? `${t.authorTitle}, ${t.company}`
+                  : t.attribution || undefined,
+                quote: t.quote,
+              }))}
+            />
             <div className="slider_test">
-              <div className="c-title-5"><span className="hide-tablet">Featured Quote</span></div>
-            </div><img src="/webflow-images/testimonial.svg" loading="lazy" width="294.5" alt="" className="slider_img" />
+              <div className="c-title-5"><span className="hide-tablet">Featured </span>Quote</div>
+            </div>
           </div>
         </div>
       </section>
