@@ -5,6 +5,7 @@ import { buildMetadata } from '@/lib/metadata'
 import { PortableText } from '@portabletext/react'
 import { ptComponents } from '@/lib/sanity/portable-text-components'
 import { LottiePlayer } from '@/components/ui/LottiePlayer'
+import { StepCtaSection } from '@/components/sections/StepCtaSection'
 
 interface PartnersPageDoc {
   title: string
@@ -316,6 +317,8 @@ export default async function Page() {
               </div>
             </section>
       </div>
+
+      <StepCtaSection />
     </>
   )
 }

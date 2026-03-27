@@ -26,9 +26,9 @@ const FALLBACK: SiteSettings = {
     { _key: 'col-solutions', title: 'Solutions', links: [{ _key: 'l-pm', label: 'Private Markets', url: '/private-markets/' }] },
     { _key: 'col-resources', title: 'Resources', links: [
       { _key: 'l-blog', label: 'Blog', url: '/blog' },
+      { _key: 'l-eng-log', label: 'Engineering Log', url: '/engineering-log' },
       { _key: 'l-events', label: 'Events', url: '/events' },
       { _key: 'l-kb', label: 'Knowledge Base', url: 'https://docs.brightwave.io' },
-      { _key: 'l-news', label: 'News', url: '/news' },
       { _key: 'l-partners', label: 'Partner Program', url: '/partners' },
       { _key: 'l-rn', label: 'Release Notes', url: '/release-notes' },
       { _key: 'l-support', label: 'Support', url: '/support' },
