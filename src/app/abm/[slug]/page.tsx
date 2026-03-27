@@ -4,7 +4,6 @@ import type { Metadata } from 'next'
 import { LottiePlayer } from '@/components/ui/LottiePlayer'
 import { RoiCalculator } from '@/app/(marketing)/enterprise/roi-calculator'
 import { AbmTimelineItem } from '@/components/sections/AbmTimelineItem'
-import { urlFor } from '@/lib/sanity/image'
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -1028,14 +1027,14 @@ export default async function AbmSlugPage({ params }: PageProps) {
       {/* 1. Hero */}
       <HeroSection page={page} />
 
+      {/* Lottie Divider */}
+      <LottieDivider />
+
       {/* A. Press / Media Marquee */}
       <PressMarquee />
 
       {/* B. Trust Badges */}
       <TrustBadges />
-
-      {/* Lottie Divider */}
-      <LottieDivider />
 
       {/* 4. Challenges & Solutions */}
       <ChallengesSection page={page} />
