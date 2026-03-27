@@ -31,10 +31,80 @@ export const abmPage = defineType({
     defineField({ name: 'demoUrl', title: 'Demo URL', type: 'url' }),
     defineField({ name: 'contactUrl', title: 'Contact URL', type: 'url' }),
     defineField({ name: 'socialProofText', title: 'Social Proof Text', type: 'text' }),
+
+    /* ---------------------------------------------------------------- */
+    /*  Timeline / Deal Impact phases                                    */
+    /* ---------------------------------------------------------------- */
+    defineField({
+      name: 'timelineHeadline',
+      title: 'Timeline Section Headline',
+      type: 'string',
+      initialValue: 'Deal Impact Timeline',
+      group: 'timeline',
+    }),
+    defineField({
+      name: 'timelineSubheadline',
+      title: 'Timeline Section Subheadline',
+      type: 'text',
+      group: 'timeline',
+    }),
+    defineField({
+      name: 'timelinePhases',
+      title: 'Timeline Phases',
+      type: 'array',
+      group: 'timeline',
+      of: [{
+        type: 'object',
+        fields: [
+          { name: 'phase', title: 'Phase Name', type: 'string' },
+          { name: 'description', title: 'Phase Description', type: 'text' },
+          {
+            name: 'items',
+            title: 'Phase Items',
+            type: 'array',
+            of: [{
+              type: 'object',
+              fields: [
+                { name: 'title', title: 'Item Title', type: 'string' },
+                { name: 'description', title: 'Item Description', type: 'text' },
+                { name: 'beforeLabel', title: 'Before Label', type: 'string' },
+                { name: 'beforeValue', title: 'Before Value', type: 'string' },
+                { name: 'afterLabel', title: 'After Label', type: 'string' },
+                { name: 'afterValue', title: 'After Value', type: 'string' },
+                { name: 'timeSaved', title: 'Time Saved', type: 'string' },
+                { name: 'problems', title: 'Pain Points', type: 'array', of: [{ type: 'string' }] },
+              ],
+            }],
+          },
+        ],
+        preview: {
+          select: { title: 'phase' },
+        },
+      }],
+    }),
+
+    /* ---------------------------------------------------------------- */
+    /*  Competitive positioning                                          */
+    /* ---------------------------------------------------------------- */
+    defineField({
+      name: 'competitiveHeadline',
+      title: 'Competitive Section Headline',
+      type: 'string',
+      description: 'e.g. "Ready to beat [competitors]?"',
+    }),
+    defineField({
+      name: 'competitiveBody',
+      title: 'Competitive Section Body',
+      type: 'text',
+    }),
+
     defineField({ name: 'finalCtaHeadline', title: 'Final CTA Headline', type: 'string' }),
     defineField({ name: 'finalCtaSubheadline', title: 'Final CTA Sub-headline', type: 'string' }),
     defineField({ name: 'competitorNames', title: 'Competitor Names', type: 'string', description: 'Comma-separated' }),
     defineField({ name: 'seo', title: 'SEO', type: 'seo' }),
+  ],
+  groups: [
+    { name: 'timeline', title: 'Deal Impact Timeline' },
   ],
   preview: {
     select: { title: 'companyName', subtitle: 'title', media: 'companyLogo' },

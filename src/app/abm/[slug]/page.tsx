@@ -2,6 +2,8 @@ import { client } from '@/lib/sanity/client'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { LottiePlayer } from '@/components/ui/LottiePlayer'
+import { AbmRoiCalculator } from '@/components/sections/AbmRoiCalculator'
+import { urlFor } from '@/lib/sanity/image'
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -12,6 +14,45 @@ interface Challenge {
   title: string
   description: string
   solution: string
+}
+
+interface TimelineItem {
+  _key?: string
+  title: string
+  description?: string
+  beforeLabel?: string
+  beforeValue?: string
+  afterLabel?: string
+  afterValue?: string
+  timeSaved?: string
+  problems?: string[]
+}
+
+interface TimelinePhase {
+  _key?: string
+  phase: string
+  description?: string
+  items?: TimelineItem[]
+}
+
+interface CaseStudySummary {
+  _id: string
+  title: string
+  slug: { current: string }
+  excerpt?: string
+  industry?: string
+  thumbnail?: { asset?: { url: string; metadata?: { lqip?: string } } }
+  companyLogo?: { asset?: { url: string } }
+}
+
+interface BlogPostSummary {
+  _id: string
+  title: string
+  slug: { current: string }
+  excerpt?: string
+  publishedAt?: string
+  coverImage?: { asset?: { url: string; metadata?: { lqip?: string } } }
+  author?: { name: string }
 }
 
 interface AbmPage {
@@ -32,6 +73,11 @@ interface AbmPage {
   demoUrl: string
   contactUrl: string
   socialProofText?: string
+  timelineHeadline?: string
+  timelineSubheadline?: string
+  timelinePhases?: TimelinePhase[]
+  competitiveHeadline?: string
+  competitiveBody?: string
   finalCtaHeadline: string
   finalCtaSubheadline: string
   competitorNames: string
@@ -64,6 +110,11 @@ const abmPageQuery = `*[_type == "abmPage" && slug.current == $slug][0]{
   demoUrl,
   contactUrl,
   socialProofText,
+  timelineHeadline,
+  timelineSubheadline,
+  timelinePhases[]{ _key, phase, description, items[]{ _key, title, description, beforeLabel, beforeValue, afterLabel, afterValue, timeSaved, problems } },
+  competitiveHeadline,
+  competitiveBody,
   finalCtaHeadline,
   finalCtaSubheadline,
   competitorNames,
@@ -71,6 +122,18 @@ const abmPageQuery = `*[_type == "abmPage" && slug.current == $slug][0]{
 }`
 
 const abmSlugsQuery = `*[_type == "abmPage" && defined(slug.current)]{ "slug": slug.current }`
+
+const caseStudiesQuery = `*[_type == "caseStudy"] | order(publishedAt desc) [0..3]{
+  _id, title, slug, excerpt, industry,
+  thumbnail{ asset->{ url, metadata { lqip } } },
+  companyLogo{ asset->{ url } }
+}`
+
+const blogPostsQuery = `*[_type == "contentPost" && defined(publishedAt)] | order(publishedAt desc) [0..2]{
+  _id, title, slug, excerpt, publishedAt,
+  coverImage{ asset->{ url, metadata { lqip } } },
+  author->{ name }
+}`
 
 /* ------------------------------------------------------------------ */
 /*  Helpers                                                            */
@@ -131,6 +194,22 @@ function BrightwaveIcon() {
       <path d="M0 2.84589L0.434168 2.39895L2.78627 4.80139C3.05525 4.80139 3.20655 4.80139 3.47553 4.80139L6.01817 2.20435L8.17634 0H8.86535L11.0635 2.24516V2.74287L10.9626 2.84589L6.50569 7.39818L6.30396 7.60423L5.95945 7.75006H0.488013C0.29773 7.5557 0.191015 7.4467 0.000731636 7.25235V7.24439" fill="#0F0F0F" />
       <path d="M0 8.75335V13.1518L0.436117 13.5973L2.78627 11.1968C3.05525 11.1968 3.20655 11.1968 3.47553 11.1968L6.49936 14.2854L8.17828 16C8.44751 16 8.59832 16 8.8673 16L11.0635 13.7568V13.2551L10.9626 13.1521L6.50569 8.5998L6.30396 8.39375C6.18457 8.34324 6.07883 8.29844 5.95945 8.24792H0.488013C0.29773 8.44228 0.191015 8.55128 0.000731636 8.74563V8.7536L0 8.75335Z" fill="#0F0F0F" />
       <path d="M12.0376 8.24792H14.1309C14.3212 8.44228 14.4279 8.55128 14.6182 8.74563V12.6541C14.4279 12.8485 14.3212 12.9575 14.1309 13.1518H12.0376L11.5503 12.6541V8.74563L12.0376 8.24792Z" fill="#0F0F0F" />
+    </svg>
+  )
+}
+
+function ShieldIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 2L3 7V12C3 17.55 6.84 22.74 12 24C17.16 22.74 21 17.55 21 12V7L12 2ZM10 17L6 13L7.41 11.59L10 14.17L16.59 7.58L18 9L10 17Z" fill="currentColor"/>
+    </svg>
+  )
+}
+
+function LockIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M18 8H17V6C17 3.24 14.76 1 12 1C9.24 1 7 3.24 7 6V8H6C4.9 8 4 8.9 4 10V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V10C20 8.9 19.1 8 18 8ZM12 17C10.9 17 10 16.1 10 15C10 13.9 10.9 13 12 13C13.1 13 14 13.9 14 15C14 16.1 13.1 17 12 17ZM15 8H9V6C9 4.34 10.34 3 12 3C13.66 3 15 4.34 15 6V8Z" fill="currentColor"/>
     </svg>
   )
 }
@@ -278,6 +357,129 @@ function HeroSection({ page }: { page: AbmPage }) {
 }
 
 /* ------------------------------------------------------------------ */
+/*  Section A: Press / Media Marquee                                   */
+/* ------------------------------------------------------------------ */
+
+function PressMarquee() {
+  const marqueeStyle = `
+:root {
+  --marquee-gap: 5rem;
+  --marquee-duration: 30s;
+  --marquee-scroll-start: 0;
+  --marquee-scroll-end: calc(-50% - (var(--marquee-gap) / 2));
+}
+@media (max-width: 767px) {
+  :root { --marquee-gap: 2.5rem; }
+}
+.marquee-press {
+  display: flex;
+  overflow: hidden;
+  user-select: none;
+  gap: var(--marquee-gap);
+  mask-image: linear-gradient(to right, hsl(0 0% 0% / 0), hsl(0 0% 0% / 1) 20%, hsl(0 0% 0% / 1) 80%, hsl(0 0% 0% / 0));
+}
+.marquee-press__group {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: var(--marquee-gap);
+  min-width: 100%;
+  animation: scroll-press-x var(--marquee-duration) linear infinite;
+}
+@keyframes scroll-press-x {
+  from { transform: translateX(var(--marquee-scroll-start)); }
+  to { transform: translateX(var(--marquee-scroll-end)); }
+}
+`
+
+  const logos = [
+    { src: '/webflow-images/fortune.avif', width: 105.5, alt: 'Fortune' },
+    { src: '/webflow-images/axios.avif', width: 93.5, alt: 'Axios' },
+    { src: '/webflow-images/american-banker.avif', width: 214, alt: 'American Banker' },
+    { src: '/webflow-images/wjs-pro.avif', width: 126.5, alt: 'WSJ Pro' },
+    { src: '/webflow-images/tech-crunch.avif', width: 126.5, alt: 'TechCrunch' },
+    { src: '/webflow-images/fox-business.avif', width: 120, alt: 'Fox Business' },
+    { src: '/webflow-images/gdf.avif', width: 100, alt: 'GDF' },
+  ]
+
+  return (
+    <section className="c-section" style={{ paddingTop: '2rem', paddingBottom: '2rem' }}>
+      <div className="c-container">
+        <div className="small-marquee_wrapper">
+          <div className="small-marquee_header">
+            <div className="c-title-5">Featured in renowned publications and trusted by industry leaders.</div>
+          </div>
+          <div className="marquee-horizontal">
+            <div className="w-embed">
+              <style dangerouslySetInnerHTML={{ __html: marqueeStyle }} />
+            </div>
+            <div className="marquee-press">
+              {[false, true].map((ariaHidden, gi) => (
+                <div key={gi} className="marquee-press__group" {...(ariaHidden ? { 'aria-hidden': 'true' } : {})}>
+                  {logos.map((logo, li) => (
+                    <div key={li} className="marquee-logo">
+                      <img src={logo.src} loading="lazy" width={logo.width} alt={logo.alt} />
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  Section B: Trust Badges                                            */
+/* ------------------------------------------------------------------ */
+
+function TrustBadges() {
+  const badges = [
+    { icon: <ShieldIcon />, label: 'SOC 2 Type II', description: 'Certified' },
+    { icon: <LockIcon />, label: 'SSO', description: 'Enterprise SSO' },
+    { icon: <ShieldIcon />, label: 'Encryption', description: 'AES-256 at rest & in transit' },
+    { icon: <LockIcon />, label: 'GDPR / CCPA', description: 'Compliant' },
+  ]
+
+  return (
+    <section className="c-section" style={{ paddingTop: '1.5rem', paddingBottom: '1.5rem' }}>
+      <div className="c-container">
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: '3rem',
+          flexWrap: 'wrap',
+        }}>
+          {badges.map((badge, i) => (
+            <div
+              key={i}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '.75rem',
+                opacity: 0.7,
+              }}
+            >
+              <div style={{ width: '1.5rem', height: '1.5rem', color: 'var(--lightmode--onsurface, #0f0f0f)' }}>
+                {badge.icon}
+              </div>
+              <div>
+                <div className="c-text-5" style={{ fontWeight: 600 }}>{badge.label}</div>
+                <div className="c-text-6" style={{ opacity: 0.7 }}>{badge.description}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ------------------------------------------------------------------ */
 /*  Section: Logo Marquee / IRP Banner                                 */
 /* ------------------------------------------------------------------ */
 
@@ -315,11 +517,11 @@ function MarqueeBanner() {
 `
 
   const logos = [
-    { src: '/images/fortune.avif', width: 105.5, alt: 'Fortune' },
-    { src: '/images/axios.avif', width: 93.5, alt: 'Axios' },
-    { src: '/images/american-banker.avif', width: 214, alt: 'American Banker' },
-    { src: '/images/wjs-pro.avif', width: 126.5, alt: 'WSJ Pro' },
-    { src: '/images/tech-crunch.avif', width: 126.5, alt: 'TechCrunch' },
+    { src: '/webflow-images/fortune.avif', width: 105.5, alt: 'Fortune' },
+    { src: '/webflow-images/axios.avif', width: 93.5, alt: 'Axios' },
+    { src: '/webflow-images/american-banker.avif', width: 214, alt: 'American Banker' },
+    { src: '/webflow-images/wjs-pro.avif', width: 126.5, alt: 'WSJ Pro' },
+    { src: '/webflow-images/tech-crunch.avif', width: 126.5, alt: 'TechCrunch' },
   ]
 
   return (
@@ -437,6 +639,366 @@ function ChallengesSection({ page }: { page: AbmPage }) {
 }
 
 /* ------------------------------------------------------------------ */
+/*  Section C: Case Studies Grid                                       */
+/* ------------------------------------------------------------------ */
+
+function CaseStudiesSection({ studies }: { studies: CaseStudySummary[] }) {
+  if (!studies || studies.length === 0) return null
+
+  return (
+    <section className="c-section cc-abm-studies" style={{ display: 'block' }}>
+      <div className="c-container">
+        <div className="c-abm-studies_header-wrapper">
+          <h2 className="c-title-3">Real Results from Real Firms</h2>
+          <p className="c-text-4" style={{ marginTop: '.75rem' }}>
+            See how leading investment firms are transforming their workflows with Brightwave.
+          </p>
+        </div>
+        <div className="c-abm-studies_wrapperr" style={{ marginTop: '2.5rem' }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+            gap: '1.25rem',
+          }}>
+            {studies.map((study) => (
+              <a
+                key={study._id}
+                href={`/case-studies/${study.slug.current}`}
+                className="card w-inline-block"
+                style={{ textDecoration: 'none' }}
+              >
+                <div className="aspect-4-3">
+                  {study.thumbnail?.asset?.url ? (
+                    <img
+                      src={study.thumbnail.asset.url}
+                      loading="lazy"
+                      alt={study.title}
+                      className="img-cover"
+                    />
+                  ) : (
+                    <div style={{ width: '100%', height: '100%', background: 'var(--lightmode--surface-1, #f5f5f5)' }} />
+                  )}
+                </div>
+                <div className="card_flex">
+                  {study.companyLogo?.asset?.url && (
+                    <img
+                      src={study.companyLogo.asset.url}
+                      loading="lazy"
+                      alt=""
+                      style={{ height: '1.25rem', width: 'auto', opacity: 0.7, marginBottom: '.5rem' }}
+                    />
+                  )}
+                  <div className="c-title-5">{study.title}</div>
+                  {study.industry && (
+                    <div className="c-text-6" style={{ marginTop: '.25rem' }}>{study.industry}</div>
+                  )}
+                  {study.excerpt && (
+                    <div className="c-text-5" style={{ marginTop: '.5rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                      {study.excerpt}
+                    </div>
+                  )}
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  Section D: Deal Impact Timeline                                    */
+/* ------------------------------------------------------------------ */
+
+const DEFAULT_TIMELINE_PHASES: TimelinePhase[] = [
+  {
+    phase: 'Sourcing',
+    description: 'Identify and evaluate potential deals faster.',
+    items: [
+      {
+        title: 'Market Screening',
+        description: 'Automated market and sector analysis to surface high-potential targets.',
+        beforeLabel: 'Traditional',
+        beforeValue: '2-3 weeks',
+        afterLabel: 'With Brightwave',
+        afterValue: '2-3 days',
+        timeSaved: '80% faster',
+        problems: ['Manual research across dozens of databases', 'Inconsistent screening criteria'],
+      },
+      {
+        title: 'Target Identification',
+        description: 'AI-powered target identification based on your investment thesis.',
+        beforeLabel: 'Traditional',
+        beforeValue: '1-2 weeks',
+        afterLabel: 'With Brightwave',
+        afterValue: '1-2 days',
+        timeSaved: '75% faster',
+        problems: ['Limited coverage of potential targets', 'Reliance on existing networks'],
+      },
+    ],
+  },
+  {
+    phase: 'Due Diligence',
+    description: 'Comprehensive analysis with greater depth and speed.',
+    items: [
+      {
+        title: 'Financial Analysis',
+        description: 'Automated financial modeling and benchmarking against industry peers.',
+        beforeLabel: 'Traditional',
+        beforeValue: '3-4 weeks',
+        afterLabel: 'With Brightwave',
+        afterValue: '3-5 days',
+        timeSaved: '80% faster',
+        problems: ['Manual data entry and spreadsheet modeling', 'Limited comparable company analysis'],
+      },
+      {
+        title: 'Risk Assessment',
+        description: 'AI-driven risk identification across regulatory, market, and operational dimensions.',
+        beforeLabel: 'Traditional',
+        beforeValue: '2-3 weeks',
+        afterLabel: 'With Brightwave',
+        afterValue: '2-3 days',
+        timeSaved: '85% faster',
+        problems: ['Incomplete risk coverage', 'Delayed identification of red flags'],
+      },
+    ],
+  },
+  {
+    phase: 'Financing',
+    description: 'Accelerate capital structure analysis and lender outreach.',
+    items: [
+      {
+        title: 'Capital Structure Analysis',
+        description: 'Optimal financing structure recommendations based on deal specifics.',
+        beforeLabel: 'Traditional',
+        beforeValue: '1-2 weeks',
+        afterLabel: 'With Brightwave',
+        afterValue: '1-2 days',
+        timeSaved: '75% faster',
+        problems: ['Manual comparison of financing alternatives', 'Slow lender feedback loops'],
+      },
+    ],
+  },
+  {
+    phase: 'Post-Closing',
+    description: 'Hit the ground running with day-one insights.',
+    items: [
+      {
+        title: 'Integration Planning',
+        description: 'AI-generated integration playbooks based on best practices and deal specifics.',
+        beforeLabel: 'Traditional',
+        beforeValue: '4-6 weeks',
+        afterLabel: 'With Brightwave',
+        afterValue: '1 week',
+        timeSaved: '75% faster',
+        problems: ['Generic integration templates', 'Missed synergy opportunities'],
+      },
+    ],
+  },
+  {
+    phase: 'Ownership',
+    description: 'Ongoing portfolio monitoring and value creation.',
+    items: [
+      {
+        title: 'Portfolio Monitoring',
+        description: 'Real-time performance tracking and early warning system for portfolio companies.',
+        beforeLabel: 'Traditional',
+        beforeValue: 'Monthly reviews',
+        afterLabel: 'With Brightwave',
+        afterValue: 'Real-time',
+        timeSaved: 'Continuous',
+        problems: ['Delayed performance visibility', 'Reactive rather than proactive management'],
+      },
+    ],
+  },
+]
+
+function TimelineSection({ page }: { page: AbmPage }) {
+  const headline = page.timelineHeadline || 'Deal Impact Timeline'
+  const subheadline = page.timelineSubheadline || 'See how Brightwave accelerates every phase of the deal lifecycle - from sourcing to ownership.'
+  const phases = (page.timelinePhases && page.timelinePhases.length > 0) ? page.timelinePhases : DEFAULT_TIMELINE_PHASES
+
+  return (
+    <section className="c-section cc-abm-timeline">
+      <div className="c-container">
+        <div className="c-abm-temp-tl_main-wrapper">
+          {/* Header */}
+          <div className="c-abm-temp-tl_header-wrapper">
+            <div className="c-abm-temp-tl_header-inner-wrapper c-abm-template_grid">
+              <div style={{ gridColumn: 'span 4' }}>
+                <div className="c-abm-temp-tl_support-wrapper">
+                  <h2 className="c-title-3">{headline}</h2>
+                  <div className="c-abm-temp-tl_text-wrapper">
+                    <p className="c-text-4">{subheadline}</p>
+                  </div>
+                </div>
+              </div>
+              <div style={{ gridColumn: 'span 3' }}>
+                <div className="c-abm-temp-tl_impact-wrapper">
+                  <div className="c-abm-temp-tl_impact-item">
+                    <div className="c-abm-temp-tl_impact-box" />
+                    <div className="c-text-5">High time investment</div>
+                  </div>
+                  <div className="c-abm-temp-tl_impact-item">
+                    <div className="c-abm-temp-tl_impact-box cc-dark" />
+                    <div className="c-text-5">With Brightwave</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Timeline phases */}
+          <div className="c-abm-temp-tl_wrapper">
+            {phases.map((phase, pi) => (
+              <div key={phase._key || pi} className="c-abm-temp-tl_item-wrapper c-abm-template_grid">
+                {/* Left column - phase label */}
+                <div className="c-abm-temp-tl_item_left" style={{ gridColumn: 'span 2' }}>
+                  <div className="c-abm-temp-tl_item-line">
+                    <div className="c-abm-temp-tl_box" />
+                    <div className="c-abm-temp-tl_line" />
+                  </div>
+                  <div className="c-abm-temp-tl_left-header-wrapper">
+                    <div className="c-abm-temp-tl_phase-wrapper">
+                      <div className="c-abm-temp_phase c-text-6">Phase {pi + 1}</div>
+                    </div>
+                    <h3 className="c-title-4">{phase.phase}</h3>
+                    {phase.description && (
+                      <p className="c-text-5" style={{ marginTop: '.5rem' }}>{phase.description}</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Right column - items */}
+                <div className={`c-abm-temp-tl_item-list${pi === phases.length - 1 ? ' cc-no-spacing' : ''}`} style={{ gridColumn: 'span 5' }}>
+                  {(phase.items ?? []).map((item, ii) => (
+                    <div key={item._key || ii} className="c-abm-temp-tl_item">
+                      {/* Banner showing before/after */}
+                      <div style={{ display: 'flex', gap: '.37rem', marginBottom: '.75rem' }}>
+                        <div className="c-abm-temp-tl_item-banner" style={{ flex: 1 }}>
+                          <div className="c-text-6">{item.beforeLabel || 'Traditional'}: {item.beforeValue}</div>
+                        </div>
+                        <div className="c-abm-temp-tl_item-banner cc-dark" style={{ flex: 1 }}>
+                          <div className="c-text-6">{item.afterLabel || 'With Brightwave'}: {item.afterValue}</div>
+                        </div>
+                      </div>
+
+                      {/* Content */}
+                      <div className="c-abm-temp-tl-item_content">
+                        <div className="c-abm-temo-tl-item_top">
+                          <div className="c-text-3 cc-500">{item.title}</div>
+                          {item.description && (
+                            <div className="c-abm-temp-tl-item_text-wrapper">
+                              <p className="c-text-5">{item.description}</p>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Stats block */}
+                        {(item.timeSaved || (item.beforeValue && item.afterValue)) && (
+                          <div className="c-abm-temp-tl-item_dropdown-stats-block">
+                            <div className="c-abm-temp-tl-item_stats-item cc-black">
+                              <div className="c-text-6" style={{ color: 'rgba(255,255,255,.7)' }}>{item.beforeLabel || 'Before'}</div>
+                              <div className="c-text-4" style={{ fontWeight: 700, color: '#fff' }}>{item.beforeValue}</div>
+                            </div>
+                            <div className="c-abm-temp-tl-item_stats-item cc-yellow">
+                              <div className="c-text-6">{item.afterLabel || 'After'}</div>
+                              <div className="c-text-4" style={{ fontWeight: 700 }}>{item.afterValue}</div>
+                            </div>
+                            {item.timeSaved && (
+                              <div className="c-abm-temp-tl-item_stats-item cc-white" style={{ gridColumn: 'span 2', border: '1px solid var(--lightmode--onsurface-border)' }}>
+                                <div className="c-text-6">Time Saved</div>
+                                <div className="c-text-4" style={{ fontWeight: 700 }}>{item.timeSaved}</div>
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        {/* Pain points */}
+                        {item.problems && item.problems.length > 0 && (
+                          <div className="c-abm-temp-tl-item_problem-block" style={{ marginTop: '1rem' }}>
+                            <div className="c-abm-temp-tl-item_line" />
+                            <div className="c-abm-temp-tl-item_bullet c-text-5">
+                              <ul>
+                                {item.problems.map((problem, pi2) => (
+                                  <li key={pi2}>{problem}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  Section G: Blog Cards                                              */
+/* ------------------------------------------------------------------ */
+
+function BlogSection({ posts }: { posts: BlogPostSummary[] }) {
+  if (!posts || posts.length === 0) return null
+
+  return (
+    <section className="c-section cc-abm-blog">
+      <div className="c-container">
+        <div className="c-abm-studies_header-wrapper">
+          <h2 className="c-title-3">Resources &amp; Insights</h2>
+          <p className="c-text-4" style={{ marginTop: '.75rem' }}>
+            Stay ahead with the latest research, guides, and analysis from the Brightwave team.
+          </p>
+        </div>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+          gap: '1.25rem',
+          marginTop: '2.5rem',
+        }}>
+          {posts.map((post) => {
+            const imgSrc = post.coverImage?.asset?.url || 'https://d3e54v103j8qbb.cloudfront.net/plugins/Basic/assets/placeholder.60f9b1840c.svg'
+            const formattedDate = post.publishedAt
+              ? new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(new Date(post.publishedAt))
+              : null
+
+            return (
+              <a
+                key={post._id}
+                href={`/blog/${post.slug.current}`}
+                className="card w-inline-block"
+                style={{ textDecoration: 'none' }}
+              >
+                <div className="aspect-4-3">
+                  <img
+                    src={imgSrc}
+                    loading="lazy"
+                    alt={post.title}
+                    className="img-cover"
+                  />
+                </div>
+                <div className="card_flex">
+                  <div className="c-title-5">{post.title}</div>
+                  {post.author && <div className="author-hide">{post.author.name}</div>}
+                  {formattedDate && <div className="c-text-6">{formattedDate}</div>}
+                </div>
+              </a>
+            )
+          })}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ------------------------------------------------------------------ */
 /*  Section: Final CTA                                                 */
 /* ------------------------------------------------------------------ */
 
@@ -478,20 +1040,50 @@ function FinalCtaSection({ page }: { page: AbmPage }) {
 
 export default async function AbmSlugPage({ params }: PageProps) {
   const { slug } = await params
-  const page = await client.fetch<AbmPage | null>(
-    abmPageQuery,
-    { slug },
-    { next: { tags: ['abmPage'] } }
-  )
+  const [page, caseStudies, blogPosts] = await Promise.all([
+    client.fetch<AbmPage | null>(abmPageQuery, { slug }, { next: { tags: ['abmPage'] } }),
+    client.fetch<CaseStudySummary[]>(caseStudiesQuery, {}, { next: { tags: ['caseStudy'] } }),
+    client.fetch<BlogPostSummary[]>(blogPostsQuery, {}, { next: { tags: ['contentPost'] } }),
+  ])
 
   if (!page) notFound()
 
   return (
     <>
+      {/* 1. Hero */}
       <HeroSection page={page} />
-      <LottieDivider />
+
+      {/* A. Press / Media Marquee */}
+      <PressMarquee />
+
+      {/* B. Trust Badges */}
+      <TrustBadges />
+
+      {/* IRP Banner (original marquee) */}
       <MarqueeBanner />
+
+      {/* Lottie Divider */}
+      <LottieDivider />
+
+      {/* 4. Challenges & Solutions */}
       <ChallengesSection page={page} />
+
+      {/* C. Case Studies Grid */}
+      <CaseStudiesSection studies={caseStudies ?? []} />
+
+      {/* D. Deal Impact Timeline */}
+      <TimelineSection page={page} />
+
+      {/* E. ROI Calculator */}
+      <AbmRoiCalculator demoUrl={page.demoUrl} />
+
+      {/* F. Competitive Positioning */}
+      <CompetitiveSection page={page} />
+
+      {/* G. Blog / Content Resources */}
+      <BlogSection posts={blogPosts ?? []} />
+
+      {/* Final CTA slider */}
       <FinalCtaSection page={page} />
     </>
   )
