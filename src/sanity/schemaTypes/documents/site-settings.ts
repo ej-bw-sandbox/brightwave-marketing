@@ -64,6 +64,16 @@ export const siteSettings = defineType({
     defineField({ name: 'companyName', title: 'Company Name', type: 'string', initialValue: 'Brightwave' }),
     defineField({ name: 'footerTagline', title: 'Footer Tagline', type: 'string' }),
     defineField({
+      name: 'legalLinks',
+      title: 'Footer Legal Links',
+      type: 'array',
+      of: [{ type: 'object', fields: [
+        { name: 'label', title: 'Label', type: 'string' },
+        { name: 'url', title: 'URL', type: 'string' },
+      ] }],
+    }),
+    defineField({ name: 'copyrightText', title: 'Copyright Text', type: 'string', initialValue: '2026 Brightwave Inc. All rights reserved.' }),
+    defineField({
       name: 'announcementBar',
       title: 'Announcement Bar',
       type: 'object',

@@ -1,10 +1,80 @@
 
 /* ------------------------------------------------------------------ */
-/*  Footer Component - Ported from Webflow Export                      */
-/*  CSS classes are from the Webflow CSS (loaded verbatim)             */
+/*  Footer Component - CMS-driven from Sanity siteSettings             */
 /* ------------------------------------------------------------------ */
 
-export function Footer() {
+import { client } from '@/lib/sanity/client'
+import { siteSettingsQuery } from '@/lib/sanity/queries/site-settings'
+
+interface FooterLink { _key: string; label: string; url: string }
+interface FooterColumn { _key: string; title: string; links: FooterLink[] }
+interface SiteSettings {
+  footerTagline?: string
+  footerColumns?: FooterColumn[]
+  socialLinks?: { linkedin?: string; twitter?: string; github?: string; youtube?: string }
+  legalLinks?: FooterLink[]
+  copyrightText?: string
+  companyName?: string
+}
+
+/* ---- Fallback data so the footer always renders ---- */
+const FALLBACK: SiteSettings = {
+  footerTagline: "Professional-grade AI for the world's most complex challenges.",
+  copyrightText: '2026 Brightwave Inc. All rights reserved.',
+  socialLinks: { linkedin: 'https://www.linkedin.com/company/brightwave-io/about/', twitter: 'https://x.com/brightwaveio' },
+  footerColumns: [
+    { _key: 'col-solutions', title: 'Solutions', links: [{ _key: 'l-pm', label: 'Private Markets', url: '/private-markets/' }] },
+    { _key: 'col-resources', title: 'Resources', links: [
+      { _key: 'l-blog', label: 'Blog', url: '/blog' },
+      { _key: 'l-events', label: 'Events', url: '/events' },
+      { _key: 'l-kb', label: 'Knowledge Base', url: 'https://docs.brightwave.io' },
+      { _key: 'l-news', label: 'News', url: '/news' },
+      { _key: 'l-partners', label: 'Partner Program', url: '/partners' },
+      { _key: 'l-rn', label: 'Release Notes', url: '/release-notes' },
+      { _key: 'l-support', label: 'Support', url: '/support' },
+      { _key: 'l-tools', label: 'Tools & Guides', url: '/tools-guides' },
+    ]},
+    { _key: 'col-company', title: 'Company', links: [
+      { _key: 'l-about', label: 'About', url: '/about' },
+      { _key: 'l-news2', label: 'News', url: '/news' },
+      { _key: 'l-careers', label: 'Careers', url: 'https://www.linkedin.com/company/brightwaveio/jobs/' },
+    ]},
+    { _key: 'col-comparisons', title: 'Comparisons', links: [
+      { _key: 'l-c1', label: 'vs. AlphaSense', url: '/comparisons/brightwave-vs-alphasense' },
+      { _key: 'l-c2', label: 'vs. Blueflame AI', url: '/comparisons/brightwave-vs-blueflame-ai' },
+      { _key: 'l-c3', label: 'vs. Boosted AI', url: '/comparisons/brightwave-vs-boosted-ai' },
+      { _key: 'l-c4', label: 'vs. ChatGPT', url: '/comparisons/brightwave-vs-chatgpt' },
+      { _key: 'l-c5', label: 'vs. Claude', url: '/comparisons/brightwave-vs-claude' },
+      { _key: 'l-c6', label: 'vs. Daloopa AI', url: '/comparisons/brightwave-vs-daloopa-ai' },
+      { _key: 'l-c7', label: 'vs. Hebbia', url: '/comparisons/brightwave-vs-hebbia' },
+      { _key: 'l-c8', label: 'vs. Perplexity', url: '/comparisons/brightwave-vs-perplexity' },
+      { _key: 'l-c9', label: 'vs. Rogo AI', url: '/comparisons/brightwave-vs-rogo-ai' },
+    ]},
+  ],
+  legalLinks: [
+    { _key: 'll-security', label: 'Safety & Security', url: '/legal/safety-security' },
+    { _key: 'll-privacy', label: 'Privacy Policy', url: '/legal/privacy-policy' },
+    { _key: 'll-terms', label: 'Terms of Service', url: '/legal/terms-of-use' },
+  ],
+}
+
+function isExternal(url: string) {
+  return url.startsWith('http://') || url.startsWith('https://')
+}
+
+export async function Footer() {
+  let settings: SiteSettings | null = null
+  try {
+    settings = await client.fetch(siteSettingsQuery, {}, { next: { tags: ['siteSettings'], revalidate: 3600 } })
+  } catch { /* use fallback */ }
+
+  const s = settings ?? FALLBACK
+  const tagline = s.footerTagline ?? FALLBACK.footerTagline
+  const columns = s.footerColumns?.length ? s.footerColumns : FALLBACK.footerColumns!
+  const social = s.socialLinks ?? FALLBACK.socialLinks!
+  const legal = s.legalLinks?.length ? s.legalLinks : FALLBACK.legalLinks!
+  const copyright = s.copyrightText ?? FALLBACK.copyrightText
+
   return (
     <>
 <section no-fade="" className="c-section cc-footer">
@@ -12,8 +82,9 @@ export function Footer() {
           <div className="footer-wrap" style={{ maxHeight: 'none' }}>
             <div className="footer">
               <div className="footer_content" style={{ flexDirection: 'column', alignItems: 'stretch' }}>
-                <div className="c-text-1" style={{ marginBottom: '2.5rem' }}>Professional-grade AI for the world&#x27;s most complex challenges.</div>
-                <div className="footer_cols" style={{ gridTemplateColumns: 'repeat(5, minmax(0, 1fr))' }}>
+                <div className="c-text-1" style={{ marginBottom: '2.5rem' }}>{tagline}</div>
+                <div className="footer_cols" style={{ gridTemplateColumns: `repeat(${columns.length + 1}, minmax(0, 1fr))` }}>
+                  {/* CTA + Social column */}
                   <div className="footer_cat">
                     <div className="invert">
                       <div className="dark-mode-invert">
@@ -39,63 +110,42 @@ export function Footer() {
                       </div>
                     </div>
                     <div className="mobile-btns cc-footer" style={{ marginTop: '1.5rem' }}>
-                      <div className="nav-social">
-                        <a href="https://www.linkedin.com/company/brightwave-io/about/" target="_blank" className="c-linkedin w-inline-block">
-                          <div className="svg w-embed"><svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M6.94043 5.00002C6.94017 5.53046 6.7292 6.03906 6.35394 6.41394C5.97868 6.78883 5.46986 6.99929 4.93943 6.99902C4.409 6.99876 3.90039 6.78779 3.52551 6.41253C3.15062 6.03727 2.94016 5.52846 2.94043 4.99802C2.9407 4.46759 3.15166 3.95899 3.52692 3.5841C3.90218 3.20922 4.411 2.99876 4.94143 2.99902C5.47186 2.99929 5.98047 3.21026 6.35535 3.58552C6.73024 3.96078 6.9407 4.46959 6.94043 5.00002ZM7.00043 8.48002H3.00043L3.00043 21H7.00043L7.00043 8.48002ZM13.3204 8.48002H9.34043L9.34043 21H13.2804V14.43C13.2804 10.77 18.0504 10.43 18.0504 14.43V21H22.0004L22.0004 13.07C22.0004 6.90002 14.9404 7.13002 13.2804 10.16L13.3204 8.48002Z" fill="white"></path>
-                            </svg></div>
-                        </a>
+                      {social.linkedin && (
+                        <div className="nav-social">
+                          <a href={social.linkedin} target="_blank" rel="noopener noreferrer" className="c-linkedin w-inline-block">
+                            <div className="svg w-embed"><svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M6.94043 5.00002C6.94017 5.53046 6.7292 6.03906 6.35394 6.41394C5.97868 6.78883 5.46986 6.99929 4.93943 6.99902C4.409 6.99876 3.90039 6.78779 3.52551 6.41253C3.15062 6.03727 2.94016 5.52846 2.94043 4.99802C2.9407 4.46759 3.15166 3.95899 3.52692 3.5841C3.90218 3.20922 4.411 2.99876 4.94143 2.99902C5.47186 2.99929 5.98047 3.21026 6.35535 3.58552C6.73024 3.96078 6.9407 4.46959 6.94043 5.00002ZM7.00043 8.48002H3.00043L3.00043 21H7.00043L7.00043 8.48002ZM13.3204 8.48002H9.34043L9.34043 21H13.2804V14.43C13.2804 10.77 18.0504 10.43 18.0504 14.43V21H22.0004L22.0004 13.07C22.0004 6.90002 14.9404 7.13002 13.2804 10.16L13.3204 8.48002Z" fill="white"></path>
+                              </svg></div>
+                          </a>
+                        </div>
+                      )}
+                      {social.twitter && (
+                        <div className="nav-social">
+                          <a href={social.twitter} target="_blank" rel="noopener noreferrer" className="c-x w-inline-block">
+                            <div className="svg w-embed"><svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M17.6873 3.06299L12.6913 8.77399L8.3713 3.06299H2.1123L9.5893 12.839L2.5033 20.938H5.5373L11.0063 14.688L15.7863 20.938H21.8883L14.0943 10.634L20.7193 3.06299H17.6873ZM16.6233 19.123L5.6543 4.78199H7.4573L18.3033 19.122L16.6233 19.123Z" fill="white"></path>
+                              </svg></div>
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  {/* Dynamic columns from Sanity */}
+                  {columns.map((col) => (
+                    <div key={col._key} className="footer_cat">
+                      <div className="c-text-link">{col.title}</div>
+                      <div className="footer_cat_spacer">
+                        {col.links.map((link) => (
+                          <a
+                            key={link._key}
+                            href={link.url}
+                            className="c-text-5 cc-link"
+                            {...(isExternal(link.url) ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                          >{link.label}</a>
+                        ))}
                       </div>
-                      <div className="nav-social">
-                        <a href="https://x.com/brightwaveio" target="_blank" className="c-x w-inline-block">
-                          <div className="svg w-embed"><svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M17.6873 3.06299L12.6913 8.77399L8.3713 3.06299H2.1123L9.5893 12.839L2.5033 20.938H5.5373L11.0063 14.688L15.7863 20.938H21.8883L14.0943 10.634L20.7193 3.06299H17.6873ZM16.6233 19.123L5.6543 4.78199H7.4573L18.3033 19.122L16.6233 19.123Z" fill="white"></path>
-                            </svg></div>
-                        </a>
-                      </div>
                     </div>
-                  </div>
-                  <div className="footer_cat">
-                    <div className="c-text-link">Solutions</div>
-                    <div className="footer_cat_spacer">
-                      <a href="/private-markets/" className="c-text-5 cc-link">Private Markets</a>
-                    </div>
-                  </div>
-                  <div className="footer_cat">
-                    <div className="c-text-link">Resources</div>
-                    <div className="footer_cat_spacer">
-                      <a href="/blog" className="c-text-5 cc-link">Blog</a>
-                      <a href="/events" className="c-text-5 cc-link">Events</a>
-                      <a href="https://docs.brightwave.io" target="_blank" rel="noopener noreferrer" className="c-text-5 cc-link">Knowledge Base</a>
-                      <a href="/news" className="c-text-5 cc-link">News</a>
-                      <a href="/partners" className="c-text-5 cc-link">Partner Program</a>
-                      <a href="/release-notes" className="c-text-5 cc-link">Release Notes</a>
-                      <a href="/support" className="c-text-5 cc-link">Support</a>
-                      <a href="/tools-guides" className="c-text-5 cc-link">Tools &amp; Guides</a>
-                    </div>
-                  </div>
-                  <div className="footer_cat">
-                    <div className="c-text-link">Company</div>
-                    <div className="footer_cat_spacer">
-                      <a href="/about" className="c-text-5 cc-link">About</a>
-                      <a href="/news" className="c-text-5 cc-link">News</a>
-                      <a href="https://www.linkedin.com/company/brightwaveio/jobs/" className="c-text-5 cc-link">Careers</a>
-                    </div>
-                  </div>
-                  <div className="footer_cat">
-                    <div className="c-text-link">Comparisons</div>
-                    <div className="footer_cat_spacer">
-                      <a href="/comparisons/brightwave-vs-alphasense" className="c-text-5 cc-link">vs. AlphaSense</a>
-                      <a href="/comparisons/brightwave-vs-blueflame-ai" className="c-text-5 cc-link">vs. Blueflame AI</a>
-                      <a href="/comparisons/brightwave-vs-boosted-ai" className="c-text-5 cc-link">vs. Boosted AI</a>
-                      <a href="/comparisons/brightwave-vs-chatgpt" className="c-text-5 cc-link">vs. ChatGPT</a>
-                      <a href="/comparisons/brightwave-vs-claude" className="c-text-5 cc-link">vs. Claude</a>
-                      <a href="/comparisons/brightwave-vs-daloopa-ai" className="c-text-5 cc-link">vs. Daloopa AI</a>
-                      <a href="/comparisons/brightwave-vs-hebbia" className="c-text-5 cc-link">vs. Hebbia</a>
-                      <a href="/comparisons/brightwave-vs-perplexity" className="c-text-5 cc-link">vs. Perplexity</a>
-                      <a href="/comparisons/brightwave-vs-rogo-ai" className="c-text-5 cc-link">vs. Rogo AI</a>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
               <div className="footer_grid">
@@ -126,18 +176,14 @@ export function Footer() {
           </div>
           <div className="footer_bootom-wrap">
             <div className="footer_links">
-              <a href="/legal/safety-security" className="footer_link w-inline-block">
-                <div>Safety &amp; Security</div>
-              </a>
-              <a href="/legal/privacy-policy" className="footer_link w-inline-block">
-                <div>Privacy Policy</div>
-              </a>
-              <a href="/legal/terms-of-use" className="footer_link w-inline-block">
-                <div>Terms of Service</div>
-              </a>
+              {legal.map((link) => (
+                <a key={link._key} href={link.url} className="footer_link w-inline-block">
+                  <div>{link.label}</div>
+                </a>
+              ))}
             </div>
             <div>
-              <div>2026 Brightwave Inc. All rights reserved.</div>
+              <div>{copyright}</div>
             </div>
           </div>
         </div>
