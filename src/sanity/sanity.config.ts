@@ -12,6 +12,12 @@ const singletonTypes = new Set([
   'supportPage',
   'contactPage',
   'siteSettings',
+  'partnersPage',
+  'privateMarketsPlatformPage',
+  'enterpriseSecurityCompliancePage',
+  'partnerTermsPage',
+  'referralPage',
+  'thankYouContactPage',
 ])
 
 const singletonActions = new Set(['publish', 'discardChanges', 'restore'])

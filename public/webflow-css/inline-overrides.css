@@ -416,10 +416,10 @@ color:var(--lightmode--primary);
 [theme="dark"] .nav_toggle .chevron {
   color: var(--lightmode--onsurface);
 }
-/* Dark mode: toggle button (sun/moon icon) */
+/* Dark mode: toggle button (sun/moon icon) — icon must contrast with white bg */
 .u-dark-mode .toggle,
 [theme="dark"] .toggle {
-  color: var(--lightmode--onsurface);
+  color: var(--lightmode--background);
 }
 /* Dark mode: Login and CTA button text */
 .u-dark-mode .cta-sec .c-text-link.cc-stagger,

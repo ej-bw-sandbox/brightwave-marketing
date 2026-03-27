@@ -20,7 +20,7 @@ function PopupOverlay({ isOpen, onClose }: PopupOverlayProps) {
   if (!isOpen) return null
 
   return (
-    <div id="paywall" className="paywall" style={{ display: 'block' }}>
+    <div id="paywall" className="paywall" style={{ display: 'block', position: 'fixed', inset: 0, zIndex: 9999 }}>
       <div id="overlay" className="popup-overlay" style={{ display: 'flex' }} onClick={onClose}></div>
       <div id="popup" className="sandbox-pop-up" style={{ display: 'flex' }}>
         <div className="div-block-40">
