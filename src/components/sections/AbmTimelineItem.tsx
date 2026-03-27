@@ -21,25 +21,13 @@ export function AbmTimelineItem({ item }: { item: TimelineItemData }) {
   const hasDropdown = (item.problems && item.problems.length > 0) || item.timeSaved || hasBanner
 
   return (
-    <div className="c-abm-temp-tl_item">
-      {/* Before / After banner bars */}
-      {hasBanner && (
-        <div style={{ display: 'flex', gap: '.37rem', marginBottom: '.75rem' }}>
-          <div className="c-abm-temp-tl_item-banner" style={{ flex: 1 }}>
-            <div className="c-text-6">{item.beforeLabel || 'Traditional'}: {item.beforeValue}</div>
-          </div>
-          <div className="c-abm-temp-tl_item-banner cc-dark" style={{ flex: 1 }}>
-            <div className="c-text-6">{item.afterLabel || 'With Brightwave'}: {item.afterValue}</div>
-          </div>
-        </div>
-      )}
-
+    <div className="c-abm-temp-tl_item" style={{ padding: '1rem 1.25rem' }}>
       {/* Content */}
-      <div className="c-abm-temp-tl-item_content">
+      <div className="c-abm-temp-tl-item_content" style={{ gap: '.5rem' }}>
         <div className="c-abm-temo-tl-item_top">
           <div className="c-text-3 cc-500">{item.title}</div>
           {item.description && (
-            <div className="c-abm-temp-tl-item_text-wrapper">
+            <div className="c-abm-temp-tl-item_text-wrapper" style={{ marginTop: '.25rem' }}>
               <p className="c-text-5">{item.description}</p>
             </div>
           )}
@@ -80,7 +68,7 @@ export function AbmTimelineItem({ item }: { item: TimelineItemData }) {
                   <div className="c-abm-temp-tl-item_dropdown-stats-block">
                     {item.beforeValue && (
                       <div className="c-abm-temp-tl-item_stats-item cc-black">
-                        <div className="c-text-6" style={{ opacity: 0.7 }}>{item.beforeLabel || 'Before'}</div>
+                        <div className="c-text-6" style={{ opacity: 0.7 }}>{item.beforeLabel || 'Traditional'}</div>
                         <div className="c-text-4" style={{ fontWeight: 700 }}>{item.beforeValue}</div>
                       </div>
                     )}
