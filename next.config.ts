@@ -22,6 +22,10 @@ const nextConfig: NextConfig = {
       { source: '/pricing', destination: '/enterprise', permanent: true },
       { source: '/engineering', destination: '/engineering-log', permanent: true },
       { source: '/engineering/citations', destination: '/engineering-log', permanent: true },
+      { source: '/privacy-policy', destination: '/legal/privacy-policy', permanent: true },
+      { source: '/terms-of-use', destination: '/legal/terms-of-use', permanent: true },
+      { source: '/terms-of-service', destination: '/legal/terms-of-use', permanent: true },
+      { source: '/safety-security', destination: '/legal/safety-security', permanent: true },
     ]
   },
 

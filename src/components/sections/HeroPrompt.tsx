@@ -120,7 +120,7 @@ export default function HeroPrompt() {
                   </div>
                   <div className="attachments-button-text">Attachments</div>
                 </div>
-                <div className="tools-button-wrapper">
+                <div className="tools-button-wrapper trigger-popup" onClick={openPopup} role="button" tabIndex={0}>
                   <div className="tools-icon w-embed">
                     <svg xmlns="http://www.w3.org/2000/svg" width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M10 5H3" /><path d="M12 19H3" /><path d="M14 3v4" /><path d="M16 17v4" />

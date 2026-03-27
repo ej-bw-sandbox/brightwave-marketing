@@ -9,7 +9,7 @@ import HeroPrompt from '@/components/sections/HeroPrompt'
 import KeyFeatures from '@/components/sections/KeyFeatures'
 import { LatestReleaseNotes, LatestBlogPosts } from '@/components/sections/LatestPosts'
 
-const fetchOptions = { next: { tags: ['homepage'], revalidate: 3600 } }
+const fetchOptions = { next: { tags: ['homepage', 'testimonial'], revalidate: 60 } }
 
 export async function generateMetadata(): Promise<Metadata> {
   const doc = await client.fetch(homepageQuery, {}, fetchOptions)
