@@ -248,7 +248,7 @@ function CtaButtons({
       {variant === 'dark' ? (
         <div className="u-dark-mode">
           <a stagger-cta="" href={contactUrl} className="cta-p-sm cc-stroke w-inline-block">
-            <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">{secondaryText}</div>
+            <div stagger-cta-text="" className="c-text-link cc-stagger-cta" style={{ color: 'var(--lightmode--onsurface)' }}>{secondaryText}</div>
             <div className="flip-small">
               <div className="flip-bg" />
             </div>
