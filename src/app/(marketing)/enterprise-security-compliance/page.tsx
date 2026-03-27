@@ -4,7 +4,7 @@ import { enterprise_security_complianceQuery } from '@/lib/sanity/queries/enterp
 import { buildMetadata } from '@/lib/metadata'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const doc = await client.fetch(enterprise_security_complianceQuery, {}, { next: { tags: ['enterpriseSecurityCompliancePage'], revalidate: 3600 } })
+  const doc = await client.fetch(enterprise_security_complianceQuery, {}, { next: { tags: ['enterpriseSecurityCompliancePage'], revalidate: 60 } })
   if (!doc) return { title: 'Enterprise Security & Compliance | Protecting Your Most Sensitive Financial Data' }
   return buildMetadata({
     title: doc.title || 'Enterprise Security & Compliance | Protecting Your Most Sensitive Financial Data',
@@ -59,7 +59,7 @@ interface Doc {
 export default async function Page() {
   let doc: Doc | null = null
   try {
-    doc = await client.fetch(enterprise_security_complianceQuery, {}, { next: { tags: ['enterpriseSecurityCompliancePage'], revalidate: 3600 } })
+    doc = await client.fetch(enterprise_security_complianceQuery, {}, { next: { tags: ['enterpriseSecurityCompliancePage'], revalidate: 60 } })
   } catch {
     doc = null
   }

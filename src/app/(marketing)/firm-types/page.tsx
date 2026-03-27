@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default async function FirmTypesPage() {
   let data: any[] = []
   try {
-    data = await client.fetch(solutionsIndexQuery, {}, { next: { tags: ['firmType'], revalidate: 3600 } }) ?? []
+    data = await client.fetch(solutionsIndexQuery, {}, { next: { tags: ['firmType'], revalidate: 60 } }) ?? []
   } catch {
     data = []
   }

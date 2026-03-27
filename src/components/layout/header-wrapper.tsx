@@ -65,9 +65,9 @@ export async function Header() {
 
   try {
     const [count, data, settings] = await Promise.all([
-      client.fetch(caseStudyCountQuery, {}, { next: { tags: ['caseStudy'], revalidate: 3600 } }),
-      client.fetch(navDataQuery, {}, { next: { tags: ['icpPage', 'useCase', 'firmType', 'platformFeature'], revalidate: 3600 } }),
-      client.fetch(siteSettingsNavQuery, {}, { next: { tags: ['siteSettings'], revalidate: 3600 } }),
+      client.fetch(caseStudyCountQuery, {}, { next: { tags: ['caseStudy'], revalidate: 60 } }),
+      client.fetch(navDataQuery, {}, { next: { tags: ['icpPage', 'useCase', 'firmType', 'platformFeature'], revalidate: 60 } }),
+      client.fetch(siteSettingsNavQuery, {}, { next: { tags: ['siteSettings'], revalidate: 60 } }),
     ])
     caseStudyCount = count ?? 0
     navData = data ?? null

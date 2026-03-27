@@ -16,7 +16,7 @@ export default async function Page() {
     features = await client.fetch(
       featureIndexQuery,
       {},
-      { next: { tags: ['platformFeature'], revalidate: 3600 } }
+      { next: { tags: ['platformFeature'], revalidate: 60 } }
     )
   } catch { features = [] }
 

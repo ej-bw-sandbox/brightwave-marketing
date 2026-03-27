@@ -65,7 +65,7 @@ function isExternal(url: string) {
 export async function Footer() {
   let settings: SiteSettings | null = null
   try {
-    settings = await client.fetch(siteSettingsQuery, {}, { next: { tags: ['siteSettings'], revalidate: 3600 } })
+    settings = await client.fetch(siteSettingsQuery, {}, { next: { tags: ['siteSettings'], revalidate: 60 } })
   } catch { /* use fallback */ }
 
   const s = settings ?? FALLBACK

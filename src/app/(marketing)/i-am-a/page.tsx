@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default async function RolesPage() {
   let data: any[] = []
   try {
-    data = await client.fetch(icpIndexQuery, {}, { next: { tags: ['icpPage'], revalidate: 3600 } }) ?? []
+    data = await client.fetch(icpIndexQuery, {}, { next: { tags: ['icpPage'], revalidate: 60 } }) ?? []
   } catch {
     data = []
   }

@@ -6,7 +6,7 @@ import { LottiePlayer } from '@/components/ui/LottiePlayer'
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
-    const doc = await client.fetch(thank_you_contactQuery, {}, { next: { tags: ['thankYouContactPage'], revalidate: 3600 } })
+    const doc = await client.fetch(thank_you_contactQuery, {}, { next: { tags: ['thankYouContactPage'], revalidate: 60 } })
     if (!doc) return { title: 'Thank You Contact | Brightwave' }
     return buildMetadata({
       title: doc.heroHeading,
@@ -22,7 +22,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Page() {
   let doc: any = null
   try {
-    doc = await client.fetch(thank_you_contactQuery, {}, { next: { tags: ['thankYouContactPage'], revalidate: 3600 } })
+    doc = await client.fetch(thank_you_contactQuery, {}, { next: { tags: ['thankYouContactPage'], revalidate: 60 } })
   } catch {
     doc = null
   }

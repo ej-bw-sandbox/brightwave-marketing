@@ -16,7 +16,7 @@ export default async function Page() {
     const data = await client.fetch(
       caseStudyIndexQuery,
       {},
-      { next: { tags: ['caseStudy'], revalidate: 3600 } }
+      { next: { tags: ['caseStudy'], revalidate: 60 } }
     )
     studies = data?.studies ?? []
     categories = data?.categories ?? []

@@ -16,7 +16,7 @@ export default async function Page() {
     const data = await client.fetch(
       contentPostIndexQuery,
       { category: 'news', offset: 0, limit: 50 },
-      { next: { tags: ['contentPost'], revalidate: 3600 } }
+      { next: { tags: ['contentPost'], revalidate: 60 } }
     )
     posts = data?.posts ?? []
   } catch { posts = [] }

@@ -16,7 +16,7 @@ export default async function Page() {
     const data = await client.fetch(
       eventsIndexQuery,
       {},
-      { next: { tags: ['virtualEvent'], revalidate: 3600 } }
+      { next: { tags: ['virtualEvent'], revalidate: 60 } }
     )
     upcoming = data?.upcoming ?? []
     past = data?.past ?? []

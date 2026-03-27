@@ -8,7 +8,7 @@ import { StepCtaSection } from '@/components/sections/StepCtaSection'
 import { LatestBlogPosts } from '@/components/sections/LatestPosts'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const doc = await client.fetch(aboutQuery, {}, { next: { tags: ['aboutPage'], revalidate: 3600 } })
+  const doc = await client.fetch(aboutQuery, {}, { next: { tags: ['aboutPage'], revalidate: 60 } })
   if (!doc) return { title: 'About Us | Brightwave' }
   return buildMetadata({
     title: doc.headline || 'About Us | Brightwave',
@@ -21,7 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Page() {
   let doc: any = null
   try {
-    doc = await client.fetch(aboutQuery, {}, { next: { tags: ['aboutPage'], revalidate: 3600 } })
+    doc = await client.fetch(aboutQuery, {}, { next: { tags: ['aboutPage'], revalidate: 60 } })
   } catch { doc = null }
 
   if (!doc) return null

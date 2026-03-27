@@ -4,7 +4,7 @@ import { referralQuery } from '@/lib/sanity/queries/referral'
 import { buildMetadata } from '@/lib/metadata'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const doc = await client.fetch(referralQuery, {}, { next: { tags: ['referralPage'], revalidate: 3600 } })
+  const doc = await client.fetch(referralQuery, {}, { next: { tags: ['referralPage'], revalidate: 60 } })
   if (!doc) return {}
   return buildMetadata({
     title: doc.headline,
@@ -17,7 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Page() {
   let doc: any = null
   try {
-    doc = await client.fetch(referralQuery, {}, { next: { tags: ['referralPage'], revalidate: 3600 } })
+    doc = await client.fetch(referralQuery, {}, { next: { tags: ['referralPage'], revalidate: 60 } })
   } catch { doc = null }
 
   if (!doc) return null

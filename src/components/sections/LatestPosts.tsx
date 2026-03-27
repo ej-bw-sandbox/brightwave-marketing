@@ -47,7 +47,7 @@ function PostCard({ post, categoryPath }: { post: any; categoryPath: string }) {
 export async function LatestReleaseNotes() {
   let posts: any[] = []
   try {
-    posts = await client.fetch(latestReleaseNotesQuery, {}, { next: { tags: ['contentPost'], revalidate: 3600 } })
+    posts = await client.fetch(latestReleaseNotesQuery, {}, { next: { tags: ['contentPost'], revalidate: 60 } })
   } catch { posts = [] }
 
   return (
@@ -100,7 +100,7 @@ export async function LatestReleaseNotes() {
 export async function LatestBlogPosts() {
   let posts: any[] = []
   try {
-    posts = await client.fetch(latestBlogPostsQuery, {}, { next: { tags: ['contentPost'], revalidate: 3600 } })
+    posts = await client.fetch(latestBlogPostsQuery, {}, { next: { tags: ['contentPost'], revalidate: 60 } })
   } catch { posts = [] }
 
   return (

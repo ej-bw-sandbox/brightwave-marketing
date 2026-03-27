@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default async function UseCasesPage() {
   let data: any[] = []
   try {
-    data = await client.fetch(useCaseIndexQuery, {}, { next: { tags: ['useCase'], revalidate: 3600 } }) ?? []
+    data = await client.fetch(useCaseIndexQuery, {}, { next: { tags: ['useCase'], revalidate: 60 } }) ?? []
   } catch {
     data = []
   }

@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const doc = await client.fetch(
       thankYouPageQuery,
       { slug },
-      { next: { tags: ['thankYouPage'], revalidate: 3600 } }
+      { next: { tags: ['thankYouPage'], revalidate: 60 } }
     )
     if (!doc) return { title: 'Thank You | Brightwave' }
     return buildMetadata({
@@ -40,7 +40,7 @@ export default async function ThankYouPage({ params }: Props) {
     doc = await client.fetch(
       thankYouPageQuery,
       { slug },
-      { next: { tags: ['thankYouPage'], revalidate: 3600 } }
+      { next: { tags: ['thankYouPage'], revalidate: 60 } }
     )
   } catch {
     doc = null

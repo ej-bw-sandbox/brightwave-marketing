@@ -40,7 +40,7 @@ interface PartnersPageDoc {
   }
 }
 
-const fetchOptions = { next: { tags: ['partnersPage'] as string[], revalidate: 3600 } }
+const fetchOptions = { next: { tags: ['partnersPage'] as string[], revalidate: 60 } }
 
 export async function generateMetadata(): Promise<Metadata> {
   const doc = await client.fetch<PartnersPageDoc | null>(partnersQuery, {}, fetchOptions)

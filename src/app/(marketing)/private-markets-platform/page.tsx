@@ -38,7 +38,7 @@ interface PrivateMarketsPlatformPage {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const doc = await client.fetch<PrivateMarketsPlatformPage | null>(private_markets_platformQuery, {}, { next: { tags: ['privateMarketsPlatformPage'], revalidate: 3600 } })
+  const doc = await client.fetch<PrivateMarketsPlatformPage | null>(private_markets_platformQuery, {}, { next: { tags: ['privateMarketsPlatformPage'], revalidate: 60 } })
   if (!doc) return {}
   return buildMetadata({
     title: doc.heroHeadline,
@@ -51,7 +51,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Page() {
   let doc: PrivateMarketsPlatformPage | null = null
   try {
-    doc = await client.fetch<PrivateMarketsPlatformPage | null>(private_markets_platformQuery, {}, { next: { tags: ['privateMarketsPlatformPage'], revalidate: 3600 } })
+    doc = await client.fetch<PrivateMarketsPlatformPage | null>(private_markets_platformQuery, {}, { next: { tags: ['privateMarketsPlatformPage'], revalidate: 60 } })
   } catch {
     doc = null
   }

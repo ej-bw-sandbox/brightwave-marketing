@@ -5,7 +5,7 @@ import { buildMetadata } from '@/lib/metadata'
 import { PortableTextRenderer } from '@/components/sections/PortableTextRenderer'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const doc = await client.fetch(partner_termsQuery, {}, { next: { tags: ['partnerTermsPage'], revalidate: 3600 } })
+  const doc = await client.fetch(partner_termsQuery, {}, { next: { tags: ['partnerTermsPage'], revalidate: 60 } })
   if (!doc) return {}
   return buildMetadata({
     title: doc.title,
@@ -18,7 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Page() {
   let doc: any = null
   try {
-    doc = await client.fetch(partner_termsQuery, {}, { next: { tags: ['partnerTermsPage'], revalidate: 3600 } })
+    doc = await client.fetch(partner_termsQuery, {}, { next: { tags: ['partnerTermsPage'], revalidate: 60 } })
   } catch {
     doc = null
   }

@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function VsDetailPage({ params }: Props) {
   const { slug } = await params
-  const doc = await client.fetch(comparisonQuery, { slug }, { next: { tags: ['comparison'], revalidate: 3600 } })
+  const doc = await client.fetch(comparisonQuery, { slug }, { next: { tags: ['comparison'], revalidate: 60 } })
 
   if (!doc) notFound()
 
