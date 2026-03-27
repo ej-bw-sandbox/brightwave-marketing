@@ -92,11 +92,21 @@ interface SolutionsNavData {
   platformFeatures: PlatformFeature[]
 }
 
+interface HeaderCta {
+  _key: string
+  label: string
+  url: string
+  style?: string
+  openInNewTab?: boolean
+}
+
 export function HeaderClient({
   solutionsNavData = null,
+  headerCtas,
 }: {
   caseStudyCount?: number
   solutionsNavData?: SolutionsNavData | null
+  headerCtas?: HeaderCta[]
 }) {
   /* ---- State ---- */
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
@@ -673,12 +683,24 @@ export function HeaderClient({
                         <Moon size={18} strokeWidth={1.5} />
                       )}
                     </button>
-                    <a href="https://app.brightwave.io/login" className="cta-sec cc-fill w-inline-block">
-                      <div className="c-text-link cc-stagger">Login</div>
-                    </a>
-                    <a href="/contact" className="cta-sec w-inline-block">
-                      <div className="c-text-link cc-stagger">Get Started</div>
-                    </a>
+                    {(headerCtas && headerCtas.length > 0 ? headerCtas : [
+                      { _key: 'login', label: 'Login', url: 'https://app.brightwave.io/login', style: 'secondary' },
+                      { _key: 'get-started', label: 'Get Started', url: '/contact', style: 'primary' },
+                    ]).map((cta) => {
+                      const isFill = cta.style === 'secondary' || cta.label.toLowerCase() === 'login'
+                      const isExternal = cta.url.startsWith('http')
+                      return (
+                        <a
+                          key={cta._key}
+                          href={cta.url}
+                          className={`cta-sec${isFill ? ' cc-fill' : ''} w-inline-block`}
+                          {...(isExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                          {...(cta.openInNewTab ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                        >
+                          <div className="c-text-link cc-stagger">{cta.label}</div>
+                        </a>
+                      )
+                    })}
                   </div>
                 </div>
               </div>
