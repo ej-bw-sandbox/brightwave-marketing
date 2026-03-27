@@ -881,6 +881,18 @@ select:-webkit-autofill {
   }
 }
 
+/* ── Nav hover underline animation ── */
+.nav_link .nav_line,
+.nav_toggle .nav_line {
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+.nav_link:hover .nav_line,
+.nav_toggle:hover .nav_line {
+  transform: scaleX(1);
+}
+
 /* ── ABM: keep original yellow accent, no color override ── */
 
 /* ── Webflow grid-area utility classes ──────────────────────────

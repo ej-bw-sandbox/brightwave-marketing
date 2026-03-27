@@ -33,7 +33,7 @@ export default async function Page() {
                 {features.length > 0 ? (
                 <div role="list" className="c-cs-overview-featured-list w-dyn-items">
                   <div role="listitem" className="c-cs-overview-featured-item w-dyn-item">
-                    <div className="c-comparison-template_grid cc-rel">
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', position: 'relative' }}>
                       <a href={`/features/${features[0].slug?.current || ''}`} className="c-link-helper w-inline-block"></a>
                       <div id="w-node-feat-hero-img" className="c-cs-overview-featured_image-wrapper">
                         {features[0].heroImage?.asset?.url ? (
