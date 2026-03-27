@@ -101,6 +101,7 @@ export default async function HomePage() {
               </div>
             </div>
           </div>
+          <HeroPrompt />
           <div lottie-bg="" className="lottie-reverse">
             <div className="learning-lottie">
               <div lottie-bg="" className="lottie-crop">
@@ -109,7 +110,6 @@ export default async function HomePage() {
               </div>
             </div>
           </div>
-          <HeroPrompt />
 
           {/* ========== COMPARISON STATS ========== */}
           {comparisonSection && (

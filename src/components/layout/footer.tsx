@@ -126,13 +126,13 @@ export function Footer() {
           </div>
           <div className="footer_bootom-wrap">
             <div className="footer_links">
-              <a href="/enterprise-security-compliance" className="footer_link w-inline-block">
+              <a href="/legal/safety-security" className="footer_link w-inline-block">
                 <div>Safety &amp; Security</div>
               </a>
-              <a href="/privacy-policy" className="footer_link w-inline-block">
+              <a href="/legal/privacy-policy" className="footer_link w-inline-block">
                 <div>Privacy Policy</div>
               </a>
-              <a href="/terms-of-use" className="footer_link w-inline-block">
+              <a href="/legal/terms-of-use" className="footer_link w-inline-block">
                 <div>Terms of Service</div>
               </a>
             </div>

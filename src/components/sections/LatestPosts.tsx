@@ -26,18 +26,18 @@ function formatDate(dateStr: string) {
 
 function PostCard({ post, categoryPath }: { post: any; categoryPath: string }) {
   const imgSrc = post.coverImage?.asset?.url
-    ? urlFor(post.coverImage).width(600).height(450).url()
+    ? urlFor(post.coverImage).width(800).height(450).url()
     : 'https://d3e54v103j8qbb.cloudfront.net/plugins/Basic/assets/placeholder.60f9b1840c.svg'
 
   return (
-    <div role="listitem" className="card_item w-dyn-item">
+    <div role="listitem" className="card_item w-dyn-item" id="w-node-c5123b81-e463-2eab-695f-359de2f2994d-4c4a8e00">
       <Link href={`/${categoryPath}/${post.slug}`} className="card w-inline-block">
-        <div className="aspect-4-3">
+        <div className="aspect-16-9">
           <img src={imgSrc} loading="lazy" alt={post.title || ''} className="img-cover" />
         </div>
         <div className="card_flex">
           <div className="c-title-5">{post.title}</div>
-          <div className="c-text-6">{post.excerpt || ''}</div>
+          {post.publishedAt && <div className="c-text-6">{formatDate(post.publishedAt)}</div>}
         </div>
       </Link>
     </div>
