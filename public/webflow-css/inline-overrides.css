@@ -881,25 +881,7 @@ select:-webkit-autofill {
   }
 }
 
-/* ── ABM: replace yellow accent with blue for accessibility ── */
-/* Override the primary color on all ABM sections to brand blue (#0E50AA).
-   WCAG AA contrast ratios:
-   - #0E50AA on #ffffff = ~6.5:1 (passes AA normal + large text)
-   - #0E50AA on #f5f5f5 = ~6.1:1 (passes AA normal + large text)
-   - #ffffff on #0E50AA = ~6.5:1 (passes AA normal + large text)
-*/
-
-/* Scope primary color override to ABM template sections */
-.c-section[class*="cc-abm"],
-.c-section[class*="cc-amb"] {
-  --lightmode--primary: #0E50AA;
-}
-
-/* Challenge card top-box accent in ABM context */
-.c-section[class*="cc-abm"] .c-abm-temp-chal_card-top-box,
-.c-section[class*="cc-amb"] .c-abm-temp-chal_card-top-box {
-  background-color: #0E50AA;
-}
+/* ── ABM: keep original yellow accent, no color override ── */
 
 /* ── Webflow grid-area utility classes ──────────────────────────
    Webflow pages use #w-node-xxx IDs for grid placement inside

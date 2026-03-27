@@ -246,7 +246,7 @@ function HeroSection({ page }: { page: AbmPage }) {
                     />
                   ) : (
                     <img
-                      src="/images/substack-frame.png"
+                      src="/webflow-images/substack-frame.png"
                       loading="lazy"
                       width={193}
                       alt=""
@@ -261,7 +261,7 @@ function HeroSection({ page }: { page: AbmPage }) {
               <div className="c-abm-hero_icon">
                 <div className="c-abm-hero_image-wrapper">
                   <img
-                    src="/images/brightwave_tile.png"
+                    src="/webflow-images/brightwave_tile.png"
                     loading="lazy"
                     width={193}
                     alt="Brightwave"
