@@ -78,7 +78,8 @@ export function TestimonialSlider({
         className="testimonial-slider__viewport"
         style={{
           position: 'relative',
-          minHeight: '12rem',
+          minHeight: '16rem',
+          overflow: 'visible',
         }}
       >
         {testimonials.map((t, i) => {
@@ -105,7 +106,7 @@ export function TestimonialSlider({
                       <div className="c-title-5 cc-primary">{t.eyebrow}</div>
                     </div>
                   )}
-                  <div className="c-title-4 cc-white">{t.quote}</div>
+                  <div className="c-title-4" style={{ color: '#ffffff' }}>{t.quote}</div>
                   {t.attribution && (
                     <div className="c-text-4" style={{ color: 'var(--border, #666)' }}>
                       {t.attribution}
