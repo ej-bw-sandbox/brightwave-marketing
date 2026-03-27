@@ -59,10 +59,6 @@ export default async function Page() {
                       </div>
                       <div id="w-node-feat-hero-content" className="c-cs-overview-feaured_content-wrapper">
                         <div className="c-cs-card_title-wrapper">
-                          <div className="c-cs-card_tag-wrapper">
-                            <div className="c-cs-card_tag-square"></div>
-                            <div className="c-text-5 cc-weight-500">{features[0].menuCategory || 'Feature'}</div>
-                          </div>
                           <h2 className="c-title-4">{features[0].title}</h2>
                         </div>
                         <div className="c-cs-card_text-wrapper">

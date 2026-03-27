@@ -110,7 +110,7 @@ export function FeaturesGrid({ features }: { features: Feature[] }) {
       {/* Feature cards grid */}
       <div className="c-cs-main-list_wrapper w-dyn-list">
         {filtered.length > 0 ? (
-          <div role="list" className="c-cs-main-list_list w-dyn-items">
+          <div role="list" className="c-cs-main-list_list w-dyn-items" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', width: '100%' }}>
             {filtered.map((feature) => (
               <div
                 key={feature._id || feature.slug?.current}
@@ -139,12 +139,6 @@ export function FeaturesGrid({ features }: { features: Feature[] }) {
                   )}
                   <div className="c-cs-card_text-stack">
                     <div className="c-cs-card_title-wrapper">
-                      <div className="c-cs-card_tag-wrapper">
-                        <div className="c-cs-card_tag-square"></div>
-                        <div className="c-text-5 cc-weight-500">
-                          {feature.menuCategory || 'Feature'}
-                        </div>
-                      </div>
                       <h2 className="c-title-5">{feature.title}</h2>
                     </div>
                     <div className="c-cs-card_text-wrapper">

@@ -132,12 +132,6 @@ export function ProductFilterGrid({
                       />
                       <div className="c-cs-card_text-stack">
                         <div className="c-cs-card_title-wrapper">
-                          <div className="c-cs-card_tag-wrapper">
-                            <div className="c-cs-card_tag-square"></div>
-                            <div className="c-text-5 cc-weight-500">
-                              {item.tag || ''}
-                            </div>
-                          </div>
                           <h2 className="c-title-5">{item.title}</h2>
                         </div>
                         <div className="c-cs-card_text-wrapper">
