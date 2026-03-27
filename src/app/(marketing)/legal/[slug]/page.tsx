@@ -26,36 +26,55 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   })
 }
 
+function formatLegalDate(dateStr: string) {
+  return new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+}
+
 export default async function LegalDetailPage({ params }: Props) {
   const { slug } = await params
   const doc = await client.fetch(legalQuery, { slug }, { next: { tags: ['legalPage'] } })
 
   if (!doc) notFound()
 
+  // Split title into words for the stacked legal_titles layout
+  const titleWords = (doc.title || '').split(/\s+/)
+
   return (
-    <section className="c-section cc-legal">
-      <div className="c-container">
-        <div className="legal_flex">
-          <div className="legal_header">
-            <h1 className="c-title-2">{doc.title}</h1>
-            {doc.effectiveDate && (
-              <div className="c-text-4" style={{ marginTop: '1rem', opacity: 0.6 }}>
-                Effective: {new Date(doc.effectiveDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+    <div className="main">
+      <section className="c-section cc-legal">
+        <div className="c-container">
+          <div className="grid cc-8">
+            <div className="legal_flex cc-gap-0">
+              <div className="legal_titles">
+                {titleWords.map((word: string, i: number) => (
+                  <div key={i} className={`legal_title${i > 0 ? ' cc-right' : ''}`}>
+                    <div className="c-title-2">{word.toUpperCase()}</div>
+                  </div>
+                ))}
+                {doc.effectiveDate && (
+                  <div className="legal_date">
+                    <div className="block"></div>
+                    <div className="c-title-5">{formatLegalDate(doc.effectiveDate)}</div>
+                  </div>
+                )}
               </div>
-            )}
+              {doc.body ? (
+                <div>
+                  <div className="legal-rt w-richtext">
+                    <PortableText value={doc.body} />
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <div className="legal-rt w-richtext">
+                    <p>Content coming soon. Please check back later.</p>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
-          {doc.body && (
-            <div className="rich-text w-richtext" style={{ marginTop: '3rem' }}>
-              <PortableText value={doc.body} />
-            </div>
-          )}
-          {!doc.body && (
-            <div className="c-text-3" style={{ marginTop: '3rem', opacity: 0.5 }}>
-              Content coming soon. Please check back later.
-            </div>
-          )}
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   )
 }
