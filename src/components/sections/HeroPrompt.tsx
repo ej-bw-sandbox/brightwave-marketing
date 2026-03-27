@@ -107,8 +107,6 @@ export default function HeroPrompt() {
             <textarea
               placeholder="What can I do for you?"
               className="prompt-text-field"
-              onFocus={openPopup}
-              readOnly
             />
             <div className="prompt-cta-wrapper">
               <div className="prompt-actions-wrapper">
