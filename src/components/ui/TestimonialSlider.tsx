@@ -97,13 +97,13 @@ export function TestimonialSlider({
               >
                 <div className="slider_item">
                   <div className="slider_flex">
+                    <div className="c-title-4" style={{ color: '#ffffff' }}>{t.quote}</div>
                     {t.eyebrow && (
                       <div className="eyebrow-flex">
                         <div className="block cc-primary"></div>
                         <div className="c-title-5 cc-primary">{t.eyebrow}</div>
                       </div>
                     )}
-                    <div className="c-title-4" style={{ color: '#ffffff' }}>{t.quote}</div>
                   </div>
                 </div>
               </div>
