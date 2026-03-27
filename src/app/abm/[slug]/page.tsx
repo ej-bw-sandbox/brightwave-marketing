@@ -723,8 +723,7 @@ const DEFAULT_TIMELINE_PHASES: TimelinePhase[] = [
         beforeValue: '2-3 weeks',
         afterLabel: 'With Brightwave',
         afterValue: '2-3 days',
-        timeSaved: '80% faster',
-        problems: ['Manual research across dozens of databases', 'Inconsistent screening criteria'],
+        timeSaved: '80% faster'
       },
       {
         title: 'Target Identification',
@@ -733,8 +732,7 @@ const DEFAULT_TIMELINE_PHASES: TimelinePhase[] = [
         beforeValue: '1-2 weeks',
         afterLabel: 'With Brightwave',
         afterValue: '1-2 days',
-        timeSaved: '75% faster',
-        problems: ['Limited coverage of potential targets', 'Reliance on existing networks'],
+        timeSaved: '75% faster'
       },
     ],
   },
@@ -749,8 +747,7 @@ const DEFAULT_TIMELINE_PHASES: TimelinePhase[] = [
         beforeValue: '3-4 weeks',
         afterLabel: 'With Brightwave',
         afterValue: '3-5 days',
-        timeSaved: '80% faster',
-        problems: ['Manual data entry and spreadsheet modeling', 'Limited comparable company analysis'],
+        timeSaved: '80% faster'
       },
       {
         title: 'Risk Assessment',
@@ -759,8 +756,7 @@ const DEFAULT_TIMELINE_PHASES: TimelinePhase[] = [
         beforeValue: '2-3 weeks',
         afterLabel: 'With Brightwave',
         afterValue: '2-3 days',
-        timeSaved: '85% faster',
-        problems: ['Incomplete risk coverage', 'Delayed identification of red flags'],
+        timeSaved: '85% faster'
       },
     ],
   },
@@ -775,8 +771,7 @@ const DEFAULT_TIMELINE_PHASES: TimelinePhase[] = [
         beforeValue: '1-2 weeks',
         afterLabel: 'With Brightwave',
         afterValue: '1-2 days',
-        timeSaved: '75% faster',
-        problems: ['Manual comparison of financing alternatives', 'Slow lender feedback loops'],
+        timeSaved: '75% faster'
       },
     ],
   },
@@ -791,8 +786,7 @@ const DEFAULT_TIMELINE_PHASES: TimelinePhase[] = [
         beforeValue: '4-6 weeks',
         afterLabel: 'With Brightwave',
         afterValue: '1 week',
-        timeSaved: '75% faster',
-        problems: ['Generic integration templates', 'Missed synergy opportunities'],
+        timeSaved: '75% faster'
       },
     ],
   },
@@ -807,8 +801,7 @@ const DEFAULT_TIMELINE_PHASES: TimelinePhase[] = [
         beforeValue: 'Monthly reviews',
         afterLabel: 'With Brightwave',
         afterValue: 'Real-time',
-        timeSaved: 'Continuous',
-        problems: ['Delayed performance visibility', 'Reactive rather than proactive management'],
+        timeSaved: 'Continuous'
       },
     ],
   },
@@ -831,18 +824,6 @@ function TimelineSection({ page }: { page: AbmPage }) {
                   <h2 className="c-title-3">{headline}</h2>
                   <div className="c-abm-temp-tl_text-wrapper">
                     <p className="c-text-4">{subheadline}</p>
-                  </div>
-                </div>
-              </div>
-              <div style={{ gridColumn: 'span 3' }}>
-                <div className="c-abm-temp-tl_impact-wrapper">
-                  <div className="c-abm-temp-tl_impact-item">
-                    <div className="c-abm-temp-tl_impact-box" />
-                    <div className="c-text-5">High time investment</div>
-                  </div>
-                  <div className="c-abm-temp-tl_impact-item">
-                    <div className="c-abm-temp-tl_impact-box cc-dark" />
-                    <div className="c-text-5">With Brightwave</div>
                   </div>
                 </div>
               </div>

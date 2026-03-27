@@ -685,7 +685,7 @@ export function HeaderClient({
                     </button>
                     {(headerCtas && headerCtas.length > 0 ? headerCtas : [
                       { _key: 'login', label: 'Login', url: 'https://app.brightwave.io/login', style: 'secondary' },
-                      { _key: 'get-started', label: 'Get Started', url: '/contact', style: 'primary' },
+                      { _key: 'get-started', label: 'Contact Sales', url: '/enterprise', style: 'primary' },
                     ]).map((cta) => {
                       const isFill = cta.style === 'secondary' || cta.label.toLowerCase() === 'login'
                       const isExternal = cta.url.startsWith('http')
