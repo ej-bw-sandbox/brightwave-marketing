@@ -6,7 +6,7 @@ import { LottiePlayer } from '@/components/ui/LottiePlayer'
 import { RoiCalculator } from './roi-calculator'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const doc = await client.fetch(enterpriseQuery, {}, { next: { tags: ['enterpriseSalesPage'], revalidate: 3600 } })
+  const doc = await client.fetch(enterpriseQuery, {}, { next: { tags: ['enterpriseSalesPage', 'testimonial'], revalidate: 60 } })
   if (!doc) return { title: 'Enterprise | Brightwave' }
   return buildMetadata({
     title: doc.heroHeadline ?? 'Enterprise | Brightwave',
@@ -19,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function EnterprisePricingPage() {
   let doc: any = null
   try {
-    doc = await client.fetch(enterpriseQuery, {}, { next: { tags: ['enterpriseSalesPage'], revalidate: 3600 } })
+    doc = await client.fetch(enterpriseQuery, {}, { next: { tags: ['enterpriseSalesPage', 'testimonial'], revalidate: 60 } })
   } catch { doc = null }
 
   return (
