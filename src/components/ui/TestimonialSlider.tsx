@@ -74,49 +74,42 @@ export function TestimonialSlider({
         }
       }}
     >
-      <div
-        className="testimonial-slider__viewport"
-        style={{
-          position: 'relative',
-          minHeight: '16rem',
-          overflow: 'visible',
-        }}
-      >
-        {testimonials.map((t, i) => {
-          const isActive = i === activeIndex
-          const isExiting = i === exitingIndex
-          let slideClass = 'testimonial-slider__slide'
-          if (isActive) slideClass += ' testimonial-slider__slide--active'
-          else if (isExiting) slideClass += ' testimonial-slider__slide--exiting'
+      <div className="slider w-dyn-list">
+        <div role="list" className="slider_list w-dyn-items" style={{ position: 'relative' }}>
+          {testimonials.map((t, i) => {
+            const isActive = i === activeIndex
+            const isExiting = i === exitingIndex
 
-          return (
-            <div
-              key={i}
-              className={slideClass}
-              role="group"
-              aria-roledescription="slide"
-              aria-label={`Slide ${i + 1} of ${total}`}
-              aria-hidden={!isActive}
-            >
-              <div className="slider_item">
-                <div className="slider_flex">
-                  {t.eyebrow && (
-                    <div className="eyebrow-flex">
-                      <div className="block cc-primary"></div>
-                      <div className="c-title-5 cc-primary">{t.eyebrow}</div>
-                    </div>
-                  )}
-                  <div className="c-title-4" style={{ color: '#ffffff' }}>{t.quote}</div>
-                  {t.attribution && (
-                    <div className="c-text-4" style={{ color: 'var(--border, #666)' }}>
-                      {t.attribution}
-                    </div>
-                  )}
+            return (
+              <div
+                key={i}
+                role="listitem"
+                className="slider_cms-item w-dyn-item"
+                style={{
+                  position: i === 0 ? 'relative' : 'absolute',
+                  inset: 0,
+                  opacity: isActive ? 1 : 0,
+                  transition: 'opacity 0.5s ease',
+                  pointerEvents: isActive ? 'auto' : 'none',
+                  ...(isExiting ? { opacity: 0 } : {}),
+                }}
+                aria-hidden={!isActive}
+              >
+                <div className="slider_item">
+                  <div className="slider_flex">
+                    {t.eyebrow && (
+                      <div className="eyebrow-flex">
+                        <div className="block cc-primary"></div>
+                        <div className="c-title-5 cc-primary">{t.eyebrow}</div>
+                      </div>
+                    )}
+                    <div className="c-title-4" style={{ color: '#ffffff' }}>{t.quote}</div>
+                  </div>
                 </div>
               </div>
-            </div>
-          )
-        })}
+            )
+          })}
+        </div>
       </div>
 
       {/* Navigation arrows */}
