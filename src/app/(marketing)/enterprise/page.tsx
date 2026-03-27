@@ -334,7 +334,7 @@ html.wf-design-mode .num-slider_item{
             </div>
             <div className="smart-tabs-right">
               <div className="smart-tabs-element">
-                <div className="div-block-111"><img src="/webflow-images/placeholder.svg" loading="lazy" alt="" className="image-14" /></div>
+                <div className="div-block-111"></div>
                 <div className="div-block-112"></div>
               </div>
             </div>
