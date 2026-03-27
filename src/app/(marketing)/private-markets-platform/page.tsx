@@ -3,6 +3,8 @@ import { client } from '@/lib/sanity/client'
 import { private_markets_platformQuery } from '@/lib/sanity/queries/private-markets-platform'
 import { buildMetadata } from '@/lib/metadata'
 import { LottiePlayer } from '@/components/ui/LottiePlayer'
+import { TestimonialSlider } from '@/components/ui/TestimonialSlider'
+import { PrivateMarketsUseCases } from '@/components/sections/PrivateMarketsUseCases'
 
 interface PrivateMarketsPlatformPage {
   heroHeadline: string
@@ -18,11 +20,37 @@ interface PrivateMarketsPlatformPage {
   benefitsCtaUrl: string
   benefits: { title: string; description: string }[]
   useCasesEyebrow: string
+  useCases: {
+    number: string
+    title: string
+    description: string
+    whyBrightwave: string
+    image?: {
+      asset?: {
+        _id: string
+        url: string
+        metadata?: {
+          lqip?: string
+          dimensions?: { width: number; height: number }
+        }
+      }
+    }
+  }[]
   superchargeCtaLabel: string
   superchargeCtaUrl: string
   superchargeEyebrow: string
   superchargeBody: string
   testimonialsLabel: string
+  testimonials: {
+    _id: string
+    quote: string
+    authorName?: string
+    authorTitle?: string
+    company?: string
+    attribution?: string
+    authorImage?: { asset?: { _id: string; url: string } }
+    companyLogo?: { asset?: { _id: string; url: string } }
+  }[]
   faqsTitle: string
   faqs: { question: string; answer: string }[]
   footerCtaDescription: string
@@ -73,7 +101,7 @@ export default async function Page() {
                   <div id="w-node-_42f5fb7b-9ec6-e09c-4293-6df6e413aab5-60f5ff71" className="w-layout-cell pm-hero-heading-cell">
                     <h1 className="c-title-2">{doc.heroHeadline}</h1>
                   </div>
-                  <div id="w-node-_42f5fb7b-9ec6-e09c-4293-6df6e413aab4-60f5ff71" className="w-layout-cell pm-hero-image-cell"><img src="/webflow-images/mock.png" loading="lazy" width="Auto" height="Auto" alt="" srcSet="/webflow-images/mock-p-500.png 500w, images/mock-p-800.png 800w, images/mock-p-1080.png 1080w, images/mock-p-1600.png 1600w, images/mock-p-2000.png 2000w, images/mock.png 2427w" sizes="(max-width: 2427px) 100vw, 2427px" className="image-2" /></div>
+                  <div id="w-node-_42f5fb7b-9ec6-e09c-4293-6df6e413aab4-60f5ff71" className="w-layout-cell pm-hero-image-cell"><img src="/webflow-images/mock.png" loading="lazy" width="Auto" height="Auto" alt="Brightwave private markets platform" srcSet="/webflow-images/mock-p-500.png 500w, /webflow-images/mock-p-800.png 800w, /webflow-images/mock-p-1080.png 1080w, /webflow-images/mock-p-1600.png 1600w, /webflow-images/mock-p-2000.png 2000w, /webflow-images/mock.png 2427w" sizes="(max-width: 2427px) 100vw, 2427px" className="image-2" /></div>
                   <div className="w-layout-cell cell-9">
                     <div className="text-cta">
                       <div className="_428">
@@ -184,147 +212,10 @@ export default async function Page() {
                 </div>
               </div>
             </section>
+            <PrivateMarketsUseCases eyebrow={doc.useCasesEyebrow} useCases={doc.useCases ?? []} />
             <section className="c-section cc-no-overflow">
               <div className="c-container">
                 <div className="v-100">
-                  <div slider-accordion-wrap="" className="grid cc-top-40">
-                    <div id="w-node-a71ae0db-a4d1-27dd-8e6d-2da61e1dfa03-60f5ff71" className="case-study-slider_right">
-                      <div className="case-study-slider w-dyn-list">
-                        <div role="list" className="w-dyn-items">
-                          <div slider-accordion="" accordion="" role="listitem" className="use-case-slider_left_item w-dyn-item">
-                            <div className="ui-slider_left_item-flex">
-                              <div className="h-flex">
-                                <div slider-text="" use-case-num="" className="c-text-link">0</div>
-                                <div slider-text="" use-case-num="" className="c-text-link w-dyn-bind-empty"></div>
-                                <div slider-text="" use-case-num="" className="c-text-link">.</div>
-                              </div>
-                              <div slider-text="" className="c-text-link w-dyn-bind-empty"></div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="w-dyn-empty">
-                          <div>No items found.</div>
-                        </div>
-                      </div>
-                      <div className="eyebrow cc-aboslute">
-                        <div className="block"></div>
-                        <div className="c-title-5">{doc.useCasesEyebrow}</div>
-                      </div>
-                    </div>
-                    <div feature-slider-wrap="" id="w-node-dbccb191-09eb-2511-a637-658b370be829-60f5ff71" className="slider-ui_right">
-                      <div className="slider-ui_right_numbers cc-tablet">
-                        <div className="num-slider w-dyn-list">
-                          <div role="list" className="num-slider_list w-dyn-items">
-                            <div role="listitem" className="num-slider_item w-dyn-item">
-                              <div num-slider="" className="c-text-5">X</div>
-                            </div>
-                          </div>
-                          <div className="w-dyn-empty">
-                            <div>No items found.</div>
-                          </div>
-                        </div>
-                        <div className="num-slider_flex_right">
-                          <div className="c-text-5">/</div>
-                          <div num-slider-total="" className="c-text-5">0X</div>
-                        </div>
-                      </div>
-                      <div className="slider-use-case_right_wrap">
-                        <div className="slider-ui_right_coll w-dyn-list">
-                          <div feature-slider="" role="list" className="slider-use-case_right_list w-dyn-items">
-                            <div role="listitem" className="slider-use-case_right_item w-dyn-item">
-                              <div className="show-tablet">
-                                <div slider-accordion="" className="use-case-slider_left_item cc-active">
-                                  <div className="ui-slider_left_item-flex">
-                                    <div className="h-flex">
-                                      <div slider-text="" use-case-num="" className="c-text-link">0</div>
-                                      <div slider-text="" use-case-num="" className="c-text-link w-dyn-bind-empty"></div>
-                                      <div slider-text="" use-case-num="" className="c-text-link">.</div>
-                                    </div>
-                                    <div slider-text="" className="c-text-link w-dyn-bind-empty"></div>
-                                  </div>
-                                </div>
-                              </div><img src="/webflow-images/illustration_04.svg" loading="lazy" width="70" alt="" className="slider-use-case_right_img w-dyn-bind-empty" />
-                              <div className="slider-use-case_flex">
-                                <div className="c-text-3 w-dyn-bind-empty w-richtext"></div>
-                                <div className="c-line"></div>
-                                <div className="v-20">
-                                  <div className="c-text-link w-dyn-bind-empty"></div>
-                                  <div className="c-text-4 w-dyn-bind-empty w-richtext"></div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="w-dyn-empty">
-                            <div>No items found.</div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="slider_arrows cc-use-cases">
-                        <div id="arrow-left" className="slider_arrow cc-prev">
-                          <div className="svg cc-nav-arrow-bg w-embed"><svg width="54" height="51" viewBox="0 0 54 51" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path fillRule="evenodd" clipRule="evenodd" d="M54 5.59996L48.75 -3.8147e-05H6L0.375 5.99996L0 5.59996V45.4L0.375 45L6 51H48.75L54 45.4V5.59996Z" fill="var(--lightmode--surface-1)"></path>
-                            </svg></div>
-                          <div className="arrow-wrap cc-2">
-                            <div className="nav_arrow-svg cc-slider w-embed"><svg width="28" height="27" viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <g clipPath="url(#clip0_575_3505)">
-                                  <path d="M13.1074 24.8372L1.73026 13.46L13.0351 2.15519" stroke="var(--lightmode--onsurface)" strokeWidth="1.4453" strokeLinejoin="bevel"></path>
-                                  <path d="M1.73274 13.4614L26.6312 13.5408" stroke="var(--lightmode--onsurface)" strokeWidth="2" strokeLinejoin="bevel"></path>
-                                </g>
-                                <defs>
-                                  <clipPath id="clip0_575_3505">
-                                    <rect width="19.1528" height="19.031" fill="white" transform="translate(14.043 27) rotate(-135)"></rect>
-                                  </clipPath>
-                                </defs>
-                              </svg></div>
-                          </div>
-                          <div className="arrow-wrap">
-                            <div className="nav_arrow-svg cc-slider w-embed"><svg width="28" height="27" viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <g clipPath="url(#clip0_575_3505)">
-                                  <path d="M13.1074 24.8372L1.73026 13.46L13.0351 2.15519" stroke="var(--lightmode--onsurface)" strokeWidth="1.4453" strokeLinejoin="bevel"></path>
-                                  <path d="M1.73274 13.4614L26.6312 13.5408" stroke="var(--lightmode--onsurface)" strokeWidth="2" strokeLinejoin="bevel"></path>
-                                </g>
-                                <defs>
-                                  <clipPath id="clip0_575_3505">
-                                    <rect width="19.1528" height="19.031" fill="white" transform="translate(14.043 27) rotate(-135)"></rect>
-                                  </clipPath>
-                                </defs>
-                              </svg></div>
-                          </div>
-                        </div>
-                        <div id="arrow-right" className="slider_arrow">
-                          <div className="svg cc-nav-arrow-bg w-embed"><svg width="54" height="51" viewBox="0 0 54 51" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path fillRule="evenodd" clipRule="evenodd" d="M54 5.59996L48.75 -3.8147e-05H6L0.375 5.99996L0 5.59996V45.4L0.375 45L6 51H48.75L54 45.4V5.59996Z" fill="var(--lightmode--surface-1)"></path>
-                            </svg></div>
-                          <div className="arrow-wrap cc-2">
-                            <div className="nav_arrow-svg cc-slider w-embed"><svg width="28" height="27" viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <g clipPath="url(#clip0_782_8055)">
-                                  <path d="M14.8926 24.8372L26.2697 13.46L14.9649 2.15519" stroke="var(--lightmode--onsurface)" strokeWidth="1.4453" strokeLinejoin="bevel"></path>
-                                  <path d="M26.2663 13.4614L1.36784 13.5408" stroke="var(--lightmode--onsurface)" strokeWidth="2" strokeLinejoin="bevel"></path>
-                                </g>
-                                <defs>
-                                  <clipPath id="clip0_782_8055">
-                                    <rect width="19.1528" height="19.031" fill="white" transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 13.957 27)"></rect>
-                                  </clipPath>
-                                </defs>
-                              </svg></div>
-                          </div>
-                          <div className="arrow-wrap">
-                            <div className="nav_arrow-svg cc-slider w-embed"><svg width="28" height="27" viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <g clipPath="url(#clip0_782_8055)">
-                                  <path d="M14.8926 24.8372L26.2697 13.46L14.9649 2.15519" stroke="var(--lightmode--onsurface)" strokeWidth="1.4453" strokeLinejoin="bevel"></path>
-                                  <path d="M26.2663 13.4614L1.36784 13.5408" stroke="var(--lightmode--onsurface)" strokeWidth="2" strokeLinejoin="bevel"></path>
-                                </g>
-                                <defs>
-                                  <clipPath id="clip0_782_8055">
-                                    <rect width="19.1528" height="19.031" fill="white" transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 13.957 27)"></rect>
-                                  </clipPath>
-                                </defs>
-                              </svg></div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                   <div className="grid">
                     <div id="w-node-abe3aba9-3fc6-a67d-759c-b9e94bd06759-60f5ff71">
                       <div inject-tablet="supercharge" className="cta-182">
@@ -367,91 +258,15 @@ export default async function Page() {
               <div className="c-container">
                 <div className="slider-wrap">
                   <LottiePlayer src="/webflow-documents/Testimonial-BG-25.json" className="slider_lottie" loop={true} autoplay={true} />
-                  <div className="slider w-dyn-list">
-                    <div slider="" role="list" className="slider_list w-dyn-items">
-                      <div role="listitem" className="slider_cms-item w-dyn-item">
-                        <div className="slider_item">
-                          <div slider-a-1="" className="slider_flex">
-                            <div slider-a-3="" className="eyebrow-flex">
-                              <div className="block cc-primary"></div>
-                              <div className="c-title-5 cc-primary w-dyn-bind-empty"></div>
-                            </div>
-                            <div className="c-title-2 w-dyn-bind-empty"></div>
-                            <div slider-a-2="" className="c-text-3 w-dyn-bind-empty"></div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="w-dyn-empty">
-                      <div>No items found.</div>
-                    </div>
-                  </div>
-                  <div className="slider_arrows">
-                    <div id="arrow-left" className="slider_arrow cc-prev">
-                      <div className="svg cc-nav-arrow-bg w-embed"><svg width="54" height="51" viewBox="0 0 54 51" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path fillRule="evenodd" clipRule="evenodd" d="M54 5.59996L48.75 -3.8147e-05H6L0.375 5.99996L0 5.59996V45.4L0.375 45L6 51H48.75L54 45.4V5.59996Z" fill="white"></path>
-                        </svg></div>
-                      <div className="arrow-wrap cc-2">
-                        <div className="nav_arrow-svg cc-slider w-embed"><svg width="28" height="27" viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <g clipPath="url(#clip0_575_3505)">
-                              <path d="M13.1074 24.8372L1.73026 13.46L13.0351 2.15519" stroke="#0F0F0F" strokeWidth="1.4453" strokeLinejoin="bevel"></path>
-                              <path d="M1.73274 13.4614L26.6312 13.5408" stroke="#0F0F0F" strokeWidth="2" strokeLinejoin="bevel"></path>
-                            </g>
-                            <defs>
-                              <clipPath id="clip0_575_3505">
-                                <rect width="19.1528" height="19.031" fill="white" transform="translate(14.043 27) rotate(-135)"></rect>
-                              </clipPath>
-                            </defs>
-                          </svg></div>
-                      </div>
-                      <div className="arrow-wrap">
-                        <div className="nav_arrow-svg cc-slider w-embed"><svg width="28" height="27" viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <g clipPath="url(#clip0_575_3505)">
-                              <path d="M13.1074 24.8372L1.73026 13.46L13.0351 2.15519" stroke="#0F0F0F" strokeWidth="1.4453" strokeLinejoin="bevel"></path>
-                              <path d="M1.73274 13.4614L26.6312 13.5408" stroke="#0F0F0F" strokeWidth="2" strokeLinejoin="bevel"></path>
-                            </g>
-                            <defs>
-                              <clipPath id="clip0_575_3505">
-                                <rect width="19.1528" height="19.031" fill="white" transform="translate(14.043 27) rotate(-135)"></rect>
-                              </clipPath>
-                            </defs>
-                          </svg></div>
-                      </div>
-                    </div>
-                    <div id="arrow-right" className="slider_arrow">
-                      <div className="svg cc-nav-arrow-bg w-embed"><svg width="54" height="51" viewBox="0 0 54 51" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path fillRule="evenodd" clipRule="evenodd" d="M54 5.59996L48.75 -3.8147e-05H6L0.375 5.99996L0 5.59996V45.4L0.375 45L6 51H48.75L54 45.4V5.59996Z" fill="white"></path>
-                        </svg></div>
-                      <div className="arrow-wrap cc-2">
-                        <div className="nav_arrow-svg cc-slider w-embed"><svg width="28" height="27" viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <g clipPath="url(#clip0_782_8055)">
-                              <path d="M14.8926 24.8372L26.2697 13.46L14.9649 2.15519" stroke="#0F0F0F" strokeWidth="1.4453" strokeLinejoin="bevel"></path>
-                              <path d="M26.2663 13.4614L1.36784 13.5408" stroke="#0F0F0F" strokeWidth="2" strokeLinejoin="bevel"></path>
-                            </g>
-                            <defs>
-                              <clipPath id="clip0_782_8055">
-                                <rect width="19.1528" height="19.031" fill="white" transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 13.957 27)"></rect>
-                              </clipPath>
-                            </defs>
-                          </svg></div>
-                      </div>
-                      <div className="arrow-wrap">
-                        <div className="nav_arrow-svg cc-slider w-embed"><svg width="28" height="27" viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <g clipPath="url(#clip0_782_8055)">
-                              <path d="M14.8926 24.8372L26.2697 13.46L14.9649 2.15519" stroke="#0F0F0F" strokeWidth="1.4453" strokeLinejoin="bevel"></path>
-                              <path d="M26.2663 13.4614L1.36784 13.5408" stroke="#0F0F0F" strokeWidth="2" strokeLinejoin="bevel"></path>
-                            </g>
-                            <defs>
-                              <clipPath id="clip0_782_8055">
-                                <rect width="19.1528" height="19.031" fill="white" transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 13.957 27)"></rect>
-                              </clipPath>
-                            </defs>
-                          </svg></div>
-                      </div>
-                    </div>
-                  </div>
+                  <TestimonialSlider
+                    label={doc.testimonialsLabel}
+                    testimonials={(doc.testimonials ?? []).map(t => ({
+                      eyebrow: t.authorTitle && t.company ? `${t.authorTitle}, ${t.company}` : t.attribution || undefined,
+                      quote: t.quote,
+                    }))}
+                  />
                   <div className="slider_test">
-                    <div className="c-title-5"><span className="hide-tablet">{doc.testimonialsLabel.split(' ')[0]} </span>{doc.testimonialsLabel.split(' ').slice(1).join(' ')}</div>
+                    <div className="c-title-5"><span className="hide-tablet">{doc.testimonialsLabel?.split(' ')[0]} </span>{doc.testimonialsLabel?.split(' ').slice(1).join(' ')}</div>
                   </div><img src="/webflow-images/testimonial.svg" loading="lazy" width="294.5" alt="" className="slider_img" />
                 </div>
               </div>
@@ -460,31 +275,33 @@ export default async function Page() {
               <div className="c-container">
                 <div className="v-40">
                   <h2 className="c-title-2">{doc.faqsTitle}</h2>
-                  <div className="grid cc-no-gap">
-                    <div id="w-node-a9e72dae-69b5-76b1-679b-ded80e5892ad-60f5ff71" className="c-line"></div>
+                  <div>
                     {(doc.faqs ?? []).map((faq, i) => (
-                      <div key={i} id={`w-node-faq-${i}`}>
-                        <div accordion="" id={`w-node-accordion-${i}`} className="accordion">
-                          <div className="accordion_toggle">
-                            <div className="c-text-2 cc-balance">{faq.question}</div>
-                            <div chevron-x="" className="c-svg-2 cc-20 w-embed"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 5V19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
-                                <path d="M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
-                              </svg></div><input accordion-checkbox="" type="checkbox" className="accordion_checkbox" />
-                          </div>
-                          <div accordion="element" className="accordion_dropdown">
-                            <div mask-height="element">
-                              <div className="accordion_content">
-                                <div className="c-text-4 w-richtext">
-                                  <p>{faq.answer}</p>
+                      <div key={i}>
+                        <div className="c-line"></div>
+                        <div className="accordion-wrap">
+                          <div accordion="" className="accordion">
+                            <div className="accordion_toggle">
+                              <div className="c-text-2 cc-balance">{faq.question}</div>
+                              <div chevron-x="" className="c-svg-2 cc-20 w-embed"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M12 5V19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
+                                  <path d="M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
+                                </svg></div><input accordion-checkbox="" type="checkbox" className="accordion_checkbox" />
+                            </div>
+                            <div accordion="element" className="accordion_dropdown">
+                              <div mask-height="element">
+                                <div className="accordion_content">
+                                  <div className="c-text-4 w-richtext">
+                                    <p>{faq.answer}</p>
+                                  </div>
                                 </div>
                               </div>
                             </div>
                           </div>
                         </div>
-                        <div className="c-line"></div>
                       </div>
                     ))}
+                    <div className="c-line"></div>
                   </div>
                 </div>
               </div>
