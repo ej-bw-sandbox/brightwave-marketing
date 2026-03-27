@@ -3,6 +3,7 @@ import { solutionQuery, solutionSlugsQuery } from '@/lib/sanity/queries/solution
 import { buildMetadata } from '@/lib/metadata'
 import { notFound } from 'next/navigation'
 import { PortableText } from '@portabletext/react'
+import { ptComponents } from '@/lib/sanity/portable-text-components'
 import { CtaButton } from '@/components/sections/CtaButton'
 import { StepCtaSection } from '@/components/sections/StepCtaSection'
 import Link from 'next/link'
@@ -32,7 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 function renderTextField(value: any) {
   if (!value) return null
   if (typeof value === 'string') return <p className="c-text-3">{value}</p>
-  if (Array.isArray(value)) return <div className="prose-brand"><PortableText value={value} /></div>
+  if (Array.isArray(value)) return <div className="prose-brand"><PortableText components={ptComponents} value={value} /></div>
   return null
 }
 
@@ -86,7 +87,7 @@ export default async function SolutionsDetailPage({ params }: Props) {
               {typeof doc.body === 'string' ? (
                 <p className="c-text-3">{doc.body}</p>
               ) : Array.isArray(doc.body) ? (
-                <PortableText value={doc.body} />
+                <PortableText components={ptComponents} value={doc.body} />
               ) : null}
             </div>
           </div>
@@ -157,7 +158,7 @@ export default async function SolutionsDetailPage({ params }: Props) {
               )}
             </div>
             <div className="buttons">
-              <CtaButton label="Schedule a Demo" href="/contact" variant="primary" />
+              <CtaButton label="Schedule a Demo" href="/enterprise" variant="primary" />
               <CtaButton label="Start Free Trial" href="https://app.brightwave.io/register" variant="outline" />
             </div>
           </div>

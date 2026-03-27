@@ -36,53 +36,67 @@ export async function ContentPostIndex({
   return (
     <>
       {/* Hero */}
-      <section className="c-section cc-hero">
+      <section className="c-section cc-template">
         <div className="c-container">
-          <div className="flex justify-between items-end gap-10 border-b border-bw-gray-200 pb-10">
-            <h1 className="c-title-1 text-bw-gray-800">{headline}</h1>
+          <div className="bp40-underline">
+            <h1 className="c-title-1">{headline}</h1>
           </div>
-          <p className="c-text-3 text-bw-gray-500 mt-10">{subheadline}</p>
         </div>
       </section>
 
-      <section className="pb-24 max-w-site mx-auto px-5">
-        {featured && (
-          <div className="mb-12">
-            <ContentPostCard
-              title={featured.title}
-              slug={featured.slug?.current || ''}
-              excerpt={featured.excerpt}
-              coverImage={featured.coverImage}
-              publishedAt={featured.publishedAt}
-              author={featured.author}
-              basePath={basePath}
-              variant="featured"
-            />
-          </div>
-        )}
+      <section className="c-section">
+        <div className="c-container">
+          {featured && (
+            <div className="w-dyn-list">
+              <div role="list" className="w-dyn-items">
+                <ContentPostCard
+                  title={featured.title}
+                  slug={featured.slug?.current || ''}
+                  excerpt={featured.excerpt}
+                  coverImage={featured.coverImage}
+                  publishedAt={featured.publishedAt}
+                  author={featured.author}
+                  basePath={basePath}
+                  variant="featured"
+                />
+              </div>
+            </div>
+          )}
 
-        {remaining.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {remaining.map((post: any) => (
-              <ContentPostCard
-                key={post.slug?.current}
-                title={post.title}
-                slug={post.slug?.current || ''}
-                excerpt={post.excerpt}
-                coverImage={post.coverImage}
-                publishedAt={post.publishedAt}
-                author={post.author}
-                basePath={basePath}
-              />
-            ))}
-          </div>
-        )}
+          {remaining.length > 0 && (
+            <div className="collection">
+              <div className="collection_list-wrap">
+                <div className="collection_list">
+                  <div role="list" className="grid cc-collection w-dyn-items">
+                    {remaining.map((post: any) => (
+                      <div
+                        key={post.slug?.current}
+                        role="listitem"
+                        className="collection_card w-dyn-item"
+                      >
+                        <ContentPostCard
+                          title={post.title}
+                          slug={post.slug?.current || ''}
+                          excerpt={post.excerpt}
+                          coverImage={post.coverImage}
+                          publishedAt={post.publishedAt}
+                          author={post.author}
+                          basePath={basePath}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
-        {posts.length === 0 && (
-          <p className="text-bw-gray-500 text-center py-12">
-            {emptyMessage || 'No posts found.'}
-          </p>
-        )}
+          {posts.length === 0 && (
+            <div className="w-dyn-empty">
+              <div>{emptyMessage || 'No items found.'}</div>
+            </div>
+          )}
+        </div>
       </section>
     </>
   )

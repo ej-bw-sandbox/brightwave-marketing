@@ -18,19 +18,11 @@ export const structure: StructureResolver = (S) =>
                 .title('About')
                 .child(S.document().schemaType('aboutPage').documentId('aboutPage')),
               S.listItem()
-                .title('Pricing')
-                .child(S.document().schemaType('pricingPage').documentId('pricingPage')),
-              S.listItem()
                 .title('Enterprise')
                 .child(
                   S.document()
                     .schemaType('enterpriseSalesPage')
                     .documentId('enterpriseSalesPage')
-                ),
-              S.listItem()
-                .title('Security')
-                .child(
-                  S.document().schemaType('securityPage').documentId('securityPage')
                 ),
               S.listItem()
                 .title('Support')
@@ -67,37 +59,9 @@ export const structure: StructureResolver = (S) =>
                     .documentId('enterpriseSecurityCompliancePage')
                 ),
               S.listItem()
-                .title('Partner Terms')
-                .child(
-                  S.document()
-                    .schemaType('partnerTermsPage')
-                    .documentId('partnerTermsPage')
-                ),
-              S.listItem()
                 .title('Referral')
                 .child(
                   S.document().schemaType('referralPage').documentId('referralPage')
-                ),
-              S.listItem()
-                .title('Thank You (Contact)')
-                .child(
-                  S.document()
-                    .schemaType('thankYouContactPage')
-                    .documentId('thankYouContactPage')
-                ),
-              S.listItem()
-                .title('Engineering')
-                .child(
-                  S.document()
-                    .schemaType('engineeringPage')
-                    .documentId('engineeringPage')
-                ),
-              S.listItem()
-                .title('Engineering: Citations')
-                .child(
-                  S.document()
-                    .schemaType('engineeringCitationsPage')
-                    .documentId('engineeringCitationsPage')
                 ),
             ])
         ),
@@ -127,6 +91,19 @@ export const structure: StructureResolver = (S) =>
               S.documentTypeListItem('icpPage').title('Roles'),
               S.documentTypeListItem('firmType').title('Industries'),
               S.documentTypeListItem('useCase').title('Use Cases'),
+            ])
+        ),
+
+      S.divider(),
+
+      // ── Social Proof ──
+      S.listItem()
+        .title('Social Proof')
+        .child(
+          S.list()
+            .title('Social Proof')
+            .items([
+              S.documentTypeListItem('testimonial').title('Testimonials'),
             ])
         ),
 
@@ -211,9 +188,40 @@ export const structure: StructureResolver = (S) =>
               S.documentTypeListItem('category').title('Categories'),
               S.documentTypeListItem('comparisonCategory').title('Comparison Categories'),
               S.documentTypeListItem('caseStudyCategory').title('Case Study Categories'),
-              S.documentTypeListItem('legalPage').title('Legal Pages'),
-              S.documentTypeListItem('landingPage').title('Landing Pages'),
-              S.documentTypeListItem('abmPage').title('ABM Pages'),
+              S.listItem()
+                .title('Legal Pages')
+                .child(
+                  S.list()
+                    .title('Legal Pages')
+                    .items([
+                      S.documentTypeListItem('legalPage').title('All Legal Pages'),
+                      S.listItem()
+                        .title('Partner Terms')
+                        .child(
+                          S.document()
+                            .schemaType('partnerTermsPage')
+                            .documentId('partnerTermsPage')
+                        ),
+                    ])
+                ),
+              S.listItem()
+                .title('Landing Pages')
+                .child(
+                  S.list()
+                    .title('Landing Pages')
+                    .items([
+                      S.documentTypeListItem('abmPage').title('ABM Pages'),
+                    ])
+                ),
+              S.listItem()
+                .title('Thank You')
+                .child(
+                  S.list()
+                    .title('Thank You Pages')
+                    .items([
+                      S.documentTypeListItem('thankYouPage').title('All Thank You Pages'),
+                    ])
+                ),
             ])
         ),
     ])

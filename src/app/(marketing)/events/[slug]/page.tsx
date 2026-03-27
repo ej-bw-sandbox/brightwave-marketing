@@ -3,6 +3,7 @@ import { eventQuery, eventSlugsQuery } from '@/lib/sanity/queries/events'
 import { buildMetadata } from '@/lib/metadata'
 import { notFound } from 'next/navigation'
 import { PortableText } from '@portabletext/react'
+import { ptComponents } from '@/lib/sanity/portable-text-components'
 import type { Metadata } from 'next'
 
 interface Props {
@@ -51,7 +52,7 @@ export default async function EventsDetailPage({ params }: Props) {
         <section className="c-section">
           <div className="c-container">
             <div className="prose-brand">
-              <PortableText value={doc.body} />
+              <PortableText components={ptComponents} value={doc.body} />
             </div>
           </div>
         </section>

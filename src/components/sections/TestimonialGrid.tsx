@@ -1,15 +1,30 @@
 import Image from 'next/image'
 import { urlFor } from '@/lib/sanity/image'
+import { FadeInOnScroll } from '@/components/ui/FadeInOnScroll'
 
 interface Testimonial {
+  _id?: string
   quote: string
-  attribution?: string
   authorName?: string
+  authorTitle?: string
+  company?: string
+  /** Legacy combined attribution string, e.g. "Portfolio Manager, $4B Hedge Fund" */
+  attribution?: string
   authorImage?: any
   companyLogo?: any
 }
 
-function TestimonialCard({ quote, attribution, authorName, authorImage, companyLogo }: Testimonial) {
+/** Build a display string from the structured fields, falling back to the legacy attribution. */
+function resolveAttribution(t: Testimonial): string | undefined {
+  if (t.authorTitle && t.company) return `${t.authorTitle}, ${t.company}`
+  if (t.authorTitle) return t.authorTitle
+  if (t.company) return t.company
+  return t.attribution
+}
+
+function TestimonialCard(t: Testimonial) {
+  const displayAttribution = resolveAttribution(t)
+
   return (
     <div className="rounded-lg border border-bw-gray-200 bg-white p-6 flex flex-col">
       <div className="mb-4">
@@ -22,24 +37,24 @@ function TestimonialCard({ quote, attribution, authorName, authorImage, companyL
         </svg>
       </div>
       <blockquote className="flex-1 text-bw-gray-600 leading-relaxed text-sm">
-        {quote}
+        {t.quote}
       </blockquote>
       <div className="mt-6 flex items-center gap-3 border-t border-bw-gray-200 pt-4">
-        {authorImage?.asset && (
+        {t.authorImage?.asset && (
           <Image
-            src={urlFor(authorImage).width(40).height(40).url()}
-            alt={authorName || ''}
+            src={urlFor(t.authorImage).width(40).height(40).url()}
+            alt={t.authorName || ''}
             width={40}
             height={40}
             className="rounded-full"
           />
         )}
         <div className="flex-1 min-w-0">
-          {authorName && (
-            <div className="text-sm font-medium text-bw-gray-800 truncate">{authorName}</div>
+          {t.authorName && (
+            <div className="text-sm font-medium text-bw-gray-800 truncate">{t.authorName}</div>
           )}
-          {attribution && (
-            <div className="text-xs text-bw-gray-500 truncate">{attribution}</div>
+          {displayAttribution && (
+            <div className="text-xs text-bw-gray-500 truncate">{displayAttribution}</div>
           )}
         </div>
       </div>
@@ -81,7 +96,9 @@ export function TestimonialGrid({
           }`}
         >
           {(testimonials ?? []).map((t, i) => (
-            <TestimonialCard key={i} {...t} />
+            <FadeInOnScroll key={t._id ?? i}>
+              <TestimonialCard {...t} />
+            </FadeInOnScroll>
           ))}
         </div>
       </div>
@@ -89,8 +106,18 @@ export function TestimonialGrid({
   )
 }
 
-export function TestimonialInline({ quote, attribution }: { quote: string; attribution?: string }) {
+export function TestimonialInline({ quote, attribution, authorTitle, company }: {
+  quote: string
+  attribution?: string
+  authorTitle?: string
+  company?: string
+}) {
   if (!quote) return null
+
+  const displayAttribution = (authorTitle && company)
+    ? `${authorTitle}, ${company}`
+    : authorTitle || company || attribution
+
   return (
     <div className="my-12 mx-auto max-w-3xl text-center">
       <svg
@@ -103,8 +130,8 @@ export function TestimonialInline({ quote, attribution }: { quote: string; attri
       <blockquote className="text-xl text-bw-gray-600 italic leading-relaxed">
         &ldquo;{quote}&rdquo;
       </blockquote>
-      {attribution && (
-        <p className="mt-4 text-sm font-medium text-bw-gray-500">&mdash; {attribution}</p>
+      {displayAttribution && (
+        <p className="mt-4 text-sm font-medium text-bw-gray-500">&mdash; {displayAttribution}</p>
       )}
     </div>
   )

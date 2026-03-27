@@ -34,7 +34,7 @@ export default async function Page() {
             {featured ? (
               <div role="list" className="w-dyn-items">
                 <div role="listitem" className="card_item w-dyn-item">
-                  <Link data-w-id="50042883-03e0-1a26-5ffd-7d11d5f0e3ba" href={`/blog/${featured.slug?.current || ''}`} className="grid cc-featured w-inline-block">
+                  <Link href={`/blog/${featured.slug?.current || ''}`} className="grid cc-featured w-inline-block">
                     <div id="w-node-_96b7d29b-ca62-a087-9a37-d2ef844438cf-4c4a8e00" className="inject-landscape"></div>
                     <div id="w-node-_8d9fda5a-b3e5-2f57-492c-719e340eb766-4c4a8e00" className="aspect-16-9 u-overflow-hidden">
                       {featured.coverImage?.asset?.url ? (

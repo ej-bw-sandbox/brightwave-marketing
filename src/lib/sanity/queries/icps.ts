@@ -2,7 +2,8 @@ import { client } from '../client'
 
 export const icpIndexQuery = `
   *[_type == "icpPage"] | order(title asc) {
-    title, slug, h1, heroTagline
+    _id, title, slug, h1, heroTagline, excerpt, product,
+    heroImage{ asset->{ _id, url, metadata { lqip, dimensions } } }
   }
 `
 

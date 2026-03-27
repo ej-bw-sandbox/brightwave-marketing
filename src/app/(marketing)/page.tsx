@@ -3,6 +3,8 @@ import { client } from '@/lib/sanity/client'
 import { homepageQuery } from '@/lib/sanity/queries/homepage'
 import { buildMetadata } from '@/lib/metadata'
 import { LottiePlayer } from '@/components/ui/LottiePlayer'
+import { LogoMarquee } from '@/components/ui/LogoMarquee'
+import { TestimonialSlider } from '@/components/ui/TestimonialSlider'
 import HeroPrompt from '@/components/sections/HeroPrompt'
 import KeyFeatures from '@/components/sections/KeyFeatures'
 import { LatestReleaseNotes, LatestBlogPosts } from '@/components/sections/LatestPosts'
@@ -99,7 +101,6 @@ export default async function HomePage() {
               </div>
             </div>
           </div>
-          <HeroPrompt />
           <div lottie-bg="" className="lottie-reverse">
             <div className="learning-lottie">
               <div lottie-bg="" className="lottie-crop">
@@ -108,6 +109,7 @@ export default async function HomePage() {
               </div>
             </div>
           </div>
+          <HeroPrompt />
 
           {/* ========== COMPARISON STATS ========== */}
           {comparisonSection && (
@@ -150,13 +152,30 @@ export default async function HomePage() {
       </section>
 
       {/* ========== SOCIAL PROOF LOGOS ========== */}
-      <section className="c-section">
+      <section className="c-section cc-logos">
         <div className="c-container">
           <div className="grid">
             {doc.socialProofHeadline && (
               <div id="w-node-_9b9ddfcb-6d2a-87a1-d17c-e9f678accebf-f86f60fa" className="c-title-5 u-balance">{doc.socialProofHeadline}</div>
             )}
-            <div id="w-node-_14d87916-2524-3389-bb0c-e4ab4b8cf925-f86f60fa" className="logos"><img src="/webflow-images/Frame-1321316806.avif" loading="eager" width={191} alt="fortune" className="logo_item" /><img src="/webflow-images/Frame-1321316797.avif" loading="eager" width={191} alt="WSJ pro" className="logo_item" /><img src="/webflow-images/Frame-1321316805.avif" loading="eager" width={191} alt="Axios" className="logo_item" /><img src="/webflow-images/american-banker.svg" loading="eager" width={191} alt="" className="logo_item" /><img src="/webflow-images/Frame-1321316804.avif" loading="eager" width={191} alt="Fox Business" className="logo_item" /><img src="/webflow-images/latent-space.png" loading="eager" width={191} alt="" className="logo_item" /><img src="/webflow-images/Frame-1321316818.avif" loading="eager" width={191} alt="Cerebral valley" className="logo_item" /><img src="/webflow-images/Frame-1321316819.avif" loading="eager" width={191} alt="" className="logo_item" /><img src="/webflow-images/Frame-1321316820.avif" loading="eager" width={191} alt="" className="logo_item" /><img src="/webflow-images/TIme.avif" loading="eager" width={191} alt="" className="logo_item" /></div>
+            <div id="w-node-_14d87916-2524-3389-bb0c-e4ab4b8cf925-f86f60fa">
+              <LogoMarquee
+                speed={40}
+                pauseOnHover
+                logos={[
+                  { src: '/webflow-images/Frame-1321316806.avif', alt: 'Fortune', width: 191 },
+                  { src: '/webflow-images/Frame-1321316797.avif', alt: 'WSJ Pro', width: 191 },
+                  { src: '/webflow-images/Frame-1321316805.avif', alt: 'Axios', width: 191 },
+                  { src: '/webflow-images/american-banker.svg', alt: 'American Banker', width: 191 },
+                  { src: '/webflow-images/Frame-1321316804.avif', alt: 'Fox Business', width: 191 },
+                  { src: '/webflow-images/latent-space.png', alt: 'Latent Space', width: 191 },
+                  { src: '/webflow-images/Frame-1321316818.avif', alt: 'Cerebral Valley', width: 191 },
+                  { src: '/webflow-images/Frame-1321316819.avif', alt: '', width: 191 },
+                  { src: '/webflow-images/Frame-1321316820.avif', alt: '', width: 191 },
+                  { src: '/webflow-images/TIme.avif', alt: 'Time', width: 191 },
+                ]}
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -209,100 +228,31 @@ export default async function HomePage() {
       )}
 
       {/* ========== TESTIMONIALS ========== */}
-      <section no-fade="" className="c-section">
-        <div className="c-container">
-          <div className="slider-wrap"><img width="294.5" loading="lazy" alt="" src="/webflow-images/testimonial.svg" className="slider_img" />
-            <LottiePlayer src="/webflow-documents/Testimonial-BG-25.json" className="slider_lottie" />
-            <div className="slider w-dyn-list">
-              <div slider="" role="list" className="slider_list w-dyn-items">
-                <div role="listitem" className="slider_cms-item w-dyn-item">
-                  <div className="slider_item">
-                    <div slider-a-1="" className="slider_flex">
-                      <div slider-a-3="" className="eyebrow-flex">
-                        <div className="block cc-primary"></div>
-                        <div className="c-title-5 cc-primary w-dyn-bind-empty"></div>
-                      </div>
-                      <div slider-a-2="" className="c-title-4 cc-white w-dyn-bind-empty"></div>
-                    </div>
-                  </div>
-                </div>
+      {(doc.testimonials ?? []).length > 0 && (
+        <section no-fade="" className="c-section">
+          <div className="c-container">
+            <div className="slider-wrap">
+              <img width="294.5" loading="lazy" alt="" src="/webflow-images/testimonial.svg" className="slider_img" />
+              <LottiePlayer src="/webflow-documents/Testimonial-BG-25.json" className="slider_lottie" />
+              <TestimonialSlider
+                label={doc.testimonialsSectionLabel}
+                testimonials={(doc.testimonials ?? []).map((t: any) => ({
+                  eyebrow: t.authorTitle && t.company
+                    ? `${t.authorTitle}, ${t.company}`
+                    : t.attribution || undefined,
+                  quote: t.quote,
+                  attribution: t.authorName || undefined,
+                }))}
+              />
+              <div className="slider_test">
+                {doc.testimonialsSectionLabel && (
+                  <div className="c-title-5"><span className="hide-tablet">Customer </span>{doc.testimonialsSectionLabel}</div>
+                )}
               </div>
-              <div className="w-dyn-empty">
-                <div>No items found.</div>
-              </div>
-            </div>
-            <div className="slider_arrows">
-              <div id="arrow-left" className="slider_arrow cc-prev">
-                <div className="svg cc-nav-arrow-bg w-embed"><svg width={54} height={51} viewBox="0 0 54 51" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path fillRule="evenodd" clipRule="evenodd" d="M54 5.59996L48.75 -3.8147e-05H6L0.375 5.99996L0 5.59996V45.4L0.375 45L6 51H48.75L54 45.4V5.59996Z" fill="white"></path>
-                  </svg></div>
-                <div className="arrow-wrap cc-2">
-                  <div className="nav_arrow-svg cc-slider w-embed"><svg width={28} height={27} viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <g clipPath="url(#clip0_575_3505)">
-                        <path d="M13.1074 24.8372L1.73026 13.46L13.0351 2.15519" stroke="#0F0F0F" strokeWidth="1.4453" strokeLinejoin="bevel"></path>
-                        <path d="M1.73274 13.4614L26.6312 13.5408" stroke="#0F0F0F" strokeWidth="2" strokeLinejoin="bevel"></path>
-                      </g>
-                      <defs>
-                        <clipPath id="clip0_575_3505">
-                          <rect width="19.1528" height="19.031" fill="white" transform="translate(14.043 27) rotate(-135)"></rect>
-                        </clipPath>
-                      </defs>
-                    </svg></div>
-                </div>
-                <div className="arrow-wrap">
-                  <div className="nav_arrow-svg cc-slider w-embed"><svg width={28} height={27} viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <g clipPath="url(#clip0_575_3505)">
-                        <path d="M13.1074 24.8372L1.73026 13.46L13.0351 2.15519" stroke="#0F0F0F" strokeWidth="1.4453" strokeLinejoin="bevel"></path>
-                        <path d="M1.73274 13.4614L26.6312 13.5408" stroke="#0F0F0F" strokeWidth="2" strokeLinejoin="bevel"></path>
-                      </g>
-                      <defs>
-                        <clipPath id="clip0_575_3505">
-                          <rect width="19.1528" height="19.031" fill="white" transform="translate(14.043 27) rotate(-135)"></rect>
-                        </clipPath>
-                      </defs>
-                    </svg></div>
-                </div>
-              </div>
-              <div id="arrow-right" className="slider_arrow">
-                <div className="svg cc-nav-arrow-bg w-embed"><svg width={54} height={51} viewBox="0 0 54 51" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path fillRule="evenodd" clipRule="evenodd" d="M54 5.59996L48.75 -3.8147e-05H6L0.375 5.99996L0 5.59996V45.4L0.375 45L6 51H48.75L54 45.4V5.59996Z" fill="white"></path>
-                  </svg></div>
-                <div className="arrow-wrap cc-2">
-                  <div className="nav_arrow-svg cc-slider w-embed"><svg width={28} height={27} viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <g clipPath="url(#clip0_782_8055)">
-                        <path d="M14.8926 24.8372L26.2697 13.46L14.9649 2.15519" stroke="#0F0F0F" strokeWidth="1.4453" strokeLinejoin="bevel"></path>
-                        <path d="M26.2663 13.4614L1.36784 13.5408" stroke="#0F0F0F" strokeWidth="2" strokeLinejoin="bevel"></path>
-                      </g>
-                      <defs>
-                        <clipPath id="clip0_782_8055">
-                          <rect width="19.1528" height="19.031" fill="white" transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 13.957 27)"></rect>
-                        </clipPath>
-                      </defs>
-                    </svg></div>
-                </div>
-                <div className="arrow-wrap">
-                  <div className="nav_arrow-svg cc-slider w-embed"><svg width={28} height={27} viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <g clipPath="url(#clip0_782_8055)">
-                        <path d="M14.8926 24.8372L26.2697 13.46L14.9649 2.15519" stroke="#0F0F0F" strokeWidth="1.4453" strokeLinejoin="bevel"></path>
-                        <path d="M26.2663 13.4614L1.36784 13.5408" stroke="#0F0F0F" strokeWidth="2" strokeLinejoin="bevel"></path>
-                      </g>
-                      <defs>
-                        <clipPath id="clip0_782_8055">
-                          <rect width="19.1528" height="19.031" fill="white" transform="matrix(0.707107 -0.707107 -0.707107 -0.707107 13.957 27)"></rect>
-                        </clipPath>
-                      </defs>
-                    </svg></div>
-                </div>
-              </div>
-            </div>
-            <div className="slider_test">
-              {doc.testimonialsSectionLabel && (
-                <div className="c-title-5"><span className="hide-tablet">Customer </span>{doc.testimonialsSectionLabel}</div>
-              )}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* ========== EXPLORE THE PLATFORM ========== */}
       <section className="c-section">

@@ -7,6 +7,19 @@ export const useCase = defineType({
   fields: [
     defineField({ name: 'title', title: 'Use Case Name', type: 'string', validation: (r) => r.required() }),
     defineField({ name: 'slug', title: 'Slug', type: 'slug', options: { source: 'title' }, validation: (r) => r.required() }),
+    defineField({
+      name: 'product',
+      title: 'Product',
+      type: 'string',
+      description: 'Which product this use case is associated with',
+      options: {
+        list: [
+          { title: 'Private Markets', value: 'private-markets' },
+          { title: 'Public Markets', value: 'public-markets' },
+        ],
+        layout: 'dropdown',
+      },
+    }),
     defineField({ name: 'menuLabel', title: 'Menu Label', type: 'string', description: 'Short label for navigation menus (e.g. "CIM Analysis", "Data Room Review")' }),
     defineField({ name: 'eyebrow', title: 'Eyebrow', type: 'string' }),
     defineField({ name: 'h1', title: 'H1', type: 'string' }),

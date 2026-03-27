@@ -1,6 +1,7 @@
 import { client } from '@/lib/sanity/client'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
+import { LottiePlayer } from '@/components/ui/LottiePlayer'
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -359,19 +360,12 @@ function LottieDivider() {
     <section className="c-section cc-abm-lottie-thin">
       <div className="c-container">
         <div>
-          <div lottie-bg="" className="lottie-crop">
-            <div
+          <div className="lottie-crop">
+            <LottiePlayer
+              src="/webflow-documents/Generative-Loop-Final-25.json"
               className="lottie_cropped-desktop"
-              data-w-id="lottie-desktop"
-              data-animation-type="lottie"
-              data-src="/documents/lottie-bg-desktop.json"
-              data-loop={1}
-              data-direction={1}
-              data-autoplay={1}
-              data-is-ix2-target={0}
-              data-renderer="svg"
-              data-default-duration={2}
-              data-duration={0}
+              loop={true}
+              autoplay={true}
             />
           </div>
         </div>

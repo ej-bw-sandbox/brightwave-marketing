@@ -1,12 +1,13 @@
 import Image from 'next/image'
-import Link from 'next/link'
 import { client } from '@/lib/sanity/client'
 import { urlFor } from '@/lib/sanity/image'
 import { comparisonQuery, comparisonSlugsQuery } from '@/lib/sanity/queries/comparisons'
 import { buildMetadata } from '@/lib/metadata'
 import { notFound } from 'next/navigation'
 import { PortableText } from '@portabletext/react'
+import { ptComponents } from '@/lib/sanity/portable-text-components'
 import { CtaButton } from '@/components/sections/CtaButton'
+import { StickyComparisonCta } from '@/components/sections/StickyComparisonCta'
 import { LottiePlayer } from '@/components/ui/LottiePlayer'
 import type { Metadata } from 'next'
 
@@ -38,14 +39,82 @@ export default async function VsDetailPage({ params }: Props) {
   if (!doc) notFound()
 
   const contentBlocks = doc.contentBlocks ?? []
+  const featureHighlights = doc.featureHighlights ?? []
   const useCaseFitItems = doc.useCaseFitItems ?? []
   const tableRows = doc.comparisonTable ?? []
   const faqs = doc.faqs ?? []
-  const statsBlock = doc.statsBlock ?? null
-  const quoteBlock = doc.quoteBlock ?? null
-  const featuredQuote = doc.featuredQuote ?? null
-  const logoWall = doc.logoWall ?? null
-  const secondStatsBlock = doc.secondStatsBlock ?? null
+  const stats = doc.stats ?? []
+  const testimonial = doc.testimonial ?? null
+
+  /** Render a comparison table cell value (checkmark, dash, partial indicator, or custom text) */
+  function renderCellValue(textValue: string | undefined, statusValue: string | boolean | undefined) {
+    if (textValue) {
+      return <div className="c-text-5">{textValue}</div>
+    }
+    if (statusValue === true || statusValue === 'yes' || statusValue === 'superior') {
+      return (
+        <>
+          <div className="c-text-5" style={{ display: 'none' }}></div>
+          <div className="c-text-5" style={{ display: 'none' }}>-</div>
+          <div className="c-comparison-table_item-icon-wrapper">
+            <div className="c-comparison-table_item-icon w-embed">
+              <svg width="14" height="11" viewBox="0 0 14 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4.90937 10.3446L0 5.43521L1.35187 4.08333L4.90937 7.64083L12.5502 0L13.9021 1.35188L4.90937 10.3446Z" fill="currentColor" />
+              </svg>
+            </div>
+          </div>
+        </>
+      )
+    }
+    if (statusValue === 'partial' || statusValue === 'limited') {
+      return (
+        <>
+          <div className="c-text-5" style={{ display: 'none' }}></div>
+          <div className="c-text-5" style={{ display: 'none' }}>-</div>
+          <div className="c-comparison-table_item-icon-wrapper">
+            <div className="c-comparison-table_item-icon cc-partial w-embed">
+              <svg width="14" height="3" viewBox="0 0 14 3" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect y="0.5" width="14" height="2" rx="1" fill="currentColor" opacity="0.5" />
+              </svg>
+            </div>
+          </div>
+        </>
+      )
+    }
+    if (statusValue === false || statusValue === 'no') {
+      return (
+        <>
+          <div className="c-text-5" style={{ display: 'none' }}></div>
+          <div className="c-text-5">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ opacity: 0.4 }}>
+              <path d="M1 1L11 11M11 1L1 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+          </div>
+          <div className="c-comparison-table_item-icon-wrapper" style={{ display: 'none' }}>
+            <div className="c-comparison-table_item-icon w-embed">
+              <svg width="14" height="11" viewBox="0 0 14 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4.90937 10.3446L0 5.43521L1.35187 4.08333L4.90937 7.64083L12.5502 0L13.9021 1.35188L4.90937 10.3446Z" fill="currentColor" />
+              </svg>
+            </div>
+          </div>
+        </>
+      )
+    }
+    // Default: dash
+    return (
+      <>
+        <div className="c-text-5" style={{ display: 'none' }}></div>
+        <div className="c-text-5">-</div>
+        <div className="c-comparison-table_item-icon-wrapper" style={{ display: 'none' }}>
+          <div className="c-comparison-table_item-icon w-embed">
+            <svg width="14" height="11" viewBox="0 0 14 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4.90937 10.3446L0 5.43521L1.35187 4.08333L4.90937 7.64083L12.5502 0L13.9021 1.35188L4.90937 10.3446Z" fill="currentColor" />
+            </svg>
+          </div>
+        </div>
+      </>
+    )
+  }
 
   return (
     <>
@@ -109,9 +178,7 @@ export default async function VsDetailPage({ params }: Props) {
                       </div>
                     </div>
                   </div>
-                  <div className="c-comparison-hero_button-wrapper">
-                    <CtaButton label="Make the Switch" href="/pricing" variant="primary" />
-                  </div>
+                  <StickyComparisonCta href="https://app.brightwave.io/register" label="Make the Switch" />
                 </div>
               </div>
             </div>
@@ -134,14 +201,14 @@ export default async function VsDetailPage({ params }: Props) {
                     <div className="c-comparison-template_desc-wrapper">
                       <div className="c-comparison-template_rich-list w-richtext">
                         {doc.heroDescriptionList && Array.isArray(doc.heroDescriptionList) && doc.heroDescriptionList.length > 0 ? (
-                          <PortableText value={doc.heroDescriptionList} />
+                          <PortableText value={doc.heroDescriptionList} components={ptComponents} />
                         ) : null}
                       </div>
                     </div>
                   </div>
                   <div className="c-comparison-template_hero-button-group">
-                    <CtaButton label="Get Started " href="/pricing" variant="primary" />
-                    <CtaButton label="Schedule a Demo" href="/contact" variant="outline" />
+                    <CtaButton label="Get Started " href="https://app.brightwave.io/register" variant="primary" />
+                    <CtaButton label="Schedule a Demo" href="/enterprise" variant="outline" />
                   </div>
                 </div>
               </div>
@@ -228,7 +295,7 @@ export default async function VsDetailPage({ params }: Props) {
                                 <p className="c-text-5">{block.text}</p>
                               ) : block.body && Array.isArray(block.body) ? (
                                 <div className="c-text-5">
-                                  <PortableText value={block.body} />
+                                  <PortableText value={block.body} components={ptComponents} />
                                 </div>
                               ) : (
                                 <p className="c-text-5"></p>
@@ -244,11 +311,120 @@ export default async function VsDetailPage({ params }: Props) {
                     <div>No items found.</div>
                   </div>
                 )}
+                {/* CTA after content blocks */}
+                {contentBlocks.length > 0 && (
+                  <div className="c-comparison-content_cta-wrapper" style={{ paddingTop: '2.5rem' }}>
+                    <CtaButton label="Make the Switch" href="https://app.brightwave.io/register" variant="primary" />
+                  </div>
+                )}
               </div>
             </div>
           </div>
         </section>
       </div>
+
+      {/* ===== FEATURE HIGHLIGHTS (side-by-side illustrations) ===== */}
+      {featureHighlights.length > 0 && (
+        <section className="c-section cc-comparison-feature-highlights">
+          <div className="c-container">
+            <div className="c-comparison-feature-highlights_main-wrapper">
+              {featureHighlights.map((highlight: any, idx: number) => (
+                <div key={highlight._key || idx} className="c-comparison-feature-highlight_item">
+                  <div className="c-comparison-feature-highlight_header">
+                    <div className="c-comaprison-stat-box_tag-wrapper">
+                      <div className="c-comparison-tag_box"></div>
+                      <div className="c-title-5 cc-weight-500">{highlight.title}</div>
+                    </div>
+                    {highlight.description && (
+                      <p className="c-text-4" style={{ marginTop: '0.75rem' }}>{highlight.description}</p>
+                    )}
+                    {!highlight.description && highlight.body && Array.isArray(highlight.body) && (
+                      <div className="c-text-4" style={{ marginTop: '0.75rem' }}>
+                        <PortableText value={highlight.body} components={ptComponents} />
+                      </div>
+                    )}
+                  </div>
+                  <div className="c-comparison-feature-highlight_images">
+                    <div className="c-comparison-feature-highlight_image-col">
+                      {highlight.competitorImage?.asset ? (
+                        <div className="c-comparison-feature-highlight_image-wrapper">
+                          <Image
+                            src={urlFor(highlight.competitorImage).width(600).url()}
+                            alt={highlight.competitorCaption || doc.competitorName || ''}
+                            width={600}
+                            height={400}
+                            loading="lazy"
+                            className="c-comparison-feature-highlight_image"
+                          />
+                          <div className="c-box-hero_top-left"></div>
+                          <div className="c-box-hero_top-right"></div>
+                          <div className="c-box-hero_bottom-left"></div>
+                          <div className="c-box-hero_bottom-right"></div>
+                        </div>
+                      ) : (
+                        <div className="c-comparison-feature-highlight_image-wrapper cc-placeholder">
+                          <div className="c-comparison-feature-highlight_placeholder">
+                            {doc.competitorIcon?.asset ? (
+                              <Image
+                                src={urlFor(doc.competitorIcon).width(80).url()}
+                                alt={doc.competitorName || ''}
+                                width={80}
+                                height={80}
+                                loading="lazy"
+                                className="c-comparison-feature-highlight_placeholder-icon"
+                              />
+                            ) : null}
+                          </div>
+                        </div>
+                      )}
+                      {highlight.competitorCaption && (
+                        <div className="c-text-6" style={{ marginTop: '0.5rem', opacity: 0.6 }}>{highlight.competitorCaption}</div>
+                      )}
+                    </div>
+                    <div className="c-comparison-feature-highlight_image-col">
+                      {highlight.brightwaveImage?.asset ? (
+                        <div className="c-comparison-feature-highlight_image-wrapper">
+                          <Image
+                            src={urlFor(highlight.brightwaveImage).width(600).url()}
+                            alt={highlight.brightwaveCaption || 'Brightwave'}
+                            width={600}
+                            height={400}
+                            loading="lazy"
+                            className="c-comparison-feature-highlight_image"
+                          />
+                          <div className="c-box-hero_top-left"></div>
+                          <div className="c-box-hero_top-right"></div>
+                          <div className="c-box-hero_bottom-left"></div>
+                          <div className="c-box-hero_bottom-right"></div>
+                        </div>
+                      ) : (
+                        <div className="c-comparison-feature-highlight_image-wrapper cc-placeholder">
+                          <div className="c-comparison-feature-highlight_placeholder">
+                            <img
+                              src="/webflow-images/brightwave_tile.png"
+                              alt="Brightwave"
+                              width={80}
+                              height={80}
+                              loading="lazy"
+                              className="c-comparison-feature-highlight_placeholder-icon"
+                            />
+                          </div>
+                        </div>
+                      )}
+                      {highlight.brightwaveCaption && (
+                        <div className="c-text-6" style={{ marginTop: '0.5rem', opacity: 0.6 }}>{highlight.brightwaveCaption}</div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+              <div className="c-comparison-feature-highlight_cta-wrapper">
+                <CtaButton label="Make the Switch" href="https://app.brightwave.io/register" variant="primary" />
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ===== USE CASE FIT ===== */}
       <section className="c-section cc-usecase-fit">
@@ -389,63 +565,11 @@ export default async function VsDetailPage({ params }: Props) {
                         </div>
                         {/* Competitor cell */}
                         <div id="w-node-_7a3dce5a-ee11-9a34-0a76-ecc739e3921d-43706a8a" className="c-comparison-cell-options">
-                          {row.competitorText ? (
-                            <div className="c-text-5">{row.competitorText}</div>
-                          ) : row.competitorValue === true || row.competitorValue === 'yes' || row.competitorValue === 'superior' ? (
-                            <>
-                              <div className="c-text-5" style={{ display: 'none' }}></div>
-                              <div className="c-text-5" style={{ display: 'none' }}>-</div>
-                              <div className="c-comparison-table_item-icon-wrapper">
-                                <div className="c-comparison-table_item-icon w-embed">
-                                  <svg width="14" height="11" viewBox="0 0 14 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M4.90937 10.3446L0 5.43521L1.35187 4.08333L4.90937 7.64083L12.5502 0L13.9021 1.35188L4.90937 10.3446Z" fill="currentColor"></path>
-                                  </svg>
-                                </div>
-                              </div>
-                            </>
-                          ) : (
-                            <>
-                              <div className="c-text-5" style={{ display: 'none' }}></div>
-                              <div className="c-text-5">-</div>
-                              <div className="c-comparison-table_item-icon-wrapper" style={{ display: 'none' }}>
-                                <div className="c-comparison-table_item-icon w-embed">
-                                  <svg width="14" height="11" viewBox="0 0 14 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M4.90937 10.3446L0 5.43521L1.35187 4.08333L4.90937 7.64083L12.5502 0L13.9021 1.35188L4.90937 10.3446Z" fill="currentColor"></path>
-                                  </svg>
-                                </div>
-                              </div>
-                            </>
-                          )}
+                          {renderCellValue(row.competitorText, row.competitorValue)}
                         </div>
                         {/* Brightwave cell */}
                         <div id="w-node-_018cf748-6786-84cf-1aea-c5557d144e11-43706a8a" className="c-comparison-cell-options">
-                          {row.brightwaveText ? (
-                            <div className="c-text-5">{row.brightwaveText}</div>
-                          ) : row.brightwaveValue === true || row.brightwaveValue === 'yes' || row.brightwaveValue === 'superior' ? (
-                            <>
-                              <div className="c-text-5" style={{ display: 'none' }}></div>
-                              <div className="c-text-5" style={{ display: 'none' }}>-</div>
-                              <div className="c-comparison-table_item-icon-wrapper">
-                                <div className="c-comparison-table_item-icon w-embed">
-                                  <svg width="14" height="11" viewBox="0 0 14 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M4.90937 10.3446L0 5.43521L1.35187 4.08333L4.90937 7.64083L12.5502 0L13.9021 1.35188L4.90937 10.3446Z" fill="currentColor"></path>
-                                  </svg>
-                                </div>
-                              </div>
-                            </>
-                          ) : (
-                            <>
-                              <div className="c-text-5" style={{ display: 'none' }}></div>
-                              <div className="c-text-5">-</div>
-                              <div className="c-comparison-table_item-icon-wrapper" style={{ display: 'none' }}>
-                                <div className="c-comparison-table_item-icon w-embed">
-                                  <svg width="14" height="11" viewBox="0 0 14 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M4.90937 10.3446L0 5.43521L1.35187 4.08333L4.90937 7.64083L12.5502 0L13.9021 1.35188L4.90937 10.3446Z" fill="currentColor"></path>
-                                  </svg>
-                                </div>
-                              </div>
-                            </>
-                          )}
+                          {renderCellValue(row.brightwaveText, row.brightwaveValue)}
                         </div>
                       </div>
                     </div>
@@ -460,8 +584,8 @@ export default async function VsDetailPage({ params }: Props) {
           </div>
           <div className="c-comparison-table_footer-wrapper">
             <div className="c-comparison-template_hero-button-group">
-              <CtaButton label="Make the Switch" href="/pricing" variant="primary" />
-              <CtaButton label="Schedule a Demo" href="/contact" variant="outline" />
+              <CtaButton label="Make the Switch" href="https://app.brightwave.io/register" variant="primary" />
+              <CtaButton label="Schedule a Demo" href="/enterprise" variant="outline" />
             </div>
             <div className="c-comparison-table_footer-text-wrapper">
               <p className="c-text-6 cc-lh-tweak"><strong>7-day free-trial &middot; No credit card required &middot; Cancel anytime</strong></p>
@@ -471,156 +595,90 @@ export default async function VsDetailPage({ params }: Props) {
       </section>
 
       {/* ===== STATISTICS BLOCK ===== */}
-      <section className="c-section cc-comparison-template_statistic">
-        <div className="c-container">
-          <div id="w-node-fb0419f6-d0f6-9e8c-bb48-fe12f3bf9be8-43706a8a" className="c-comparison_stats-block_main-wrapper">
-            <div id="w-node-_7eb0766a-1a3b-c916-8662-30b96828a333-43706a8a" className="c-comparison-stats_left-block">
-              <div className="c-comaprison-stat-box_wrapper">
-                <div className="c-comaprison-stat-box_tag-wrapper">
-                  <div className="c-comparison-tag_box"></div>
-                  <div className="c-title-5 cc-weight-500">{statsBlock?.tagLabel || ''}</div>
-                </div>
-                <div className="c-comparison-stat-box_flex">
-                  <div className="c-comparison-stat-box_stat-wrapper">
-                    <div className="c-title-3">{statsBlock?.stat1Value || ''}</div>
-                    <div className="c-text-4">{statsBlock?.stat1Label || ''}</div>
+      {stats.length > 0 && (
+        <section className="c-section cc-comparison-template_statistic">
+          <div className="c-container">
+            <div className="c-comparison_stats-block_main-wrapper">
+              <div className="c-comparison-stats_left-block">
+                <div className="c-comaprison-stat-box_wrapper">
+                  <div className="c-comaprison-stat-box_tag-wrapper">
+                    <div className="c-comparison-tag_box"></div>
+                    <div className="c-title-5 cc-weight-500">By the Numbers</div>
                   </div>
-                  <div className="c-comparison-stat-box_stat-wrapper">
-                    <div className="c-title-3">{statsBlock?.stat2Value || ''}</div>
-                    <div className="c-text-4">{statsBlock?.stat2Label || ''}</div>
-                  </div>
-                </div>
-              </div>
-              <div className="c-comparison-stat-box_logo-list">
-                <div className="c-comparison-stat-box_logo-wrapper"><img src="/webflow-images/Frame-1321317964.png" loading="lazy" alt="" className="c-comparison-stat-box_logo" /></div>
-                <div className="c-comparison-stat-box_logo-wrapper"><img src="/webflow-images/Frame-1321317971.png" loading="lazy" alt="" className="c-comparison-stat-box_logo-lottie-list" /></div>
-                <div className="cc-mobile-hide"></div>
-              </div>
-              <div className="c-comparison-stat-box_logo-lottie-list">
-                <div id="w-node-_95e2ac0e-65e8-0af8-6078-72f098588613-43706a8a" className="c-comparison-stat-box_logo-wrapper"><img src="/webflow-images/Frame-1321317970.png" loading="lazy" alt="" className="c-comparison-stat-box_logo" /></div>
-                <img src="/webflow-images/Frame-1321317973.png" loading="lazy" id="w-node-df45419b-0dd1-c894-9508-53b1358bd8a2-43706a8a" alt="" className="c-comparison-stat-box_image" />
-              </div>
-              <div className="c-comparison-stat-box_lottie-list">
-                <img
-                  src="/webflow-images/Frame-1321317985.png"
-                  loading="lazy"
-                  sizes="(max-width: 1381px) 100vw, 1381px, 100vw"
-                  srcSet="/webflow-images/Frame-1321317985-p-500.png 500w, /webflow-images/Frame-1321317985-p-800.png 800w, /webflow-images/Frame-1321317985.png 1381w"
-                  alt=""
-                  className="c-comparison-stat-box_image"
-                />
-              </div>
-            </div>
-            <div id="w-node-_58f67171-6069-204a-74a9-3b081599ab3d-43706a8a" className="c-comparison-stats_right-block">
-              <div className="c-comparison-stats_image-block">
-                <div id="w-node-fd184261-e0b4-c554-21e4-1b8ce28ae367-43706a8a" className="c-comparison-template_image-dk"><img src="/webflow-images/Frame-1321317981.png" loading="lazy" alt="" className="c-comparison-stat-box_image" /></div>
-                <div className="c-comparison-template_image-dk">
-                  <img
-                    src="/webflow-images/Frame-1321317976.png"
-                    loading="lazy"
-                    width={386}
-                    sizes="(max-width: 479px) 100vw, 386px"
-                    alt=""
-                    srcSet="/webflow-images/Frame-1321317976-p-500.png 500w, /webflow-images/Frame-1321317976.png 772w"
-                    className="c-comparison-stat-box_image cc-mobile-hide"
-                  />
-                  <div className="c-comparison-stat-box_logo-wrapper">
-                    <img
-                      src="/webflow-images/Frame-1321317966.png"
-                      loading="lazy"
-                      sizes="(max-width: 772px) 100vw, 772px"
-                      srcSet="/webflow-images/Frame-1321317966-p-500.png 500w, /webflow-images/Frame-1321317966.png 772w"
-                      alt=""
-                      className="c-comparison-stat-box_logo"
-                    />
+                  <div className="c-comparison-stat-box_flex">
+                    {stats.map((s: any, idx: number) => (
+                      <div key={s._key || idx} className="c-comparison-stat-box_stat-wrapper">
+                        <div className="c-title-3">{s.value || ''}</div>
+                        <div className="c-text-4">{s.label || ''}</div>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              </div>
-              <div className="c-comparison-quote_item">
-                <div className="c-comaprison-stat-box_tag-wrapper">
-                  <div className="c-comparison-tag_box"></div>
-                  <div className="c-title-5 cc-weight-500">{quoteBlock?.tagLabel || ''}</div>
-                </div>
-                <p className="c-text-2">{quoteBlock?.quote || ''}</p>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      {/* ===== FEATURED QUOTE ===== */}
-      <section className="c-section cc-comparison-template_quote-only">
-        <div className="c-container">
-          <div id="w-node-_65a9a1ad-7556-06cc-fc80-c3507ce73c7d-43706a8a" className="c-comparison-quote-only_main-wrapper">
-            <div className="c-comparison-quote-only_text-stack">
-              <div className="c-title-5">Featured Quote</div>
-              <div className="c-comparison-quote-only_text-wrapper">
-                <div className="c-comaprison-stat-box_tag-wrapper">
-                  <div className="c-comparison-tag_box"></div>
-                  <div className="c-title-5 cc-weight-500">{featuredQuote?.attribution || ''}</div>
+      {/* ===== TESTIMONIAL ===== */}
+      {testimonial?.quote && (
+        <section className="c-section cc-comparison-template_quote-only">
+          <div className="c-container">
+            <div className="c-comparison-quote-only_main-wrapper">
+              <div className="c-comparison-quote-only_text-stack">
+                <div className="c-title-5">Featured Quote</div>
+                <div className="c-comparison-quote-only_text-wrapper">
+                  {(testimonial.authorTitle || testimonial.company || testimonial.attribution) && (
+                    <div className="c-comaprison-stat-box_tag-wrapper">
+                      <div className="c-comparison-tag_box"></div>
+                      <div className="c-title-5 cc-weight-500">{testimonial.authorTitle && testimonial.company ? `${testimonial.authorTitle}, ${testimonial.company}` : testimonial.attribution || ''}</div>
+                    </div>
+                  )}
+                  <p className="c-text-2">{testimonial.quote}</p>
                 </div>
-                <p className="c-text-2">{featuredQuote?.quote || ''}</p>
+              </div>
+              <div className="c-comparison-quote-only_image-wrapper">
+                {testimonial.authorImage?.asset ? (
+                  <Image
+                    src={urlFor(testimonial.authorImage).width(400).url()}
+                    alt={testimonial.authorName || ''}
+                    width={400}
+                    height={400}
+                    loading="lazy"
+                    className="c-comparison-quote-only_image"
+                  />
+                ) : (
+                  <img
+                    src="/webflow-images/testimonial-graphic.png"
+                    loading="lazy"
+                    sizes="100vw"
+                    srcSet="/webflow-images/testimonial-graphic-p-500.png 500w, /webflow-images/testimonial-graphic-p-800.png 800w, /webflow-images/testimonial-graphic.png 1119w"
+                    alt=""
+                    className="c-comparison-quote-only_image"
+                  />
+                )}
               </div>
             </div>
-            <div className="c-comparison-quote-only_image-wrapper">
-              <img
-                src="/webflow-images/testimonial-graphic.png"
-                loading="lazy"
-                sizes="100vw"
-                srcSet="/webflow-images/testimonial-graphic-p-500.png 500w, /webflow-images/testimonial-graphic-p-800.png 800w, /webflow-images/testimonial-graphic.png 1119w"
-                alt=""
-                className="c-comparison-quote-only_image"
-              />
-            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* ===== LOGO WALL ===== */}
       <section className="c-section cc-comparison-template_quote-only">
         <div className="c-container">
-          <div id="w-node-_3174487f-977a-b731-0f27-778c912aba11-43706a8a" className="c-comparison-template_logo-wall-main-wrapper">
+          <div className="c-comparison-template_logo-wall-main-wrapper">
             <div className="c-comparison-template_logo-wall_header-wrapper">
-              <div className="c-title-5">{logoWall?.headline || 'Lorem ipsum dolor sit amet consectetur. Blandit leo porttitor pulvinar hendrerit in.'}</div>
+              <div className="c-title-5">Trusted by leading financial institutions and featured in top publications.</div>
             </div>
             <div className="c-comparison-template_logo-wall-wrapper">
-              <div className="c-comparison-template_logo-wall-item"><img src="/webflow-images/fortune.png" loading="lazy" alt="" className="c-comparison-template_logo-item" /></div>
-              <div className="c-comparison-template_logo-wall-item"><img src="/webflow-images/wsjpro.png" loading="lazy" alt="" className="c-comparison-template_logo-item" /></div>
-              <div className="c-comparison-template_logo-wall-item"><img src="/webflow-images/axios.png" loading="lazy" alt="" className="c-comparison-template_logo-item" /></div>
-              <div className="c-comparison-template_logo-wall-item"><img src="/webflow-images/latent-space_1.png" loading="lazy" alt="" className="c-comparison-template_logo-item" /></div>
-              <div className="c-comparison-template_logo-wall-item"><img src="/webflow-images/fox-business.png" loading="lazy" alt="" className="c-comparison-template_logo-item" /></div>
-              <div className="c-comparison-template_logo-wall-item"><img src="/webflow-images/>df.png" loading="lazy" alt="" className="c-comparison-template_logo-item" /></div>
-              <div className="c-comparison-template_logo-wall-item"><img src="/webflow-images/cerebral-valley.png" loading="lazy" alt="" className="c-comparison-template_logo-item" /></div>
-              <div className="c-comparison-template_logo-wall-item"><img src="/webflow-images/tech-crunch.png" loading="lazy" alt="" className="c-comparison-template_logo-item" /></div>
-              <div className="c-comparison-template_logo-wall-item"><img src="/webflow-images/time.png" loading="lazy" alt="" className="c-comparison-template_logo-item" /></div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== SECOND STATS ROW ===== */}
-      <section className="c-section cc-comparison-template_quote-only">
-        <div className="c-container">
-          <div>
-            <div className="c-comaprison-stat-box_wrapper">
-              <div className="c-comaprison-stat-box_tag-wrapper">
-                <div className="c-comparison-tag_box"></div>
-                <div className="c-title-5 cc-weight-500">{secondStatsBlock?.tagLabel || ''}</div>
-              </div>
-              <div className="c-comparison-stat-box_flex">
-                <div className="c-comparison-stat-box_stat-wrapper">
-                  <div className="c-title-3">{secondStatsBlock?.stat1Value || ''}</div>
-                  <div className="c-text-4">{secondStatsBlock?.stat1Label || ''}</div>
-                </div>
-                <div className="c-comparison-stat-box_stat-wrapper">
-                  <div className="c-title-3">{secondStatsBlock?.stat2Value || ''}</div>
-                  <div className="c-text-4">{secondStatsBlock?.stat2Label || ''}</div>
-                </div>
-                <div className="c-comparison-stat-box_stat-wrapper">
-                  <div className="c-title-3">{secondStatsBlock?.stat3Value || ''}</div>
-                  <div className="c-text-4">{secondStatsBlock?.stat3Label || ''}</div>
-                </div>
-              </div>
+              <div className="c-comparison-template_logo-wall-item"><img src="/webflow-images/fortune.png" loading="lazy" alt="Fortune" className="c-comparison-template_logo-item" /></div>
+              <div className="c-comparison-template_logo-wall-item"><img src="/webflow-images/wsjpro.png" loading="lazy" alt="WSJ Pro" className="c-comparison-template_logo-item" /></div>
+              <div className="c-comparison-template_logo-wall-item"><img src="/webflow-images/axios.png" loading="lazy" alt="Axios" className="c-comparison-template_logo-item" /></div>
+              <div className="c-comparison-template_logo-wall-item"><img src="/webflow-images/latent-space_1.png" loading="lazy" alt="Latent Space" className="c-comparison-template_logo-item" /></div>
+              <div className="c-comparison-template_logo-wall-item"><img src="/webflow-images/fox-business.png" loading="lazy" alt="Fox Business" className="c-comparison-template_logo-item" /></div>
+              <div className="c-comparison-template_logo-wall-item"><img src="/webflow-images/cerebral-valley.png" loading="lazy" alt="Cerebral Valley" className="c-comparison-template_logo-item" /></div>
+              <div className="c-comparison-template_logo-wall-item"><img src="/webflow-images/tech-crunch.png" loading="lazy" alt="TechCrunch" className="c-comparison-template_logo-item" /></div>
+              <div className="c-comparison-template_logo-wall-item"><img src="/webflow-images/time.png" loading="lazy" alt="Time" className="c-comparison-template_logo-item" /></div>
             </div>
           </div>
         </div>
@@ -655,7 +713,7 @@ export default async function VsDetailPage({ params }: Props) {
                           <div className="accordion_content">
                             {faq.answer && Array.isArray(faq.answer) ? (
                               <div className="c-text-4 w-richtext">
-                                <PortableText value={faq.answer} />
+                                <PortableText value={faq.answer} components={ptComponents} />
                               </div>
                             ) : typeof faq.answer === 'string' ? (
                               <div className="c-text-4 w-richtext">

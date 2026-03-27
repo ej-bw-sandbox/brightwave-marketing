@@ -42,7 +42,8 @@ export function CaseStudyCard({
     return (
       <Link
         href={href}
-        className="group block rounded-lg border border-bw-gray-200 bg-white overflow-hidden card-hover md:grid md:grid-cols-2 md:gap-0"
+        className="group block rounded-lg overflow-hidden card-hover md:grid md:grid-cols-2 md:gap-0"
+        style={{ backgroundColor: 'var(--lightmode--surface-1)', border: '1px solid var(--lightmode--onsurface-border)' }}
       >
         {thumbnail?.asset && (
           <div className="overflow-hidden">
@@ -67,23 +68,23 @@ export function CaseStudyCard({
               />
             )}
             {industry && (
-              <span className="text-xs font-medium text-bw-gray-500 bg-bw-gray-75 rounded-full px-3 py-1">
+              <span className="text-xs font-medium rounded-full px-3 py-1" style={{ color: 'var(--lightmode--onsurface-weak)', backgroundColor: 'var(--lightmode--surface-2)' }}>
                 {industry}
               </span>
             )}
           </div>
-          <h3 className="text-2xl font-bold text-bw-gray-800 group-hover:text-bw-yellow-600 transition-colors">
+          <h3 className="text-2xl font-bold group-hover:text-bw-yellow-600 transition-colors" style={{ color: 'var(--lightmode--onsurface)' }}>
             {title}
           </h3>
           {excerpt && (
-            <p className="mt-3 text-bw-gray-500 line-clamp-3">{excerpt}</p>
+            <p className="mt-3 line-clamp-3" style={{ color: 'var(--lightmode--onsurface-weak)' }}>{excerpt}</p>
           )}
           {(stats ?? []).length > 0 && (
             <div className="mt-6 flex gap-8">
               {(stats ?? []).map((stat, i) => (
                 <div key={i}>
-                  <div className="text-2xl font-bold text-bw-yellow-600">{stat.value}</div>
-                  <div className="text-xs text-bw-gray-500 mt-1">{stat.label}</div>
+                  <div className="text-2xl font-bold" style={{ color: 'var(--lightmode--primary)' }}>{stat.value}</div>
+                  <div className="text-xs mt-1" style={{ color: 'var(--lightmode--onsurface-weak)' }}>{stat.label}</div>
                 </div>
               ))}
             </div>
@@ -96,7 +97,8 @@ export function CaseStudyCard({
   return (
     <Link
       href={href}
-      className="group block rounded-lg border border-bw-gray-200 bg-white overflow-hidden card-hover"
+      className="group block rounded-lg overflow-hidden card-hover"
+      style={{ backgroundColor: 'var(--lightmode--surface-1)', border: '1px solid var(--lightmode--onsurface-border)' }}
     >
       {thumbnail?.asset && (
         <div className="overflow-hidden aspect-video">
@@ -121,24 +123,24 @@ export function CaseStudyCard({
             />
           )}
           {industry && (
-            <span className="text-xs text-bw-gray-500">{industry}</span>
+            <span className="text-xs" style={{ color: 'var(--lightmode--onsurface-weak)' }}>{industry}</span>
           )}
           {firmSize && (
-            <span className="text-xs text-bw-gray-500">{firmSize}</span>
+            <span className="text-xs" style={{ color: 'var(--lightmode--onsurface-weak)' }}>{firmSize}</span>
           )}
         </div>
-        <h3 className="font-semibold text-bw-gray-800 group-hover:text-bw-yellow-600 transition-colors">
+        <h3 className="font-semibold group-hover:text-bw-yellow-600 transition-colors" style={{ color: 'var(--lightmode--onsurface)' }}>
           {title}
         </h3>
         {excerpt && (
-          <p className="mt-2 text-sm text-bw-gray-500 line-clamp-2">{excerpt}</p>
+          <p className="mt-2 text-sm line-clamp-2" style={{ color: 'var(--lightmode--onsurface-weak)' }}>{excerpt}</p>
         )}
         {(stats ?? []).length > 0 && (
-          <div className="mt-4 flex gap-6 border-t border-bw-gray-200 pt-4">
+          <div className="mt-4 flex gap-6 pt-4" style={{ borderTop: '1px solid var(--lightmode--onsurface-border)' }}>
             {(stats ?? []).map((stat, i) => (
               <div key={i}>
-                <div className="text-lg font-bold text-bw-yellow-600">{stat.value}</div>
-                <div className="text-xs text-bw-gray-500">{stat.label}</div>
+                <div className="text-lg font-bold" style={{ color: 'var(--lightmode--primary)' }}>{stat.value}</div>
+                <div className="text-xs" style={{ color: 'var(--lightmode--onsurface-weak)' }}>{stat.label}</div>
               </div>
             ))}
           </div>

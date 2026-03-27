@@ -2,7 +2,7 @@ import { client } from '../client'
 
 export const featureIndexQuery = `
   *[_type == "platformFeature"] | order(title asc) {
-    title, slug, heroH1, tags,
+    title, slug, heroH1, tags, menuCategory,
     heroImage{ asset->{ _id, url, metadata { lqip, dimensions } } }
   }
 `

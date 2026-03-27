@@ -7,10 +7,25 @@ export const icpPage = defineType({
   fields: [
     defineField({ name: 'title', title: 'Persona Name', type: 'string', validation: (r) => r.required(), description: 'e.g. "Investment Analysts", "Portfolio Managers"' }),
     defineField({ name: 'slug', title: 'Slug', type: 'slug', options: { source: 'title' }, validation: (r) => r.required() }),
+    defineField({
+      name: 'product',
+      title: 'Product',
+      type: 'string',
+      description: 'Which product this role is associated with',
+      options: {
+        list: [
+          { title: 'Private Markets', value: 'private-markets' },
+          { title: 'Public Markets', value: 'public-markets' },
+        ],
+        layout: 'dropdown',
+      },
+    }),
     defineField({ name: 'menuLabel', title: 'Menu Label', type: 'string', description: 'Short label for navigation menus (e.g. "Analyst", "Managing Director")' }),
     defineField({ name: 'h1', title: 'H1', type: 'string' }),
     defineField({ name: 'heroTagline', title: 'Tagline', type: 'string' }),
     defineField({ name: 'heroBody', title: 'Hero Body', type: 'blockContent' }),
+    defineField({ name: 'heroImage', title: 'Hero Image', type: 'image', options: { hotspot: true } }),
+    defineField({ name: 'excerpt', title: 'Card Excerpt', type: 'text', rows: 3, description: 'Short description shown on the index/listing page card' }),
     defineField({ name: 'valueH2', title: 'Value Section Headline', type: 'string' }),
     defineField({
       name: 'valuePillars',

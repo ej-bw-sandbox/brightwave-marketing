@@ -95,6 +95,12 @@ export const homepage = defineType({
       description: 'e.g. "Testimonials"',
     }),
     defineField({
+      name: 'testimonials',
+      title: 'Testimonials',
+      type: 'array',
+      of: [{ type: 'testimonialRef' }],
+    }),
+    defineField({
       name: 'exploreSectionTitleLines',
       title: 'Explore Section Title Lines',
       type: 'array',

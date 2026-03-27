@@ -5,6 +5,7 @@
 /* ------------------------------------------------------------------ */
 
 @import "tailwindcss" layer(utilities);
+@import "../styles/animations.css";
 
 /* ------------------------------------------------------------------ */
 /*  Tailwind v4 Theme Tokens                                           */
@@ -80,25 +81,25 @@
 /* ------------------------------------------------------------------ */
 
 .prose-brand {
-  color: #414142;
+  color: var(--lightmode--onsurface-weak, #414142);
   line-height: 1.75;
 }
 .prose-brand h2 {
-  color: #0f0f0f;
+  color: var(--lightmode--onsurface, #0f0f0f);
   font-size: 1.5rem;
   font-weight: 700;
   margin-top: 2.5rem;
   margin-bottom: 1rem;
 }
 .prose-brand h3 {
-  color: #0f0f0f;
+  color: var(--lightmode--onsurface, #0f0f0f);
   font-size: 1.25rem;
   font-weight: 600;
   margin-top: 2rem;
   margin-bottom: 0.75rem;
 }
 .prose-brand h4 {
-  color: #0f0f0f;
+  color: var(--lightmode--onsurface, #0f0f0f);
   font-size: 1.125rem;
   font-weight: 600;
   margin-top: 1.5rem;
@@ -108,7 +109,7 @@
   margin-bottom: 1.25rem;
 }
 .prose-brand a {
-  color: #e7e70d;
+  color: var(--lightmode--primary, #e7e70d);
   text-decoration: underline;
   text-decoration-color: rgba(231, 231, 13, 0.4);
   text-underline-offset: 2px;
@@ -118,7 +119,7 @@
   text-decoration-color: #e7e70d;
 }
 .prose-brand strong {
-  color: #0f0f0f;
+  color: var(--lightmode--onsurface, #0f0f0f);
   font-weight: 600;
 }
 .prose-brand ul,
@@ -136,22 +137,22 @@
   list-style-type: decimal;
 }
 .prose-brand blockquote {
-  border-left: 3px solid #e7e70d;
+  border-left: 3px solid var(--lightmode--primary, #e7e70d);
   padding-left: 1.25rem;
   margin: 1.5rem 0;
-  color: #5a5b5c;
+  color: var(--lightmode--onsurface-weak, #5a5b5c);
   font-style: italic;
 }
 .prose-brand code {
-  background: #eff1f5;
+  background: var(--lightmode--surface-1, #eff1f5);
   padding: 0.15rem 0.4rem;
   border-radius: 0.25rem;
   font-size: 0.875em;
-  color: #282829;
+  color: var(--lightmode--onsurface, #282829);
 }
 .prose-brand pre {
-  background: #0f0f0f;
-  border: 1px solid #414142;
+  background: var(--lightmode--surface, #0f0f0f);
+  border: 1px solid var(--lightmode--onsurface-border, #414142);
   border-radius: 0.5rem;
   padding: 1rem;
   overflow-x: auto;
@@ -170,13 +171,13 @@
 .prose-brand th {
   text-align: left;
   padding: 0.75rem 1rem;
-  border-bottom: 2px solid #bebfc2;
-  color: #0f0f0f;
+  border-bottom: 2px solid var(--lightmode--onsurface-border, #bebfc2);
+  color: var(--lightmode--onsurface, #0f0f0f);
   font-weight: 600;
   font-size: 0.875rem;
 }
 .prose-brand td {
   padding: 0.75rem 1rem;
-  border-bottom: 1px solid #d7d8db;
+  border-bottom: 1px solid var(--lightmode--onsurface-border, #d7d8db);
   font-size: 0.875rem;
 }

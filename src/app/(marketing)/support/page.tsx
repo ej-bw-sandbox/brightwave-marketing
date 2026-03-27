@@ -1,5 +1,6 @@
 import { client } from '@/lib/sanity/client'
 import { PortableText } from '@portabletext/react'
+import { ptComponents } from '@/lib/sanity/portable-text-components'
 import type { Metadata } from 'next'
 
 const supportQuery = `*[_type == "supportPage"][0]{
@@ -36,7 +37,7 @@ export default async function SupportPage() {
       <section className="pb-24 max-w-3xl mx-auto px-5">
         {page?.body ? (
           <div className="prose-brand">
-            <PortableText value={page.body} />
+            <PortableText components={ptComponents} value={page.body} />
           </div>
         ) : (
           <div className="text-center py-12">

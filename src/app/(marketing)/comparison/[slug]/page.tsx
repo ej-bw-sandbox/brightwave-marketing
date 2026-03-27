@@ -170,7 +170,7 @@ export default async function ComparisonPage({ params }: Props) {
                         </div>
                       </div>
                     </Link>
-                    <Link href="/contact" className="cta-p-sm cc-stroke w-inline-block">
+                    <Link href="/enterprise" className="cta-p-sm cc-stroke w-inline-block">
                       <div className="c-text-link cc-stagger-cta">Schedule a Demo</div>
                       <div className="flip-small">
                         <div className="flip-bg"></div>

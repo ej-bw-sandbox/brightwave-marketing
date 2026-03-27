@@ -5,6 +5,7 @@ import { useCaseQuery, useCaseSlugsQuery } from '@/lib/sanity/queries/use-cases'
 import { buildMetadata } from '@/lib/metadata'
 import { notFound } from 'next/navigation'
 import { PortableText } from '@portabletext/react'
+import { ptComponents } from '@/lib/sanity/portable-text-components'
 import { CtaButton } from '@/components/sections/CtaButton'
 import type { Metadata } from 'next'
 
@@ -33,7 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 function RenderField({ value, className }: { value: any; className?: string }) {
   if (!value) return null
   if (typeof value === 'string') return <p className={className || 'c-text-3'}>{value}</p>
-  if (Array.isArray(value)) return <div className={className || 'prose-brand'}><PortableText value={value} /></div>
+  if (Array.isArray(value)) return <div className={className || 'prose-brand'}><PortableText components={ptComponents} value={value} /></div>
   return null
 }
 
@@ -117,7 +118,7 @@ export default async function UsecasesDetailPage({ params }: Props) {
                 <div key={c._key || i} className="collection_card">
                   <div className="card_flex">
                     {c.title && <div className="c-title-5">{c.title}</div>}
-                    {c.bullets && <div className="prose-brand"><PortableText value={c.bullets} /></div>}
+                    {c.bullets && <div className="prose-brand"><PortableText components={ptComponents} value={c.bullets} /></div>}
                     {c.body && <RenderField value={c.body} className="c-text-4" />}
                     {typeof c === 'string' && <div className="c-text-4">{c}</div>}
                   </div>
@@ -141,8 +142,8 @@ export default async function UsecasesDetailPage({ params }: Props) {
                 <div key={s._key || i} className="collection_card">
                   <div className="card_flex">
                     {s.title && <div className="c-title-5">{s.title}</div>}
-                    {s.bullets && <div className="prose-brand"><PortableText value={s.bullets} /></div>}
-                    {s.body && Array.isArray(s.body) && <div className="prose-brand"><PortableText value={s.body} /></div>}
+                    {s.bullets && <div className="prose-brand"><PortableText components={ptComponents} value={s.bullets} /></div>}
+                    {s.body && Array.isArray(s.body) && <div className="prose-brand"><PortableText components={ptComponents} value={s.body} /></div>}
                     {s.body && typeof s.body === 'string' && <div className="c-text-4">{s.body}</div>}
                     {typeof s === 'string' && <div className="c-text-4">{s}</div>}
                   </div>
@@ -168,8 +169,8 @@ export default async function UsecasesDetailPage({ params }: Props) {
                 <div key={f._key || i} className="collection_card">
                   <div className="card_flex">
                     {f.title && <div className="c-title-5">{f.title}</div>}
-                    {f.bullets && <div className="prose-brand"><PortableText value={f.bullets} /></div>}
-                    {f.body && Array.isArray(f.body) && <div className="prose-brand"><PortableText value={f.body} /></div>}
+                    {f.bullets && <div className="prose-brand"><PortableText components={ptComponents} value={f.bullets} /></div>}
+                    {f.body && Array.isArray(f.body) && <div className="prose-brand"><PortableText components={ptComponents} value={f.body} /></div>}
                   </div>
                 </div>
               ))}
@@ -194,7 +195,7 @@ export default async function UsecasesDetailPage({ params }: Props) {
                   </div>
                   <div className="v-12">
                     <div className="prose-brand">
-                      <PortableText value={doc.beforeSteps} />
+                      <PortableText components={ptComponents} value={doc.beforeSteps} />
                     </div>
                   </div>
                 </div>
@@ -207,7 +208,7 @@ export default async function UsecasesDetailPage({ params }: Props) {
                   </div>
                   <div className="v-12">
                     <div className="prose-brand">
-                      <PortableText value={doc.afterSteps} />
+                      <PortableText components={ptComponents} value={doc.afterSteps} />
                     </div>
                   </div>
                 </div>
@@ -246,7 +247,7 @@ export default async function UsecasesDetailPage({ params }: Props) {
             </div>
             <div className="buttons">
               <CtaButton label="Start Free Trial" href="https://app.brightwave.io/register" variant="primary" />
-              <CtaButton label="Get a Demo" href="/contact" variant="outline" />
+              <CtaButton label="Get a Demo" href="/enterprise" variant="outline" />
             </div>
           </div>
         </div>

@@ -392,8 +392,36 @@ color:var(--lightmode--primary);
 .u-dark-mode .block.cc-dm-light{
   background-color: var(--lightmode--onsurface);
 }
-.u-dark-mode .c-text-link.cc-nav{
+.u-dark-mode .c-text-link.cc-nav,
+[theme="dark"] .c-text-link.cc-nav{
   color: var(--lightmode--onsurface);
+}
+/* Dark mode: ensure the nav SVG logo inherits the correct on-surface color */
+.u-dark-mode .svg.cc-onsurface-fill.cc-logo,
+[theme="dark"] .svg.cc-onsurface-fill.cc-logo {
+  color: var(--lightmode--onsurface);
+}
+/* Dark mode: nav toggle button icon color */
+.u-dark-mode .toggle,
+[theme="dark"] .toggle {
+  color: var(--lightmode--onsurface);
+}
+/* Dark mode: CTA button text should remain visible */
+.u-dark-mode .cta-sec .c-text-link.cc-stagger,
+[theme="dark"] .cta-sec .c-text-link.cc-stagger {
+  color: var(--lightmode--onsurface);
+}
+/* Dark mode: chevron icons in nav dropdowns */
+.u-dark-mode .nav_toggle .chevron,
+[theme="dark"] .nav_toggle .chevron {
+  color: var(--lightmode--onsurface);
+}
+/* Before/After table: fix white-on-white and white-on-yellow title text in dark mode */
+.u-dark-mode .usp-table_top .c-title-4.cc-white-dynamic {
+  color: var(--colorprimitives--gray-800);
+}
+.u-dark-mode .usp-table_top.cc-brigtwave .c-title-4.cc-dark {
+  color: var(--colorprimitives--gray-800);
 }
 
 /* === Inline Style Block 5 === */
@@ -699,3 +727,321 @@ select:-webkit-autofill {
   left: 50% !important;
   transform: translate(-50%, -50%) !important;
 }
+
+/* ── ABM: unhide studies section (hidden by default in Webflow) ── */
+.c-section.cc-abm-studies {
+  display: block !important;
+}
+
+/* ── ABM page grid placement (Webflow w-node equivalents) ── */
+
+/* Hero: content spans cols 1–4, dual-block spans cols 4–8 */
+.c-abm-template_grid.cc-rel > .c-abm-template_hero-content {
+  grid-area: 1 / 1 / 2 / 5;
+}
+.c-abm-template_grid.cc-rel > .c-abm-hero_dual-block {
+  grid-area: 1 / 5 / 2 / 8;
+}
+
+/* Challenges: override grid to flex so sticky positioning works */
+.c-abm-temp-chal_card-wrapper.c-abm-template_grid {
+  display: flex !important;
+  gap: 2rem;
+  align-items: flex-start;
+}
+.c-abm-temp-chal_card-wrapper.c-abm-template_grid > .c-amb-temp-chal_sticky {
+  flex: 0 0 40%;
+  position: sticky;
+  top: 8.5rem;
+}
+.c-abm-temp-chal_card-wrapper.c-abm-template_grid > .c-abm-temp-chal_card-list {
+  flex: 1;
+}
+
+/* Mobile: stack everything single column */
+@media screen and (max-width: 991px) {
+  .c-abm-template_grid.cc-rel > .c-abm-template_hero-content,
+  .c-abm-template_grid.cc-rel > .c-abm-hero_dual-block {
+    grid-area: auto;
+    grid-column: span 7 / span 7;
+  }
+  .c-abm-temp-chal_card-wrapper.c-abm-template_grid {
+    flex-direction: column;
+  }
+  .c-abm-temp-chal_card-wrapper.c-abm-template_grid > .c-amb-temp-chal_sticky {
+    flex: none;
+    width: 100%;
+    position: relative;
+    top: 0;
+  }
+}
+
+/* ── ABM: typography + layout utility classes ── */
+.cc-weight-500 { font-weight: 500; }
+.cc-weight-600 { font-weight: 600; }
+.cc-uppercase { text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* ── ABM: Timeline items need relative positioning for the absolute line ── */
+.c-abm-temp-tl_item {
+  position: relative;
+}
+
+/* ── ABM: Studies header needs flex gap between label row and title ── */
+.c-section.cc-abm-studies .c-abm-studies_header-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+/* ── ABM: Studies list uses flex column per Webflow, add gap between cards ── */
+.c-section.cc-abm-studies .c-abm-studies_wrapperr {
+  margin-top: 3rem;
+  gap: 1.25rem;
+}
+
+/* ── ABM: Blog/Resources header spacing ── */
+.c-section.cc-abm-blog .c-abm-studies_header-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  border-bottom: 0.0625rem solid var(--border);
+  padding-bottom: 2.5rem;
+}
+
+/* ── ABM: Case Studies stat cards ── */
+.c-abm-temp-tl-item_stats-card {
+  background-color: var(--colorprimitives--gray-75, #f5f5f5);
+  border-radius: 0.25rem;
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.c-abm-temp-tl-item_stats-card .c-title-1 {
+  color: var(--lightmode--primary);
+}
+
+/* ── ABM: Resource cards ── */
+.c-abm-template_grid.cc-resources {
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 3rem;
+}
+.c-abm-resource_card {
+  background-color: var(--colorprimitives--gray-75, #f5f5f5);
+  border-radius: 0.25rem;
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  text-decoration: none;
+  color: inherit;
+  transition: background-color 0.2s ease;
+}
+.c-abm-resource_card:hover {
+  background-color: var(--colorprimitives--gray-100, #ebebeb);
+}
+.c-abm-resource_card-link {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.c-abm-resource_card-link svg {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+@media screen and (max-width: 991px) {
+  .c-abm-template_grid.cc-resources {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── ABM: replace yellow accent with blue for accessibility ── */
+/* Override the primary color on all ABM sections to brand blue (#0E50AA).
+   WCAG AA contrast ratios:
+   - #0E50AA on #ffffff = ~6.5:1 (passes AA normal + large text)
+   - #0E50AA on #f5f5f5 = ~6.1:1 (passes AA normal + large text)
+   - #ffffff on #0E50AA = ~6.5:1 (passes AA normal + large text)
+*/
+
+/* Scope primary color override to ABM template sections */
+.c-section[class*="cc-abm"],
+.c-section[class*="cc-amb"] {
+  --lightmode--primary: #0E50AA;
+}
+
+/* Challenge card top-box accent in ABM context */
+.c-section[class*="cc-abm"] .c-abm-temp-chal_card-top-box,
+.c-section[class*="cc-amb"] .c-abm-temp-chal_card-top-box {
+  background-color: #0E50AA;
+}
+
+/* ── Webflow grid-area utility classes ──────────────────────────
+   Webflow pages use #w-node-xxx IDs for grid placement inside
+   the 7-column .grid class. When pages are migrated to Next.js
+   with dynamic/CMS content, those IDs no longer match the CSS.
+   These utilities replicate the most common Webflow grid-area
+   patterns so pages can use class names instead of IDs.
+   ─────────────────────────────────────────────────────────── */
+
+/* Column span helpers (inside .grid's 7-column layout) */
+.wf-span-1 { grid-column: span 1 / span 1; }
+.wf-span-2 { grid-column: span 2 / span 2; }
+.wf-span-3 { grid-column: span 3 / span 3; }
+.wf-span-4 { grid-column: span 4 / span 4; }
+.wf-span-5 { grid-column: span 5 / span 5; }
+.wf-span-7 { grid-column: span 7 / span 7; }
+
+/* Full-width row span (all 7 columns) */
+.wf-full-row { grid-area: span 1 / span 7 / span 1 / span 7; }
+
+/* Responsive: collapse to single column on tablet and below */
+@media screen and (max-width: 767px) {
+  .wf-span-1,
+  .wf-span-2,
+  .wf-span-3,
+  .wf-span-4,
+  .wf-span-5,
+  .wf-span-7,
+  .wf-full-row {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ── Homepage hero spacing fixes ──────────────────────────────
+   Match the original Webflow hero layout:
+   1. Lottie banner sits between headline/CTA grid and HeroPrompt
+   2. Reduce hero section bottom padding so stats bar connects
+      naturally to the social-proof logos section below
+   3. Tighten logo section top padding for visual cohesion
+   ─────────────────────────────────────────────────────────── */
+
+/* Hero section: reduce excessive bottom padding.
+   The comparison stats (.v-20.cc-home) already provides 7.5rem
+   margin-top, so the section bottom padding only needs a small
+   amount to avoid double-spacing before the logo section. */
+.c-section.cc-hero {
+  padding-bottom: 2.5rem;
+}
+
+/* Social proof logos section: reduce top padding so it connects
+   tightly to the hero stats bar above. The default c-section
+   padding-top of 6.25rem is too large here. */
+.c-section.cc-logos {
+  padding-top: 3.125rem;
+}
+
+/* Ensure the lottie banner inside the hero has no excess bottom
+   margin when immediately followed by the prompt input. */
+.c-section.cc-hero .lottie-reverse + .div-block-48 {
+  margin-top: 0;
+}
+
+/* On tablet, tighten the hero bottom and logo top further */
+@media screen and (max-width: 991px) {
+  .c-section.cc-hero {
+    padding-bottom: 1.5rem;
+  }
+  .c-section.cc-logos {
+    padding-top: 2rem;
+  }
+}
+
+/* On mobile, stack tighter */
+@media screen and (max-width: 479px) {
+  .c-section.cc-hero {
+    padding-bottom: 1rem;
+  }
+  .c-section.cc-logos {
+    padding-top: 1.5rem;
+  }
+}
+
+/* ===== Comparison Page: Feature Highlights Section ===== */
+.c-section.cc-comparison-feature-highlights {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
+.c-comparison-feature-highlights_main-wrapper {
+  grid-column-gap: 5rem;
+  grid-row-gap: 5rem;
+  flex-flow: column;
+  display: flex;
+}
+
+.c-comparison-feature-highlight_item {
+  grid-column-gap: 2.5rem;
+  grid-row-gap: 2.5rem;
+  border-top: 1px solid var(--lightmode--onsurface-border);
+  flex-flow: column;
+  padding-top: 3rem;
+  display: flex;
+}
+
+.c-comparison-feature-highlight_header {
+  max-width: 40rem;
+}
+
+.c-comparison-feature-highlight_images {
+  grid-column-gap: 1rem;
+  grid-row-gap: 1rem;
+  grid-template-columns: 1fr 1fr;
+  display: grid;
+}
+
+.c-comparison-feature-highlight_image-col {
+  flex-flow: column;
+  display: flex;
+}
+
+.c-comparison-feature-highlight_image-wrapper {
+  background-color: var(--colorprimitives--gray-75);
+  border-radius: 0.5rem;
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 3 / 2;
+}
+
+.c-comparison-feature-highlight_image-wrapper.cc-placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.c-comparison-feature-highlight_placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0.3;
+}
+
+.c-comparison-feature-highlight_placeholder-icon {
+  width: 5rem;
+  height: 5rem;
+  object-fit: contain;
+}
+
+.c-comparison-feature-highlight_image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.c-comparison-feature-highlight_cta-wrapper {
+  padding-top: 1rem;
+}
+
+/* Comparison table partial icon style */
+.c-comparison-table_item-icon.cc-partial {
+  opacity: 0.6;
+}
+
+@media screen and (max-width: 767px) {
+  .c-comparison-feature-highlight_images {
+    grid-template-columns: 1fr;
+  }
+}
+

@@ -150,7 +150,7 @@ export default async function Page() {
                           <div className="c-line"></div>
                         </div>
                         <div className="grid">
-                          <div id={`w-node-pillar-text-${index}`} className="v-40 cc-481">
+                          <div className="v-40 cc-481 wf-span-3">
                             <div className="c-title-3">{pillar.title}</div>
                             <div className="c-text-3">{pillar.description}</div>
                           </div>
@@ -159,9 +159,8 @@ export default async function Page() {
                               src={pillar.imageUrl}
                               loading="lazy"
                               width={791}
-                              id={`w-node-pillar-img-${index}`}
                               alt={pillar.imageAlt || ''}
-                              className="aspect-16-9 cc-100"
+                              className="aspect-16-9 cc-100 wf-span-4"
                             />
                           )}
                         </div>
@@ -178,9 +177,9 @@ export default async function Page() {
                   <div>
                     {(doc.faqs ?? []).map((faq, index) => (
                       <div key={faq._key}>
-                        <div id={`w-node-faq-line-${index}`} className="c-line"></div>
-                        <div id={`w-node-faq-wrap-${index}`} className="accordion-wrap">
-                          <div accordion="" id={`w-node-faq-${index}`} className="accordion">
+                        <div className="c-line"></div>
+                        <div className="accordion-wrap">
+                          <div accordion="" className="accordion">
                             <div className="accordion_toggle">
                               <div className="c-text-2 cc-balance">{faq.question}</div>
                               <div chevron-x="" className="c-svg-2 cc-20 w-embed"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

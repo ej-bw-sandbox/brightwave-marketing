@@ -66,7 +66,7 @@ export function Footer() {
                     <div className="footer_cat_spacer">
                       <a href="/blog" className="c-text-5 cc-link">Blog</a>
                       <a href="/events" className="c-text-5 cc-link">Events</a>
-                      <a href="/knowledge-base" className="c-text-5 cc-link">Knowledge Base</a>
+                      <a href="https://docs.brightwave.io" target="_blank" rel="noopener noreferrer" className="c-text-5 cc-link">Knowledge Base</a>
                       <a href="/news" className="c-text-5 cc-link">News</a>
                       <a href="/partners" className="c-text-5 cc-link">Partner Program</a>
                       <a href="/release-notes" className="c-text-5 cc-link">Release Notes</a>
@@ -126,7 +126,7 @@ export function Footer() {
           </div>
           <div className="footer_bootom-wrap">
             <div className="footer_links">
-              <a href="/security" className="footer_link w-inline-block">
+              <a href="/enterprise-security-compliance" className="footer_link w-inline-block">
                 <div>Safety &amp; Security</div>
               </a>
               <a href="/privacy-policy" className="footer_link w-inline-block">

@@ -3,6 +3,7 @@ import { client } from '@/lib/sanity/client'
 import { urlFor } from '@/lib/sanity/image'
 import { featureQuery, featureSlugsQuery } from '@/lib/sanity/queries/features'
 import { PortableText } from '@portabletext/react'
+import { ptComponents } from '@/lib/sanity/portable-text-components'
 import { buildMetadata } from '@/lib/metadata'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
@@ -73,7 +74,7 @@ export default async function FeaturesDetailPage({ params }: Props) {
         <section className="c-section">
           <div className="c-container">
             <div className="prose-brand">
-              <PortableText value={doc.body} />
+              <PortableText components={ptComponents} value={doc.body} />
             </div>
           </div>
         </section>

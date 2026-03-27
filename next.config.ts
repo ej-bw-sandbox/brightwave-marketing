@@ -18,6 +18,10 @@ const nextConfig: NextConfig = {
     return [
       { source: '/comparison/:slug', destination: '/comparisons/:slug', permanent: true },
       { source: '/comparison', destination: '/comparisons', permanent: true },
+      { source: '/security', destination: '/enterprise-security-compliance', permanent: true },
+      { source: '/pricing', destination: '/enterprise', permanent: true },
+      { source: '/engineering', destination: '/engineering-log', permanent: true },
+      { source: '/engineering/citations', destination: '/engineering-log', permanent: true },
     ]
   },
 

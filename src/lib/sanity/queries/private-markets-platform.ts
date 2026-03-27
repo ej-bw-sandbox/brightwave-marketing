@@ -8,9 +8,15 @@ export const private_markets_platformQuery = `
     benefitsCtaLabel, benefitsCtaUrl,
     benefits[]{ title, description },
     useCasesEyebrow,
+    useCases[]{ number, title, description, whyBrightwave, image{ asset->{ _id, url, metadata { lqip, dimensions } } } },
     superchargeCtaLabel, superchargeCtaUrl,
     superchargeEyebrow, superchargeBody,
     testimonialsLabel,
+    testimonials[]->{
+      _id, quote, authorName, authorTitle, company, attribution,
+      authorImage{ asset->{ _id, url } },
+      companyLogo{ asset->{ _id, url } }
+    },
     faqsTitle,
     faqs[]{ question, answer },
     footerCtaDescription,

@@ -20,7 +20,11 @@ export const enterpriseQuery = `
     timelineSteps[]{ title, description },
     faqsTitle,
     faqs[]{ question, answer },
-    testimonials[]{ quote, attribution, authorName },
+    testimonials[]->{
+      _id, quote, authorName, authorTitle, company, attribution,
+      authorImage{ asset->{ _id, url } },
+      companyLogo{ asset->{ _id, url } }
+    },
     footerTagline, footerCtaLabel, footerCtaUrl,
     seo
   }

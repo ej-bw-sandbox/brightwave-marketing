@@ -5,6 +5,7 @@ import { caseStudyQuery, caseStudySlugsQuery } from '@/lib/sanity/queries/case-s
 import { buildMetadata } from '@/lib/metadata'
 import { notFound } from 'next/navigation'
 import { PortableText } from '@portabletext/react'
+import { ptComponents } from '@/lib/sanity/portable-text-components'
 import { CtaButton } from '@/components/sections/CtaButton'
 import Link from 'next/link'
 import type { Metadata } from 'next'
@@ -104,7 +105,7 @@ export default async function CaseStudyDetailPage({ params }: Props) {
         <section className="c-section">
           <div className="c-container">
             <div className="prose-brand">
-              <PortableText value={doc.body} />
+              <PortableText components={ptComponents} value={doc.body} />
             </div>
           </div>
         </section>
@@ -155,7 +156,7 @@ export default async function CaseStudyDetailPage({ params }: Props) {
               </p>
             </div>
             <div className="buttons">
-              <CtaButton label="Schedule a Demo" href="/contact" variant="primary" />
+              <CtaButton label="Schedule a Demo" href="/enterprise" variant="primary" />
               <CtaButton label="Start Free Trial" href="https://app.brightwave.io/register" variant="outline" />
             </div>
           </div>

@@ -3,6 +3,7 @@ import { icpQuery, icpSlugsQuery } from '@/lib/sanity/queries/icps'
 import { buildMetadata } from '@/lib/metadata'
 import { notFound } from 'next/navigation'
 import { PortableText } from '@portabletext/react'
+import { ptComponents } from '@/lib/sanity/portable-text-components'
 import { CtaButton } from '@/components/sections/CtaButton'
 import { StepCtaSection } from '@/components/sections/StepCtaSection'
 import type { Metadata } from 'next'
@@ -31,7 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 function renderTextField(value: any) {
   if (!value) return null
   if (typeof value === 'string') return <p className="c-text-3">{value}</p>
-  if (Array.isArray(value)) return <div className="prose-brand"><PortableText value={value} /></div>
+  if (Array.isArray(value)) return <div className="prose-brand"><PortableText components={ptComponents} value={value} /></div>
   return null
 }
 
@@ -83,7 +84,7 @@ export default async function ForDetailPage({ params }: Props) {
                   <div className="card_flex">
                     <div className="c-title-5">{typeof p === 'string' ? p : p.title}</div>
                     {p.body && typeof p.body === 'string' && <div className="c-text-6">{p.body}</div>}
-                    {p.body && Array.isArray(p.body) && <div className="prose-brand"><PortableText value={p.body} /></div>}
+                    {p.body && Array.isArray(p.body) && <div className="prose-brand"><PortableText components={ptComponents} value={p.body} /></div>}
                   </div>
                 </div>
               ))}
@@ -113,7 +114,7 @@ export default async function ForDetailPage({ params }: Props) {
                   <div className="card_flex">
                     <div className="c-title-5">{typeof c === 'string' ? c : c.title}</div>
                     {c.body && typeof c.body === 'string' && <div className="c-text-6">{c.body}</div>}
-                    {c.body && Array.isArray(c.body) && <div className="prose-brand"><PortableText value={c.body} /></div>}
+                    {c.body && Array.isArray(c.body) && <div className="prose-brand"><PortableText components={ptComponents} value={c.body} /></div>}
                   </div>
                 </div>
               ))}
@@ -137,7 +138,7 @@ export default async function ForDetailPage({ params }: Props) {
                 <div key={i} className="v-12">
                   <div className="c-title-5">{typeof w === 'string' ? w : w.title}</div>
                   {w.body && typeof w.body === 'string' && <div className="c-text-4">{w.body}</div>}
-                  {w.body && Array.isArray(w.body) && <div className="prose-brand"><PortableText value={w.body} /></div>}
+                  {w.body && Array.isArray(w.body) && <div className="prose-brand"><PortableText components={ptComponents} value={w.body} /></div>}
                 </div>
               ))}
             </div>
@@ -168,7 +169,7 @@ export default async function ForDetailPage({ params }: Props) {
                 <p className="c-text-3">{doc.ctaSubheadline}</p>
               )}
               {doc.ctaBody && Array.isArray(doc.ctaBody) && (
-                <div className="prose-brand"><PortableText value={doc.ctaBody} /></div>
+                <div className="prose-brand"><PortableText components={ptComponents} value={doc.ctaBody} /></div>
               )}
             </div>
             <div className="buttons">

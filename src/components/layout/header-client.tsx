@@ -8,7 +8,7 @@ import {
   Sparkles, Sheet, Presentation, FileText, FileType,
   Plug, Share2, Users, Settings, Zap, Clock, ListChecks, LayoutTemplate,
   SearchCode, PenTool, Rocket,
-  BookOpen, Newspaper, Scale, Calendar, Megaphone, Library, LifeBuoy, Handshake, Wrench,
+  BookOpen, Newspaper, Scale, Calendar, Megaphone, Library, LifeBuoy, Handshake, Wrench, FlaskConical, Briefcase, Building2,
   Sun, Moon,
 } from 'lucide-react'
 
@@ -168,11 +168,14 @@ export function HeaderClient({
   const useCases = solutionsNavData?.useCases ?? []
   const firmTypes = solutionsNavData?.firmTypes ?? []
 
-  const resourceLinks: { title: string; href: string; desc: string; icon: LucideIcon }[] = [
+  const resourceLinks: { title: string; href: string; desc: string; icon: LucideIcon; external?: boolean }[] = [
+    { title: 'About Us', href: '/about', desc: 'Learn about Brightwave and our mission', icon: Building2 },
     { title: 'Blog', href: '/blog', desc: 'Insights on AI and investment research', icon: BookOpen },
+    { title: 'Careers', href: 'https://www.linkedin.com/company/brightwaveio/jobs/', desc: 'Join the Brightwave team', icon: Briefcase, external: true },
     { title: 'Comparisons', href: '/comparisons', desc: 'How Brightwave compares to alternatives', icon: Scale },
+    { title: 'Engineering Log', href: '/engineering-log', desc: 'Technical deep dives from our team', icon: FlaskConical },
     { title: 'Events', href: '/events', desc: 'Live and past online events', icon: Calendar },
-    { title: 'Knowledge Base', href: '/knowledge-base', desc: 'In-depth guides and documentation', icon: Library },
+    { title: 'Knowledge Base', href: 'https://docs.brightwave.io', desc: 'In-depth guides and documentation', icon: Library, external: true },
     { title: 'News', href: '/news', desc: 'Latest updates and press coverage', icon: Newspaper },
     { title: 'Partner Program', href: '/partners', desc: 'Join our partner ecosystem', icon: Handshake },
     { title: 'Release Notes', href: '/release-notes', desc: 'See our latest feature launches', icon: Megaphone },
@@ -257,7 +260,7 @@ export function HeaderClient({
 
   return (
     <>
-      <div data-w-id="146090b3-a797-0b71-5c03-2ee27e68f65a" data-animation="default" data-collapse="medium" data-duration="400" data-easing="ease" data-easing2="ease" role="banner" className="nav w-nav">
+      <div data-animation="default" data-collapse="medium" role="banner" className="nav w-nav">
         <div id="cio-banner" className="cio-banner"></div>
         <div className="c-container cc-nav">
           <div className="nav_flex">
@@ -288,7 +291,7 @@ export function HeaderClient({
                   <div className="nav_links">
 
                     {/* ==================== PLATFORM DROPDOWN (Desktop) ==================== */}
-                    <div data-hover="false" data-delay="500" className={`nav_dropdown cc-desktop w-dropdown${openDropdown === 'platform' ? ' w--open' : ''}`}>
+                    <div className={`nav_dropdown cc-desktop w-dropdown${openDropdown === 'platform' ? ' w--open' : ''}`}>
                       <div className="nav_toggle w-dropdown-toggle" onClick={() => toggleDropdown('platform')} aria-expanded={openDropdown === 'platform'} role="button" tabIndex={0} onKeyDown={e => e.key === 'Enter' && toggleDropdown('platform')}>
                         <div className="text-overflow">
                           <div className="c-text-link cc-nav">Platform</div>
@@ -363,7 +366,7 @@ export function HeaderClient({
                     </div>
 
                     {/* ==================== SOLUTIONS DROPDOWN (Desktop) ==================== */}
-                    <div data-hover="false" data-delay="500" className={`nav_dropdown cc-desktop w-dropdown${openDropdown === 'solutions' ? ' w--open' : ''}`}>
+                    <div className={`nav_dropdown cc-desktop w-dropdown${openDropdown === 'solutions' ? ' w--open' : ''}`}>
                       <div className="nav_toggle w-dropdown-toggle" onClick={() => toggleDropdown('solutions')} aria-expanded={openDropdown === 'solutions'} role="button" tabIndex={0} onKeyDown={e => e.key === 'Enter' && toggleDropdown('solutions')}>
                         <div className="text-overflow">
                           <div className="c-text-link cc-nav">Solutions</div>
@@ -512,7 +515,7 @@ export function HeaderClient({
                     </a>
 
                     {/* ==================== RESOURCES DROPDOWN (Desktop) ==================== */}
-                    <div data-hover="false" data-delay="500" className={`nav_dropdown cc-desktop w-dropdown${openDropdown === 'resources' ? ' w--open' : ''}`}>
+                    <div className={`nav_dropdown cc-desktop w-dropdown${openDropdown === 'resources' ? ' w--open' : ''}`}>
                       <div className="nav_toggle w-dropdown-toggle" onClick={() => toggleDropdown('resources')} aria-expanded={openDropdown === 'resources'} role="button" tabIndex={0} onKeyDown={e => e.key === 'Enter' && toggleDropdown('resources')}>
                         <div className="text-overflow">
                           <div className="c-text-link cc-nav">Resources</div>
@@ -531,23 +534,34 @@ export function HeaderClient({
                               }}>
                                 {resourceLinks.map((link, i) => {
                                   const ResIcon = link.icon
-                                  return (
-                                  <Link key={i} href={link.href} style={{
-                                    display: 'flex', alignItems: 'flex-start', gap: 12,
-                                    textDecoration: 'none', color: MEGA_TEXT,
-                                    padding: '8px 0',
-                                    transition: 'opacity 0.15s',
-                                  }}
-                                    onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '0.7')}
-                                    onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '1')}
-                                    onClick={() => setOpenDropdown(null)}
-                                  >
-                                    <ResIcon size={18} style={{ opacity: 0.5, flexShrink: 0, marginTop: 2 }} />
-                                    <div>
-                                      <div style={{ fontSize: 15, fontWeight: 600 }}>{link.title}</div>
-                                      <div style={{ fontSize: 13, color: MEGA_TEXT_MUTED, lineHeight: 1.5 }}>{link.desc}</div>
-                                    </div>
-                                  </Link>
+                                  const linkProps = {
+                                    style: {
+                                      display: 'flex', alignItems: 'flex-start', gap: 12,
+                                      textDecoration: 'none', color: MEGA_TEXT,
+                                      padding: '8px 0',
+                                      transition: 'opacity 0.15s',
+                                    } as React.CSSProperties,
+                                    onMouseEnter: (e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '0.7'),
+                                    onMouseLeave: (e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '1'),
+                                    onClick: () => setOpenDropdown(null),
+                                  }
+                                  const content = (
+                                    <>
+                                      <ResIcon size={18} style={{ opacity: 0.5, flexShrink: 0, marginTop: 2 }} />
+                                      <div>
+                                        <div style={{ fontSize: 15, fontWeight: 600 }}>{link.title}</div>
+                                        <div style={{ fontSize: 13, color: MEGA_TEXT_MUTED, lineHeight: 1.5 }}>{link.desc}</div>
+                                      </div>
+                                    </>
+                                  )
+                                  return link.external ? (
+                                    <a key={i} href={link.href} target="_blank" rel="noopener noreferrer" {...linkProps}>
+                                      {content}
+                                    </a>
+                                  ) : (
+                                    <Link key={i} href={link.href} {...linkProps}>
+                                      {content}
+                                    </Link>
                                   )
                                 })}
                               </div>
@@ -626,7 +640,7 @@ export function HeaderClient({
                         <div>
                           <div className="mobile_items">
                             {resourceLinks.map((link, i) => (
-                              <a key={`mob-res-${i}`} href={link.href} className="c-title-4">{link.title}</a>
+                              <a key={`mob-res-${i}`} href={link.href} className="c-title-4" {...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{link.title}</a>
                             ))}
                           </div>
                         </div>

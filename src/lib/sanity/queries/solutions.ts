@@ -2,7 +2,7 @@ import { client } from '../client'
 
 export const solutionsIndexQuery = `
   *[_type == "firmType"] | order(title asc) {
-    title, slug, eyebrow, h1,
+    _id, title, slug, eyebrow, h1, excerpt, product,
     heroImage{ asset->{ _id, url, metadata { lqip, dimensions } } }
   }
 `

@@ -47,6 +47,24 @@ export const privateMarketsPlatformPage = defineType({
 
     // Use Cases
     defineField({ name: 'useCasesEyebrow', title: 'Use Cases Eyebrow', type: 'string' }),
+    defineField({
+      name: 'useCases',
+      title: 'Use Cases',
+      type: 'array',
+      of: [{
+        type: 'object',
+        fields: [
+          { name: 'number', title: 'Number (e.g. "01")', type: 'string' },
+          { name: 'title', title: 'Title', type: 'string' },
+          { name: 'description', title: 'Description', type: 'text' },
+          { name: 'whyBrightwave', title: 'Why Brightwave', type: 'text' },
+          { name: 'image', title: 'Illustration', type: 'image', options: { hotspot: true } },
+        ],
+        preview: {
+          select: { title: 'title', subtitle: 'number' },
+        },
+      }],
+    }),
 
     // Supercharge Section
     defineField({ name: 'superchargeCtaLabel', title: 'Supercharge CTA Label', type: 'string' }),
@@ -56,6 +74,7 @@ export const privateMarketsPlatformPage = defineType({
 
     // Testimonials
     defineField({ name: 'testimonialsLabel', title: 'Testimonials Label', type: 'string' }),
+    defineField({ name: 'testimonials', title: 'Testimonials', type: 'array', of: [{ type: 'testimonialRef' }] }),
 
     // FAQs
     defineField({ name: 'faqsTitle', title: 'FAQs Title', type: 'string' }),

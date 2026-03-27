@@ -78,21 +78,30 @@ export function ContentPostDetail({ post, basePath }: ContentPostDetailProps) {
 
       {/* Related posts */}
       {relatedPosts.length > 0 && (
-        <section className="pb-24 max-w-site mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl font-bold text-bw-gray-800 mb-8">Related Posts</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {relatedPosts.map((rp: any) => (
-              <ContentPostCard
-                key={rp.slug?.current}
-                title={rp.title}
-                slug={rp.slug?.current || ''}
-                excerpt={rp.excerpt}
-                coverImage={rp.coverImage}
-                publishedAt={rp.publishedAt}
-                author={rp.author}
-                basePath={basePath}
-              />
-            ))}
+        <section className="c-section">
+          <div className="c-container">
+            <div className="founders">
+              <div className="founders-flex">
+                <h2 className="c-title-2">Related Posts</h2>
+              </div>
+              <div className="w-dyn-list">
+                <div role="list" className="grid cc-cards w-dyn-items">
+                  {relatedPosts.map((rp: any) => (
+                    <div key={rp.slug?.current} role="listitem" className="card_item w-dyn-item">
+                      <ContentPostCard
+                        title={rp.title}
+                        slug={rp.slug?.current || ''}
+                        excerpt={rp.excerpt}
+                        coverImage={rp.coverImage}
+                        publishedAt={rp.publishedAt}
+                        author={rp.author}
+                        basePath={basePath}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         </section>
       )}

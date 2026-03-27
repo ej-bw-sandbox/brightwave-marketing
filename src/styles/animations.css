@@ -1,0 +1,139 @@
+/* ============================================
+   Logo Marquee Animation
+   ============================================ */
+
+@keyframes marquee-scroll-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marquee-scroll-right {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.logo-marquee {
+  --marquee-fade-width: 3rem;
+}
+
+.logo-marquee__fade-left,
+.logo-marquee__fade-right {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: var(--marquee-fade-width);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.logo-marquee__fade-left {
+  left: 0;
+  background: linear-gradient(90deg, var(--lightmode--surface, #fff), transparent);
+}
+
+.logo-marquee__fade-right {
+  right: 0;
+  background: linear-gradient(90deg, transparent, var(--lightmode--surface, #fff));
+}
+
+.logo-marquee:hover .logo-marquee__track[data-pause-on-hover] {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-marquee__track {
+    animation-play-state: paused !important;
+  }
+}
+
+/* ============================================
+   Testimonial Slider Fade Animation
+   ============================================ */
+
+@keyframes testimonial-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes testimonial-fade-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+}
+
+.testimonial-slider__slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  pointer-events: none;
+}
+
+.testimonial-slider__slide--active {
+  opacity: 1;
+  pointer-events: auto;
+  animation: testimonial-fade-in 0.5s ease forwards;
+}
+
+.testimonial-slider__slide--exiting {
+  animation: testimonial-fade-out 0.5s ease forwards;
+}
+
+/* ============================================
+   Fade-In on Scroll (Intersection Observer)
+   ============================================ */
+
+.fade-in-on-scroll {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.fade-in-on-scroll--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger children for grid items */
+.fade-in-on-scroll--visible:nth-child(2) {
+  transition-delay: 0.1s;
+}
+.fade-in-on-scroll--visible:nth-child(3) {
+  transition-delay: 0.2s;
+}
+.fade-in-on-scroll--visible:nth-child(4) {
+  transition-delay: 0.3s;
+}
+.fade-in-on-scroll--visible:nth-child(5) {
+  transition-delay: 0.4s;
+}
+.fade-in-on-scroll--visible:nth-child(6) {
+  transition-delay: 0.5s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-in-on-scroll {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

@@ -13,10 +13,8 @@ import { firmType } from './documents/firm-type'
 import { icpPage } from './documents/icp'
 import { resourceItem } from './documents/resource'
 import { virtualEvent } from './documents/event'
-import { landingPage } from './documents/landing-page'
 import { abmPage } from './documents/abm-page'
 import { legalPage } from './documents/legal-page'
-import { securityPage } from './documents/security-page'
 import { enterpriseSalesPage } from './documents/enterprise-page'
 import { siteSettings } from './documents/site-settings'
 
@@ -25,15 +23,17 @@ import { contentPost } from './documents/content-post'
 import { supportPage } from './documents/support-page'
 import { contactPage } from './documents/contact-page'
 
-// Agent 2A new page types
+// Page types
 import { partnersPage } from './documents/partners-page'
 import { privateMarketsPlatformPage } from './documents/private-markets-platform-page'
 import { enterpriseSecurityCompliancePage } from './documents/enterprise-security-compliance-page'
 import { partnerTermsPage } from './documents/partner-terms-page'
 import { referralPage } from './documents/referral-page'
 import { thankYouContactPage } from './documents/thank-you-contact-page'
-import { engineeringPage } from './documents/engineering-page'
-import { engineeringCitationsPage } from './documents/engineering-citations-page'
+import { thankYouPage } from './documents/thank-you-page'
+
+// Social Proof
+import { testimonial } from './documents/testimonial'
 
 // Legacy types (kept for migration compatibility)
 import { blogPost } from './documents/blog-post'
@@ -53,20 +53,17 @@ export const schemaTypes = [
   aboutPage,
   pricingPage,
   enterpriseSalesPage,
-  securityPage,
   supportPage,
   contactPage,
   siteSettings,
 
-  // Agent 2A singletons
+  // Page types
   partnersPage,
   privateMarketsPlatformPage,
   enterpriseSecurityCompliancePage,
   partnerTermsPage,
   referralPage,
   thankYouContactPage,
-  engineeringPage,
-  engineeringCitationsPage,
 
   // Product
   platformFeature,
@@ -87,12 +84,15 @@ export const schemaTypes = [
   category,
   author,
 
+  // Social Proof
+  testimonial,
+
   // Campaigns
-  landingPage,
   abmPage,
 
-  // Legal
+  // System
   legalPage,
+  thankYouPage,
 
   // Legacy (kept for migration, hidden in Studio)
   blogPost,

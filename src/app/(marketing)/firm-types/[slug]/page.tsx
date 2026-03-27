@@ -3,6 +3,7 @@ import { client } from '@/lib/sanity/client'
 import { urlFor } from '@/lib/sanity/image'
 import { solutionQuery, solutionSlugsQuery } from '@/lib/sanity/queries/solutions'
 import { PortableText } from '@portabletext/react'
+import { ptComponents } from '@/lib/sanity/portable-text-components'
 import { buildMetadata } from '@/lib/metadata'
 import { notFound } from 'next/navigation'
 import { CtaButton } from '@/components/sections/CtaButton'
@@ -67,7 +68,7 @@ export default async function FirmTypeDetailPage({ params }: Props) {
         <section className="c-section">
           <div className="c-container">
             <div className="prose-brand">
-              <PortableText value={doc.body} />
+              <PortableText components={ptComponents} value={doc.body} />
             </div>
           </div>
         </section>
@@ -85,7 +86,7 @@ export default async function FirmTypeDetailPage({ params }: Props) {
             </div>
             <div className="buttons">
               <CtaButton label="Start Free Trial" href="https://app.brightwave.io/register" variant="primary" />
-              <CtaButton label="Get a Demo" href="/contact" variant="outline" />
+              <CtaButton label="Get a Demo" href="/enterprise" variant="outline" />
             </div>
           </div>
         </div>

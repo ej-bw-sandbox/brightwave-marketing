@@ -60,7 +60,7 @@ export default async function Page() {
                           </div>
                         </a>
                       </div>
-                      <div data-w-id="8a465f1d-621f-6b36-616d-e1b5181b63a0" className="cta-182">
+                      <div className="cta-182">
                         <a stagger-cta="" href={doc.twitterUrl} className="cta-p-sm w-inline-block">
                           <div className="x-logo-wrap"><img src="/webflow-images/X_logos-world_2.svg" loading="lazy" alt="" className="x-logo" /><img src="/webflow-images/X_logos-world_2.svg" loading="lazy" alt="" className="x-logo cc-absolute" /></div>
                           <div className="flip-small">

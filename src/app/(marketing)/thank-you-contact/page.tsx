@@ -32,7 +32,7 @@ export default async function Page() {
   return (
     <>
       <div className="main">
-            <div data-w-id="146090b3-a797-0b71-5c03-2ee27e68f65a" data-animation="default" data-collapse="medium" data-duration="400" data-easing="ease" data-easing2="ease" role="banner" className="nav w-nav">
+            <div data-animation="default" data-collapse="medium" role="banner" className="nav w-nav">
               <div id="cio-banner" className="cio-banner"></div>
               <div className="c-container cc-nav">
                 <div className="nav_flex">
@@ -58,8 +58,8 @@ export default async function Page() {
                       </a>
                       <nav role="navigation" className="nav_menu w-nav-menu">
                         <div className="nav_links">
-                          <div data-hover="false" data-delay="500" data-w-id="146090b3-a797-0b71-5c03-2ee27e68f664" className="nav_dropdown cc-desktop w-dropdown">
-                            <div data-w-id="146090b3-a797-0b71-5c03-2ee27e68f665" className="nav_toggle w-dropdown-toggle">
+                          <div className="nav_dropdown cc-desktop w-dropdown">
+                            <div className="nav_toggle w-dropdown-toggle">
                               <div className="text-overflow">
                                 <div className="c-text-link cc-nav">Platform</div>
                                 <div className="nav_line"></div>
@@ -71,7 +71,7 @@ export default async function Page() {
                               <div className="nav_list-wrap">
                                 <div className="nav_list-flex">
                                   <div className="nav_list-flex cc-inner">
-                                    <a a-dm="" data-w-id="146090b3-a797-0b71-5c03-2ee27e68f676" href="investment-intelligence-engine.html" className="nav_item cc-2 w-inline-block">
+                                    <a a-dm="" href="investment-intelligence-engine.html" className="nav_item cc-2 w-inline-block">
                                       <div className="c-title-3 cc-nav-2">Investment Intelligence Engine</div>
                                       <div className="nav_arrow">
                                         <div className="svg cc-nav-arrow-bg w-embed"><svg width="54" height="51" viewBox="0 0 54 51" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -105,7 +105,7 @@ export default async function Page() {
                                         </div>
                                       </div>
                                     </a>
-                                    <a a-dm="" data-w-id="146090b3-a797-0b71-5c03-2ee27e68f67f" href="enterprise-security-compliance.html" className="nav_item cc-3 w-inline-block">
+                                    <a a-dm="" href="enterprise-security-compliance.html" className="nav_item cc-3 w-inline-block">
                                       <div className="c-title-3 cc-nav-3">Enterprise Security &amp; Compliance</div>
                                       <div className="nav_arrow">
                                         <div className="svg cc-nav-arrow-bg w-embed"><svg width="54" height="51" viewBox="0 0 54 51" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -144,8 +144,8 @@ export default async function Page() {
                               </div>
                             </nav>
                           </div>
-                          <div data-hover="false" data-delay="500" data-w-id="ac16cc5c-4857-2364-279f-0d7a4cd1256d" className="nav_dropdown cc-desktop w-dropdown">
-                            <div data-w-id="ac16cc5c-4857-2364-279f-0d7a4cd1256e" className="nav_toggle w-dropdown-toggle">
+                          <div className="nav_dropdown cc-desktop w-dropdown">
+                            <div className="nav_toggle w-dropdown-toggle">
                               <div className="text-overflow">
                                 <div className="c-text-link cc-nav">Solutions</div>
                                 <div className="nav_line"></div>
@@ -157,7 +157,7 @@ export default async function Page() {
                               <div className="nav_list-wrap">
                                 <div className="nav_list-flex">
                                   <div className="nav_list-flex cc-inner">
-                                    <a a-dm="" data-w-id="ac16cc5c-4857-2364-279f-0d7a4cd12579" href="private-markets-platform.html" className="nav_item cc-2 w-inline-block">
+                                    <a a-dm="" href="private-markets-platform.html" className="nav_item cc-2 w-inline-block">
                                       <div className="c-title-3 cc-nav-2">Private Markets</div>
                                       <div className="nav_arrow">
                                         <div className="svg cc-nav-arrow-bg w-embed"><svg width="54" height="51" viewBox="0 0 54 51" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -191,7 +191,7 @@ export default async function Page() {
                                         </div>
                                       </div>
                                     </a>
-                                    <a a-dm="" data-w-id="ac16cc5c-4857-2364-279f-0d7a4cd12581" href="public-markets-platform.html" className="nav_item cc-3 w-inline-block">
+                                    <a a-dm="" href="public-markets-platform.html" className="nav_item cc-3 w-inline-block">
                                       <div className="c-title-3 cc-nav-3">Public Markets</div>
                                       <div className="nav_arrow">
                                         <div className="svg cc-nav-arrow-bg w-embed"><svg width="54" height="51" viewBox="0 0 54 51" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -234,8 +234,8 @@ export default async function Page() {
                             <div className="c-text-link cc-nav">Blog</div>
                             <div className="nav_line"></div>
                           </a>
-                          <div data-hover="false" data-delay="500" data-w-id="83771abb-9268-5d18-1c75-96be37352b7a" className="nav_dropdown cc-desktop w-dropdown">
-                            <div data-w-id="83771abb-9268-5d18-1c75-96be37352b7b" className="nav_toggle w-dropdown-toggle">
+                          <div className="nav_dropdown cc-desktop w-dropdown">
+                            <div className="nav_toggle w-dropdown-toggle">
                               <div className="text-overflow">
                                 <div className="c-text-link cc-nav">Company</div>
                                 <div className="nav_line"></div>
@@ -247,7 +247,7 @@ export default async function Page() {
                               <div className="nav_list-wrap">
                                 <div className="nav_list-flex">
                                   <div className="nav_list-flex cc-inner">
-                                    <a a-dm="" data-w-id="83771abb-9268-5d18-1c75-96be37352b86" href="about.html" className="nav_item cc-1 w-inline-block">
+                                    <a a-dm="" href="about.html" className="nav_item cc-1 w-inline-block">
                                       <div className="c-title-3 cc-nav-1">About</div>
                                       <div className="nav_arrow">
                                         <div className="svg cc-nav-arrow-bg w-embed"><svg width="54" height="51" viewBox="0 0 54 51" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -281,7 +281,7 @@ export default async function Page() {
                                         </div>
                                       </div>
                                     </a>
-                                    <a a-dm="" data-w-id="83771abb-9268-5d18-1c75-96be37352b8e" href="https://www.linkedin.com/company/brightwaveio/jobs/" target="_blank" className="nav_item cc-2 w-inline-block">
+                                    <a a-dm="" href="https://www.linkedin.com/company/brightwaveio/jobs/" target="_blank" className="nav_item cc-2 w-inline-block">
                                       <div className="c-title-3 cc-nav-2">Careers</div>
                                       <div className="nav_arrow">
                                         <div className="svg cc-nav-arrow-bg w-embed"><svg width="54" height="51" viewBox="0 0 54 51" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -315,7 +315,7 @@ export default async function Page() {
                                         </div>
                                       </div>
                                     </a>
-                                    <a a-dm="" data-w-id="83771abb-9268-5d18-1c75-96be37352b96" href="news.html" className="nav_item cc-3 w-inline-block">
+                                    <a a-dm="" href="news.html" className="nav_item cc-3 w-inline-block">
                                       <div className="c-title-3 cc-nav-3">News</div>
                                       <div className="nav_arrow">
                                         <div className="svg cc-nav-arrow-bg w-embed"><svg width="54" height="51" viewBox="0 0 54 51" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -422,7 +422,7 @@ export default async function Page() {
                       </nav>
                       <div className="nav_ctas">
                         <div className="nav_btns">
-                          <div data-w-id="faefcd5e-5b3c-824a-01c6-d01116acb6bc" className="toggle">
+                          <div className="toggle">
                             <LottiePlayer src="/webflow-documents/Animation---1728577640189.json" className="nav_lottie" loop={true} autoplay={false} />
                           </div>
                           <a stagger-text-btn="" href="https://app.brightwave.io/login" className="cta-sec cc-fill w-inline-block">

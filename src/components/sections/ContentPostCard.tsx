@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import Link from 'next/link'
 import { urlFor } from '@/lib/sanity/image'
 
@@ -34,81 +33,48 @@ export function ContentPostCard({
       )
     : null
 
+  const imgSrc = coverImage?.asset
+    ? urlFor(coverImage).width(600).height(450).quality(80).url()
+    : 'https://d3e54v103j8qbb.cloudfront.net/plugins/Basic/assets/placeholder.60f9b1840c.svg'
+
   if (variant === 'featured') {
     return (
-      <Link
-        href={href}
-        className="group block rounded-lg border border-bw-gray-200 bg-white overflow-hidden card-hover md:grid md:grid-cols-2 md:gap-0"
-      >
-        {coverImage?.asset && (
-          <div className="overflow-hidden">
-            <Image
-              src={urlFor(coverImage).width(800).height(450).quality(85).url()}
-              alt={title}
-              width={800}
-              height={450}
-              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+      <div role="listitem" className="card_item w-dyn-item">
+        <Link href={href} className="grid cc-featured w-inline-block">
+          <div className="inject-landscape"></div>
+          <div className="aspect-16-9 u-overflow-hidden">
+            <img
+              src={imgSrc}
+              loading="lazy"
+              alt={title || ''}
+              className="img-cover"
             />
           </div>
-        )}
-        <div className="p-8 flex flex-col justify-center">
-          {formattedDate && (
-            <div className="text-xs text-bw-gray-500 mb-3">
-              <time>{formattedDate}</time>
+          <div className="featured_right">
+            <div className="featured_top">
+              <div className="c-title-4">{title}</div>
             </div>
-          )}
-          <h3 className="text-2xl font-bold text-bw-gray-800 group-hover:text-bw-yellow-600 transition-colors leading-tight">
-            {title}
-          </h3>
-          {excerpt && (
-            <p className="mt-3 text-bw-gray-500 line-clamp-3">{excerpt}</p>
-          )}
-          {author && (
-            <div className="mt-4 flex items-center gap-2">
-              {author.image?.asset && (
-                <Image
-                  src={urlFor(author.image).width(28).height(28).url()}
-                  alt={author.name}
-                  width={28}
-                  height={28}
-                  className="rounded-full"
-                />
-              )}
-              <span className="text-sm text-bw-gray-500">{author.name}</span>
-            </div>
-          )}
-        </div>
-      </Link>
+            <div className="c-text-4">{excerpt || ''}</div>
+          </div>
+        </Link>
+      </div>
     )
   }
 
   return (
-    <Link
-      href={href}
-      className="group flex flex-col gap-2.5 w-full"
-    >
-      {coverImage?.asset && (
-        <div className="aspect-[4/3] relative overflow-hidden rounded-lg">
-          <Image
-            src={urlFor(coverImage).width(600).height(450).quality(80).url()}
-            alt={title}
-            width={600}
-            height={450}
-            className="absolute inset-0 w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
-          />
-        </div>
-      )}
-      <div className="flex flex-col gap-3">
-        <h3 className="c-title-5 text-bw-gray-800 group-hover:text-bw-yellow-600 transition-colors line-clamp-2">
-          {title}
-        </h3>
-        {excerpt && (
-          <p className="c-text-5 text-bw-gray-500 line-clamp-2">{excerpt}</p>
-        )}
-        <div className="flex items-center gap-3 text-xs text-bw-gray-500">
-          {formattedDate && <time>{formattedDate}</time>}
-          {author && <span>by {author.name}</span>}
-        </div>
+    <Link href={href} className="card w-inline-block">
+      <div className="aspect-4-3">
+        <img
+          src={imgSrc}
+          loading="lazy"
+          alt={title || ''}
+          className="img-cover"
+        />
+      </div>
+      <div className="card_flex">
+        <div className="c-title-5">{title}</div>
+        {author && <div className="author-hide">{author.name}</div>}
+        {formattedDate && <div className="c-text-6">{formattedDate}</div>}
       </div>
     </Link>
   )

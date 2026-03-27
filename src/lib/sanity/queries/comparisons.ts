@@ -24,11 +24,16 @@ export const comparisonQuery = `
       image{ asset->{ _id, url } },
       icon{ asset->{ _id, url } }
     },
+    featureHighlights[]{
+      ...,
+      competitorImage{ asset->{ _id, url } },
+      brightwaveImage{ asset->{ _id, url } }
+    },
     useCaseFitItems,
     comparisonTable,
     faqs,
-    testimonial{
-      ...,
+    testimonial->{
+      _id, quote, authorName, authorTitle, company, attribution,
       authorImage{ asset->{ _id, url } },
       companyLogo{ asset->{ _id, url } }
     },

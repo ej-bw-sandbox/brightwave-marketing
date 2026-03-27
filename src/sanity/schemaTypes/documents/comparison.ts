@@ -59,6 +59,28 @@ export const comparison = defineType({
       }],
     }),
     defineField({
+      name: 'featureHighlights',
+      title: 'Feature Highlights',
+      type: 'array',
+      description: 'Side-by-side feature comparison cards with illustrations (e.g. "Autonomous AI Agents")',
+      of: [{
+        type: 'object',
+        name: 'featureHighlight',
+        fields: [
+          { name: 'title', title: 'Title', type: 'string', validation: (r) => r.required() },
+          { name: 'description', title: 'Description', type: 'text', rows: 4 },
+          { name: 'body', title: 'Rich Text Body', type: 'blockContent', description: 'Alternative rich text body' },
+          { name: 'competitorImage', title: 'Competitor Illustration', type: 'image', options: { hotspot: true }, description: 'Screenshot or illustration showing the competitor approach' },
+          { name: 'brightwaveImage', title: 'Brightwave Illustration', type: 'image', options: { hotspot: true }, description: 'Screenshot or illustration showing the Brightwave approach' },
+          { name: 'competitorCaption', title: 'Competitor Caption', type: 'string' },
+          { name: 'brightwaveCaption', title: 'Brightwave Caption', type: 'string' },
+        ],
+        preview: {
+          select: { title: 'title' },
+        },
+      }],
+    }),
+    defineField({
       name: 'useCaseFitItems',
       title: 'Use Case Fit Items',
       type: 'array',

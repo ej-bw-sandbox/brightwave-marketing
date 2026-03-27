@@ -152,7 +152,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
                 <div className="c-title-cta">Research</div>
               </div>
               <div className="cta-step">
-                <Link href="/contact" className="cta-p-big w-inline-block">
+                <Link href="/enterprise" className="cta-p-big w-inline-block">
                   <div className="cta-p-big_top">
                     <div className="c-text-link cc-stagger-cta">Schedule a Trial</div>
                   </div>

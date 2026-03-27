@@ -3,6 +3,7 @@ import { client } from '@/lib/sanity/client'
 import { partnersQuery } from '@/lib/sanity/queries/partners'
 import { buildMetadata } from '@/lib/metadata'
 import { PortableText } from '@portabletext/react'
+import { ptComponents } from '@/lib/sanity/portable-text-components'
 import { LottiePlayer } from '@/components/ui/LottiePlayer'
 
 interface PartnersPageDoc {
@@ -300,7 +301,7 @@ export default async function Page() {
                               <div mask-height="element">
                                 <div className="accordion_content">
                                   <div className="c-text-4 w-richtext">
-                                    <PortableText value={item.answer} />
+                                    <PortableText components={ptComponents} value={item.answer} />
                                   </div>
                                 </div>
                               </div>

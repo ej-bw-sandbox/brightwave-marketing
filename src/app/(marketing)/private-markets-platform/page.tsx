@@ -516,7 +516,7 @@ export default async function Page() {
                     )
                   })}
                   <div className="cta-step cc-market">
-                    <a stagger-cta-big="" data-w-id="f984e0fd-5317-bfcf-7b12-0d02f1476f56" href={doc.footerCtaUrl} className="cta-p-big w-inline-block">
+                    <a stagger-cta-big="" href={doc.footerCtaUrl} className="cta-p-big w-inline-block">
                       <div a-dm="" className="cta-p-big_top">
                         <div stagger-cta-text-big="" className="c-text-link cc-stagger-cta">{doc.footerCtaLabel}</div>
                       </div><svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 35 33" fill="none" className="cta-p-big_arrows cc-hide">

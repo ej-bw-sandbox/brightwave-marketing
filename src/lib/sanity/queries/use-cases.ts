@@ -2,7 +2,7 @@ import { client } from '../client'
 
 export const useCaseIndexQuery = `
   *[_type == "useCase"] | order(title asc) {
-    title, slug, eyebrow, excerpt,
+    _id, title, slug, eyebrow, excerpt, product,
     heroImage{ asset->{ _id, url, metadata { lqip, dimensions } } }
   }
 `
