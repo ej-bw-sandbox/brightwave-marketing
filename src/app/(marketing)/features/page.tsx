@@ -114,11 +114,7 @@ export default async function Page() {
 
       <section className="c-section c-cs-main-list">
         <div className="c-container">
-          <div className="c-comparison-template_grid cc-rel">
-            <div id="w-node-feat-main-list" className="c-cs-main-list_main-wrapper">
-              <FeaturesGrid features={features} />
-            </div>
-          </div>
+          <FeaturesGrid features={features} />
         </div>
       </section>
 
