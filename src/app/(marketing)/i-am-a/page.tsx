@@ -23,7 +23,7 @@ export default async function RolesPage() {
     slug: item.slug,
     product: item.product,
     excerpt: item.excerpt || item.heroTagline || '',
-    tag: item.product === 'private-markets' ? 'Private Markets' : item.product === 'public-markets' ? 'Public Markets' : '',
+    tag: item.product === 'private-markets' ? 'Private Markets' : '',
     heroImage: item.heroImage,
   }))
 

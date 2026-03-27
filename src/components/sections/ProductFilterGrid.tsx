@@ -6,7 +6,6 @@ import Link from 'next/link'
 const PRODUCT_OPTIONS = [
   { label: 'All', value: '' },
   { label: 'Private Markets', value: 'private-markets' },
-  { label: 'Public Markets', value: 'public-markets' },
 ]
 
 interface GridItem {

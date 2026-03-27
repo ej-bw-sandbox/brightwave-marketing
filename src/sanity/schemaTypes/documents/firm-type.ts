@@ -15,7 +15,6 @@ export const firmType = defineType({
       options: {
         list: [
           { title: 'Private Markets', value: 'private-markets' },
-          { title: 'Public Markets', value: 'public-markets' },
         ],
         layout: 'dropdown',
       },

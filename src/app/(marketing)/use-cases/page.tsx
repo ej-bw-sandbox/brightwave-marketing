@@ -23,7 +23,7 @@ export default async function UseCasesPage() {
     slug: item.slug,
     product: item.product,
     excerpt: item.excerpt || '',
-    tag: item.eyebrow || (item.product === 'private-markets' ? 'Private Markets' : item.product === 'public-markets' ? 'Public Markets' : ''),
+    tag: item.eyebrow || (item.product === 'private-markets' ? 'Private Markets' : ''),
     heroImage: item.heroImage,
   }))
 
