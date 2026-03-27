@@ -76,9 +76,27 @@ export function TestimonialSlider({
     >
       <div className="slider w-dyn-list">
         <div role="list" className="slider_list w-dyn-items" style={{ position: 'relative' }}>
+          {/* Hidden sizer: renders ALL quotes stacked to establish the max height */}
+          <div aria-hidden="true" style={{ visibility: 'hidden', pointerEvents: 'none' }}>
+            {testimonials.map((t, i) => (
+              <div key={`sizer-${i}`} className="slider_cms-item w-dyn-item" style={{ position: i === 0 ? 'relative' : 'absolute', inset: 0 }}>
+                <div className="slider_item">
+                  <div className="slider_flex">
+                    <div className="c-title-4">{t.quote}</div>
+                    {t.eyebrow && (
+                      <div className="eyebrow-flex">
+                        <div className="block cc-primary"></div>
+                        <div className="c-title-5 cc-primary">{t.eyebrow}</div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          {/* Actual visible slides */}
           {testimonials.map((t, i) => {
             const isActive = i === activeIndex
-            const isExiting = i === exitingIndex
 
             return (
               <div
@@ -86,12 +104,11 @@ export function TestimonialSlider({
                 role="listitem"
                 className="slider_cms-item w-dyn-item"
                 style={{
-                  position: i === 0 ? 'relative' : 'absolute',
+                  position: 'absolute',
                   inset: 0,
                   opacity: isActive ? 1 : 0,
                   transition: 'opacity 0.5s ease',
                   pointerEvents: isActive ? 'auto' : 'none',
-                  ...(isExiting ? { opacity: 0 } : {}),
                 }}
                 aria-hidden={!isActive}
               >
