@@ -1,0 +1,508 @@
+/* ------------------------------------------------------------------ */
+/*  Hyperscale Agents Section — Component-scoped styles               */
+/* ------------------------------------------------------------------ */
+
+/* Outer wrapper: pinned for ~500vh of scroll */
+.sectionOuter {
+  position: relative;
+  height: 500vh;
+  background: #0f0f0f;
+}
+
+.sectionInner {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Shared act layer (absolute fill) */
+.actLayer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+
+.actLayerVisible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ---- Act 1: Prompt ---- */
+.promptWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  max-width: 56rem;
+  padding: 0 1.5rem;
+  text-align: center;
+}
+
+.tagLine {
+  font-family: var(--font-heading, "PST Mail Sans", sans-serif);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #e7e70d;
+}
+
+.headlinePrimary {
+  font-family: var(--font-heading, "PST Mail Sans", sans-serif);
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.1;
+}
+
+.headlineBold {
+  font-family: var(--font-heading, "PST Mail Sans", sans-serif);
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.05;
+}
+
+/* ---- Prompt Card ---- */
+.promptCard {
+  position: relative;
+  width: 100%;
+  max-width: 42rem;
+  background: #1a1a1b;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.75rem;
+  padding: 1.25rem 1.5rem;
+  text-align: left;
+  overflow: hidden;
+}
+
+.promptCardShatter {
+  transform: scale(0.8);
+  opacity: 0;
+}
+
+.promptLabel {
+  font-family: var(--font-heading, "PST Mail Sans", sans-serif);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+  margin-bottom: 0.5rem;
+}
+
+.promptText {
+  font-family: var(--font-heading, "PST Mail Sans", sans-serif);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.85);
+  min-height: 1.6em;
+}
+
+.cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.1em;
+  background: #e7e70d;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ---- Act 2: Constellation ---- */
+.constellationWrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.canvasContainer {
+  position: absolute;
+  inset: 0;
+}
+
+.constellationCanvas {
+  width: 100%;
+  height: 100%;
+}
+
+.constellationCopy {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 48rem;
+  padding: 0 1.5rem;
+}
+
+/* ---- Node labels (SVG overlay) ---- */
+.nodeLabels {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.nodeLabel {
+  position: absolute;
+  font-family: var(--font-heading, "PST Mail Sans", sans-serif);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #ffffff;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.nodeLabelVisible {
+  opacity: 1;
+}
+
+/* ---- SVG Progress Rings ---- */
+.progressRing {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.progressRingVisible {
+  opacity: 1;
+}
+
+.ringBg {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.08);
+  stroke-width: 3;
+}
+
+.ringFill {
+  fill: none;
+  stroke-width: 3;
+  stroke-linecap: round;
+  transition: stroke 0.4s ease, stroke-dashoffset 0.3s ease;
+}
+
+.ringQueued {
+  stroke: rgba(255, 255, 255, 0.25);
+}
+
+.ringRunning {
+  stroke: #e7e70d;
+}
+
+.ringComplete {
+  stroke: #22c55e;
+}
+
+/* ---- Status Badge ---- */
+.statusBadge {
+  position: absolute;
+  transform: translate(-50%, 0);
+  font-family: var(--font-heading, "PST Mail Sans", sans-serif);
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.125rem 0.5rem;
+  border-radius: 2rem;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s ease, background 0.3s ease, color 0.3s ease;
+}
+
+.statusBadgeVisible {
+  opacity: 1;
+}
+
+.statusQueued {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.statusRunning {
+  background: rgba(231, 231, 13, 0.15);
+  color: #e7e70d;
+}
+
+.statusComplete {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+}
+
+/* ---- Act 3: Counters ---- */
+.countersWrap {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3rem;
+}
+
+.countersRow {
+  display: flex;
+  gap: 4rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.counterItem {
+  text-align: center;
+  min-width: 8rem;
+}
+
+.counterValue {
+  font-family: var(--font-heading, "PST Mail Sans", sans-serif);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.counterLabel {
+  font-family: var(--font-heading, "PST Mail Sans", sans-serif);
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 0.5rem;
+  text-transform: lowercase;
+}
+
+/* ---- Act 4: Output card ---- */
+.outputWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.5rem;
+  padding: 0 1.5rem;
+  text-align: center;
+}
+
+.outputCard {
+  position: relative;
+  width: 100%;
+  max-width: 28rem;
+  background: linear-gradient(145deg, #1f1f20 0%, #161617 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  padding: 2rem;
+  text-align: left;
+  box-shadow: 0 0 80px rgba(231, 231, 13, 0.06);
+}
+
+.outputCardHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.outputLogo {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.375rem;
+  background: #e7e70d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.outputLogoInner {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: #0f0f0f;
+}
+
+.outputType {
+  font-family: var(--font-heading, "PST Mail Sans", sans-serif);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.outputTitle {
+  font-family: var(--font-heading, "PST Mail Sans", sans-serif);
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 0.75rem;
+  line-height: 1.3;
+}
+
+.outputMeta {
+  font-family: var(--font-heading, "PST Mail Sans", sans-serif);
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.outputDivider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
+  margin: 1rem 0;
+}
+
+.outputPreviewLine {
+  height: 0.5rem;
+  border-radius: 0.25rem;
+  background: rgba(255, 255, 255, 0.06);
+  margin-bottom: 0.5rem;
+}
+
+.outputPreviewLineShort {
+  width: 60%;
+}
+
+.outputGlow {
+  position: absolute;
+  inset: -1px;
+  border-radius: 1rem;
+  background: linear-gradient(135deg, rgba(231, 231, 13, 0.08), transparent 50%);
+  pointer-events: none;
+}
+
+/* CTA Button */
+.ctaButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.75rem;
+  background: #e7e70d;
+  color: #0f0f0f;
+  font-family: var(--font-heading, "PST Mail Sans", sans-serif);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  transition: background 0.2s ease, transform 0.15s ease;
+  cursor: pointer;
+  border: none;
+}
+
+.ctaButton:hover {
+  background: #f2f218;
+  transform: translateY(-1px);
+}
+
+.ctaButton:active {
+  transform: translateY(0);
+}
+
+/* ---- Mobile Stacked Layout ---- */
+.mobileLayout {
+  display: none;
+}
+
+.mobileSection {
+  background: #0f0f0f;
+  padding: 5rem 1.5rem;
+}
+
+.mobileInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4rem;
+  max-width: 40rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.mobileAct {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.mobileNodesGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  width: 100%;
+  max-width: 24rem;
+}
+
+.mobileNode {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.5rem;
+}
+
+.mobileNodeDot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: #e7e70d;
+  flex-shrink: 0;
+}
+
+.mobileNodeLabel {
+  font-family: var(--font-heading, "PST Mail Sans", sans-serif);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.mobileCounters {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* ---- Responsive: show mobile, hide desktop ---- */
+@media (max-width: 768px) {
+  .sectionOuter {
+    display: none;
+  }
+  .mobileLayout {
+    display: block;
+  }
+}
+
+/* ---- Reduced motion ---- */
+@media (prefers-reduced-motion: reduce) {
+  .cursor {
+    animation: none;
+    opacity: 1;
+  }
+  .sectionOuter {
+    height: auto;
+  }
+  .sectionInner {
+    position: relative;
+    height: auto;
+    min-height: 100vh;
+  }
+}

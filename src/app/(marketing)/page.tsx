@@ -8,6 +8,7 @@ import { TestimonialSlider } from '@/components/ui/TestimonialSlider'
 import HeroPrompt from '@/components/sections/HeroPrompt'
 import KeyFeatures from '@/components/sections/KeyFeatures'
 import { LatestReleaseNotes, LatestBlogPosts } from '@/components/sections/LatestPosts'
+import { HyperscaleAgentsSection } from '@/components/hyperscale-agents'
 
 const fetchOptions = { next: { tags: ['homepage', 'testimonial'], revalidate: 60 } }
 
@@ -150,6 +151,10 @@ export default async function HomePage() {
           )}
         </div>
       </section>
+
+
+      {/* ========== HYPERSCALE AGENTS ========== */}
+      <HyperscaleAgentsSection />
 
       {/* ========== SOCIAL PROOF LOGOS ========== */}
       <section className="c-section cc-logos">
