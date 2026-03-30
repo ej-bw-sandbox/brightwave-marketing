@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 function renderTextField(value: any) {
   if (!value) return null
-  if (typeof value === 'string') return <p className="c-text-3">{value}</p>
+  if (typeof value === 'string') { const cleaned = value.replace(/<[^>]*>/g, ''); return <p className="c-text-3">{cleaned}</p> }
   if (Array.isArray(value)) return <div className="prose-brand"><PortableText components={ptComponents} value={value} /></div>
   return null
 }
@@ -78,7 +78,7 @@ export default async function ForDetailPage({ params }: Props) {
                 <span className="c-title-5">{doc.valueH2}</span>
               </div>
             )}
-            <div className="grid cc-collection">
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', marginTop: '1.5rem' }}>
               {valuePillars.map((p: any, i: number) => (
                 <div key={i} className="collection_card">
                   <div className="card_flex">
@@ -108,7 +108,7 @@ export default async function ForDetailPage({ params }: Props) {
                 <p className="c-text-3">{doc.capabilitiesSubtitle}</p>
               </div>
             )}
-            <div className="grid cc-collection">
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', marginTop: '1.5rem' }}>
               {capabilities.map((c: any, i: number) => (
                 <div key={i} className="collection_card">
                   <div className="card_flex">

@@ -91,7 +91,7 @@ export default async function UsecasesDetailPage({ params }: Props) {
       {stats.length > 0 && (
         <section className="c-section">
           <div className="c-container">
-            <div className="grid cc-collection">
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', marginTop: '1.5rem' }}>
               {stats.map((stat: any, i: number) => (
                 <div key={i} className="collection_card">
                   <div className="card_flex">
@@ -113,7 +113,7 @@ export default async function UsecasesDetailPage({ params }: Props) {
               <div className="block" />
               <span className="c-title-5">{doc.challengeH2 || 'Challenges'}</span>
             </div>
-            <div className="grid cc-collection">
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', marginTop: '1.5rem' }}>
               {challenges.map((c: any, i: number) => (
                 <div key={c._key || i} className="collection_card">
                   <div className="card_flex">
@@ -137,7 +137,7 @@ export default async function UsecasesDetailPage({ params }: Props) {
               <div className="block cc-primary" />
               <span className="c-title-5">{doc.solutionH2 || 'Solutions'}</span>
             </div>
-            <div className="grid cc-collection">
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', marginTop: '1.5rem' }}>
               {solutions.map((s: any, i: number) => (
                 <div key={s._key || i} className="collection_card">
                   <div className="card_flex">
@@ -164,7 +164,7 @@ export default async function UsecasesDetailPage({ params }: Props) {
                 <span className="c-title-5">{doc.featuresH2}</span>
               </div>
             )}
-            <div className="grid cc-collection">
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', marginTop: '1.5rem' }}>
               {featureHighlights.map((f: any, i: number) => (
                 <div key={f._key || i} className="collection_card">
                   <div className="card_flex">
