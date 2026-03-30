@@ -44,8 +44,8 @@ export function PrivateMarketsUseCases({ eyebrow, useCases }: { eyebrow?: string
                   gap: '0.75rem',
                   alignItems: 'baseline',
                   width: '100%',
-                  background: i === activeIndex ? 'var(--lightmode--onsurface)' : 'none',
-                  color: i === activeIndex ? 'var(--lightmode--background)' : 'var(--lightmode--onsurface)',
+                  background: i === activeIndex ? '#0f0f0f' : 'none',
+                  color: i === activeIndex ? '#ffffff' : 'inherit',
                   border: 'none',
                   borderBottom: '1px solid var(--lightmode--onsurface-border)',
                   padding: '1rem 0.75rem',
@@ -61,7 +61,7 @@ export function PrivateMarketsUseCases({ eyebrow, useCases }: { eyebrow?: string
           </div>
 
           {/* Center - image */}
-          <div style={{ position: 'relative', width: '100%', aspectRatio: '3/4', overflow: 'hidden', borderRadius: '0.5rem' }}>
+          <div style={{ position: 'relative', width: '100%', aspectRatio: '3/4', overflow: 'hidden', borderRadius: '0.5rem', background: 'var(--lightmode--surface-2)' }}>
             {active.image?.asset?.url ? (
               <img
                 src={active.image.asset.url}
@@ -69,9 +69,12 @@ export function PrivateMarketsUseCases({ eyebrow, useCases }: { eyebrow?: string
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               />
             ) : (
-              <div style={{ width: '100%', height: '100%', background: 'var(--lightmode--surface-2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <img src="https://d3e54v103j8qbb.cloudfront.net/plugins/Basic/assets/placeholder.60f9b1840c.svg" alt="" style={{ width: 64, opacity: 0.3 }} />
-              </div>
+              <img
+                src={`/webflow-images/illustration_01${activeIndex > 0 ? `-${activeIndex}` : ''}.avif`}
+                alt={active.title}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                onError={(e) => { (e.target as HTMLImageElement).src = 'https://d3e54v103j8qbb.cloudfront.net/plugins/Basic/assets/placeholder.60f9b1840c.svg'; (e.target as HTMLImageElement).style.objectFit = 'contain'; (e.target as HTMLImageElement).style.padding = '4rem'; (e.target as HTMLImageElement).style.opacity = '0.3'; }}
+              />
             )}
           </div>
 
