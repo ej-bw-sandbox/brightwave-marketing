@@ -140,7 +140,6 @@
   height: 100%;
   z-index: 0;
   pointer-events: none;
-  transition: opacity 0.3s ease;
 }
 
 /* ---------- Agent Nodes ---------- */
@@ -250,11 +249,13 @@
   align-items: center;
 }
 
-/* ---------- Copy Overlay — Chapter-Card System ---------- */
+/* ---------- Fix 3: Copy Caption — positioned below canvas ---------- */
 
-.copyOverlay {
+.copyCaption {
   position: absolute;
-  inset: 0;
+  bottom: 8%;
+  left: 0;
+  right: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -274,7 +275,7 @@
 
 .copyWhite {
   display: block;
-  font-size: clamp(3rem, 8vw, 8rem);
+  font-size: clamp(2.5rem, 5vw, 6rem);
   font-weight: 800;
   color: #fff;
   letter-spacing: -0.02em;
@@ -283,7 +284,7 @@
 
 .copyYellow {
   display: block;
-  font-size: clamp(3.5rem, 9vw, 9rem);
+  font-size: clamp(2.8rem, 5.5vw, 6.5rem);
   font-weight: 800;
   color: #e7e70d;
   letter-spacing: -0.02em;
@@ -292,7 +293,7 @@
 
 .copyWhiteLight {
   display: block;
-  font-size: clamp(2.5rem, 7vw, 7rem);
+  font-size: clamp(2rem, 4.5vw, 5.5rem);
   font-weight: 300;
   font-style: italic;
   color: rgba(255, 255, 255, 0.9);
@@ -339,13 +340,13 @@
   line-height: 1.2;
 }
 
-/* ---------- Output Card ---------- */
+/* ---------- Fix 5: Output Card — positioned at bottom center ---------- */
 
 .outputCard {
   position: absolute;
   z-index: 9;
   left: 50%;
-  top: 50%;
+  bottom: 6%;
   width: min(460px, 85vw);
 }
 
@@ -607,6 +608,10 @@
     padding: 0 1rem;
   }
 
+  .copyCaption {
+    bottom: 5%;
+  }
+
   .copyWhite {
     font-size: clamp(2rem, 10vw, 4rem);
   }
@@ -643,9 +648,5 @@
 
   .scrollHint {
     animation: none;
-  }
-
-  .branchCanvas {
-    transition: none;
   }
 }

@@ -17,7 +17,7 @@ export function OutputCard({ visible, progress, reducedMotion }: OutputCardProps
       className={styles.outputCard}
       style={{
         opacity,
-        transform: `translate(-50%, -50%) scale(${scale})`,
+        transform: `translateX(-50%) scale(${scale})`,
         transition: reducedMotion ? 'none' : 'opacity 0.6s ease, transform 0.6s cubic-bezier(0.34,1.56,0.64,1)',
         pointerEvents: visible ? 'auto' : 'none',
       }}

@@ -38,6 +38,18 @@ function copyOpacity(progress: number, fadeIn: number, holdStart: number, holdEn
   return 0
 }
 
+/**
+ * Fix 4: Compute which node indices are active as pairs.
+ * Scroll 40-47%: nodes 0+1, 47-54%: nodes 2+3, 54-61%: nodes 4+5, 61-65%: node 6 alone
+ */
+function getActiveNodePair(p: number): number[] {
+  if (p < 0.40 || p >= 0.65) return []
+  if (p < 0.47) return [0, 1]
+  if (p < 0.54) return [2, 3]
+  if (p < 0.61) return [4, 5]
+  return [6] // 61-65%: node 6 alone
+}
+
 export function HyperscaleHero() {
   const reducedMotion = useReducedMotion()
   const containerRef = useRef<HTMLDivElement>(null)
@@ -87,20 +99,17 @@ export function HyperscaleHero() {
   // Act 1: Prompt dissolves
   const promptDissolve = clamp(p / 0.08, 0, 1)
 
-  // Act 3: active agent index (40-65%)
-  const act3Range = clamp((p - 0.40) / 0.25, 0, 1)
-  const activeNodeIndex = act3Range > 0 && act3Range < 1
-    ? Math.min(Math.floor(act3Range * AGENTS.length), AGENTS.length - 1)
-    : -1
-  const showInfoCard = act3Range > 0 && act3Range < 1
+  // Fix 4: Active node pair (instead of single)
+  const activeNodeIndices = useMemo(() => getActiveNodePair(p), [p])
+  const showInfoCards = activeNodeIndices.length > 0
 
-  // Act 4: retraction (65-85%)
-  const retractProgress = clamp((p - 0.65) / 0.20, 0, 1)
+  // Act 4: convergence (65-85%)
+  const convergenceProgress = clamp((p - 0.65) / 0.20, 0, 1)
 
   // Act 5: output (85-100%)
   const showOutput = p > 0.85
 
-  // Node visibility: appear when arcs finish, disappear when retracted
+  // Node visibility: appear when arcs finish, fade out during convergence
   const nodeVisibility = useMemo(() => {
     return AGENTS.map((_, i) => {
       const fanBase = clamp((p - 0.15) / 0.25, 0, 1)
@@ -108,18 +117,13 @@ export function HyperscaleHero() {
       const arcProg = Math.max(0, Math.min(1, (fanBase - delay) / (1 - delay)))
       const visible = arcProg > 0.85
 
-      // Hide during retraction
-      if (p > 0.65) {
-        const retractBase = Math.min((p - 0.65) / 0.20, 1)
-        const retractDelay = (AGENTS.length - 1 - i) / (AGENTS.length * 1.5)
-        const retraction = Math.max(0, Math.min(1, (retractBase - retractDelay) / (1 - retractDelay)))
-        if (retraction > 0.7) return false
-      }
+      // Fade out during convergence (Fix 2)
+      if (convergenceProgress > 0.5) return false
       return visible
     })
-  }, [p])
+  }, [p, convergenceProgress])
 
-  /* ---- Copy moments ---- */
+  /* ---- Copy moments (Fix 3: same timing, different placement) ---- */
   // Copy 1: "Unlimited context window." (22-32%)
   const copy1Opacity = copyOpacity(p, 0.20, 0.22, 0.30, 0.32)
   // Copy 2: "Zero hallucinations." (35-45%)
@@ -129,11 +133,7 @@ export function HyperscaleHero() {
   // Copy 4: Final closing (88-100%)
   const copy4Opacity = copyOpacity(p, 0.86, 0.88, 0.98, 1.01)
 
-  // Canvas dimming during copy moments
-  const anyCopyActive = Math.max(copy1Opacity, copy2Opacity, copy3Opacity)
-  const canvasOpacity = anyCopyActive > 0
-    ? 1 - anyCopyActive * 0.8 // dim to 20% when copy is fully visible
-    : 1
+  // Fix 3: NO canvas dimming - canvas stays fully visible at all times
 
   // Scroll hint
   const showScrollHint = progress < 0.03
@@ -142,11 +142,11 @@ export function HyperscaleHero() {
     setNodePositions(pos)
   }, [])
 
-  /* ---- active agent info ---- */
-  const activeAgent = activeNodeIndex >= 0 ? AGENTS[activeNodeIndex] : null
-  const activePos = activeNodeIndex >= 0 && nodePositions[activeNodeIndex]
-    ? nodePositions[activeNodeIndex]
-    : null
+  /* ---- active agent info (Fix 4: show cards for active pair) ---- */
+  const activeAgents = activeNodeIndices.map((idx) => ({
+    agent: AGENTS[idx],
+    pos: nodePositions[idx] || null,
+  }))
 
   /* ---- reduced motion: static view ---- */
   if (reducedMotion) {
@@ -183,6 +183,9 @@ export function HyperscaleHero() {
 
   /* ---- mobile: simplified layout ---- */
   if (isMobile) {
+    const mobileActiveIdx = activeNodeIndices.length > 0 ? activeNodeIndices[0] : -1
+    const mobileActiveAgent = mobileActiveIdx >= 0 ? AGENTS[mobileActiveIdx] : null
+
     return (
       <section className={styles.heroSection} ref={containerRef} style={{ height: '350vh' }}>
         <div className={styles.stickyFrame} ref={stickyRef}>
@@ -196,9 +199,9 @@ export function HyperscaleHero() {
             <PromptCard dissolve={promptDissolve} reducedMotion={false} />
           </div>
 
-          {/* Copy moments on mobile - stacked */}
+          {/* Fix 3: Copy as caption below canvas area (mobile) */}
           {copy1Opacity > 0 && (
-            <div className={styles.copyOverlay} style={{ opacity: copy1Opacity }}>
+            <div className={styles.copyCaption} style={{ opacity: copy1Opacity }}>
               <div className={styles.copyPhrase}>
                 <span className={styles.copyWhite}>Unlimited</span>
                 <span className={styles.copyWhite}>context window.</span>
@@ -207,7 +210,7 @@ export function HyperscaleHero() {
           )}
 
           {copy2Opacity > 0 && (
-            <div className={styles.copyOverlay} style={{ opacity: copy2Opacity }}>
+            <div className={styles.copyCaption} style={{ opacity: copy2Opacity }}>
               <div className={styles.copyPhrase}>
                 <span className={styles.copyYellow}>Zero</span>
                 <span className={styles.copyWhite}>hallucinations.</span>
@@ -216,7 +219,7 @@ export function HyperscaleHero() {
           )}
 
           {copy3Opacity > 0 && (
-            <div className={styles.copyOverlay} style={{ opacity: copy3Opacity }}>
+            <div className={styles.copyCaption} style={{ opacity: copy3Opacity }}>
               <div className={styles.copyPhrase}>
                 <span className={styles.copyWhite}>Integrate</span>
                 <span className={styles.copyWhiteLight}>with anything.</span>
@@ -225,15 +228,18 @@ export function HyperscaleHero() {
           )}
 
           {/* Mobile agent pills */}
-          {promptDissolve > 0.5 && retractProgress < 0.6 && anyCopyActive < 0.3 && (
+          {promptDissolve > 0.5 && convergenceProgress < 0.6 && (() => {
+            const anyCopyActive = Math.max(copy1Opacity, copy2Opacity, copy3Opacity)
+            return anyCopyActive < 0.3
+          })() && (
             <div
               className={styles.mobileAgentGrid}
-              style={{ opacity: Math.min(1, (promptDissolve - 0.5) * 4) * (1 - retractProgress) }}
+              style={{ opacity: Math.min(1, (promptDissolve - 0.5) * 4) * (1 - convergenceProgress) }}
             >
               {AGENTS.map((a, i) => (
                 <div
                   key={a.id}
-                  className={`${styles.mobilePill} ${i === activeNodeIndex ? styles.mobilePillActive : ''}`}
+                  className={`${styles.mobilePill} ${activeNodeIndices.includes(i) ? styles.mobilePillActive : ''}`}
                 >
                   {a.label}
                 </div>
@@ -242,17 +248,20 @@ export function HyperscaleHero() {
           )}
 
           {/* Active info card (mobile) */}
-          {showInfoCard && activeAgent && anyCopyActive < 0.3 && (
+          {showInfoCards && mobileActiveAgent && (() => {
+            const anyCopyActive = Math.max(copy1Opacity, copy2Opacity, copy3Opacity)
+            return anyCopyActive < 0.3
+          })() && (
             <div className={styles.mobileInfoCard} style={{ opacity: 1 }}>
               <div className={styles.infoCardHeader}>
-                <span className={styles.infoCardName}>{activeAgent.label} AGENT</span>
+                <span className={styles.infoCardName}>{mobileActiveAgent.label} AGENT</span>
                 <span className={styles.infoCardDots}>
                   <span className={styles.dot} />
                   <span className={styles.dot} />
                   <span className={styles.dot} />
                 </span>
               </div>
-              <div className={styles.infoCardBody}>{activeAgent.desc}</div>
+              <div className={styles.infoCardBody}>{mobileActiveAgent.desc}</div>
             </div>
           )}
 
@@ -318,12 +327,12 @@ export function HyperscaleHero() {
         {/* Prompt card */}
         <PromptCard dissolve={promptDissolve} reducedMotion={false} />
 
-        {/* Branch canvas - dims during copy moments */}
+        {/* Branch canvas - Fix 3: NO dimming, always full opacity */}
         <BranchCanvas
           scrollProgress={p}
           onNodePositions={handleNodePositions}
           reducedMotion={false}
-          canvasOpacity={canvasOpacity}
+          activeNodeIndices={activeNodeIndices}
         />
 
         {/* Agent nodes overlay (positioned by canvas coordinates) */}
@@ -333,30 +342,33 @@ export function HyperscaleHero() {
             index={i}
             label={AGENTS[i].label}
             visible={nodeVisibility[i]}
-            active={i === activeNodeIndex}
+            active={activeNodeIndices.includes(i)}
             x={pos.x}
             y={pos.y}
             reducedMotion={false}
           />
         ))}
 
-        {/* Agent info card */}
-        {showInfoCard && activeAgent && activePos && anyCopyActive < 0.3 && (
-          <AgentInfoCard
-            agentName={activeAgent.label}
-            description={activeAgent.desc}
-            visible={showInfoCard}
-            x={activePos.x}
-            y={activePos.y + 52}
-            reducedMotion={false}
-          />
-        )}
+        {/* Fix 4: Agent info cards - show TWO at a time for active pair */}
+        {showInfoCards && activeAgents.map(({ agent, pos }) => (
+          pos && (
+            <AgentInfoCard
+              key={agent.id}
+              agentName={agent.label}
+              description={agent.desc}
+              visible={true}
+              x={pos.x}
+              y={pos.y + 52}
+              reducedMotion={false}
+            />
+          )
+        ))}
 
-        {/* ========= COPY OVERLAYS ========= */}
+        {/* ========= Fix 3: COPY CAPTIONS (below canvas, not overlay) ========= */}
 
         {/* Copy Moment 1: "Unlimited context window." */}
         {copy1Opacity > 0 && (
-          <div className={styles.copyOverlay} style={{ opacity: copy1Opacity }}>
+          <div className={styles.copyCaption} style={{ opacity: copy1Opacity }}>
             <div className={styles.copyPhrase}>
               <span className={styles.copyWhite}>Unlimited</span>
               <span className={styles.copyWhite}>context window.</span>
@@ -366,7 +378,7 @@ export function HyperscaleHero() {
 
         {/* Copy Moment 2: "Zero hallucinations." */}
         {copy2Opacity > 0 && (
-          <div className={styles.copyOverlay} style={{ opacity: copy2Opacity }}>
+          <div className={styles.copyCaption} style={{ opacity: copy2Opacity }}>
             <div className={styles.copyPhrase}>
               <span className={styles.copyYellow}>Zero</span>
               <span className={styles.copyWhite}>hallucinations.</span>
@@ -376,7 +388,7 @@ export function HyperscaleHero() {
 
         {/* Copy Moment 3: "Integrate with anything." */}
         {copy3Opacity > 0 && (
-          <div className={styles.copyOverlay} style={{ opacity: copy3Opacity }}>
+          <div className={styles.copyCaption} style={{ opacity: copy3Opacity }}>
             <div className={styles.copyPhrase}>
               <span className={styles.copyWhite}>Integrate</span>
               <span className={styles.copyWhiteLight}>with anything.</span>
@@ -384,7 +396,7 @@ export function HyperscaleHero() {
           </div>
         )}
 
-        {/* Output card */}
+        {/* Fix 5: Output card - positioned at bottom center, fades in at 85%+ */}
         <OutputCard
           visible={showOutput}
           progress={p > 0.85 ? (p - 0.85) / 0.15 : 0}
