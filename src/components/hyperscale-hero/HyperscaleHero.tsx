@@ -118,7 +118,7 @@ export function HyperscaleHero() {
         <div className={styles.stickyFrame}>
           <span className={styles.badge}>HYPERSCALE AGENTS&trade;</span>
           <div className={styles.headline}>
-            <span className={styles.headlineRegular}>We created a new oxymoron:</span>
+            <span className={styles.headlineRegular}>Hyperscale Agents™ created a new oxymoron:</span>
             <span className={styles.headlineBold}>IMPOSSIBLE TASKS</span>
           </div>
           <div className={styles.mobileAgentGrid}>
@@ -153,7 +153,7 @@ export function HyperscaleHero() {
           <div style={{ opacity: 1 - promptDissolve, transition: 'opacity 0.3s ease' }}>
             <span className={styles.badge}>HYPERSCALE AGENTS&trade;</span>
             <div className={styles.headline}>
-              <span className={styles.headlineRegular}>We created a new oxymoron:</span>
+              <span className={styles.headlineRegular}>Hyperscale Agents™ created a new oxymoron:</span>
               <span className={styles.headlineBold}>IMPOSSIBLE TASKS</span>
             </div>
             <PromptCard dissolve={promptDissolve} reducedMotion={false} />
@@ -246,7 +246,7 @@ export function HyperscaleHero() {
             transition: 'opacity 0.2s, transform 0.2s',
           }}
         >
-          <span className={styles.headlineRegular}>We created a new oxymoron:</span>
+          <span className={styles.headlineRegular}>Hyperscale Agents™ created a new oxymoron:</span>
           <span className={styles.headlineBold}>IMPOSSIBLE TASKS</span>
         </div>
 
@@ -328,3 +328,4 @@ export function HyperscaleHero() {
     </section>
   )
 }
+
