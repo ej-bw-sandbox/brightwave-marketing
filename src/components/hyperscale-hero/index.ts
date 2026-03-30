@@ -1,0 +1,1 @@
+export { HyperscaleHero } from './HyperscaleHero'

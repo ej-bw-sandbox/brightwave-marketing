@@ -1,0 +1,535 @@
+/* ================================================================== */
+/*  Hyperscale Hero – CSS Module                                       */
+/*  Uses Brightwave design tokens from globals.css                     */
+/* ================================================================== */
+
+/* ---------- Section & Sticky Container ---------- */
+
+.heroSection {
+  position: relative;
+  height: 500vh;
+  background: #0a0a0a;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.stickyFrame {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* ---------- Badge ---------- */
+
+.badge {
+  position: absolute;
+  top: 100px;
+  left: 48px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #e7e70d;
+  z-index: 10;
+}
+
+/* ---------- Headline ---------- */
+
+.headline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15em;
+  text-align: center;
+  z-index: 10;
+  margin-bottom: 2.5rem;
+  pointer-events: none;
+}
+
+.headlineRegular {
+  font-size: clamp(1.4rem, 2.5vw, 2.5rem);
+  font-weight: 400;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.headlineBold {
+  font-size: clamp(3rem, 7vw, 7.5rem);
+  font-weight: 900;
+  color: #fff;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* ---------- Prompt Card ---------- */
+
+.promptCard {
+  position: relative;
+  z-index: 10;
+  width: min(70vw, 720px);
+  background: #282829;
+  border: 1px solid #333;
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.promptText {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  min-height: 3rem;
+}
+
+.cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.1em;
+  background: #e7e70d;
+  vertical-align: text-bottom;
+  margin-left: 2px;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.promptActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.promptBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.promptBtn:hover {
+  border-color: #e7e70d;
+  color: #e7e70d;
+}
+
+/* ---------- Branch Canvas ---------- */
+
+.branchCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* ---------- Agent Nodes ---------- */
+
+.agentNode {
+  position: absolute;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.agentCircle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  background: rgba(10, 10, 10, 0.8);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.agentCircleActive {
+  border-color: #e7e70d;
+  box-shadow: 0 0 20px rgba(231, 231, 13, 0.4), 0 0 40px rgba(231, 231, 13, 0.15);
+  transform: scale(1.15);
+}
+
+.agentLabel {
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.65);
+  white-space: nowrap;
+  text-align: center;
+}
+
+/* ---------- Agent Info Card ---------- */
+
+.infoCard {
+  position: absolute;
+  z-index: 8;
+  width: 280px;
+  background: rgba(30, 30, 32, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(231, 231, 13, 0.3);
+  border-radius: 14px;
+  padding: 1rem 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.infoCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.infoCardName {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: #e7e70d;
+  text-transform: uppercase;
+}
+
+.infoCardDots {
+  display: flex;
+  gap: 4px;
+}
+
+.dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #e7e70d;
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+.dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes pulse {
+  0%, 80%, 100% { opacity: 0.3; }
+  40% { opacity: 1; }
+}
+
+.infoCardBody {
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.5;
+  min-height: 2.4em;
+}
+
+.infoCardActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ---------- Output Card ---------- */
+
+.outputCard {
+  position: absolute;
+  z-index: 9;
+  left: 50%;
+  top: 50%;
+  width: min(460px, 85vw);
+}
+
+.outputCardGlow {
+  position: absolute;
+  inset: -20px;
+  border-radius: 24px;
+  background: radial-gradient(ellipse at center, rgba(231, 231, 13, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.outputCardInner {
+  position: relative;
+  background: rgba(30, 30, 32, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(231, 231, 13, 0.25);
+  border-radius: 18px;
+  padding: 1.75rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.outputLabel {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: #e7e70d;
+  text-transform: uppercase;
+}
+
+.outputTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.outputMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.outputTimestamp {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.outputPreview {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 0.5rem;
+}
+
+.outputLine {
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.outputLineSpacer {
+  height: 10px;
+}
+
+/* ---------- Static output (reduced motion / mobile) ---------- */
+
+.outputStatic {
+  background: rgba(30, 30, 32, 0.92);
+  border: 1px solid rgba(231, 231, 13, 0.25);
+  border-radius: 18px;
+  padding: 1.5rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 460px;
+  width: 100%;
+}
+
+/* ---------- Act 2 copy ---------- */
+
+.act2Copy {
+  position: absolute;
+  bottom: 18%;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  font-size: clamp(0.9rem, 1.4vw, 1.15rem);
+  color: rgba(255, 255, 255, 0.7);
+  max-width: 540px;
+  line-height: 1.6;
+  z-index: 6;
+  margin: 0;
+}
+
+/* ---------- Closing CTA ---------- */
+
+.closingWrap {
+  position: absolute;
+  bottom: 14%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  z-index: 12;
+}
+
+.closingCopy {
+  text-align: center;
+  font-size: clamp(1rem, 1.6vw, 1.35rem);
+  color: rgba(255, 255, 255, 0.8);
+  max-width: 520px;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.ctaButton {
+  display: inline-block;
+  padding: 0.85rem 2.2rem;
+  background: #e7e70d;
+  color: #0a0a0a;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border-radius: 100px;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition: background 0.2s, transform 0.15s;
+  cursor: pointer;
+}
+
+.ctaButton:hover {
+  background: #f2f218;
+  transform: scale(1.04);
+}
+
+/* ---------- Scroll Hint ---------- */
+
+.scrollHint {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.08em;
+  animation: bounce 2.2s ease-in-out infinite;
+  z-index: 10;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(8px); }
+}
+
+/* ---------- Mobile: Agent Grid ---------- */
+
+.mobileAgentGrid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  max-width: 440px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  z-index: 10;
+  position: relative;
+}
+
+.mobilePill {
+  padding: 0.45rem 0.85rem;
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.65);
+  text-transform: uppercase;
+  background: rgba(40, 40, 41, 0.6);
+  transition: border-color 0.3s, color 0.3s, box-shadow 0.3s;
+}
+
+.mobilePillActive {
+  border-color: #e7e70d;
+  color: #e7e70d;
+  box-shadow: 0 0 12px rgba(231, 231, 13, 0.25);
+}
+
+.mobileInfoCard {
+  background: rgba(30, 30, 32, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(231, 231, 13, 0.3);
+  border-radius: 14px;
+  padding: 1rem 1.15rem;
+  margin: 0 1rem;
+  z-index: 10;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.mobileOutputWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0 1rem;
+  z-index: 10;
+  position: relative;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 767px) {
+  .badge {
+    position: relative;
+    top: auto;
+    left: auto;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    display: block;
+  }
+
+  .headline {
+    margin-bottom: 1.5rem;
+  }
+
+  .headlineBold {
+    font-size: clamp(2.2rem, 10vw, 3.5rem);
+  }
+
+  .promptCard {
+    width: calc(100% - 2rem);
+  }
+
+  .act2Copy {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    transform: none;
+    padding: 0 1rem;
+  }
+
+  .closingWrap {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    transform: none;
+    padding: 0 1rem;
+  }
+}
+
+/* ---------- prefers-reduced-motion: respect user prefs ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor {
+    animation: none;
+    opacity: 0;
+  }
+
+  .dot {
+    animation: none;
+    opacity: 0.7;
+  }
+
+  .scrollHint {
+    animation: none;
+  }
+}

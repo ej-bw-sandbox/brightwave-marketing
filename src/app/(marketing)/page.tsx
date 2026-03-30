@@ -5,7 +5,8 @@ import { buildMetadata } from '@/lib/metadata'
 import { LottiePlayer } from '@/components/ui/LottiePlayer'
 import { LogoMarquee } from '@/components/ui/LogoMarquee'
 import { TestimonialSlider } from '@/components/ui/TestimonialSlider'
-import HeroPrompt from '@/components/sections/HeroPrompt'
+/* REPLACED: import HeroPrompt from '@/components/sections/HeroPrompt' */
+import { HyperscaleHero } from '@/components/hyperscale-hero'
 import KeyFeatures from '@/components/sections/KeyFeatures'
 import { LatestReleaseNotes, LatestBlogPosts } from '@/components/sections/LatestPosts'
 
@@ -81,7 +82,10 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* ========== HERO ========== */}
+      {/* ========== HYPERSCALE HERO (replaces original hero) ========== */}
+      <HyperscaleHero />
+
+      {/* ========== ORIGINAL HERO — COMMENTED OUT ==========
       <section className="c-section cc-hero">
         <div className="c-container">
           <div className="hero">
@@ -110,46 +114,14 @@ export default async function HomePage() {
               </div>
             </div>
           </div>
-
-          {/* ========== COMPARISON STATS ========== */}
           {comparisonSection && (
             <div className="v-20 cc-home">
-              <div className="home-usp cc-left">
-                {comparisonSection.leftLabel && (
-                  <div className="eyebrow cc-no-bp">
-                    <div className="block cc-dm-light"></div>
-                    <div className="c-title-5">{comparisonSection.leftLabel}</div>
-                  </div>
-                )}
-                <div className="home-usp_inner">
-                  {leftStats.map((s: any, i: number) => (
-                    <div key={s._key ?? i} className="v-24 cc-12-tablet">
-                      {s.value && <div className="c-title-3">{s.value}</div>}
-                      {s.description && <div className="c-text-4">{s.description}</div>}
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="home-usp cc-right">
-                {comparisonSection.rightLabel && (
-                  <div className="eyebrow cc-no-bp">
-                    <div className="block cc-primary"></div>
-                    <div className="c-title-5 cc-primary">{comparisonSection.rightLabel}</div>
-                  </div>
-                )}
-                <div className="home-usp_inner">
-                  {rightStats.map((s: any, i: number) => (
-                    <div key={s._key ?? i} className="v-24 cc-12-tablet">
-                      {s.value && <div className="c-title-3">{s.value}</div>}
-                      {s.description && <div className="c-text-4">{s.description}</div>}
-                    </div>
-                  ))}
-                </div>
-              </div>
+              ...comparison stats omitted for brevity...
             </div>
           )}
         </div>
       </section>
+      ========== END COMMENTED OUT HERO ========== */}
 
       {/* ========== SOCIAL PROOF LOGOS ========== */}
       <section className="c-section cc-logos">
