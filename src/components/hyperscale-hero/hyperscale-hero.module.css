@@ -140,6 +140,7 @@
   height: 100%;
   z-index: 0;
   pointer-events: none;
+  transition: opacity 0.3s ease;
 }
 
 /* ---------- Agent Nodes ---------- */
@@ -249,6 +250,95 @@
   align-items: center;
 }
 
+/* ---------- Copy Overlay — Chapter-Card System ---------- */
+
+.copyOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 15;
+}
+
+.copyPhrase {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0;
+  line-height: 1.05;
+  padding: 0 1.5rem;
+}
+
+.copyWhite {
+  display: block;
+  font-size: clamp(3rem, 8vw, 8rem);
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+}
+
+.copyYellow {
+  display: block;
+  font-size: clamp(3.5rem, 9vw, 9rem);
+  font-weight: 800;
+  color: #e7e70d;
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+}
+
+.copyWhiteLight {
+  display: block;
+  font-size: clamp(2.5rem, 7vw, 7rem);
+  font-weight: 300;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: -0.01em;
+  line-height: 1.12;
+}
+
+/* ---------- Closing Overlay (Final Copy + CTA) ---------- */
+
+.closingOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 15;
+  gap: 2.5rem;
+  padding-top: 10vh;
+}
+
+.closingPhrase {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0;
+  line-height: 1.05;
+  padding: 0 1.5rem;
+}
+
+.closingPhrase .copyWhite {
+  font-size: clamp(1.8rem, 4vw, 3.5rem);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+}
+
+.closingPhrase .copyYellow {
+  font-size: clamp(2rem, 4.5vw, 4rem);
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1.2;
+}
+
 /* ---------- Output Card ---------- */
 
 .outputCard {
@@ -340,7 +430,7 @@
   width: 100%;
 }
 
-/* ---------- Act 2 copy ---------- */
+/* ---------- Act 2 copy (legacy — kept for reduced motion fallback) ---------- */
 
 .act2Copy {
   position: absolute;
@@ -381,16 +471,18 @@
 
 .ctaButton {
   display: inline-block;
-  padding: 0.85rem 2.2rem;
+  padding: 1rem 2.8rem;
   background: #e7e70d;
   color: #0a0a0a;
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 700;
   border-radius: 100px;
   text-decoration: none;
   letter-spacing: 0.02em;
   transition: background 0.2s, transform 0.15s;
   cursor: pointer;
+  pointer-events: auto;
+  z-index: 16;
 }
 
 .ctaButton:hover {
@@ -514,6 +606,26 @@
     transform: none;
     padding: 0 1rem;
   }
+
+  .copyWhite {
+    font-size: clamp(2rem, 10vw, 4rem);
+  }
+
+  .copyYellow {
+    font-size: clamp(2.2rem, 11vw, 4.5rem);
+  }
+
+  .copyWhiteLight {
+    font-size: clamp(1.8rem, 9vw, 3.5rem);
+  }
+
+  .closingPhrase .copyWhite {
+    font-size: clamp(1.4rem, 5vw, 2.2rem);
+  }
+
+  .closingPhrase .copyYellow {
+    font-size: clamp(1.5rem, 5.5vw, 2.5rem);
+  }
 }
 
 /* ---------- prefers-reduced-motion: respect user prefs ---------- */
@@ -532,5 +644,8 @@
   .scrollHint {
     animation: none;
   }
-}
 
+  .branchCanvas {
+    transition: none;
+  }
+}
