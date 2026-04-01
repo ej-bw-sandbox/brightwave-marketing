@@ -7,7 +7,7 @@ const navDataQuery = `{
   "useCases": *[_type == "useCase"] | order(coalesce(menuLabel, title) asc) [0...4] {title, "menuLabel": coalesce(menuLabel, title), "slug": slug.current},
   "icpPages": *[_type == "icpPage"] | order(coalesce(menuLabel, title) asc) [0...4] {title, "menuLabel": coalesce(menuLabel, title), "slug": slug.current},
   "firmTypes": *[_type == "firmType"] | order(coalesce(menuLabel, title) asc) [0...4] {title, "menuLabel": coalesce(menuLabel, title), "slug": slug.current},
-  "platformFeatures": *[_type == "platformFeature" && defined(menuCategory)] | order(menuCategory asc, coalesce(menuLabel, title) asc) {title, "menuLabel": coalesce(menuLabel, title), "slug": slug.current, "category": menuCategory}
+  "platformFeatures": *[_type == "platformFeature" && defined(menuCategory)] | order(menuCategory asc, coalesce(menuLabel, title) asc) {title, "menuLabel": coalesce(menuLabel, title), "slug": slug.current, "category": menuCategory, menuIcon}
 }`
 
 const siteSettingsNavQuery = `*[_type == "siteSettings" && _id == "siteSettings"][0] {
@@ -29,6 +29,7 @@ export interface PlatformFeature {
   menuLabel: string
   slug: string
   category: string
+  menuIcon?: string
 }
 
 export interface SolutionsNavData {

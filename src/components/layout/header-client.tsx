@@ -60,7 +60,8 @@ const FEATURE_ICONS: Record<string, LucideIcon> = {
   'templates': LayoutTemplate,
 }
 
-function getFeatureIcon(href: string): LucideIcon | null {
+function getFeatureIcon(href: string, menuIcon?: string): LucideIcon | null {
+  if (menuIcon && ICON_NAME_MAP[menuIcon]) return ICON_NAME_MAP[menuIcon]
   const slug = href.split('/').pop() || ''
   return FEATURE_ICONS[slug] || null
 }
@@ -77,6 +78,16 @@ interface PlatformFeature {
   menuLabel: string
   slug: string
   category: string
+  menuIcon?: string
+}
+
+/* Map Sanity menuIcon string names to Lucide components */
+const ICON_NAME_MAP: Record<string, LucideIcon> = {
+  Workflow, Grid3x3, Brain, Database, Search, Bot,
+  Sparkles, Sheet, Presentation, FileText, FileType,
+  Plug, Share2, Users, Settings, Zap, Clock, ListChecks, LayoutTemplate,
+  SearchCode, PenTool, Rocket, BookOpen, Newspaper, Scale, Calendar,
+  Megaphone, Library, LifeBuoy, Handshake, Wrench, FlaskConical, Briefcase, Building2,
 }
 
 interface NavAssociation {
@@ -206,7 +217,7 @@ export function HeaderClient({
       .map(([category, features]) => ({
         title: category,
         href: `/features#${category.toLowerCase().replace(/\s+/g, '-')}`,
-        items: features.map(f => ({ title: f.menuLabel || f.title, href: `/features/${f.slug}` })),
+        items: features.map(f => ({ title: f.menuLabel || f.title, href: `/features/${f.slug}`, menuIcon: f.menuIcon as string | undefined })),
       }))
     : [
       {
@@ -335,8 +346,8 @@ export function HeaderClient({
                                         {cat.title} <span style={{ fontSize: 16 }}>&rarr;</span>
                                       </Link>
                                       <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                        {cat.items.map((item, ii) => {
-                                          const ItemIcon = getFeatureIcon(item.href)
+                                        {cat.items.slice(0, 4).map((item, ii) => {
+                                          const ItemIcon = getFeatureIcon(item.href, (item as any).menuIcon)
                                           return (
                                           <Link key={ii} href={item.href} style={{
                                             display: 'flex', alignItems: 'center', gap: 10,
@@ -353,6 +364,20 @@ export function HeaderClient({
                                           </Link>
                                           )
                                         })}
+                                        {cat.items.length > 4 && (
+                                          <Link href={cat.href} style={{
+                                            display: 'flex', alignItems: 'center', gap: 6,
+                                            padding: '8px 0 2px', color: MEGA.accent,
+                                            textDecoration: 'none', fontSize: 13, fontWeight: 600,
+                                            transition: 'opacity 0.15s',
+                                          }}
+                                            onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '0.7')}
+                                            onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '1')}
+                                            onClick={() => setOpenDropdown(null)}
+                                          >
+                                            More &rarr;
+                                          </Link>
+                                        )}
                                       </div>
                                     </div>
                                   ))}

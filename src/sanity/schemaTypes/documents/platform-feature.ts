@@ -46,6 +46,13 @@ export const platformFeature = defineType({
       },
     }),
     defineField({
+      name: 'menuIcon',
+      title: 'Menu Icon',
+      type: 'string',
+      description: 'Lucide icon name for nav menu (e.g. "Workflow", "Grid3x3", "Brain", "Search", "Bot", "Sparkles", "Sheet", "FileText", "Plug", "Users", "Settings", "Zap", "Clock", "ListChecks", "LayoutTemplate", "Share2", "Presentation", "FileType")',
+      group: 'settings',
+    }),
+    defineField({
       name: 'tags',
       title: 'Tags',
       type: 'array',
