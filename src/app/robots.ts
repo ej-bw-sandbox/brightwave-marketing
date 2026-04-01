@@ -1,7 +1,6 @@
 import { type MetadataRoute } from 'next'
-import { client } from '@/lib/sanity/client'
 
-const FALLBACK_RULES: MetadataRoute.Robots = {
+const DEFAULT_ROBOTS: MetadataRoute.Robots = {
   rules: [
     {
       userAgent: '*',
@@ -17,18 +16,6 @@ const FALLBACK_RULES: MetadataRoute.Robots = {
   sitemap: 'https://www.brightwave.io/sitemap.xml',
 }
 
-export default async function robots(): Promise<MetadataRoute.Robots | string> {
-  try {
-    const settings = await client.fetch<{ robotsTxt?: string }>(
-      `*[_type == "siteSettings"][0]{ robotsTxt }`,
-      {},
-      { next: { revalidate: 3600 } },
-    )
-    if (settings?.robotsTxt) {
-      // Return raw string — Next.js serves it as-is for robots.txt
-      return settings.robotsTxt as unknown as MetadataRoute.Robots
-    }
-  } catch { /* fall through */ }
-
-  return FALLBACK_RULES
+export default function robots(): MetadataRoute.Robots {
+  return DEFAULT_ROBOTS
 }
