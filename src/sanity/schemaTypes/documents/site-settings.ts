@@ -74,6 +74,20 @@ export const siteSettings = defineType({
     }),
     defineField({ name: 'copyrightText', title: 'Copyright Text', type: 'string', initialValue: '2026 Brightwave Inc. All rights reserved.' }),
     defineField({
+      name: 'robotsTxt',
+      title: 'robots.txt',
+      type: 'text',
+      rows: 20,
+      description: 'Custom robots.txt content served at /robots.txt. Controls search engine and AI crawler access.',
+    }),
+    defineField({
+      name: 'llmsTxt',
+      title: 'llms.txt',
+      type: 'text',
+      rows: 30,
+      description: 'LLMs.txt content served at /llms.txt. Provides AI-friendly context about the site.',
+    }),
+    defineField({
       name: 'announcementBar',
       title: 'Announcement Bar',
       type: 'object',
