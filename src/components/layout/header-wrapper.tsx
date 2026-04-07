@@ -14,8 +14,9 @@ const siteSettingsNavQuery = `*[_type == "siteSettings" && _id == "siteSettings"
   headerCtas[] { _key, label, url, style, openInNewTab },
   mainNav[] {
     _key, label, url,
-    children[] { _key, label, url, description }
-  }
+    children[] { _key, label, url, description, icon }
+  },
+  announcementBar { enabled, text, link, linkText }
 }`
 
 export interface NavAssociation {
@@ -51,12 +52,20 @@ export interface NavItem {
   _key: string
   label: string
   url: string
-  children?: { _key: string; label: string; url: string; description?: string }[]
+  children?: { _key: string; label: string; url: string; description?: string; icon?: string }[]
+}
+
+export interface AnnouncementBar {
+  enabled?: boolean
+  text?: string
+  link?: string
+  linkText?: string
 }
 
 export interface SiteSettingsNav {
   headerCtas?: HeaderCta[]
   mainNav?: NavItem[]
+  announcementBar?: AnnouncementBar
 }
 
 export async function Header() {
@@ -84,6 +93,8 @@ export async function Header() {
       caseStudyCount={caseStudyCount}
       solutionsNavData={navData}
       headerCtas={siteSettingsNav?.headerCtas}
+      announcementBar={siteSettingsNav?.announcementBar}
+      mainNav={siteSettingsNav?.mainNav}
     />
   )
 }

@@ -22,6 +22,7 @@ import { siteSettings } from './documents/site-settings'
 import { contentPost } from './documents/content-post'
 import { supportPage } from './documents/support-page'
 import { contactPage } from './documents/contact-page'
+import { downloadsPage } from './documents/downloads-page'
 
 // Page types
 import { partnersPage } from './documents/partners-page'
@@ -55,6 +56,7 @@ export const schemaTypes = [
   enterpriseSalesPage,
   supportPage,
   contactPage,
+  downloadsPage,
   siteSettings,
 
   // Page types

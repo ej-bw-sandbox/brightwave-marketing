@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 import { client } from '@/lib/sanity/client'
 import { urlFor } from '@/lib/sanity/image'
 import { useCaseQuery, useCaseSlugsQuery } from '@/lib/sanity/queries/use-cases'
@@ -7,6 +8,9 @@ import { notFound } from 'next/navigation'
 import { PortableText } from '@portabletext/react'
 import { ptComponents } from '@/lib/sanity/portable-text-components'
 import { CtaButton } from '@/components/sections/CtaButton'
+import { LogoMarquee } from '@/components/ui/LogoMarquee'
+import { TestimonialSlider } from '@/components/ui/TestimonialSlider'
+import { LottiePlayer } from '@/components/ui/LottiePlayer'
 import type { Metadata } from 'next'
 
 interface Props {
@@ -30,12 +34,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   })
 }
 
-/** Strip HTML tags from strings that may contain raw <p> etc. */
+/* ------------------------------------------------------------------ */
+/*  Helpers                                                            */
+/* ------------------------------------------------------------------ */
+
 function stripHtml(str: string): string {
   return str.replace(/<[^>]*>/g, '').trim()
 }
 
-/** Render a field that could be a string, blockContent array, or null */
 function RichText({ value, className }: { value: any; className?: string }) {
   if (!value) return null
   if (typeof value === 'string') {
@@ -54,157 +60,106 @@ function RichText({ value, className }: { value: any; className?: string }) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Inline style constants                                             */
+/*  Icons (matching preview SVGs exactly)                              */
 /* ------------------------------------------------------------------ */
 
-const DARK_BG = '#1a1a1a'
-const YELLOW = '#ffff25'
-const BLUE = '#0E50AA'
-const CARD_DARK_BG = 'rgba(255,255,255,0.03)'
-const CARD_DARK_BORDER = 'rgba(255,255,255,0.08)'
-const BEFORE_COLOR = '#e06050'
-const AFTER_COLOR = '#a0d060'
-
-const sectionLight: React.CSSProperties = {
-  background: '#ffffff',
-  color: '#1a1a1a',
-  padding: '100px 0',
-}
-
-const sectionDark: React.CSSProperties = {
-  background: DARK_BG,
-  color: '#ffffff',
-  padding: '100px 0',
-}
-
-const cardOnDark: React.CSSProperties = {
-  background: CARD_DARK_BG,
-  border: `1px solid ${CARD_DARK_BORDER}`,
-  borderRadius: '8px',
-  padding: '32px',
-}
-
-const cardOnLight: React.CSSProperties = {
-  background: '#ffffff',
-  border: '1px solid #e5e5e5',
-  borderRadius: '8px',
-  padding: '32px',
-  boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-}
-
-const grid3: React.CSSProperties = {
-  display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-  gap: '24px',
-}
-
-const grid2: React.CSSProperties = {
-  display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
-  gap: '24px',
-}
-
-/* ------------------------------------------------------------------ */
-/*  SVG icons                                                          */
-/* ------------------------------------------------------------------ */
-
-function AlertTriangleIcon() {
+function IconWarning() {
   return (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={YELLOW} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
-      <line x1="12" y1="9" x2="12" y2="13" />
-      <line x1="12" y1="17" x2="12.01" y2="17" />
+    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path strokeLinecap="square" d="M12 4L4 20h16L12 4z" />
+      <path d="M12 10v4" /><circle cx="12" cy="17" r="1" fill="currentColor" stroke="none" />
     </svg>
   )
 }
 
-function CheckCircleIcon() {
+function IconShield() {
   return (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={BLUE} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-      <polyline points="22 4 12 14.01 9 11.01" />
-    </svg>
-  )
-}
-
-function ZapIcon() {
-  return (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={BLUE} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-    </svg>
-  )
-}
-
-function BarChartIcon() {
-  return (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={BLUE} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <line x1="12" y1="20" x2="12" y2="10" />
-      <line x1="18" y1="20" x2="18" y2="4" />
-      <line x1="6" y1="20" x2="6" y2="16" />
-    </svg>
-  )
-}
-
-function LayersIcon() {
-  return (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={BLUE} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <polygon points="12 2 2 7 12 12 22 7 12 2" />
-      <polyline points="2 17 12 22 22 17" />
-      <polyline points="2 12 12 17 22 12" />
-    </svg>
-  )
-}
-
-function CpuIcon() {
-  return (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={BLUE} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="4" y="4" width="16" height="16" rx="2" ry="2" />
-      <rect x="9" y="9" width="6" height="6" />
-      <line x1="9" y1="1" x2="9" y2="4" /><line x1="15" y1="1" x2="15" y2="4" />
-      <line x1="9" y1="20" x2="9" y2="23" /><line x1="15" y1="20" x2="15" y2="23" />
-      <line x1="20" y1="9" x2="23" y2="9" /><line x1="20" y1="14" x2="23" y2="14" />
-      <line x1="1" y1="9" x2="4" y2="9" /><line x1="1" y1="14" x2="4" y2="14" />
-    </svg>
-  )
-}
-
-function ShieldIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={BLUE} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="1.5" fill="none">
       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
     </svg>
   )
 }
 
-function LockIcon() {
+function IconLock() {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={BLUE} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="1.5" fill="none">
+      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
     </svg>
   )
 }
 
-function FileTextIcon() {
+function IconClock() {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={BLUE} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="1.5" fill="none">
+      <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
+    </svg>
+  )
+}
+
+function IconFile() {
+  return (
+    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="1.5" fill="none">
       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-      <polyline points="14 2 14 8 20 8" />
-      <line x1="16" y1="13" x2="8" y2="13" />
-      <line x1="16" y1="17" x2="8" y2="17" />
+      <polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" />
     </svg>
   )
 }
 
 const trustBadges = [
-  { icon: <ShieldIcon />, label: 'SOC 2 Compliant' },
-  { icon: <CheckCircleIcon />, label: 'No Training on Your Data' },
-  { icon: <LockIcon />, label: 'End-to-End Encryption' },
-  { icon: <FileTextIcon />, label: 'Full Audit Trail' },
+  { icon: <IconShield />, label: 'SOC 2 Type II' },
+  { icon: <IconClock />, label: 'No Training Required' },
+  { icon: <IconLock />, label: 'AES-256 Encryption' },
+  { icon: <IconFile />, label: 'Full Audit Trail' },
 ]
 
+const pressLogos = [
+  { src: '/webflow-images/Frame-1321316806.avif', alt: 'Fortune', width: 191 },
+  { src: '/webflow-images/Frame-1321316797.avif', alt: 'WSJ Pro', width: 191 },
+  { src: '/webflow-images/Frame-1321316805.avif', alt: 'Axios', width: 191 },
+  { src: '/webflow-images/american-banker.svg', alt: 'American Banker', width: 191 },
+  { src: '/webflow-images/Frame-1321316804.avif', alt: 'Fox Business', width: 191 },
+  { src: '/webflow-images/latent-space.png', alt: 'Latent Space', width: 191 },
+  { src: '/webflow-images/Frame-1321316818.avif', alt: 'Cerebral Valley', width: 191 },
+  { src: '/webflow-images/Frame-1321316819.avif', alt: '', width: 191 },
+  { src: '/webflow-images/Frame-1321316820.avif', alt: '', width: 191 },
+  { src: '/webflow-images/TIme.avif', alt: 'Time', width: 191 },
+]
+
+/** Placeholder mock UI for solution rows that lack a Sanity image */
+function SolutionMockUI({ index }: { index: number }) {
+  return (
+    <div style={{
+      background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '0.5rem',
+      padding: '1.5rem', aspectRatio: '16/9', display: 'flex', flexDirection: 'column',
+    }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #e5e7eb', paddingBottom: '0.75rem', marginBottom: '1rem' }}>
+        <div style={{ display: 'flex', gap: '0.375rem' }}>
+          <div style={{ width: '0.625rem', height: '0.625rem', borderRadius: '50%', background: '#f87171' }} />
+          <div style={{ width: '0.625rem', height: '0.625rem', borderRadius: '50%', background: '#fbbf24' }} />
+          <div style={{ width: '0.625rem', height: '0.625rem', borderRadius: '50%', background: '#34d399' }} />
+        </div>
+        <span style={{ fontSize: '0.625rem', fontFamily: 'monospace', color: '#9ca3af', textTransform: 'uppercase' }}>
+          {index === 0 ? 'Ingestion_Pipeline.sys' : 'Generated_Output.doc'}
+        </span>
+      </div>
+      <div style={{ flex: 1, display: 'flex', gap: '1rem' }}>
+        <div style={{ width: '33%', borderRight: '1px solid #e5e7eb', paddingRight: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <div style={{ height: '1.5rem', background: '#e5e7eb', borderRadius: '0.25rem' }} />
+          <div style={{ height: '1.5rem', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '0.25rem' }} />
+          <div style={{ height: '1.5rem', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '0.25rem' }} />
+        </div>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+          <div style={{ width: '100%', height: '0.75rem', background: '#e5e7eb', borderRadius: '0.25rem' }} />
+          <div style={{ width: '80%', height: '0.75rem', background: '#e5e7eb', borderRadius: '0.25rem' }} />
+          <div style={{ width: '90%', height: '0.75rem', background: '#e5e7eb', borderRadius: '0.25rem' }} />
+        </div>
+      </div>
+    </div>
+  )
+}
+
 /* ------------------------------------------------------------------ */
-/*  Page component                                                     */
+/*  Page                                                               */
 /* ------------------------------------------------------------------ */
 
 export default async function UseCaseDetailPage({ params }: Props) {
@@ -221,117 +176,135 @@ export default async function UseCaseDetailPage({ params }: Props) {
   const afterSteps = doc.afterSteps ?? []
   const resultMetrics = doc.resultMetrics ?? []
   const specializations = doc.specializations ?? []
+  const relatedFeatures = doc.relatedFeatures ?? []
+  const relatedCaseStudies = doc.relatedCaseStudies ?? []
+  const relatedFirmTypes = doc.relatedFirmTypes ?? []
 
   return (
     <>
       {/* ============================================================ */}
-      {/* 1. Hero (light)                                              */}
+      {/* 1. HERO — 2/3 copy + 1/3 stat sidebar (dark, cc-hero)       */}
       {/* ============================================================ */}
-      <section style={sectionLight}>
-        <div className="c-container">
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '48px' }}>
-            <div style={{ maxWidth: '720px' }}>
-              {doc.eyebrow && (
-                <span style={{
-                  display: 'inline-block',
-                  fontSize: '0.75rem',
-                  fontWeight: 700,
-                  textTransform: 'uppercase' as const,
-                  letterSpacing: '0.1em',
-                  color: BLUE,
-                  marginBottom: '16px',
-                  background: 'rgba(14,80,170,0.08)',
-                  padding: '6px 14px',
-                  borderRadius: '4px',
-                }}>
-                  {stripHtml(doc.eyebrow)}
-                </span>
-              )}
-              <h1 style={{ fontSize: '3rem', fontWeight: 700, lineHeight: 1.1, marginBottom: '16px', letterSpacing: '-0.02em' }}>
-                {doc.h1 || doc.title}
-              </h1>
-              {(doc.heroSubtitle || doc.h2Hero) && (
-                <p style={{ fontSize: '1.35rem', fontWeight: 600, marginBottom: '16px', color: '#333' }}>
-                  {stripHtml(doc.heroSubtitle || doc.h2Hero)}
-                </p>
-              )}
-              <RichText value={doc.heroBody} className="prose-brand" />
-              <div style={{ display: 'flex', gap: '12px', marginTop: '32px', flexWrap: 'wrap' }}>
-                <CtaButton label="Start Free Trial" href="https://app.brightwave.io/register" variant="primary" />
-                <CtaButton label="Get a Demo" href="/contact" variant="outline" />
+      <section className="c-section cc-hero" style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+        <div className="c-container" style={{ flexDirection: 'row', flexWrap: 'wrap', gap: '4rem', alignItems: 'flex-start' }}>
+          {/* Left: copy + CTAs */}
+          <div style={{ flex: '2 1 24rem' }}>
+            {doc.eyebrow && (
+              <div className="eyebrow cc-no-bp" style={{ marginBottom: '2rem' }}>
+                <div className="block cc-primary" />
+                <span className="c-title-5">{stripHtml(doc.eyebrow)}</span>
               </div>
+            )}
+
+            <h1 className="c-title-1" style={{
+              paddingBottom: '2rem', borderBottom: '1px solid rgba(255,255,255,0.2)',
+              marginBottom: '2rem', width: '100%',
+            }}>
+              {doc.h1 || doc.title}
+            </h1>
+
+            {(doc.heroSubtitle || doc.h2Hero) && (
+              <p className="c-text-3" style={{ color: 'rgba(255,255,255,0.5)', marginBottom: '2.5rem', maxWidth: '40rem' }}>
+                {stripHtml(doc.heroSubtitle || doc.h2Hero)}
+              </p>
+            )}
+
+            {doc.heroBody && (
+              <div style={{ marginBottom: '2.5rem', maxWidth: '40rem' }}>
+                <RichText value={doc.heroBody} className="c-text-4" />
+              </div>
+            )}
+
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+              <CtaButton label="Start Free Trial" href="https://app.brightwave.io/register" variant="primary" />
+              <CtaButton label="Get a Demo" href="/contact" variant="outline" />
             </div>
 
             {doc.heroImage?.asset && (
-              <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9', borderRadius: '8px', overflow: 'hidden', border: '1px solid #e5e5e5' }}>
+              <div style={{ marginTop: '3rem', borderRadius: '0.75rem', overflow: 'hidden', aspectRatio: '16/9', position: 'relative', width: '100%' }}>
                 <Image
-                  src={urlFor(doc.heroImage).width(1400).height(788).quality(85).url()}
-                  alt={doc.title || ''}
-                  fill
-                  style={{ objectFit: 'cover' }}
-                  priority
+                  src={urlFor(doc.heroImage).width(1400).quality(85).url()}
+                  alt={doc.title || ''} fill style={{ objectFit: 'cover' }} priority
                 />
               </div>
             )}
+          </div>
 
-            {statPills.length > 0 && (
-              <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-                {statPills.map((pill: any, i: number) => (
-                  <div key={i} style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '10px',
-                    background: '#f5f5f5',
-                    border: '1px solid #e5e5e5',
-                    borderRadius: '40px',
-                    padding: '10px 20px',
-                  }}>
-                    <span style={{ fontSize: '1.25rem', fontWeight: 700, color: BLUE }}>{pill.value}</span>
-                    <span style={{ fontSize: '0.85rem', color: '#666' }}>{pill.label}</span>
-                  </div>
-                ))}
-              </div>
-            )}
+          {/* Right: stat sidebar cards */}
+          {statPills.length > 0 && (
+            <div style={{ flex: '1 1 16rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {statPills.map((pill: any, i: number) => (
+                <div key={i} style={{
+                  background: 'rgba(255,255,255,0.03)',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  borderLeft: i === 0 ? '2px solid var(--lightmode--primary, #e7e70d)' : '1px solid rgba(255,255,255,0.08)',
+                  padding: '1.5rem',
+                  display: 'flex', flexDirection: 'column', gap: '0.25rem',
+                }}>
+                  <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.15em', color: 'rgba(255,255,255,0.4)', fontWeight: 600 }}>
+                    {pill.label}
+                  </span>
+                  <span className="c-title-3" style={{ color: '#fff' }}>{pill.value}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* 2. LOGO MARQUEE                                              */}
+      {/* ============================================================ */}
+      <section className="c-section cc-logos">
+        <div className="c-container">
+          <div className="grid">
+            <div className="c-title-5 u-balance">As featured in</div>
+            <div>
+              <LogoMarquee speed={40} pauseOnHover logos={pressLogos} />
+            </div>
           </div>
         </div>
       </section>
 
       {/* ============================================================ */}
-      {/* 2. The Challenge (dark)                                       */}
+      {/* 3. CHALLENGES (dark — iam-value)                             */}
       {/* ============================================================ */}
       {challenges.length > 0 && (
-        <section style={sectionDark}>
-          <div className="c-container">
-            <span style={{
-              display: 'inline-block',
-              fontSize: '0.75rem',
-              fontWeight: 700,
-              textTransform: 'uppercase' as const,
-              letterSpacing: '0.1em',
-              color: YELLOW,
-              marginBottom: '16px',
-            }}>
-              THE CHALLENGE
-            </span>
+        <section className="c-section iam-value">
+          <div className="c-container" style={{ alignItems: 'center' }}>
             {doc.challengeH2 && (
-              <h2 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '48px' }}>
+              <h2 className="c-title-2" style={{ textAlign: 'center', marginBottom: '1rem' }}>
                 {stripHtml(doc.challengeH2)}
               </h2>
             )}
-            {!doc.challengeH2 && <div style={{ marginBottom: '32px' }} />}
-            <div style={grid3}>
+            <div style={{ marginBottom: '4rem' }} />
+
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 18rem), 1fr))',
+              gap: '1.5rem', width: '100%',
+            }}>
               {challenges.map((c: any, i: number) => (
-                <div key={c._key || i} style={cardOnDark}>
-                  <div style={{ marginBottom: '16px' }}>
-                    <AlertTriangleIcon />
+                <div key={c._key || i} style={{
+                  background: 'rgba(255,255,255,0.03)',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  borderRadius: '0.5rem', padding: '2rem',
+                  display: 'flex', flexDirection: 'column',
+                  transition: 'border-color 0.2s',
+                }}>
+                  <div style={{
+                    width: '2.5rem', height: '2.5rem', borderRadius: '50%',
+                    background: 'rgba(248,113,113,0.1)', border: '1px solid rgba(248,113,113,0.2)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    marginBottom: '1.5rem', color: '#f87171',
+                  }}>
+                    <IconWarning />
                   </div>
                   {c.title && (
-                    <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '12px' }}>
-                      {stripHtml(c.title)}
-                    </h3>
+                    <h3 className="c-title-5" style={{ marginBottom: '1rem' }}>{stripHtml(c.title)}</h3>
                   )}
                   {c.bullets && (
-                    <div style={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                    <div className="c-text-5" style={{ color: 'rgba(255,255,255,0.5)', lineHeight: 1.7 }}>
                       <RichText value={c.bullets} />
                     </div>
                   )}
@@ -343,58 +316,53 @@ export default async function UseCaseDetailPage({ params }: Props) {
       )}
 
       {/* ============================================================ */}
-      {/* 3. The Solution (light) — alternating image/text rows         */}
+      {/* 4. SOLUTIONS (light — alternating image/text with mock UIs)  */}
       {/* ============================================================ */}
       {solutions.length > 0 && (
-        <section style={sectionLight}>
-          <div className="c-container">
+        <section className="c-section">
+          <div className="c-container cc-10cols">
             {doc.solutionH2 && (
-              <h2 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '64px', textAlign: 'center' }}>
-                {stripHtml(doc.solutionH2)}
-              </h2>
+              <div style={{ textAlign: 'center', marginBottom: '6rem' }}>
+                <h2 className="c-title-2">{stripHtml(doc.solutionH2)}</h2>
+              </div>
             )}
-            <div style={{ display: 'grid', gap: '72px' }}>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6rem' }}>
               {solutions.map((s: any, i: number) => {
                 const isEven = i % 2 === 1
                 return (
-                  <div
-                    key={s._key || i}
-                    style={{
-                      display: 'grid',
-                      gridTemplateColumns: s.image?.asset ? 'repeat(auto-fit, minmax(340px, 1fr))' : '1fr',
-                      gap: '48px',
-                      alignItems: 'center',
-                    }}
-                  >
-                    {/* Image — left on odd rows, right on even (order swap) */}
-                    {s.image?.asset && (
-                      <div style={{
-                        position: 'relative',
-                        width: '100%',
-                        aspectRatio: '4/3',
-                        borderRadius: '8px',
-                        overflow: 'hidden',
-                        border: '1px solid #e5e5e5',
-                        order: isEven ? 2 : 1,
-                      }}>
-                        <Image
-                          src={urlFor(s.image).width(800).height(600).quality(85).url()}
-                          alt={s.title || ''}
-                          fill
-                          style={{ objectFit: 'cover' }}
-                          loading="lazy"
-                        />
-                      </div>
-                    )}
-                    {/* Text */}
-                    <div style={{ order: isEven ? 1 : 2 }}>
-                      {s.title && (
-                        <h3 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '16px' }}>
-                          {stripHtml(s.title)}
-                        </h3>
+                  <div key={s._key || i} style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 22rem), 1fr))',
+                    gap: '4rem', alignItems: 'center',
+                  }}>
+                    {/* Image or mock UI */}
+                    <div style={{ order: isEven ? 2 : 1 }}>
+                      {s.image?.asset ? (
+                        <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9', borderRadius: '0.5rem', overflow: 'hidden', border: '1px solid var(--lightmode--onsurface-border, #d7d8db)' }}>
+                          <Image
+                            src={urlFor(s.image).width(800).quality(85).url()}
+                            alt={s.title || ''} fill style={{ objectFit: 'cover' }} loading="lazy"
+                          />
+                        </div>
+                      ) : (
+                        <SolutionMockUI index={i} />
                       )}
+                    </div>
+
+                    {/* Text */}
+                    <div style={{ order: isEven ? 1 : 2, display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                      <div style={{
+                        width: '3rem', height: '3rem',
+                        background: 'var(--lightmode--onsurface, #0f0f0f)', color: '#fff',
+                        borderRadius: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontFamily: 'monospace', fontWeight: 700,
+                      }}>
+                        {String(i + 1).padStart(2, '0')}
+                      </div>
+                      {s.title && <h3 className="c-title-3">{stripHtml(s.title)}</h3>}
                       {s.body && (
-                        <div style={{ color: '#444', fontSize: '0.95rem', lineHeight: 1.7 }}>
+                        <div className="c-text-4" style={{ color: 'var(--lightmode--onsurface-weak, #5a5b5c)' }}>
                           <RichText value={s.body} className="prose-brand" />
                         </div>
                       )}
@@ -408,115 +376,99 @@ export default async function UseCaseDetailPage({ params }: Props) {
       )}
 
       {/* ============================================================ */}
-      {/* 4. Before / After Timeline (dark)                             */}
+      {/* 5. BEFORE / AFTER TIMELINE (dark — icp-workflow)             */}
       {/* ============================================================ */}
       {(beforeSteps.length > 0 || afterSteps.length > 0) && (
-        <section style={sectionDark}>
-          <div className="c-container">
+        <section className="c-section icp-workflow" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+          <div className="c-container cc-10cols">
             {doc.timelineH2 && (
-              <h2 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '48px', textAlign: 'center' }}>
-                {stripHtml(doc.timelineH2)}
-              </h2>
+              <div style={{ marginBottom: '4rem' }}>
+                <h2 className="c-title-2" style={{ color: '#fff' }}>{stripHtml(doc.timelineH2)}</h2>
+              </div>
             )}
-            <div style={grid2}>
-              {/* Before column */}
+
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 20rem), 1fr))',
+              gap: '2rem',
+            }}>
+              {/* Before */}
               {beforeSteps.length > 0 && (
                 <div style={{
-                  ...cardOnDark,
-                  borderColor: 'rgba(224,96,80,0.25)',
+                  background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)',
+                  borderRadius: '0.75rem', overflow: 'hidden',
+                  display: 'flex', flexDirection: 'column', position: 'relative',
                 }}>
-                  <h3 style={{
-                    fontSize: '0.85rem',
-                    fontWeight: 700,
-                    textTransform: 'uppercase' as const,
-                    letterSpacing: '0.08em',
-                    color: BEFORE_COLOR,
-                    marginBottom: '24px',
-                  }}>
-                    Before
-                  </h3>
-                  <div style={{ display: 'grid', gap: '16px' }}>
+                  <div style={{ height: '3px', background: 'rgba(248,113,113,0.3)', position: 'absolute', top: 0, left: 0, right: 0 }} />
+                  <div style={{ padding: '2rem 2rem 0' }}>
+                    <h3 className="c-title-5" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '2rem' }}>
+                      <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#f87171' }} />
+                      Before
+                    </h3>
+                  </div>
+                  <div style={{ flex: 1, padding: '0 2rem' }}>
                     {beforeSteps.map((step: any, i: number) => (
                       <div key={step._key || i} style={{
-                        display: 'grid',
-                        gridTemplateColumns: '80px 1fr',
-                        gap: '16px',
-                        alignItems: 'start',
-                        paddingBottom: '16px',
-                        borderBottom: i < beforeSteps.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none',
+                        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                        padding: '1.25rem 0',
+                        borderBottom: i < beforeSteps.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none',
                       }}>
-                        <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'rgba(255,255,255,0.4)' }}>
-                          {step.time}
-                        </span>
-                        <span style={{ fontSize: '0.95rem', color: 'rgba(255,255,255,0.5)', lineHeight: 1.5 }}>
-                          {step.description}
-                        </span>
+                        <span className="c-text-5" style={{ color: 'rgba(255,255,255,0.5)' }}>{step.description}</span>
+                        <span style={{ fontFamily: 'monospace', fontSize: '0.875rem', color: '#fff', flexShrink: 0, marginLeft: '1rem' }}>{step.time}</span>
                       </div>
                     ))}
                   </div>
                   {doc.beforeTotal && (
                     <div style={{
-                      marginTop: '24px',
-                      padding: '16px',
-                      background: 'rgba(224,96,80,0.1)',
-                      borderRadius: '6px',
-                      textAlign: 'center',
+                      marginTop: 'auto', padding: '2rem',
+                      background: 'rgba(248,113,113,0.05)', borderTop: '1px solid rgba(248,113,113,0.1)',
+                      display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end',
                     }}>
-                      <span style={{ fontSize: '1.1rem', fontWeight: 700, color: BEFORE_COLOR }}>
-                        {doc.beforeTotal}
+                      <span style={{ fontSize: '0.7rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(248,113,113,0.6)' }}>
+                        Total Analyst Time
                       </span>
+                      <span className="c-title-3" style={{ color: '#fff' }}>{stripHtml(doc.beforeTotal)}</span>
                     </div>
                   )}
                 </div>
               )}
 
-              {/* After column */}
+              {/* After */}
               {afterSteps.length > 0 && (
                 <div style={{
-                  ...cardOnDark,
-                  borderColor: 'rgba(160,208,96,0.3)',
-                  background: 'rgba(160,208,96,0.04)',
+                  background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)',
+                  borderRadius: '0.75rem', overflow: 'hidden',
+                  display: 'flex', flexDirection: 'column', position: 'relative',
                 }}>
-                  <h3 style={{
-                    fontSize: '0.85rem',
-                    fontWeight: 700,
-                    textTransform: 'uppercase' as const,
-                    letterSpacing: '0.08em',
-                    color: AFTER_COLOR,
-                    marginBottom: '24px',
-                  }}>
-                    With Brightwave
-                  </h3>
-                  <div style={{ display: 'grid', gap: '16px' }}>
+                  <div style={{ height: '3px', background: 'var(--lightmode--primary, #e7e70d)', position: 'absolute', top: 0, left: 0, right: 0 }} />
+                  <div style={{ padding: '2rem 2rem 0' }}>
+                    <h3 className="c-title-5" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '2rem' }}>
+                      <span style={{ width: '10px', height: '10px', background: 'var(--lightmode--primary, #e7e70d)' }} />
+                      With Brightwave
+                    </h3>
+                  </div>
+                  <div style={{ flex: 1, padding: '0 2rem' }}>
                     {afterSteps.map((step: any, i: number) => (
                       <div key={step._key || i} style={{
-                        display: 'grid',
-                        gridTemplateColumns: '80px 1fr',
-                        gap: '16px',
-                        alignItems: 'start',
-                        paddingBottom: '16px',
-                        borderBottom: i < afterSteps.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none',
+                        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                        padding: '1.25rem 0',
+                        borderBottom: i < afterSteps.length - 1 ? '1px solid rgba(255,255,255,0.08)' : 'none',
                       }}>
-                        <span style={{ fontSize: '0.85rem', fontWeight: 600, color: YELLOW }}>
-                          {step.time}
-                        </span>
-                        <span style={{ fontSize: '0.95rem', color: '#ffffff', lineHeight: 1.5 }}>
-                          {step.description}
-                        </span>
+                        <span className="c-text-5" style={{ color: 'rgba(255,255,255,0.8)', fontWeight: 500 }}>{step.description}</span>
+                        <span style={{ fontFamily: 'monospace', fontSize: '0.875rem', color: 'var(--lightmode--primary, #e7e70d)', flexShrink: 0, marginLeft: '1rem' }}>{step.time}</span>
                       </div>
                     ))}
                   </div>
                   {doc.afterTotal && (
                     <div style={{
-                      marginTop: '24px',
-                      padding: '16px',
-                      background: 'rgba(160,208,96,0.12)',
-                      borderRadius: '6px',
-                      textAlign: 'center',
+                      marginTop: 'auto', padding: '2rem',
+                      background: 'var(--lightmode--primary, #e7e70d)', color: '#000',
+                      display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end',
                     }}>
-                      <span style={{ fontSize: '1.1rem', fontWeight: 700, color: AFTER_COLOR }}>
-                        {doc.afterTotal}
+                      <span style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(0,0,0,0.6)' }}>
+                        Total Analyst Time
                       </span>
+                      <span className="c-title-3" style={{ color: '#000', fontWeight: 800 }}>{stripHtml(doc.afterTotal)}</span>
                     </div>
                   )}
                 </div>
@@ -527,29 +479,28 @@ export default async function UseCaseDetailPage({ params }: Props) {
       )}
 
       {/* ============================================================ */}
-      {/* 5. Key Features (light)                                       */}
+      {/* 6. KEY FEATURES (light, gray bg)                             */}
       {/* ============================================================ */}
       {featureHighlights.length > 0 && (
-        <section style={sectionLight}>
+        <section className="c-section" style={{ background: 'var(--lightmode--surface-1, #eff1f5)' }}>
           <div className="c-container">
             {doc.featuresH2 && (
-              <h2 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '48px', textAlign: 'center' }}>
-                {stripHtml(doc.featuresH2)}
-              </h2>
+              <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+                <h2 className="c-title-3">{stripHtml(doc.featuresH2)}</h2>
+              </div>
             )}
-            <div style={grid3}>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 18rem), 1fr))',
+              gap: '1.5rem',
+            }}>
               {featureHighlights.map((f: any, i: number) => (
-                <div key={f._key || i} style={cardOnLight}>
-                  <div style={{ marginBottom: '16px' }}>
-                    <ZapIcon />
-                  </div>
+                <div key={f._key || i} className="iam-capability-cell shadow-card" style={{ background: '#fff' }}>
                   {f.title && (
-                    <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '12px' }}>
-                      {stripHtml(f.title)}
-                    </h3>
+                    <h3 className="c-title-5" style={{ marginBottom: '0.75rem' }}>{stripHtml(f.title)}</h3>
                   )}
                   {f.bullets && (
-                    <div style={{ color: '#444', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                    <div className="c-text-5" style={{ color: 'var(--lightmode--onsurface-weak, #5a5b5c)', lineHeight: 1.7 }}>
                       <RichText value={f.bullets} />
                     </div>
                   )}
@@ -561,33 +512,36 @@ export default async function UseCaseDetailPage({ params }: Props) {
       )}
 
       {/* ============================================================ */}
-      {/* 6. Results + Specialization (light)                           */}
+      {/* 7. RESULTS + SPECIALIZATIONS (light)                         */}
       {/* ============================================================ */}
       {(resultMetrics.length > 0 || specializations.length > 0) && (
-        <section style={{ ...sectionLight, paddingTop: featureHighlights.length > 0 ? '0' : '100px' }}>
-          <div className="c-container">
-            {/* Metric counters */}
+        <section className="c-section">
+          <div className="c-container cc-10cols">
             {resultMetrics.length > 0 && (
               <>
                 {doc.resultsH2 && (
-                  <h2 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '48px', textAlign: 'center' }}>
-                    {stripHtml(doc.resultsH2)}
-                  </h2>
+                  <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+                    <h2 className="c-title-3">{stripHtml(doc.resultsH2)}</h2>
+                  </div>
                 )}
-                <div style={grid3}>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 14rem), 1fr))',
+                  gap: '3rem',
+                  borderBottom: specializations.length > 0 ? '1px solid var(--lightmode--onsurface-border, #d7d8db)' : 'none',
+                  paddingBottom: specializations.length > 0 ? '4rem' : '0',
+                  marginBottom: specializations.length > 0 ? '4rem' : '0',
+                }}>
                   {resultMetrics.map((m: any, i: number) => (
-                    <div key={m._key || i} style={{ textAlign: 'center', padding: '32px' }}>
-                      <div style={{ marginBottom: '12px' }}>
-                        <BarChartIcon />
-                      </div>
-                      <div style={{ fontSize: '2.5rem', fontWeight: 700, color: BLUE, lineHeight: 1.1 }}>
+                    <div key={m._key || i} style={{ textAlign: 'center' }}>
+                      <div style={{ fontSize: 'clamp(3rem, 6vw, 4.5rem)', fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 1, marginBottom: '0.5rem' }}>
                         {m.value}
                       </div>
-                      <div style={{ fontSize: '1.1rem', fontWeight: 600, marginTop: '8px', color: '#1a1a1a' }}>
+                      <div style={{ fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.5rem' }}>
                         {m.label}
                       </div>
                       {m.description && (
-                        <p style={{ fontSize: '0.9rem', color: '#666', marginTop: '8px' }}>
+                        <p className="c-text-5" style={{ color: 'var(--lightmode--onsurface-weak, #5a5b5c)', maxWidth: '14rem', margin: '0 auto' }}>
                           {stripHtml(m.description)}
                         </p>
                       )}
@@ -597,92 +551,101 @@ export default async function UseCaseDetailPage({ params }: Props) {
               </>
             )}
 
-            {/* Industry specializations */}
             {specializations.length > 0 && (
-              <div style={{ marginTop: resultMetrics.length > 0 ? '64px' : '0' }}>
+              <>
                 {doc.specializationH2 && (
-                  <h2 style={{ fontSize: '1.75rem', fontWeight: 700, marginBottom: '32px', textAlign: 'center' }}>
-                    {stripHtml(doc.specializationH2)}
-                  </h2>
+                  <div style={{ marginBottom: '2rem' }}>
+                    <h2 className="c-title-4">{stripHtml(doc.specializationH2)}</h2>
+                  </div>
                 )}
-                <div style={grid2}>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 20rem), 1fr))',
+                  gap: '1.5rem',
+                }}>
                   {specializations.map((sp: any, i: number) => (
-                    <div key={sp._key || i} style={cardOnLight}>
-                      <div style={{ marginBottom: '16px' }}>
-                        <LayersIcon />
-                      </div>
-                      {sp.title && (
-                        <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '12px' }}>
-                          {stripHtml(sp.title)}
-                        </h3>
-                      )}
+                    <div key={sp._key || i} className="iam-capability-cell shadow-card" style={{ background: '#fff' }}>
+                      {sp.title && <h3 className="c-title-5" style={{ marginBottom: '0.75rem' }}>{stripHtml(sp.title)}</h3>}
                       {sp.bullets && (
-                        <div style={{ color: '#444', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                        <div className="c-text-5" style={{ color: 'var(--lightmode--onsurface-weak, #5a5b5c)', lineHeight: 1.6 }}>
                           <RichText value={sp.bullets} />
                         </div>
                       )}
                     </div>
                   ))}
                 </div>
-              </div>
+              </>
             )}
           </div>
         </section>
       )}
 
       {/* ============================================================ */}
-      {/* 7. Social Proof (dark)                                        */}
+      {/* 8. TESTIMONIAL + SOCIAL PROOF                                */}
       {/* ============================================================ */}
       {(doc.testimonialQuote || doc.technologyBullets || doc.competitiveEdgeBullets) && (
-        <section style={sectionDark}>
-          <div className="c-container">
-            {/* Large testimonial */}
+        <section className="c-section iam-value">
+          <div className="c-container cc-10cols">
+            {/* Testimonial — slider-wrap */}
             {doc.testimonialQuote && (
-              <div style={{
-                maxWidth: '800px',
-                margin: '0 auto 48px',
-                padding: '40px',
-                borderLeft: `4px solid ${YELLOW}`,
-                background: 'rgba(255,255,255,0.03)',
-                borderRadius: '0 8px 8px 0',
-              }}>
-                <blockquote style={{ fontSize: '1.3rem', lineHeight: 1.6, fontStyle: 'italic', color: '#ffffff', margin: 0 }}>
-                  &ldquo;{stripHtml(doc.testimonialQuote)}&rdquo;
-                </blockquote>
-                {doc.testimonialAttribution && (
-                  <p style={{ marginTop: '16px', fontSize: '0.9rem', color: 'rgba(255,255,255,0.6)', fontStyle: 'normal' }}>
-                    &mdash; {stripHtml(doc.testimonialAttribution)}
-                  </p>
-                )}
+              <div className="slider-wrap" style={{ marginBottom: (doc.technologyBullets || doc.competitiveEdgeBullets) ? '3rem' : '0' }}>
+                <img width="294.5" loading="lazy" alt="" src="/webflow-images/testimonial.svg" className="slider_img" />
+                <LottiePlayer src="/webflow-documents/Testimonial-BG-25.json" className="slider_lottie" />
+                <TestimonialSlider
+                  testimonials={[{
+                    quote: stripHtml(doc.testimonialQuote),
+                    eyebrow: doc.testimonialAttribution ? stripHtml(doc.testimonialAttribution) : undefined,
+                  }]}
+                />
               </div>
             )}
 
-            {/* Credibility columns */}
+            {/* Technology + Competitive Edge */}
             {(doc.technologyBullets || doc.competitiveEdgeBullets) && (
-              <div style={grid2}>
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 20rem), 1fr))',
+                gap: '1.5rem',
+              }}>
                 {doc.technologyBullets && (
-                  <div style={cardOnDark}>
-                    <div style={{ marginBottom: '16px' }}>
-                      <CpuIcon />
+                  <div style={{
+                    background: 'transparent', border: '1px solid rgba(255,255,255,0.1)',
+                    borderRadius: '0.5rem', padding: '1.5rem',
+                    display: 'flex', alignItems: 'flex-start', gap: '1rem',
+                  }}>
+                    <div style={{
+                      width: '2rem', height: '2rem', borderRadius: '50%',
+                      border: '1px solid rgba(255,255,255,0.2)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                    }}>
+                      <IconLock />
                     </div>
-                    <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '16px' }}>
-                      Technology
-                    </h3>
-                    <div style={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.95rem', lineHeight: 1.6 }}>
-                      <RichText value={doc.technologyBullets} />
+                    <div>
+                      <h4 className="c-title-5" style={{ marginBottom: '0.5rem' }}>Technology</h4>
+                      <div className="c-text-5" style={{ color: 'rgba(255,255,255,0.5)', lineHeight: 1.6 }}>
+                        <RichText value={doc.technologyBullets} />
+                      </div>
                     </div>
                   </div>
                 )}
                 {doc.competitiveEdgeBullets && (
-                  <div style={cardOnDark}>
-                    <div style={{ marginBottom: '16px' }}>
-                      <ZapIcon />
+                  <div style={{
+                    background: 'transparent', border: '1px solid rgba(255,255,255,0.1)',
+                    borderRadius: '0.5rem', padding: '1.5rem',
+                    display: 'flex', alignItems: 'flex-start', gap: '1rem',
+                  }}>
+                    <div style={{
+                      width: '2rem', height: '2rem', borderRadius: '50%',
+                      border: '1px solid rgba(255,255,255,0.2)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                    }}>
+                      <IconShield />
                     </div>
-                    <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '16px' }}>
-                      Competitive Edge
-                    </h3>
-                    <div style={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.95rem', lineHeight: 1.6 }}>
-                      <RichText value={doc.competitiveEdgeBullets} />
+                    <div>
+                      <h4 className="c-title-5" style={{ marginBottom: '0.5rem' }}>Competitive Edge</h4>
+                      <div className="c-text-5" style={{ color: 'rgba(255,255,255,0.5)', lineHeight: 1.6 }}>
+                        <RichText value={doc.competitiveEdgeBullets} />
+                      </div>
                     </div>
                   </div>
                 )}
@@ -693,59 +656,90 @@ export default async function UseCaseDetailPage({ params }: Props) {
       )}
 
       {/* ============================================================ */}
-      {/* 8. CTA Footer (light, yellow top border)                      */}
+      {/* 9. RELATED CONTENT (light, surface-1)                        */}
       {/* ============================================================ */}
-      <section style={{
-        ...sectionLight,
-        borderTop: `4px solid ${YELLOW}`,
-      }}>
-        <div className="c-container">
-          <div style={{ maxWidth: '680px', margin: '0 auto', textAlign: 'center' }}>
-            <h2 style={{ fontSize: '2.25rem', fontWeight: 700, marginBottom: '12px', letterSpacing: '-0.01em' }}>
-              {doc.ctaH2 ? stripHtml(doc.ctaH2) : 'Ready to get started?'}
-            </h2>
-            {doc.ctaBody && (
-              <p style={{ color: '#555', lineHeight: 1.7, marginBottom: '32px' }}>
-                {stripHtml(doc.ctaBody)}
-              </p>
-            )}
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', flexWrap: 'wrap', marginBottom: '20px' }}>
-              <CtaButton
-                label={doc.ctaPrimaryLabel ? stripHtml(doc.ctaPrimaryLabel) : 'Start Free Trial'}
-                href="https://app.brightwave.io/register"
-                variant="primary"
-              />
-              <CtaButton
-                label={doc.ctaSecondaryLabel ? stripHtml(doc.ctaSecondaryLabel) : 'Get a Demo'}
-                href="/contact"
-                variant="outline"
-              />
-              {doc.ctaTertiaryLabel && (
-                <CtaButton
-                  label={stripHtml(doc.ctaTertiaryLabel)}
-                  href="/enterprise"
-                  variant="outline"
-                />
-              )}
+      {(relatedFeatures.length > 0 || relatedCaseStudies.length > 0 || relatedFirmTypes.length > 0) && (
+        <section className="c-section" style={{ background: 'var(--lightmode--surface-1, #eff1f5)' }}>
+          <div className="c-container cc-10cols">
+            <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+              <h2 className="c-title-4">Explore More</h2>
             </div>
-
-            {/* Trust indicators */}
             <div style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: '24px',
-              justifyContent: 'center',
-              marginTop: '24px',
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 18rem), 1fr))',
+              gap: '1.5rem',
             }}>
-              {trustBadges.map((badge, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <div style={{ flexShrink: 0 }}>{badge.icon}</div>
-                  <span style={{ fontSize: '0.85rem', fontWeight: 500, color: '#888' }}>
-                    {badge.label}
-                  </span>
-                </div>
+              {relatedFeatures.map((f: any, i: number) => (
+                <Link key={`feat-${i}`} href={`/features/${f.slug?.current || ''}`} className="iam-capability-cell shadow-card" style={{ textDecoration: 'none', color: 'inherit', background: '#fff' }}>
+                  <div style={{ color: 'var(--lightmode--primary, #e7e70d)', fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 700, marginBottom: '0.5rem' }}>Feature</div>
+                  <h3 className="c-title-5">{f.title}</h3>
+                  {f.tagline && <p className="c-text-5" style={{ marginTop: '0.5rem', color: 'var(--lightmode--onsurface-weak)' }}>{f.tagline}</p>}
+                </Link>
+              ))}
+              {relatedCaseStudies.map((cs: any, i: number) => (
+                <Link key={`cs-${i}`} href={`/case-studies/${cs.slug?.current || ''}`} className="iam-capability-cell shadow-card" style={{ textDecoration: 'none', color: 'inherit', background: '#fff', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  {cs.thumbnail?.asset && (
+                    <Image src={urlFor(cs.thumbnail).width(400).quality(80).url()} alt={cs.title || ''} width={400} height={225} style={{ borderRadius: '0.25rem', width: '100%', height: 'auto' }} />
+                  )}
+                  <div style={{ color: 'var(--lightmode--primary, #e7e70d)', fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 700 }}>Case Study</div>
+                  <h3 className="c-title-5">{cs.title}</h3>
+                  {cs.excerpt && <p className="c-text-5" style={{ color: 'var(--lightmode--onsurface-weak)' }}>{cs.excerpt}</p>}
+                </Link>
+              ))}
+              {relatedFirmTypes.map((ft: any, i: number) => (
+                <Link key={`ft-${i}`} href={`/solutions/${ft.slug?.current || ''}`} className="iam-capability-cell shadow-card" style={{ textDecoration: 'none', color: 'inherit', background: '#fff' }}>
+                  <div style={{ color: 'var(--lightmode--primary, #e7e70d)', fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 700, marginBottom: '0.5rem' }}>Firm Type</div>
+                  <h3 className="c-title-5">{ft.title}</h3>
+                </Link>
               ))}
             </div>
+          </div>
+        </section>
+      )}
+
+      {/* ============================================================ */}
+      {/* 10. FINAL CTA (light, yellow top border)                     */}
+      {/* ============================================================ */}
+      <section className="c-section" style={{ borderTop: '4px solid var(--lightmode--primary, #e7e70d)' }}>
+        <div className="c-container cc-8cols" style={{ alignItems: 'center', textAlign: 'center' }}>
+          <h2 className="c-title-2" style={{ marginBottom: '1rem' }}>
+            {doc.ctaH2 ? stripHtml(doc.ctaH2) : 'Ready to get started?'}
+          </h2>
+          {doc.ctaBody && (
+            <p className="c-text-3" style={{ marginBottom: '3rem', color: 'var(--lightmode--onsurface-weak)' }}>
+              {stripHtml(doc.ctaBody)}
+            </p>
+          )}
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '3rem' }}>
+            <CtaButton
+              label={doc.ctaPrimaryLabel ? stripHtml(doc.ctaPrimaryLabel) : 'Start Free Trial'}
+              href="https://app.brightwave.io/register"
+              variant="primary"
+            />
+            <CtaButton
+              label={doc.ctaSecondaryLabel ? stripHtml(doc.ctaSecondaryLabel) : 'Get a Demo'}
+              href="/contact"
+              variant="outline"
+            />
+            {doc.ctaTertiaryLabel && (
+              <CtaButton label={stripHtml(doc.ctaTertiaryLabel)} href="/enterprise" variant="outline" />
+            )}
+          </div>
+
+          {/* Trust badges */}
+          <div style={{
+            borderTop: '1px solid var(--lightmode--onsurface-border, #d7d8db)',
+            paddingTop: '2.5rem',
+            display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '2.5rem',
+          }}>
+            {trustBadges.map((badge, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--lightmode--onsurface-weak, #5a5b5c)' }}>
+                {badge.icon}
+                <span style={{ fontSize: '0.7rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                  {badge.label}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
       </section>

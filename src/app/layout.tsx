@@ -18,7 +18,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         {/* Webflow CSS - loaded verbatim from the export */}
         <link href="/webflow-css/normalize.css" rel="stylesheet" type="text/css" />

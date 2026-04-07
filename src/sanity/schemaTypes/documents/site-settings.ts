@@ -23,6 +23,7 @@ export const siteSettings = defineType({
               { name: 'label', title: 'Label', type: 'string' },
               { name: 'url', title: 'URL', type: 'string' },
               { name: 'description', title: 'Description', type: 'string' },
+              { name: 'icon', title: 'Icon', type: 'string', description: 'Lucide icon name (e.g. BookOpen, Briefcase, Download). See lucide.dev/icons for options.' },
             ] }],
           },
         ],

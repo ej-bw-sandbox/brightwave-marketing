@@ -9,6 +9,7 @@ import {
   Plug, Share2, Users, Settings, Zap, Clock, ListChecks, LayoutTemplate,
   SearchCode, PenTool, Rocket,
   BookOpen, Newspaper, Scale, Calendar, Megaphone, Library, LifeBuoy, Handshake, Wrench, FlaskConical, Briefcase, Building2,
+  Download, Monitor, Smartphone, Globe, Shield, MessageSquare, Video, Headphones, GraduationCap, Heart, Star,
   Sun, Moon,
 } from 'lucide-react'
 
@@ -88,6 +89,7 @@ const ICON_NAME_MAP: Record<string, LucideIcon> = {
   Plug, Share2, Users, Settings, Zap, Clock, ListChecks, LayoutTemplate,
   SearchCode, PenTool, Rocket, BookOpen, Newspaper, Scale, Calendar,
   Megaphone, Library, LifeBuoy, Handshake, Wrench, FlaskConical, Briefcase, Building2,
+  Download, Monitor, Smartphone, Globe, Shield, MessageSquare, Video, Headphones, GraduationCap, Heart, Star,
 }
 
 interface NavAssociation {
@@ -111,13 +113,31 @@ interface HeaderCta {
   openInNewTab?: boolean
 }
 
+interface AnnouncementBar {
+  enabled?: boolean
+  text?: string
+  link?: string
+  linkText?: string
+}
+
+interface NavItem {
+  _key: string
+  label: string
+  url: string
+  children?: { _key: string; label: string; url: string; description?: string; icon?: string }[]
+}
+
 export function HeaderClient({
   solutionsNavData = null,
   headerCtas,
+  announcementBar,
+  mainNav,
 }: {
   caseStudyCount?: number
   solutionsNavData?: SolutionsNavData | null
   headerCtas?: HeaderCta[]
+  announcementBar?: AnnouncementBar
+  mainNav?: NavItem[]
 }) {
   /* ---- State ---- */
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
@@ -195,20 +215,33 @@ export function HeaderClient({
   const useCases = solutionsNavData?.useCases ?? []
   const firmTypes = solutionsNavData?.firmTypes ?? []
 
-  const resourceLinks: { title: string; href: string; desc: string; icon: LucideIcon; external?: boolean }[] = [
-    { title: 'About Us', href: '/about', desc: 'Learn about Brightwave and our mission', icon: Building2 },
-    { title: 'Blog', href: '/blog', desc: 'Insights on AI and investment research', icon: BookOpen },
-    { title: 'Careers', href: 'https://www.linkedin.com/company/brightwaveio/jobs/', desc: 'Join the Brightwave team', icon: Briefcase, external: true },
-    { title: 'Comparisons', href: '/comparisons', desc: 'How Brightwave compares to alternatives', icon: Scale },
-    { title: 'Engineering Log', href: '/engineering-log', desc: 'Technical deep dives from our team', icon: FlaskConical },
-    { title: 'Events', href: '/events', desc: 'Live and past online events', icon: Calendar },
-    { title: 'Knowledge Base', href: 'https://docs.brightwave.io', desc: 'In-depth guides and documentation', icon: Library, external: true },
-    { title: 'News', href: '/news', desc: 'Latest updates and press coverage', icon: Newspaper },
-    { title: 'Partner Program', href: '/partners', desc: 'Join our partner ecosystem', icon: Handshake },
-    { title: 'Release Notes', href: '/release-notes', desc: 'See our latest feature launches', icon: Megaphone },
-    { title: 'Support', href: '/support', desc: 'Product support and documentation', icon: LifeBuoy },
-    { title: 'Tools & Guides', href: '/tools-guides', desc: 'Resources and growth assets', icon: Wrench },
-  ]
+  /* ---- Derive nav items from CMS mainNav ---- */
+  const RESOURCE_ICON_MAP: Record<string, LucideIcon> = {
+    '/about': Building2, '/blog': BookOpen, '/comparisons': Scale,
+    '/engineering-log': FlaskConical, '/events': Calendar, '/news': Newspaper,
+    '/partners': Handshake, '/release-notes': Megaphone, '/support': LifeBuoy,
+    '/tools-guides': Wrench,
+  }
+  const RESOURCE_ICON_KEYWORD: Record<string, LucideIcon> = {
+    'career': Briefcase, 'knowledge': Library, 'docs': Library,
+  }
+  function getResourceIcon(url: string, label: string): LucideIcon {
+    if (RESOURCE_ICON_MAP[url]) return RESOURCE_ICON_MAP[url]
+    const lowerUrl = url.toLowerCase()
+    const lowerLabel = label.toLowerCase()
+    for (const [kw, icon] of Object.entries(RESOURCE_ICON_KEYWORD)) {
+      if (lowerUrl.includes(kw) || lowerLabel.includes(kw)) return icon
+    }
+    return BookOpen
+  }
+
+  /* Find nav items by key or label for special mega-menu rendering */
+  const platformNav = mainNav?.find(n => n.label.toLowerCase() === 'platform')
+  const solutionsNav = mainNav?.find(n => n.label.toLowerCase() === 'solutions')
+
+  /* All other nav items rendered generically */
+  const specialLabels = new Set(['platform', 'solutions'])
+  const genericNavItems = mainNav?.filter(n => !specialLabels.has(n.label.toLowerCase())) ?? []
 
   /* Feature categories from Sanity or fallbacks */
   const featureCategories = Object.keys(platformGroups).length > 0
@@ -289,6 +322,14 @@ export function HeaderClient({
 
   return (
     <>
+      {announcementBar?.enabled && announcementBar.text && (
+        <div className="announcement-bar" style={{ background: '#1a1a2e', color: '#fff', textAlign: 'center', padding: '10px 16px', fontSize: '14px' }}>
+          <span>{announcementBar.text}</span>
+          {announcementBar.link && announcementBar.linkText && (
+            <a href={announcementBar.link} style={{ color: '#818cf8', marginLeft: '8px', textDecoration: 'underline' }}>{announcementBar.linkText}</a>
+          )}
+        </div>
+      )}
       <div data-animation="default" data-collapse="medium" role="banner" className="nav w-nav">
         <div id="cio-banner" className="cio-banner"></div>
         <div className="c-container cc-nav">
@@ -319,38 +360,148 @@ export function HeaderClient({
                 <nav role="navigation" className="nav_menu w-nav-menu" {...(mobileMenuOpen ? { 'data-nav-menu-open': '' } : {})}>
                   <div className="nav_links">
 
-                    {/* ==================== PLATFORM DROPDOWN (Desktop) ==================== */}
-                    <div className={`nav_dropdown cc-desktop w-dropdown${openDropdown === 'platform' ? ' w--open' : ''}`}>
-                      <div className="nav_toggle w-dropdown-toggle" onClick={() => toggleDropdown('platform')} aria-expanded={openDropdown === 'platform'} role="button" tabIndex={0} onKeyDown={e => e.key === 'Enter' && toggleDropdown('platform')}>
-                        <div className="text-overflow">
-                          <div className="c-text-link cc-nav">Platform</div>
-                          <div className="nav_line"></div>
+                    {/* ==================== PLATFORM MEGA-MENU (Desktop) ==================== */}
+                    {platformNav && (
+                      <div className={`nav_dropdown cc-desktop w-dropdown${openDropdown === 'platform' ? ' w--open' : ''}`}>
+                        <div className="nav_toggle w-dropdown-toggle" onClick={() => toggleDropdown('platform')} aria-expanded={openDropdown === 'platform'} role="button" tabIndex={0} onKeyDown={e => e.key === 'Enter' && toggleDropdown('platform')}>
+                          <div className="text-overflow">
+                            <div className="c-text-link cc-nav">{platformNav.label}</div>
+                            <div className="nav_line"></div>
+                          </div>
+                          <ChevronSvg />
                         </div>
-                        <ChevronSvg />
+                        {openDropdown === 'platform' && (
+                          <nav className="nav_list w-dropdown-list w--open">
+                            <div style={megaPanelStyle}>
+                              <div style={megaInnerStyle}>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 40 }}>
+                                  {/* Left: Category columns */}
+                                  <div style={{ display: 'grid', gridTemplateColumns: `repeat(${featureCategories.length}, 1fr)`, gap: 40 }}>
+                                    {featureCategories.map((cat, ci) => (
+                                      <div key={ci}>
+                                        <Link href={cat.href} style={{
+                                          display: 'flex', alignItems: 'center', gap: 8,
+                                          fontSize: 14, fontWeight: 600, color: MEGA.text,
+                                          textDecoration: 'none', marginBottom: 16,
+                                        }} onClick={() => setOpenDropdown(null)}>
+                                          {(() => { const CatIcon = CATEGORY_ICONS[cat.title]; return CatIcon ? <CatIcon size={16} style={{ opacity: 0.7 }} /> : null })()}
+                                          {cat.title} <span style={{ fontSize: 16 }}>&rarr;</span>
+                                        </Link>
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                          {cat.items.slice(0, 4).map((item, ii) => {
+                                            const ItemIcon = getFeatureIcon(item.href, (item as any).menuIcon)
+                                            return (
+                                            <Link key={ii} href={item.href} style={{
+                                              display: 'flex', alignItems: 'center', gap: 10,
+                                              padding: '6px 0', color: MEGA.text,
+                                              textDecoration: 'none', fontSize: 14, fontWeight: 400,
+                                              transition: 'opacity 0.15s',
+                                            }}
+                                              onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '0.7')}
+                                              onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '1')}
+                                              onClick={() => setOpenDropdown(null)}
+                                            >
+                                              {ItemIcon && <ItemIcon size={15} style={{ opacity: 0.5, flexShrink: 0 }} />}
+                                              <span>{item.title}</span>
+                                            </Link>
+                                            )
+                                          })}
+                                          {cat.items.length > 4 && (
+                                            <Link href={cat.href} style={{
+                                              display: 'flex', alignItems: 'center', gap: 6,
+                                              padding: '8px 0 2px', color: MEGA.accent,
+                                              textDecoration: 'none', fontSize: 13, fontWeight: 600,
+                                              transition: 'opacity 0.15s',
+                                            }}
+                                              onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '0.7')}
+                                              onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '1')}
+                                              onClick={() => setOpenDropdown(null)}
+                                            >
+                                              More &rarr;
+                                            </Link>
+                                          )}
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+
+                                  {/* Right sidebar */}
+                                  <div style={{
+                                    borderLeft: `1px solid ${MEGA.border}`,
+                                    paddingLeft: 40,
+                                    minWidth: 280,
+                                    maxWidth: 320,
+                                  }}>
+                                    <div style={{ fontSize: 18, fontWeight: 600, color: MEGA.text, marginBottom: 8 }}>
+                                      Brightwave {platformNav.label}
+                                    </div>
+                                    <div style={{ fontSize: 13, color: MEGA.textMuted, marginBottom: 20, lineHeight: 1.5 }}>
+                                      AI-powered research and analysis for investment professionals
+                                    </div>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                                      <Link href={platformNav.url} style={{ color: MEGA.accent, fontSize: 14, fontWeight: 500, textDecoration: 'none' }} onClick={() => setOpenDropdown(null)}>View All Features &rarr;</Link>
+                                      <Link href="/enterprise-security-compliance" style={{ color: MEGA.accent, fontSize: 14, fontWeight: 500, textDecoration: 'none' }} onClick={() => setOpenDropdown(null)}>Enterprise Security &rarr;</Link>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </nav>
+                        )}
                       </div>
-                      {openDropdown === 'platform' && (
-                        <nav className="nav_list w-dropdown-list w--open">
-                          <div style={megaPanelStyle}>
-                            <div style={megaInnerStyle}>
-                              <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 40 }}>
-                                {/* Left: Category columns */}
-                                <div style={{ display: 'grid', gridTemplateColumns: `repeat(${featureCategories.length}, 1fr)`, gap: 40 }}>
-                                  {featureCategories.map((cat, ci) => (
-                                    <div key={ci}>
-                                      <Link href={cat.href} style={{
-                                        display: 'flex', alignItems: 'center', gap: 8,
-                                        fontSize: 14, fontWeight: 600, color: MEGA.text,
-                                        textDecoration: 'none', marginBottom: 16,
-                                      }} onClick={() => setOpenDropdown(null)}>
-                                        {(() => { const CatIcon = CATEGORY_ICONS[cat.title]; return CatIcon ? <CatIcon size={16} style={{ opacity: 0.7 }} /> : null })()}
-                                        {cat.title} <span style={{ fontSize: 16 }}>&rarr;</span>
-                                      </Link>
+                    )}
+
+                    {/* ==================== SOLUTIONS MEGA-MENU (Desktop) ==================== */}
+                    {solutionsNav && (
+                      <div className={`nav_dropdown cc-desktop w-dropdown${openDropdown === 'solutions' ? ' w--open' : ''}`}>
+                        <div className="nav_toggle w-dropdown-toggle" onClick={() => toggleDropdown('solutions')} aria-expanded={openDropdown === 'solutions'} role="button" tabIndex={0} onKeyDown={e => e.key === 'Enter' && toggleDropdown('solutions')}>
+                          <div className="text-overflow">
+                            <div className="c-text-link cc-nav">{solutionsNav.label}</div>
+                            <div className="nav_line"></div>
+                          </div>
+                          <ChevronSvg />
+                        </div>
+                        {openDropdown === 'solutions' && (
+                          <nav className="nav_list w-dropdown-list w--open">
+                            <div style={megaPanelStyle}>
+                              <div style={{ ...megaInnerStyle, padding: '40px' }}>
+                                <div style={{ display: 'flex', alignItems: 'stretch', gap: 0 }}>
+                                  {/* Left: Private Markets card */}
+                                  <div style={{ display: 'flex', alignItems: 'center', paddingRight: 40, flexShrink: 0 }}>
+                                    <Link
+                                      href="/private-markets-platform"
+                                      onClick={() => setOpenDropdown(null)}
+                                      style={{
+                                        display: 'flex', alignItems: 'center', gap: 12,
+                                        padding: '20px 32px',
+                                        background: MEGA.cardBg,
+                                        borderRadius: 8,
+                                        textDecoration: 'none',
+                                        color: MEGA.text,
+                                        fontSize: 20, fontWeight: 700,
+                                        transition: 'background 0.2s',
+                                      }}
+                                      onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.background = MEGA.cardBgHover)}
+                                      onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.background = MEGA.cardBg)}
+                                    >
+                                      Private Markets
+                                    </Link>
+                                  </div>
+
+                                  {/* Vertical divider */}
+                                  <div style={{ width: 1, background: MEGA.border, flexShrink: 0 }} />
+
+                                  {/* Right: 3 columns */}
+                                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 40, flex: 1, paddingLeft: 40 }}>
+                                    {/* I am a... */}
+                                    <div>
+                                      <div style={{ fontSize: 14, fontWeight: 600, color: MEGA.text, marginBottom: 16 }}>
+                                        I am a...
+                                      </div>
                                       <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                        {cat.items.slice(0, 4).map((item, ii) => {
-                                          const ItemIcon = getFeatureIcon(item.href, (item as any).menuIcon)
-                                          return (
-                                          <Link key={ii} href={item.href} style={{
-                                            display: 'flex', alignItems: 'center', gap: 10,
+                                        {icpPages.length > 0 ? icpPages.map((icp, i) => (
+                                          <Link key={i} href={`/i-am-a/${icp.slug}`} style={{
+                                            display: 'flex', alignItems: 'center', gap: 8,
                                             padding: '6px 0', color: MEGA.text,
                                             textDecoration: 'none', fontSize: 14, fontWeight: 400,
                                             transition: 'opacity 0.15s',
@@ -359,336 +510,243 @@ export function HeaderClient({
                                             onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '1')}
                                             onClick={() => setOpenDropdown(null)}
                                           >
-                                            {ItemIcon && <ItemIcon size={15} style={{ opacity: 0.5, flexShrink: 0 }} />}
-                                            <span>{item.title}</span>
+                                            <span style={{ width: 6, height: 6, borderRadius: 1, background: MEGA.textMuted, flexShrink: 0 }} />
+                                            {icp.menuLabel || icp.title}
                                           </Link>
-                                          )
-                                        })}
-                                        {cat.items.length > 4 && (
-                                          <Link href={cat.href} style={{
-                                            display: 'flex', alignItems: 'center', gap: 6,
-                                            padding: '8px 0 2px', color: MEGA.accent,
-                                            textDecoration: 'none', fontSize: 13, fontWeight: 600,
+                                        )) : (
+                                          <div style={{ fontSize: 13, color: MEGA.textMuted }}>Coming soon</div>
+                                        )}
+                                        <Link href="/i-am-a" style={{ fontSize: 13, color: MEGA.textMuted, textDecoration: 'none', marginTop: 8, transition: 'opacity 0.15s' }}
+                                          onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '0.7')}
+                                          onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '1')}
+                                          onClick={() => setOpenDropdown(null)}
+                                        >More &rarr;</Link>
+                                      </div>
+                                    </div>
+
+                                    {/* Working on... */}
+                                    <div>
+                                      <div style={{ fontSize: 14, fontWeight: 600, color: MEGA.text, marginBottom: 16 }}>
+                                        Working on...
+                                      </div>
+                                      <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                        {useCases.length > 0 ? useCases.map((uc, i) => (
+                                          <Link key={i} href={`/use-cases/${uc.slug}`} style={{
+                                            display: 'flex', alignItems: 'center', gap: 8,
+                                            padding: '6px 0', color: MEGA.text,
+                                            textDecoration: 'none', fontSize: 14, fontWeight: 400,
                                             transition: 'opacity 0.15s',
                                           }}
                                             onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '0.7')}
                                             onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '1')}
                                             onClick={() => setOpenDropdown(null)}
                                           >
-                                            More &rarr;
+                                            <span style={{ width: 6, height: 6, borderRadius: 1, background: MEGA.textMuted, flexShrink: 0 }} />
+                                            {uc.menuLabel || uc.title}
+                                          </Link>
+                                        )) : (
+                                          <Link href="/private-markets-platform" style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 0', color: MEGA.text, textDecoration: 'none', fontSize: 14 }} onClick={() => setOpenDropdown(null)}>
+                                            <span style={{ width: 6, height: 6, borderRadius: 1, background: MEGA.textMuted, flexShrink: 0 }} /> Private Markets
                                           </Link>
                                         )}
+                                        <Link href="/use-cases" style={{ fontSize: 13, color: MEGA.textMuted, textDecoration: 'none', marginTop: 8, transition: 'opacity 0.15s' }}
+                                          onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '0.7')}
+                                          onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '1')}
+                                          onClick={() => setOpenDropdown(null)}
+                                        >More &rarr;</Link>
                                       </div>
                                     </div>
-                                  ))}
-                                </div>
 
-                                {/* Right sidebar */}
-                                <div style={{
-                                  borderLeft: `1px solid ${MEGA.border}`,
-                                  paddingLeft: 40,
-                                  minWidth: 280,
-                                  maxWidth: 320,
-                                }}>
-                                  <div style={{ fontSize: 18, fontWeight: 600, color: MEGA.text, marginBottom: 8 }}>
-                                    Brightwave Platform
-                                  </div>
-                                  <div style={{ fontSize: 13, color: MEGA.textMuted, marginBottom: 20, lineHeight: 1.5 }}>
-                                    AI-powered research and analysis for investment professionals
-                                  </div>
-                                  <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                                    <Link href="/features" style={{ color: MEGA.accent, fontSize: 14, fontWeight: 500, textDecoration: 'none' }} onClick={() => setOpenDropdown(null)}>View All Features &rarr;</Link>
-                                    <Link href="/enterprise-security-compliance" style={{ color: MEGA.accent, fontSize: 14, fontWeight: 500, textDecoration: 'none' }} onClick={() => setOpenDropdown(null)}>Enterprise Security &rarr;</Link>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </nav>
-                      )}
-                    </div>
-
-                    {/* ==================== SOLUTIONS DROPDOWN (Desktop) ==================== */}
-                    <div className={`nav_dropdown cc-desktop w-dropdown${openDropdown === 'solutions' ? ' w--open' : ''}`}>
-                      <div className="nav_toggle w-dropdown-toggle" onClick={() => toggleDropdown('solutions')} aria-expanded={openDropdown === 'solutions'} role="button" tabIndex={0} onKeyDown={e => e.key === 'Enter' && toggleDropdown('solutions')}>
-                        <div className="text-overflow">
-                          <div className="c-text-link cc-nav">Solutions</div>
-                          <div className="nav_line"></div>
-                        </div>
-                        <ChevronSvg />
-                      </div>
-                      {openDropdown === 'solutions' && (
-                        <nav className="nav_list w-dropdown-list w--open">
-                          <div style={megaPanelStyle}>
-                            <div style={{ ...megaInnerStyle, padding: '40px' }}>
-                              <div style={{ display: 'flex', alignItems: 'stretch', gap: 0 }}>
-                                {/* Left: Private Markets card */}
-                                <div style={{ display: 'flex', alignItems: 'center', paddingRight: 40, flexShrink: 0 }}>
-                                  <Link
-                                    href="/private-markets-platform"
-                                    onClick={() => setOpenDropdown(null)}
-                                    style={{
-                                      display: 'flex', alignItems: 'center', gap: 12,
-                                      padding: '20px 32px',
-                                      background: MEGA.cardBg,
-                                      borderRadius: 8,
-                                      textDecoration: 'none',
-                                      color: MEGA.text,
-                                      fontSize: 20, fontWeight: 700,
-                                      transition: 'background 0.2s',
-                                    }}
-                                    onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.background = MEGA.cardBgHover)}
-                                    onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.background = MEGA.cardBg)}
-                                  >
-                                    Private Markets
-                                  </Link>
-                                </div>
-
-                                {/* Vertical divider */}
-                                <div style={{ width: 1, background: MEGA.border, flexShrink: 0 }} />
-
-                                {/* Right: 3 columns */}
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 40, flex: 1, paddingLeft: 40 }}>
-                                  {/* I am a... */}
-                                  <div>
-                                    <div style={{ fontSize: 14, fontWeight: 600, color: MEGA.text, marginBottom: 16 }}>
-                                      I am a...
-                                    </div>
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                      {icpPages.length > 0 ? icpPages.map((icp, i) => (
-                                        <Link key={i} href={`/i-am-a/${icp.slug}`} style={{
-                                          display: 'flex', alignItems: 'center', gap: 8,
-                                          padding: '6px 0', color: MEGA.text,
-                                          textDecoration: 'none', fontSize: 14, fontWeight: 400,
-                                          transition: 'opacity 0.15s',
-                                        }}
-                                          onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '0.7')}
-                                          onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '1')}
-                                          onClick={() => setOpenDropdown(null)}
-                                        >
-                                          <span style={{ width: 6, height: 6, borderRadius: 1, background: MEGA.textMuted, flexShrink: 0 }} />
-                                          {icp.menuLabel || icp.title}
-                                        </Link>
-                                      )) : (
-                                        <div style={{ fontSize: 13, color: MEGA.textMuted }}>Coming soon</div>
-                                      )}
-                                      <Link href="/i-am-a" style={{ fontSize: 13, color: MEGA.textMuted, textDecoration: 'none', marginTop: 8, transition: 'opacity 0.15s' }}
-                                        onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '0.7')}
-                                        onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '1')}
-                                        onClick={() => setOpenDropdown(null)}
-                                      >More &rarr;</Link>
-                                    </div>
-                                  </div>
-
-                                  {/* Working on... */}
-                                  <div>
-                                    <div style={{ fontSize: 14, fontWeight: 600, color: MEGA.text, marginBottom: 16 }}>
-                                      Working on...
-                                    </div>
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                      {useCases.length > 0 ? useCases.map((uc, i) => (
-                                        <Link key={i} href={`/use-cases/${uc.slug}`} style={{
-                                          display: 'flex', alignItems: 'center', gap: 8,
-                                          padding: '6px 0', color: MEGA.text,
-                                          textDecoration: 'none', fontSize: 14, fontWeight: 400,
-                                          transition: 'opacity 0.15s',
-                                        }}
-                                          onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '0.7')}
-                                          onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '1')}
-                                          onClick={() => setOpenDropdown(null)}
-                                        >
-                                          <span style={{ width: 6, height: 6, borderRadius: 1, background: MEGA.textMuted, flexShrink: 0 }} />
-                                          {uc.menuLabel || uc.title}
-                                        </Link>
-                                      )) : (
-                                        <Link href="/private-markets-platform" style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 0', color: MEGA.text, textDecoration: 'none', fontSize: 14 }} onClick={() => setOpenDropdown(null)}>
-                                          <span style={{ width: 6, height: 6, borderRadius: 1, background: MEGA.textMuted, flexShrink: 0 }} /> Private Markets
-                                        </Link>
-                                      )}
-                                      <Link href="/use-cases" style={{ fontSize: 13, color: MEGA.textMuted, textDecoration: 'none', marginTop: 8, transition: 'opacity 0.15s' }}
-                                        onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '0.7')}
-                                        onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '1')}
-                                        onClick={() => setOpenDropdown(null)}
-                                      >More &rarr;</Link>
-                                    </div>
-                                  </div>
-
-                                  {/* Working at a... */}
-                                  <div>
-                                    <div style={{ fontSize: 14, fontWeight: 600, color: MEGA.text, marginBottom: 16 }}>
-                                      Working at a...
-                                    </div>
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                      {firmTypes.length > 0 ? firmTypes.map((ft, i) => (
-                                        <Link key={i} href={`/firm-types/${ft.slug}`} style={{
-                                          display: 'flex', alignItems: 'center', gap: 8,
-                                          padding: '6px 0', color: MEGA.text,
-                                          textDecoration: 'none', fontSize: 14, fontWeight: 400,
-                                          transition: 'opacity 0.15s',
-                                        }}
-                                          onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '0.7')}
-                                          onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '1')}
-                                          onClick={() => setOpenDropdown(null)}
-                                        >
-                                          <span style={{ width: 6, height: 6, borderRadius: 1, background: MEGA.textMuted, flexShrink: 0 }} />
-                                          {ft.menuLabel || ft.title}
-                                        </Link>
-                                      )) : (
-                                        <div style={{ fontSize: 13, color: MEGA.textMuted }}>Coming soon</div>
-                                      )}
-                                      <Link href="/firm-types" style={{ fontSize: 13, color: MEGA.textMuted, textDecoration: 'none', marginTop: 8, transition: 'opacity 0.15s' }}
-                                        onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '0.7')}
-                                        onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '1')}
-                                        onClick={() => setOpenDropdown(null)}
-                                      >More &rarr;</Link>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </nav>
-                      )}
-                    </div>
-
-                    {/* ==================== CUSTOMERS (Direct Link) ==================== */}
-                    <a href="/case-studies" className="nav_link w-inline-block">
-                      <div className="c-text-link cc-nav">Customers</div>
-                      <div className="nav_line"></div>
-                    </a>
-
-                    {/* ==================== RESOURCES DROPDOWN (Desktop) ==================== */}
-                    <div className={`nav_dropdown cc-desktop w-dropdown${openDropdown === 'resources' ? ' w--open' : ''}`}>
-                      <div className="nav_toggle w-dropdown-toggle" onClick={() => toggleDropdown('resources')} aria-expanded={openDropdown === 'resources'} role="button" tabIndex={0} onKeyDown={e => e.key === 'Enter' && toggleDropdown('resources')}>
-                        <div className="text-overflow">
-                          <div className="c-text-link cc-nav">Resources</div>
-                          <div className="nav_line"></div>
-                        </div>
-                        <ChevronSvg />
-                      </div>
-                      {openDropdown === 'resources' && (
-                        <nav className="nav_list w-dropdown-list w--open">
-                          <div style={megaPanelStyle}>
-                            <div style={megaInnerStyle}>
-                              <div style={{
-                                display: 'grid',
-                                gridTemplateColumns: 'repeat(3, 1fr)',
-                                gap: '28px 36px',
-                              }}>
-                                {resourceLinks.map((link, i) => {
-                                  const ResIcon = link.icon
-                                  const linkProps = {
-                                    style: {
-                                      display: 'flex', alignItems: 'flex-start', gap: 12,
-                                      textDecoration: 'none', color: MEGA.text,
-                                      padding: '8px 0',
-                                      transition: 'opacity 0.15s',
-                                    } as React.CSSProperties,
-                                    onMouseEnter: (e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '0.7'),
-                                    onMouseLeave: (e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '1'),
-                                    onClick: () => setOpenDropdown(null),
-                                  }
-                                  const content = (
-                                    <>
-                                      <ResIcon size={18} style={{ opacity: 0.5, flexShrink: 0, marginTop: 2 }} />
-                                      <div>
-                                        <div style={{ fontSize: 15, fontWeight: 600 }}>{link.title}</div>
-                                        <div style={{ fontSize: 13, color: MEGA.textMuted, lineHeight: 1.5 }}>{link.desc}</div>
+                                    {/* Working at a... */}
+                                    <div>
+                                      <div style={{ fontSize: 14, fontWeight: 600, color: MEGA.text, marginBottom: 16 }}>
+                                        Working at a...
                                       </div>
-                                    </>
-                                  )
-                                  return link.external ? (
-                                    <a key={i} href={link.href} target="_blank" rel="noopener noreferrer" {...linkProps}>
-                                      {content}
-                                    </a>
-                                  ) : (
-                                    <Link key={i} href={link.href} {...linkProps}>
-                                      {content}
-                                    </Link>
-                                  )
-                                })}
+                                      <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                        {firmTypes.length > 0 ? firmTypes.map((ft, i) => (
+                                          <Link key={i} href={`/firm-types/${ft.slug}`} style={{
+                                            display: 'flex', alignItems: 'center', gap: 8,
+                                            padding: '6px 0', color: MEGA.text,
+                                            textDecoration: 'none', fontSize: 14, fontWeight: 400,
+                                            transition: 'opacity 0.15s',
+                                          }}
+                                            onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '0.7')}
+                                            onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '1')}
+                                            onClick={() => setOpenDropdown(null)}
+                                          >
+                                            <span style={{ width: 6, height: 6, borderRadius: 1, background: MEGA.textMuted, flexShrink: 0 }} />
+                                            {ft.menuLabel || ft.title}
+                                          </Link>
+                                        )) : (
+                                          <div style={{ fontSize: 13, color: MEGA.textMuted }}>Coming soon</div>
+                                        )}
+                                        <Link href="/firm-types" style={{ fontSize: 13, color: MEGA.textMuted, textDecoration: 'none', marginTop: 8, transition: 'opacity 0.15s' }}
+                                          onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '0.7')}
+                                          onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '1')}
+                                          onClick={() => setOpenDropdown(null)}
+                                        >More &rarr;</Link>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
                               </div>
                             </div>
+                          </nav>
+                        )}
+                      </div>
+                    )}
+
+                    {/* ==================== GENERIC NAV ITEMS FROM CMS (Desktop) ==================== */}
+                    {genericNavItems.map((navItem) => {
+                      const dropdownKey = navItem._key
+                      const hasChildren = navItem.children && navItem.children.length > 0
+                      const isExternal = navItem.url.startsWith('http')
+
+                      if (!hasChildren) {
+                        return (
+                          <a key={navItem._key} href={navItem.url} className="nav_link w-inline-block" {...(isExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
+                            <div className="c-text-link cc-nav">{navItem.label}</div>
+                            <div className="nav_line"></div>
+                          </a>
+                        )
+                      }
+
+                      return (
+                        <div key={navItem._key} className={`nav_dropdown cc-desktop w-dropdown${openDropdown === dropdownKey ? ' w--open' : ''}`}>
+                          <div className="nav_toggle w-dropdown-toggle" onClick={() => toggleDropdown(dropdownKey)} aria-expanded={openDropdown === dropdownKey} role="button" tabIndex={0} onKeyDown={e => e.key === 'Enter' && toggleDropdown(dropdownKey)}>
+                            <div className="text-overflow">
+                              <div className="c-text-link cc-nav">{navItem.label}</div>
+                              <div className="nav_line"></div>
+                            </div>
+                            <ChevronSvg />
                           </div>
-                        </nav>
-                      )}
-                    </div>
+                          {openDropdown === dropdownKey && (
+                            <nav className="nav_list w-dropdown-list w--open">
+                              <div style={megaPanelStyle}>
+                                <div style={megaInnerStyle}>
+                                  <div style={{
+                                    display: 'grid',
+                                    gridTemplateColumns: 'repeat(3, 1fr)',
+                                    gap: '28px 36px',
+                                  }}>
+                                    {navItem.children!.map((child) => {
+                                      const childExternal = child.url.startsWith('http')
+                                      const ResIcon = (child.icon && ICON_NAME_MAP[child.icon]) || getResourceIcon(child.url, child.label)
+                                      const linkProps = {
+                                        style: {
+                                          display: 'flex', alignItems: 'flex-start', gap: 12,
+                                          textDecoration: 'none', color: MEGA.text,
+                                          padding: '8px 0',
+                                          transition: 'opacity 0.15s',
+                                        } as React.CSSProperties,
+                                        onMouseEnter: (e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '0.7'),
+                                        onMouseLeave: (e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '1'),
+                                        onClick: () => setOpenDropdown(null),
+                                      }
+                                      const content = (
+                                        <>
+                                          <ResIcon size={18} style={{ opacity: 0.5, flexShrink: 0, marginTop: 2 }} />
+                                          <div>
+                                            <div style={{ fontSize: 15, fontWeight: 600 }}>{child.label}</div>
+                                            {child.description && <div style={{ fontSize: 13, color: MEGA.textMuted, lineHeight: 1.5 }}>{child.description}</div>}
+                                          </div>
+                                        </>
+                                      )
+                                      return childExternal ? (
+                                        <a key={child._key} href={child.url} target="_blank" rel="noopener noreferrer" {...linkProps}>
+                                          {content}
+                                        </a>
+                                      ) : (
+                                        <Link key={child._key} href={child.url} {...linkProps}>
+                                          {content}
+                                        </Link>
+                                      )
+                                    })}
+                                  </div>
+                                </div>
+                              </div>
+                            </nav>
+                          )}
+                        </div>
+                      )
+                    })}
 
-                    {/* ==================== PRICING (Direct Link) ==================== */}
-                    <a href="/enterprise" className="nav_link w-inline-block">
-                      <div className="c-text-link cc-nav">Pricing</div>
-                      <div className="nav_line"></div>
-                    </a>
-
-                    {/* ==================== MOBILE ACCORDIONS ==================== */}
+                    {/* ==================== MOBILE ACCORDIONS (CMS-driven) ==================== */}
 
                     {/* Mobile: Platform */}
-                    <div className="nav_dropdown cc-mobile">
-                      <div className="nav_toggle">
-                        <div className="c-text-link cc-nav">Platform</div>
-                        <ChevronSvg />
-                        <input type="checkbox" className="accordion_checkbox" />
-                      </div>
-                      <div className="nav_list">
-                        <div>
-                          <div className="mobile_items">
-                            {featureCategories.map((cat) =>
-                              cat.items.slice(0, 4).map((item, i) => (
-                                <a key={`mob-plat-${cat.title}-${i}`} href={item.href} className="c-title-4">{item.title}</a>
-                              ))
-                            ).flat()}
-                            <a href="/features" className="c-title-4" style={{ color: MEGA.accent }}>View All Features</a>
+                    {platformNav && (
+                      <div className="nav_dropdown cc-mobile">
+                        <div className="nav_toggle">
+                          <div className="c-text-link cc-nav">{platformNav.label}</div>
+                          <ChevronSvg />
+                          <input type="checkbox" className="accordion_checkbox" />
+                        </div>
+                        <div className="nav_list">
+                          <div>
+                            <div className="mobile_items">
+                              {featureCategories.map((cat) =>
+                                cat.items.slice(0, 4).map((item, i) => (
+                                  <a key={`mob-plat-${cat.title}-${i}`} href={item.href} className="c-title-4">{item.title}</a>
+                                ))
+                              ).flat()}
+                              <a href={platformNav.url} className="c-title-4" style={{ color: MEGA.accent }}>View All Features</a>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
+                    )}
 
                     {/* Mobile: Solutions */}
-                    <div className="nav_dropdown cc-mobile">
-                      <div className="nav_toggle">
-                        <div className="c-text-link cc-nav">Solutions</div>
-                        <ChevronSvg />
-                        <input type="checkbox" className="accordion_checkbox" />
-                      </div>
-                      <div className="nav_list">
-                        <div>
-                          <div className="mobile_items">
-                            {useCases.map((uc, i) => (
-                              <a key={`mob-uc-${i}`} href={`/use-cases/${uc.slug}`} className="c-title-4">{uc.menuLabel || uc.title}</a>
-                            ))}
-                            {icpPages.map((icp, i) => (
-                              <a key={`mob-icp-${i}`} href={`/i-am-a/${icp.slug}`} className="c-title-4">{icp.menuLabel || icp.title}</a>
-                            ))}
-                            {firmTypes.map((ft, i) => (
-                              <a key={`mob-ft-${i}`} href={`/firm-types/${ft.slug}`} className="c-title-4">{ft.menuLabel || ft.title}</a>
-                            ))}
-                            {useCases.length === 0 && icpPages.length === 0 && firmTypes.length === 0 && (
-                              <>
+                    {solutionsNav && (
+                      <div className="nav_dropdown cc-mobile">
+                        <div className="nav_toggle">
+                          <div className="c-text-link cc-nav">{solutionsNav.label}</div>
+                          <ChevronSvg />
+                          <input type="checkbox" className="accordion_checkbox" />
+                        </div>
+                        <div className="nav_list">
+                          <div>
+                            <div className="mobile_items">
+                              {useCases.map((uc, i) => (
+                                <a key={`mob-uc-${i}`} href={`/use-cases/${uc.slug}`} className="c-title-4">{uc.menuLabel || uc.title}</a>
+                              ))}
+                              {icpPages.map((icp, i) => (
+                                <a key={`mob-icp-${i}`} href={`/i-am-a/${icp.slug}`} className="c-title-4">{icp.menuLabel || icp.title}</a>
+                              ))}
+                              {firmTypes.map((ft, i) => (
+                                <a key={`mob-ft-${i}`} href={`/firm-types/${ft.slug}`} className="c-title-4">{ft.menuLabel || ft.title}</a>
+                              ))}
+                              {useCases.length === 0 && icpPages.length === 0 && firmTypes.length === 0 && (
                                 <a href="/private-markets-platform" className="c-title-4">Private Markets</a>
-                              </>
-                            )}
+                              )}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
+                    )}
 
-                    {/* Mobile: Resources */}
-                    <div className="nav_dropdown cc-mobile">
-                      <div className="nav_toggle">
-                        <div className="c-text-link cc-nav">Resources</div>
-                        <ChevronSvg />
-                        <input type="checkbox" className="accordion_checkbox" />
-                      </div>
-                      <div className="nav_list">
-                        <div>
-                          <div className="mobile_items">
-                            {resourceLinks.map((link, i) => (
-                              <a key={`mob-res-${i}`} href={link.href} className="c-title-4" {...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{link.title}</a>
-                            ))}
+                    {/* Mobile: Generic nav items with children */}
+                    {genericNavItems.filter(n => n.children && n.children.length > 0).map((navItem) => (
+                      <div key={`mob-${navItem._key}`} className="nav_dropdown cc-mobile">
+                        <div className="nav_toggle">
+                          <div className="c-text-link cc-nav">{navItem.label}</div>
+                          <ChevronSvg />
+                          <input type="checkbox" className="accordion_checkbox" />
+                        </div>
+                        <div className="nav_list">
+                          <div>
+                            <div className="mobile_items">
+                              {navItem.children!.map((child) => {
+                                const childExternal = child.url.startsWith('http')
+                                return (
+                                  <a key={`mob-${child._key}`} href={child.url} className="c-title-4" {...(childExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{child.label}</a>
+                                )
+                              })}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
+                    ))}
 
                   </div>
                 </nav>
