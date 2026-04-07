@@ -62,7 +62,8 @@ const FEATURE_ICONS: Record<string, LucideIcon> = {
 }
 
 function getFeatureIcon(href: string, menuIcon?: string): LucideIcon | null {
-  if (menuIcon && ICON_NAME_MAP[menuIcon]) return ICON_NAME_MAP[menuIcon]
+  const mapped = getIconByName(menuIcon)
+  if (mapped) return mapped
   const slug = href.split('/').pop() || ''
   return FEATURE_ICONS[slug] || null
 }
@@ -82,7 +83,7 @@ interface PlatformFeature {
   menuIcon?: string
 }
 
-/* Map Sanity menuIcon string names to Lucide components */
+/* Map Sanity menuIcon string names to Lucide components (case-insensitive lookup via getIcon) */
 const ICON_NAME_MAP: Record<string, LucideIcon> = {
   Workflow, Grid3x3, Brain, Database, Search, Bot,
   Sparkles, Sheet, Presentation, FileText, FileType,
@@ -90,6 +91,15 @@ const ICON_NAME_MAP: Record<string, LucideIcon> = {
   SearchCode, PenTool, Rocket, BookOpen, Newspaper, Scale, Calendar,
   Megaphone, Library, LifeBuoy, Handshake, Wrench, FlaskConical, Briefcase, Building2,
   Download, Monitor, Smartphone, Globe, Shield, MessageSquare, Video, Headphones, GraduationCap, Heart, Star,
+}
+
+/* Case-insensitive icon lookup */
+const ICON_NAME_MAP_LOWER: Record<string, LucideIcon> = Object.fromEntries(
+  Object.entries(ICON_NAME_MAP).map(([k, v]) => [k.toLowerCase(), v])
+)
+function getIconByName(name: string | undefined): LucideIcon | null {
+  if (!name) return null
+  return ICON_NAME_MAP[name] || ICON_NAME_MAP_LOWER[name.toLowerCase()] || null
 }
 
 interface NavAssociation {
@@ -631,7 +641,7 @@ export function HeaderClient({
                                   }}>
                                     {navItem.children!.map((child) => {
                                       const childExternal = child.url.startsWith('http')
-                                      const ResIcon = (child.icon && ICON_NAME_MAP[child.icon]) || getResourceIcon(child.url, child.label)
+                                      const ResIcon = getIconByName(child.icon) || getResourceIcon(child.url, child.label)
                                       const linkProps = {
                                         style: {
                                           display: 'flex', alignItems: 'flex-start', gap: 12,
