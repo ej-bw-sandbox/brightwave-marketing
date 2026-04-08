@@ -18,9 +18,11 @@ interface BottomToolbarProps {
 /* ────────────────────────────────────────────────────────────────────────────
  * TBtn — Toolbar icon-tile button
  *   Every icon button renders as a uniform dark square tile:
- *     w-12 h-12 rounded-xl bg-bw-gray-700, hover:bg-bw-gray-600
- *   Active state: bg-bw-gray-600 highlight
- *   Danger state: bg-red-600/20 text-red-400
+ *     w-12 h-12 rounded-xl, always has a visible bg
+ *   Base: bg-white/[0.08] (subtle tile visible against the toolbar container)
+ *   Active: bg-white/15 text-white
+ *   Danger: bg-red-600/20 text-red-400
+ *   Default: text-white/80
  *   Label: text-[9px] text-white/70 beneath icon
  * ──────────────────────────────────────────────────────────────────────── */
 function TBtn({
@@ -43,14 +45,16 @@ function TBtn({
       onClick={onClick}
       title={label}
       className={cn(
-        'relative w-12 h-12 rounded-xl bg-bw-gray-700 flex flex-col items-center justify-center gap-1 hover:bg-bw-gray-600 transition-colors',
-        danger && 'bg-red-600/20 text-red-400 hover:bg-red-600/30',
-        active && !danger && 'bg-bw-gray-600 text-white',
-        !active && !danger && 'text-white',
+        'relative flex flex-col items-center justify-center w-12 h-12 rounded-xl transition-all',
+        danger
+          ? 'bg-red-600/20 text-red-400 hover:bg-red-600/30'
+          : active
+            ? 'bg-white/15 text-white'
+            : 'bg-white/[0.08] text-white/80 hover:bg-white/15 hover:text-white',
       )}
     >
       {icon}
-      <span className="text-[9px] text-white/70 leading-none">{label}</span>
+      <span className="text-[9px] mt-0.5 leading-none">{label}</span>
       {badge != null && badge > 0 && (
         <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] flex items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold px-1">
           {badge > 99 ? '99+' : badge}
@@ -62,7 +66,6 @@ function TBtn({
 
 /* ────────────────────────────────────────────────────────────────────────────
  * BottomToolbar — floating pill centered at bottom
- * Matches sales-avatar reference exactly:
  *   fixed bottom-6 left-1/2 -translate-x-1/2 z-30
  *   bg-bw-gray-700/90 backdrop-blur-md rounded-2xl px-3 py-2.5
  *   border border-white/[0.06] shadow-2xl
@@ -151,7 +154,7 @@ export default function BottomToolbar({
 
       <div className="w-px h-8 bg-white/10 mx-1" />
 
-      {/* End Call — separate red button matching sales-avatar */}
+      {/* End Call — separate red pill button */}
       <button
         onClick={onEndCall}
         className="flex items-center gap-2 px-5 py-2.5 bg-red-600 hover:bg-red-500 text-white rounded-full font-medium text-sm transition-colors"
