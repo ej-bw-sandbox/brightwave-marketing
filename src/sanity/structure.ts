@@ -137,46 +137,16 @@ export const structure: StructureResolver = (S) =>
               S.listItem()
                 .title('Wizard')
                 .child(
-                  S.list()
-                    .title('Wizard')
-                    .items([
-                      S.listItem()
-                        .title('Private Markets')
-                        .child(
-                          S.document()
-                            .schemaType('privateMarketsWizardForm')
-                            .documentId('privateMarketsWizardForm')
-                        ),
-                    ])
+                  S.documentList()
+                    .title('Wizard Forms')
+                    .filter('_type == "privateMarketsWizardForm"')
                 ),
               S.listItem()
                 .title('Static')
                 .child(
-                  S.list()
-                    .title('Static')
-                    .items([
-                      S.listItem()
-                        .title('Contact Form')
-                        .child(
-                          S.document()
-                            .schemaType('contactForm')
-                            .documentId('contactForm')
-                        ),
-                      S.listItem()
-                        .title('Referral Form')
-                        .child(
-                          S.document()
-                            .schemaType('contactForm')
-                            .documentId('referralContactForm')
-                        ),
-                      S.listItem()
-                        .title('Partners Form')
-                        .child(
-                          S.document()
-                            .schemaType('contactForm')
-                            .documentId('partnersContactForm')
-                        ),
-                    ])
+                  S.documentList()
+                    .title('Static Forms')
+                    .filter('_type == "contactForm"')
                 ),
             ])
         ),
