@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { Camera, Mic, MicOff, AlertCircle, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { BrightwaveLogo } from '@/components/layout/logo';
@@ -15,6 +14,12 @@ interface PreCallLobbyProps {
 
 type PermissionState = 'pending' | 'granted' | 'denied' | 'error';
 
+/**
+ * Pre-call lobby with camera preview and mic test.
+ * Layout matches sales-avatar's centered, dark approach but retains
+ * brightwave-marketing's richer camera/mic UX.
+ * Colors: bg-bw-gray-800, bw-gray-700 surfaces, bw-yellow-550 accents.
+ */
 export default function PreCallLobby({ prospect, onStart }: PreCallLobbyProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [permissionState, setPermissionState] = useState<PermissionState>('pending');
@@ -82,7 +87,6 @@ export default function PreCallLobby({ prospect, onStart }: PreCallLobbyProps) {
   }, [stream]);
 
   const handleStart = () => {
-    // Stop the preview stream -- the session will start its own
     if (stream) {
       stream.getTracks().forEach((t) => t.stop());
       setStream(null);
@@ -92,7 +96,7 @@ export default function PreCallLobby({ prospect, onStart }: PreCallLobbyProps) {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a12] flex flex-col items-center justify-center px-4">
+    <div className="min-h-screen bg-bw-gray-800 flex flex-col items-center justify-center px-4">
       {/* Logo */}
       <div className="mb-8">
         <BrightwaveLogo className="text-white" />
@@ -108,7 +112,7 @@ export default function PreCallLobby({ prospect, onStart }: PreCallLobbyProps) {
       </p>
 
       {/* Camera Preview */}
-      <div className="relative w-full max-w-md aspect-video rounded-2xl overflow-hidden bg-[#1a1a2e] border border-white/10 mb-6">
+      <div className="relative w-full max-w-md aspect-video rounded-2xl overflow-hidden bg-bw-gray-700 border border-white/10 mb-6">
         {permissionState === 'granted' ? (
           <video
             ref={videoRef}
@@ -120,12 +124,14 @@ export default function PreCallLobby({ prospect, onStart }: PreCallLobbyProps) {
           />
         ) : permissionState === 'pending' ? (
           <div className="flex flex-col items-center justify-center h-full gap-3">
-            <Loader2 className="w-8 h-8 text-white/40 animate-spin" />
+            <div className="w-8 h-8 rounded-full border-2 border-white/10 border-t-bw-yellow-550 animate-spin" />
             <p className="text-white/50 text-sm">Requesting camera and microphone access...</p>
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center h-full gap-3 px-6">
-            <AlertCircle className="w-8 h-8 text-red-400" />
+            <svg className="w-8 h-8 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+            </svg>
             <p className="text-white/70 text-sm text-center">
               {permissionState === 'denied'
                 ? 'Camera and microphone access was denied. Please allow access in your browser settings.'
@@ -133,7 +139,7 @@ export default function PreCallLobby({ prospect, onStart }: PreCallLobbyProps) {
             </p>
             <button
               onClick={requestPermissions}
-              className="text-sm text-indigo-400 hover:text-indigo-300 underline underline-offset-2"
+              className="text-sm text-bw-yellow-550 hover:text-bw-yellow-400 underline underline-offset-2"
             >
               Try again
             </button>
@@ -144,18 +150,20 @@ export default function PreCallLobby({ prospect, onStart }: PreCallLobbyProps) {
         {permissionState === 'granted' && (
           <div className="absolute bottom-3 left-3 flex items-center gap-2">
             <div className="flex items-center gap-1.5 bg-black/60 backdrop-blur-sm rounded-full px-2.5 py-1">
-              <Camera className="w-3.5 h-3.5 text-green-400" />
+              <svg className="w-3.5 h-3.5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9.75a2.25 2.25 0 002.25-2.25V7.5a2.25 2.25 0 00-2.25-2.25H4.5A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z" />
+              </svg>
               <span className="text-[11px] text-white/80">Camera ready</span>
             </div>
-            <div
-              className={cn(
-                'flex items-center gap-1.5 bg-black/60 backdrop-blur-sm rounded-full px-2.5 py-1',
-              )}
-            >
+            <div className="flex items-center gap-1.5 bg-black/60 backdrop-blur-sm rounded-full px-2.5 py-1">
               {isMicTest ? (
-                <Mic className="w-3.5 h-3.5 text-green-400" />
+                <svg className="w-3.5 h-3.5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" />
+                </svg>
               ) : (
-                <MicOff className="w-3.5 h-3.5 text-red-400" />
+                <svg className="w-3.5 h-3.5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 19L5 5m7-2a3 3 0 00-3 3v4a3 3 0 006 0V6a3 3 0 00-3-3zM17 11a5 5 0 01-7.586 4.243M3.515 15.243A5 5 0 018 17m4 0v4m-4 0h8" />
+                </svg>
               )}
               <span className="text-[11px] text-white/80">
                 {isMicTest ? 'Mic ready' : 'Mic off'}
@@ -178,7 +186,15 @@ export default function PreCallLobby({ prospect, onStart }: PreCallLobbyProps) {
                   : 'bg-red-600/20 text-red-400 hover:bg-red-600/30',
               )}
             >
-              {isMicTest ? <Mic className="w-4 h-4" /> : <MicOff className="w-4 h-4" />}
+              {isMicTest ? (
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" />
+                </svg>
+              ) : (
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 19L5 5m7-2a3 3 0 00-3 3v4a3 3 0 006 0V6a3 3 0 00-3-3zM17 11a5 5 0 01-7.586 4.243M3.515 15.243A5 5 0 018 17m4 0v4m-4 0h8" />
+                </svg>
+              )}
             </button>
             <div className="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
               <div
@@ -205,7 +221,7 @@ export default function PreCallLobby({ prospect, onStart }: PreCallLobbyProps) {
 
       {permissionState === 'denied' && (
         <p className="text-white/40 text-xs mt-3 text-center">
-          You can still start the demo -- you&apos;ll be able to chat via text.
+          You can still start the demo &mdash; you&apos;ll be able to chat via text.
         </p>
       )}
     </div>

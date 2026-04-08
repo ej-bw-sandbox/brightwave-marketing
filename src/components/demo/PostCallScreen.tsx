@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { CheckCircle, ArrowRight, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import type { ProspectContext } from '@/lib/demo-utils';
@@ -16,6 +15,12 @@ interface PostCallScreenProps {
   calendarLink: string;
 }
 
+/**
+ * Post-call screen with qualification polling.
+ * Matches sales-avatar's post-call visual style:
+ * dark bg, centered content, accent CTAs.
+ * Retains brightwave-marketing's qualification polling logic.
+ */
 export default function PostCallScreen({
   prospect,
   sessionId,
@@ -41,7 +46,7 @@ export default function PostCallScreen({
         `/api/demo/qualification?sessionId=${encodeURIComponent(sessionId)}`,
       );
       if (!res.ok) {
-        if (res.status === 404) return; // Not ready yet, keep polling
+        if (res.status === 404) return;
         throw new Error(`Qualification API returned ${res.status}`);
       }
       const data = await res.json();
@@ -58,11 +63,9 @@ export default function PostCallScreen({
   }, [sessionId]);
 
   useEffect(() => {
-    // Poll every 5 seconds
     pollQualification();
     pollRef.current = setInterval(pollQualification, 5000);
 
-    // Also listen for custom window event from Agent C
     const handleQualification = (e: Event) => {
       const detail = (e as CustomEvent).detail;
       if (detail?.result === 'qualified' || detail?.result === 'unqualified') {
@@ -75,7 +78,6 @@ export default function PostCallScreen({
     };
     window.addEventListener('demo:qualification', handleQualification);
 
-    // Timeout after 30s -- default to unqualified
     const timeout = setTimeout(() => {
       setQualification((prev) => (prev === 'pending' ? 'unqualified' : prev));
       if (pollRef.current) {
@@ -92,11 +94,11 @@ export default function PostCallScreen({
   }, [pollQualification]);
 
   return (
-    <div className="min-h-screen bg-[#0a0a12] flex flex-col items-center justify-center px-4">
+    <div className="min-h-screen bg-bw-gray-800 flex flex-col items-center justify-center px-4">
       {/* Loading state */}
       {qualification === 'pending' && (
         <div className="flex flex-col items-center gap-4">
-          <Loader2 className="w-10 h-10 text-indigo-400 animate-spin" />
+          <div className="w-10 h-10 rounded-full border-2 border-white/10 border-t-bw-yellow-550 animate-spin" />
           <p className="text-white/60 text-sm">Preparing your results...</p>
         </div>
       )}
@@ -105,7 +107,9 @@ export default function PostCallScreen({
       {qualification === 'qualified' && (
         <div className="flex flex-col items-center gap-6 max-w-md text-center">
           <div className="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center">
-            <CheckCircle className="w-8 h-8 text-green-400" />
+            <svg className="w-8 h-8 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
           </div>
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">
@@ -125,17 +129,21 @@ export default function PostCallScreen({
               className="inline-flex items-center gap-2"
             >
               Book Your Workflow Workshop
-              <ArrowRight className="w-4 h-4" />
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+              </svg>
             </a>
           </Button>
         </div>
       )}
 
-      {/* Unqualified / Declined / Error */}
+      {/* Unqualified / Error */}
       {(qualification === 'unqualified' || qualification === 'error') && (
         <div className="flex flex-col items-center gap-6 max-w-md text-center">
-          <div className="w-16 h-16 rounded-full bg-indigo-500/10 flex items-center justify-center">
-            <CheckCircle className="w-8 h-8 text-indigo-400" />
+          <div className="w-16 h-16 rounded-full bg-bw-yellow-550/10 flex items-center justify-center">
+            <svg className="w-8 h-8 text-bw-yellow-550" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
           </div>
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">
@@ -154,7 +162,9 @@ export default function PostCallScreen({
               className="inline-flex items-center gap-2"
             >
               Start Your Free Trial
-              <ArrowRight className="w-4 h-4" />
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+              </svg>
             </a>
           </Button>
         </div>

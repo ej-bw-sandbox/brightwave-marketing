@@ -4,12 +4,10 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 
 const REACTIONS = [
   { emoji: '\uD83D\uDC4D', label: 'thumbs up' },
-  { emoji: '\u2764\uFE0F', label: 'heart' },
-  { emoji: '\uD83D\uDE02', label: 'laugh' },
-  { emoji: '\uD83D\uDE2E', label: 'wow' },
-  { emoji: '\uD83D\uDE22', label: 'sad' },
   { emoji: '\uD83C\uDF89', label: 'party' },
+  { emoji: '\u2764\uFE0F', label: 'heart' },
   { emoji: '\uD83D\uDC4F', label: 'clap' },
+  { emoji: '\uD83D\uDE02', label: 'laugh' },
 ];
 
 interface FloatingReaction {
@@ -18,7 +16,7 @@ interface FloatingReaction {
   x: number;
 }
 
-let reactionCounter = 0;
+let ctr = 0;
 
 interface ReactionsOverlayProps {
   pickerOpen: boolean;
@@ -26,19 +24,24 @@ interface ReactionsOverlayProps {
   onReaction?: (emoji: string) => void;
 }
 
+/**
+ * Reactions overlay — emoji picker above toolbar + floating animations.
+ * Matches sales-avatar/ReactionsOverlay.tsx:
+ *   5 emojis, picker at fixed bottom-24, rounded-full pill,
+ *   float-up animation for sent reactions.
+ * Colors: bg-bw-gray-700/95 backdrop-blur-md.
+ */
 export default function ReactionsOverlay({ pickerOpen, onClose, onReaction }: ReactionsOverlayProps) {
   const [floating, setFloating] = useState<FloatingReaction[]>([]);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   const send = useCallback(
     (emoji: string) => {
-      const id = ++reactionCounter;
-      const x = 30 + Math.random() * 40;
-      setFloating((prev) => [...prev, { id, emoji, x }]);
+      const id = ++ctr;
+      const x = 40 + Math.random() * 20;
+      setFloating((p) => [...p, { id, emoji, x }]);
       timers.current.push(
-        setTimeout(() => {
-          setFloating((prev) => prev.filter((r) => r.id !== id));
-        }, 2200),
+        setTimeout(() => setFloating((p) => p.filter((r) => r.id !== id)), 2000),
       );
       onReaction?.(emoji);
       onClose();
@@ -54,15 +57,15 @@ export default function ReactionsOverlay({ pickerOpen, onClose, onReaction }: Re
 
   return (
     <>
-      {/* Emoji Picker -- positioned above the toolbar */}
+      {/* Emoji Picker */}
       {pickerOpen && (
-        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1.5 bg-bw-gray-700/95 backdrop-blur-md rounded-2xl px-4 py-3 border border-white/[0.08] shadow-2xl">
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1 bg-bw-gray-700/95 backdrop-blur-md rounded-full px-3 py-2 border border-white/[0.06] shadow-2xl">
           {REACTIONS.map((r) => (
             <button
               key={r.label}
               onClick={() => send(r.emoji)}
               title={r.label}
-              className="w-11 h-11 flex items-center justify-center rounded-xl hover:bg-white/10 hover:scale-110 transition-all duration-150 text-2xl"
+              className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors text-xl"
             >
               {r.emoji}
             </button>
@@ -70,15 +73,15 @@ export default function ReactionsOverlay({ pickerOpen, onClose, onReaction }: Re
         </div>
       )}
 
-      {/* Floating Reactions -- float up from bottom and fade out */}
+      {/* Floating Reactions */}
       {floating.map((r) => (
         <div
           key={r.id}
-          className="fixed z-50 pointer-events-none text-5xl"
+          className="fixed z-50 pointer-events-none text-4xl"
           style={{
             left: `${r.x}%`,
-            bottom: '120px',
-            animation: 'reactionFloatUp 2.2s ease-out forwards',
+            bottom: '100px',
+            animation: 'reactionFloatUp 2s ease-out forwards',
           }}
         >
           {r.emoji}
@@ -92,13 +95,13 @@ export default function ReactionsOverlay({ pickerOpen, onClose, onReaction }: Re
             opacity: 1;
             transform: translateY(0) scale(1);
           }
-          60% {
-            opacity: 1;
-            transform: translateY(-120px) scale(1.3);
+          50% {
+            opacity: 0.8;
+            transform: translateY(-120px) scale(1.2);
           }
           100% {
             opacity: 0;
-            transform: translateY(-240px) scale(1.5);
+            transform: translateY(-250px) scale(0.8);
           }
         }
       `}</style>
