@@ -1,6 +1,7 @@
 import { client } from '@/lib/sanity/client'
 import { DEMO_PERSONA_QUERY } from '@/lib/sanity/queries/demoPersona'
 import { buildDefaultSystemPrompt, buildFullKBText } from '@/lib/kb/brightwave'
+import type { ProspectInfo } from '@/lib/demo/types'
 
 /**
  * POST /api/demo/session
@@ -13,18 +14,9 @@ import { buildDefaultSystemPrompt, buildFullKBText } from '@/lib/kb/brightwave'
  * The ANAM_API_KEY env var corresponds to the Anam connected app credentials.
  */
 
-interface ProspectInfo {
-  name?: string
-  email?: string
-  company?: string
-  role?: string
-  aum?: string
-  firmType?: string
-}
-
 interface SessionRequestBody {
   personaId?: string
-  prospect: ProspectInfo
+  prospect: Partial<ProspectInfo>
 }
 
 interface PersonaConfig {
@@ -51,7 +43,7 @@ const DEFAULT_PERSONA_CONFIG: PersonaConfig = {
 
 function buildSystemPrompt(
   persona: PersonaConfig,
-  prospect: ProspectInfo,
+  prospect: Partial<ProspectInfo>,
 ): string {
   // If there is a full system prompt override, use it directly
   if (persona.systemPromptOverride) {
@@ -65,7 +57,7 @@ function buildSystemPrompt(
         `${prospect.company ? ` from ${prospect.company}` : ''}` +
         `${prospect.role ? `, a ${prospect.role}` : ''}` +
         `${prospect.firmType ? ` at a ${prospect.firmType} firm` : ''}` +
-        `${prospect.aum ? ` with ${prospect.aum} AUM` : ''}.` +
+        `${prospect.aum ? ` with ${prospect.aum} AUM` : ''}` +
         `${prospect.email ? ` Email: ${prospect.email}` : ''}\n`
       : ''
 
@@ -197,6 +189,9 @@ export async function POST(request: Request) {
 
     const { sessionToken } = await anamResponse.json()
 
+    // Generate a session ID for event tracking
+    const sessionId = `demo-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+
     // Determine the calendar link: persona-specific or env fallback
     const calendarLink =
       persona.calendarLink ||
@@ -205,6 +200,7 @@ export async function POST(request: Request) {
 
     return Response.json({
       sessionToken,
+      sessionId,
       personaConfig: {
         greeting:
           persona.greeting ||
