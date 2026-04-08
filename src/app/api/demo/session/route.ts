@@ -21,12 +21,10 @@ interface SessionRequestBody {
 
 interface PersonaConfig {
   personaId: string
-  anamPersonaId: string
   anamAvatarId: string
   anamVoiceId: string
   anamLlmId: string
   anamPersonaName: string
-  llmModel: string
   systemPromptOverride: string | null
   knowledgeBaseOverride: string | null
   greeting: string | null
@@ -36,12 +34,10 @@ interface PersonaConfig {
 
 const DEFAULT_PERSONA_CONFIG: PersonaConfig = {
   personaId: 'default',
-  anamPersonaId: 'c1298d71-48b2-40c9-98d1-e3d7c0bf8030',
   anamAvatarId: process.env.ANAM_AVATAR_ID ?? '8a339c9f-0666-46bd-ab27-e90acd0409dc',
   anamVoiceId: process.env.ANAM_VOICE_ID ?? 'b482f972-1b1b-4337-ae60-940b90b5bb41',
   anamLlmId: process.env.ANAM_LLM_ID ?? '0934d97d-0c3a-4f33-91b0-5e136a0ef466',
   anamPersonaName: process.env.ANAM_PERSONA_NAME ?? 'Max',
-  llmModel: 'claude-3-5-sonnet-20241022',
   systemPromptOverride: null,
   knowledgeBaseOverride: null,
   greeting: null,
@@ -77,7 +73,7 @@ ${personalization}
 ${persona.knowledgeBaseOverride}
 
 ## Conversation Guidelines
-- Keep responses concise — under 60 words when possible.
+- Keep responses concise \u2014 under 60 words when possible.
 - Address the prospect by first name when known.
 - Drive the conversation forward: always end with a question that advances the sale.
 - Be consultative, not pushy. Understand their workflow before pitching features.
@@ -235,4 +231,3 @@ export async function POST(request: Request) {
     )
   }
 }
-

@@ -4,7 +4,7 @@ export const demoPersona = defineType({
   name: 'demoPersona',
   title: 'Demo Persona',
   type: 'document',
-  icon: () => '🤖',
+  icon: () => '\u{1F916}',
   fields: [
     defineField({
       name: 'personaId',
@@ -25,14 +25,6 @@ export const demoPersona = defineType({
       title: 'Display Name',
       type: 'string',
       description: 'Human-readable name shown in the CMS for this persona.',
-    }),
-    defineField({
-      name: 'anamPersonaId',
-      title: 'Anam Persona ID',
-      type: 'string',
-      description: 'The Anam.ai persona UUID used for avatar rendering.',
-      initialValue: 'c1298d71-48b2-40c9-98d1-e3d7c0bf8030',
-      validation: (r) => r.required(),
     }),
     defineField({
       name: 'anamPersonaName',
@@ -58,22 +50,9 @@ export const demoPersona = defineType({
       name: 'anamLlmId',
       title: 'LLM ID',
       type: 'string',
-      description: 'Anam.ai LLM UUID. Default: 0934d97d-0c3a-4f33-91b0-5e136a0ef466 (Anam default)',
-    }),
-    defineField({
-      name: 'llmModel',
-      title: 'LLM Model',
-      type: 'string',
-      description: 'Language model used for the conversation AI.',
-      options: {
-        list: [
-          { title: 'Claude 3.5 Sonnet', value: 'claude-3-5-sonnet-20241022' },
-          { title: 'Claude 3 Opus', value: 'claude-3-opus-20240229' },
-          { title: 'GPT-4o', value: 'gpt-4o' },
-          { title: 'GPT-4o Mini', value: 'gpt-4o-mini' },
-        ],
-        layout: 'dropdown',
-      },
+      description:
+        'Paste the LLM UUID from your Anam dashboard (GET /v1/llms to list available IDs). Default: 0934d97d-0c3a-4f33-91b0-5e136a0ef466',
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'systemPromptOverride',
@@ -141,4 +120,3 @@ export const demoPersona = defineType({
     },
   },
 })
-
