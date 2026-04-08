@@ -36,7 +36,8 @@ const c = {
   text: '#ffffff',
   textMuted: '#a5a6a8',
   textSubtle: '#5a5b5c',
-  surface: '#282829',
+  surface: '#1a1a1b',
+  surfaceHover: '#222223',
   border: 'rgba(255,255,255,0.08)',
   yellow: '#e7e70d',
   bg: '#0f0f0f',
@@ -76,21 +77,24 @@ function DownloadIcon({ className }: { className?: string }) {
   )
 }
 
-function ChevronIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-    </svg>
-  )
-}
-
 /* ── Platform display config ── */
 
-interface PlatformGroup {
-  key: string
-  label: string
-  iconKey: 'apple' | 'windows' | 'linux'
-  artifact: ManifestArtifact
+const platformDisplayName: Record<string, string> = {
+  mac: 'macOS',
+  win: 'Windows',
+  linux: 'Linux',
+}
+
+const platformDescription: Record<string, string> = {
+  mac: 'Native app for Apple Silicon and Intel Macs.',
+  win: 'Desktop app for Windows.',
+  linux: 'Available as AppImage and .deb packages.',
+}
+
+const platformIconKey: Record<string, 'apple' | 'windows' | 'linux'> = {
+  mac: 'apple',
+  win: 'windows',
+  linux: 'linux',
 }
 
 const iconComponents = {
@@ -115,52 +119,17 @@ function findPrimaryArtifact(artifacts: ManifestArtifact[], os: DetectedOS): Man
   }
 }
 
-const platformIconKey: Record<string, 'apple' | 'windows' | 'linux'> = {
-  mac: 'apple',
-  win: 'windows',
-  linux: 'linux',
-}
-
-const platformDisplayName: Record<string, string> = {
-  mac: 'macOS',
-  win: 'Windows',
-  linux: 'Linux',
-}
-
-/** Build one representative item per platform variant for the "also available" row.
- *  Mac splits by arch (Apple Silicon vs Intel); others pick the first artifact. */
-function buildPlatformGroups(artifacts: ManifestArtifact[]): PlatformGroup[] {
-  const groups: PlatformGroup[] = []
-
-  // Mac: split by arch since the distinction matters
-  for (const arch of ['arm64', 'x64'] as const) {
-    const a = artifacts.find((a) => a.platform === 'mac' && a.arch === arch)
-    if (a) {
-      const suffix = a.label // "Apple Silicon" / "Intel" from manifest
-      groups.push({ key: `mac-${arch}`, label: `macOS (${suffix})`, iconKey: 'apple', artifact: a })
-    }
+function findPrimaryLabel(os: DetectedOS): string {
+  switch (os) {
+    case 'macos-silicon': return 'macOS (Apple Silicon)'
+    case 'macos-intel': return 'macOS (Intel)'
+    case 'windows': return 'Windows'
+    case 'linux': return 'Linux'
+    default: return 'your platform'
   }
-
-  // Other platforms: one representative each (prefer .exe for win, AppImage for linux)
-  const preferredFormats: Record<string, string> = { win: 'exe', linux: 'AppImage' }
-  for (const platform of ['win', 'linux'] as const) {
-    const preferred = artifacts.find((a) => a.platform === platform && a.format === preferredFormats[platform] && a.arch === 'x64')
-    const fallback = artifacts.find((a) => a.platform === platform)
-    const a = preferred ?? fallback
-    if (a) {
-      groups.push({
-        key: platform,
-        label: platformDisplayName[platform] ?? a.label,
-        iconKey: platformIconKey[platform] ?? 'linux',
-        artifact: a,
-      })
-    }
-  }
-
-  return groups
 }
 
-/** Group artifacts by platform for the "view all" table */
+/** Group artifacts by platform for the cards */
 const platformOrder: Record<string, number> = { mac: 0, win: 1, linux: 2 }
 
 function groupByPlatform(artifacts: ManifestArtifact[]) {
@@ -172,7 +141,8 @@ function groupByPlatform(artifacts: ManifestArtifact[]) {
     .map(([platform, items]) => ({
       platform,
       label: platformDisplayName[platform] ?? platform,
-      iconKey: platformIconKey[platform] ?? 'linux' as const,
+      description: platformDescription[platform] ?? '',
+      iconKey: (platformIconKey[platform] ?? 'linux') as 'apple' | 'windows' | 'linux',
       order: platformOrder[platform] ?? 99,
       items,
     }))
@@ -184,7 +154,6 @@ function groupByPlatform(artifacts: ManifestArtifact[]) {
 export function DownloadSection({ manifest }: { manifest: DownloadManifest | null }) {
   const [detectedOS, setDetectedOS] = useState<DetectedOS>(null)
   const [ready, setReady] = useState(false)
-  const [showAll, setShowAll] = useState(false)
 
   useEffect(() => {
     setDetectedOS(detectOS())
@@ -201,24 +170,20 @@ export function DownloadSection({ manifest }: { manifest: DownloadManifest | nul
 
   if (!ready) {
     return (
-      <div className="flex flex-col items-center animate-pulse">
-        <div className="w-20 h-20 rounded-2xl mb-8" style={{ backgroundColor: c.surface }} />
-        <div className="w-72 h-16 rounded-xl" style={{ backgroundColor: c.surface }} />
+      <div className="flex flex-col items-center w-full animate-pulse">
+        <div className="w-72 h-14 rounded-xl mb-16" style={{ backgroundColor: c.surface }} />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 w-full max-w-4xl">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="h-48 rounded-2xl" style={{ backgroundColor: c.surface }} />
+          ))}
+        </div>
       </div>
     )
   }
 
   const { artifacts, version } = manifest
-  const groups = buildPlatformGroups(artifacts)
-  const primaryArtifact = findPrimaryArtifact(artifacts, detectedOS)
-
-  // Fall back to first group's artifact if OS not detected
-  const primary = primaryArtifact ?? groups[0]?.artifact
-  const primaryGroup = groups.find((g) => g.artifact === primary)
-  const others = groups.filter((g) => g.artifact !== primary)
-
-  const PrimaryIcon = primaryGroup ? iconComponents[primaryGroup.iconKey] : AppleIcon
-  const primaryLabel = primaryGroup?.label ?? primary?.label ?? 'your platform'
+  const primary = findPrimaryArtifact(artifacts, detectedOS)
+  const platformGroups = groupByPlatform(artifacts)
 
   return (
     <div className="flex flex-col items-center w-full">
@@ -238,16 +203,13 @@ export function DownloadSection({ manifest }: { manifest: DownloadManifest | nul
         </div>
       )}
 
-      {/* Primary download */}
-      {primary && (
-        <>
-          <div className="w-20 h-20 mb-8" style={{ color: c.text }}>
-            <PrimaryIcon className="w-full h-full" />
-          </div>
+      {/* Primary CTA */}
+      {primary && detectedOS !== 'ios' && detectedOS !== 'android' && (
+        <div className="mb-16">
           <a stagger-cta="" href={getDownloadUrl(primary.filename)} className="cta-p-sm w-inline-block">
             <div>
               <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">
-                Download for {primaryLabel}
+                Download for {findPrimaryLabel(detectedOS)}
               </div>
             </div>
             <div className="flip-small">
@@ -269,99 +231,75 @@ export function DownloadSection({ manifest }: { manifest: DownloadManifest | nul
               </div>
             </div>
           </a>
-          <p className="text-xs mt-3" style={{ color: c.textSubtle }}>
-            v{version} · {formatBytes(primary.size)} · .{primary.format}
-          </p>
-        </>
-      )}
-
-      {/* Also available for */}
-      {others.length > 0 && (
-        <div className="mt-10 flex flex-col md:flex-row items-center gap-4 text-sm">
-          <span style={{ color: c.textSubtle }}>Also available for</span>
-          <div className="flex gap-3">
-            {others.map((g) => {
-              const Icon = iconComponents[g.iconKey]
-              return (
-                <a
-                  key={g.key}
-                  href={getDownloadUrl(g.artifact.filename)}
-                  className="flex items-center gap-2.5 px-5 py-3 rounded-xl font-medium text-sm transition-all hover:brightness-125"
-                  style={{ backgroundColor: c.surface, color: c.text, border: `1px solid ${c.border}` }}
-                >
-                  <div className="w-5 h-5" style={{ color: c.text }}>
-                    <Icon className="w-full h-full" />
-                  </div>
-                  {g.label}
-                </a>
-              )
-            })}
-          </div>
         </div>
       )}
 
-      {/* View all platforms */}
-      <div className="mt-12 w-full max-w-lg">
-        <button
-          className="flex items-center gap-2 mx-auto cursor-pointer text-sm transition-opacity hover:opacity-80"
-          style={{ color: c.textSubtle }}
-          onClick={() => setShowAll((v) => !v)}
-        >
-          {showAll ? 'Hide' : 'View'} all platforms
-          <ChevronIcon className={`w-4 h-4 transition-transform ${showAll ? 'rotate-180' : ''}`} />
-        </button>
+      {/* Section heading */}
+      <div className="w-full max-w-4xl mb-8">
+        <h2 className="text-xl font-semibold" style={{ color: c.text }}>
+          Get started
+        </h2>
+        <p className="text-sm mt-1" style={{ color: c.textMuted }}>
+          v{version}
+        </p>
+      </div>
 
-        {showAll && (
-          <div className="mt-6 rounded-2xl overflow-hidden" style={{ border: `1px solid ${c.border}` }}>
-            {groupByPlatform(artifacts).map((group, gi) => {
-              const Icon = iconComponents[group.iconKey] ?? WindowsIcon
-              return (
-                <div key={group.platform}>
-                  {/* Platform header */}
-                  <div
-                    className="flex items-center gap-3 px-6 py-3"
+      {/* Platform cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 w-full max-w-4xl">
+        {platformGroups.map((group) => {
+          const Icon = iconComponents[group.iconKey]
+          return (
+            <div
+              key={group.platform}
+              className="rounded-2xl p-6 flex flex-col"
+              style={{
+                backgroundColor: c.surface,
+                border: `1px solid ${c.border}`,
+              }}
+            >
+              {/* Card header */}
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-5 h-5" style={{ color: c.text }}>
+                  <Icon className="w-full h-full" />
+                </div>
+                <h3 className="text-base font-semibold" style={{ color: c.text }}>
+                  {group.label}
+                </h3>
+              </div>
+              <p className="text-sm mb-5" style={{ color: c.textSubtle }}>
+                {group.description}
+              </p>
+
+              {/* Download rows */}
+              <div className="flex flex-col gap-0 mt-auto">
+                {group.items.map((a, i) => (
+                  <a
+                    key={a.filename}
+                    href={getDownloadUrl(a.filename)}
+                    className="group flex items-center justify-between py-3 transition-colors"
                     style={{
-                      backgroundColor: 'rgba(255,255,255,0.03)',
-                      borderTop: gi > 0 ? `1px solid ${c.border}` : undefined,
+                      borderTop: i > 0 ? `1px solid ${c.border}` : undefined,
+                      color: c.text,
                     }}
                   >
-                    <div className="w-5 h-5" style={{ color: c.text }}>
-                      <Icon className="w-full h-full" />
+                    <div className="flex flex-col">
+                      <span className="text-sm">{a.label}</span>
+                      <span className="text-xs" style={{ color: c.textSubtle }}>
+                        .{a.format} · {formatBytes(a.size)}
+                      </span>
                     </div>
-                    <span className="text-sm font-semibold" style={{ color: c.text }}>
-                      {group.label}
-                    </span>
-                  </div>
-                  {/* Artifacts */}
-                  {group.items.map((a) => (
-                    <div
-                      key={a.filename}
-                      className="flex items-center justify-between px-6 py-3.5"
-                      style={{ borderTop: `1px solid ${c.border}` }}
+                    <span
+                      className="text-sm font-medium flex items-center gap-1.5 opacity-70 group-hover:opacity-100 transition-opacity"
+                      style={{ color: c.yellow }}
                     >
-                      <div className="flex items-center gap-3">
-                        <span className="text-sm" style={{ color: c.text }}>
-                          {a.label}
-                        </span>
-                        <span className="text-xs" style={{ color: c.textSubtle }}>
-                          .{a.format} · {formatBytes(a.size)}
-                        </span>
-                      </div>
-                      <a
-                        href={getDownloadUrl(a.filename)}
-                        className="text-sm font-medium flex items-center gap-1.5 transition-opacity hover:opacity-80"
-                        style={{ color: c.yellow }}
-                      >
-                        <DownloadIcon className="w-4 h-4" />
-                        Download
-                      </a>
-                    </div>
-                  ))}
-                </div>
-              )
-            })}
-          </div>
-        )}
+                      <DownloadIcon className="w-4 h-4" />
+                    </span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )
+        })}
       </div>
     </div>
   )
