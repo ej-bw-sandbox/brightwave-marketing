@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import type { ProspectContext } from '@/lib/demo-utils';
 import { getFirstName } from '@/lib/demo-utils';
+import { BrightwaveLogo } from '@/components/layout/logo';
 
 type QualificationResult = 'qualified' | 'unqualified' | 'pending' | 'error';
 
@@ -160,9 +161,9 @@ export default function PostCallScreen({
       )}
 
       {/* Brightwave branding */}
-      <div className="absolute bottom-8 flex items-center gap-2 text-white/20 text-xs">
-        <span>Powered by</span>
-        <span className="font-semibold">Brightwave</span>
+      <div className="absolute bottom-8 flex items-center gap-2 text-white/20">
+        <span className="text-xs">Powered by</span>
+        <BrightwaveLogo className="text-white/20 h-4 w-auto" />
       </div>
     </div>
   );

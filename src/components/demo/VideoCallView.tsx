@@ -8,6 +8,7 @@ import type { SessionStatus, Message } from '@/hooks/useAnamSession';
 import BottomToolbar from './BottomToolbar';
 import ChatSidePanel from './ChatSidePanel';
 import ReactionsOverlay from './ReactionsOverlay';
+import { BrightwaveLogo } from '@/components/layout/logo';
 
 interface VideoCallViewProps {
   status: SessionStatus;
@@ -281,6 +282,11 @@ export default function VideoCallView({
 
   return (
     <div className="fixed inset-0 bg-[#0f0f0f] flex flex-col">
+      {/* Logo */}
+      <div className="absolute top-4 left-4 z-30">
+        <BrightwaveLogo className="text-white" />
+      </div>
+
       {/* Main area: avatar video fills center */}
       <div className="relative flex-1 flex items-center justify-center overflow-hidden">
         {/* Loading state */}
