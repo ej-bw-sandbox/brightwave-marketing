@@ -22,6 +22,7 @@ interface VideoCallViewProps {
   onReaction: (emoji: string) => void;
 }
 
+/* ---------- Self-view PiP ---------- */
 function SelfViewPip({ visible }: { visible: boolean }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -95,14 +96,14 @@ function SelfViewPip({ visible }: { visible: boolean }) {
     <div
       ref={containerRef}
       onMouseDown={handleMouseDown}
-      className="fixed z-40 rounded-xl overflow-hidden shadow-2xl border-2 border-white/10 cursor-grab active:cursor-grabbing select-none"
+      className="fixed z-40 rounded-xl overflow-hidden shadow-2xl border border-white/20 cursor-grab active:cursor-grabbing select-none"
       style={{
         width: 200,
         height: 150,
         left: position.x === -1 ? undefined : position.x,
         top: position.y === -1 ? undefined : position.y,
         right: position.x === -1 ? 16 : undefined,
-        bottom: position.y === -1 ? 80 : undefined,
+        bottom: position.y === -1 ? 100 : undefined,
       }}
     >
       <video
@@ -120,13 +121,8 @@ function SelfViewPip({ visible }: { visible: boolean }) {
   );
 }
 
-function StatusIndicators({
-  status,
-  micLevel,
-}: {
-  status: SessionStatus;
-  micLevel: number;
-}) {
+/* ---------- Call timer ---------- */
+function CallTimer({ status }: { status: SessionStatus }) {
   const [elapsed, setElapsed] = useState(0);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const startTimeRef = useRef<number | null>(null);
@@ -152,11 +148,11 @@ function StatusIndicators({
 
   const dotColor =
     status === 'connected'
-      ? 'bg-green-400'
+      ? 'bg-green-500'
       : status === 'connecting'
         ? 'bg-yellow-400 animate-pulse'
         : status === 'error'
-          ? 'bg-red-400'
+          ? 'bg-red-500'
           : 'bg-gray-500';
 
   const label =
@@ -172,50 +168,24 @@ function StatusIndicators({
 
   return (
     <div className="fixed top-4 left-4 z-30 flex items-center gap-3">
-      {/* Connection status */}
-      <div className="flex items-center gap-2 bg-black/50 backdrop-blur-sm rounded-full px-3 py-1.5">
-        <span className={cn('w-2.5 h-2.5 rounded-full', dotColor)} />
+      {/* Connection status + timer */}
+      <div className="flex items-center gap-2 bg-black/60 backdrop-blur-sm rounded-lg px-3 py-2">
+        <span className={cn('w-2 h-2 rounded-full', dotColor)} />
         <span className="text-xs text-white/70 font-medium">{label}</span>
+        {(status === 'connected' || status === 'ended') && (
+          <>
+            <span className="text-white/30">|</span>
+            <span className="text-xs text-white/60 font-mono tabular-nums">
+              {formatElapsed(elapsed)}
+            </span>
+          </>
+        )}
       </div>
-
-      {/* Elapsed timer */}
-      {(status === 'connected' || status === 'ended') && (
-        <div className="bg-black/50 backdrop-blur-sm rounded-full px-3 py-1.5">
-          <span className="text-xs text-white/60 font-mono tabular-nums">
-            {formatElapsed(elapsed)}
-          </span>
-        </div>
-      )}
-
-      {/* LIVE badge */}
-      {status === 'connected' && (
-        <div className="flex items-center gap-1.5 bg-red-600/80 backdrop-blur-sm rounded-full px-3 py-1.5">
-          <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
-          <span className="text-xs text-white font-bold uppercase tracking-wider">Live</span>
-        </div>
-      )}
-
-      {/* Mic level indicator */}
-      {status === 'connected' && (
-        <div className="flex items-center gap-1 bg-black/50 backdrop-blur-sm rounded-full px-3 py-1.5">
-          <div className="flex items-end gap-[2px] h-3">
-            {[0.2, 0.4, 0.6, 0.8, 1.0].map((threshold, i) => (
-              <div
-                key={i}
-                className={cn(
-                  'w-[3px] rounded-full transition-all duration-75',
-                  micLevel >= threshold ? 'bg-green-400' : 'bg-white/20',
-                )}
-                style={{ height: `${40 + i * 15}%` }}
-              />
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
 
+/* ---------- End-call confirmation modal ---------- */
 function EndCallModal({
   open,
   onConfirm,
@@ -229,7 +199,7 @@ function EndCallModal({
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="bg-[#1a1a2e] rounded-2xl border border-white/10 p-6 max-w-sm w-full mx-4 shadow-2xl">
+      <div className="bg-[#1e1e1e] rounded-2xl border border-white/10 p-6 max-w-sm w-full mx-4 shadow-2xl">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-white">End Demo?</h3>
           <button
@@ -261,6 +231,7 @@ function EndCallModal({
   );
 }
 
+/* ---------- Main VideoCallView ---------- */
 export default function VideoCallView({
   status,
   messages,
@@ -278,6 +249,21 @@ export default function VideoCallView({
   const [reactionsOpen, setReactionsOpen] = useState(false);
   const [handRaised, setHandRaised] = useState(false);
   const [endCallModalOpen, setEndCallModalOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const lastSeenCountRef = useRef(0);
+
+  // Track unread messages when chat is closed
+  useEffect(() => {
+    if (chatOpen) {
+      // Mark all as read when chat opens
+      lastSeenCountRef.current = messages.filter((m) => m.role === 'persona').length;
+      setUnreadCount(0);
+    } else {
+      const personaMessages = messages.filter((m) => m.role === 'persona').length;
+      const newCount = personaMessages - lastSeenCountRef.current;
+      if (newCount > 0) setUnreadCount(newCount);
+    }
+  }, [chatOpen, messages]);
 
   const handleToggleHand = () => {
     setHandRaised((prev) => !prev);
@@ -294,9 +280,9 @@ export default function VideoCallView({
   };
 
   return (
-    <div className="fixed inset-0 bg-[#0a0a12] flex items-center justify-center">
-      {/* Main avatar video */}
-      <div className="relative w-full h-full flex items-center justify-center">
+    <div className="fixed inset-0 bg-[#0f0f0f] flex flex-col">
+      {/* Main area: avatar video fills center */}
+      <div className="relative flex-1 flex items-center justify-center overflow-hidden">
         {/* Loading state */}
         {status === 'connecting' && (
           <div className="absolute inset-0 flex items-center justify-center z-10">
@@ -317,7 +303,7 @@ export default function VideoCallView({
           </div>
         )}
 
-        {/* Anam avatar video element */}
+        {/* Anam avatar video element -- fills the main area */}
         <video
           id="anam-avatar-video"
           autoPlay
@@ -327,6 +313,17 @@ export default function VideoCallView({
 
         {/* Hidden audio element for Anam */}
         <audio id="anam-avatar-audio" autoPlay style={{ display: 'none' }} />
+
+        {/* Participant name label */}
+        {status === 'connected' && (
+          <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-20">
+            <div className="bg-black/60 backdrop-blur-sm rounded-lg px-4 py-2">
+              <span className="text-sm text-white font-medium">
+                Max {'\u2022'} Brightwave
+              </span>
+            </div>
+          </div>
+        )}
 
         {/* Hand raised indicator */}
         {handRaised && (
@@ -339,10 +336,10 @@ export default function VideoCallView({
         )}
       </div>
 
-      {/* Status Indicators */}
-      <StatusIndicators status={status} micLevel={micLevel} />
+      {/* Call timer -- top left */}
+      <CallTimer status={status} />
 
-      {/* Self-view PiP */}
+      {/* Self-view PiP -- bottom right */}
       <SelfViewPip visible={cameraOn} />
 
       {/* Bottom Toolbar */}
@@ -352,6 +349,7 @@ export default function VideoCallView({
         isChatOpen={chatOpen}
         isHandRaised={handRaised}
         isReactionsOpen={reactionsOpen}
+        unreadCount={unreadCount}
         onToggleMic={onToggleMic}
         onToggleCamera={() => setCameraOn((prev) => !prev)}
         onToggleChat={() => setChatOpen((prev) => !prev)}

@@ -9,6 +9,7 @@ const REACTIONS = [
   { emoji: '\uD83D\uDE2E', label: 'wow' },
   { emoji: '\uD83D\uDE22', label: 'sad' },
   { emoji: '\uD83C\uDF89', label: 'party' },
+  { emoji: '\uD83D\uDC4F', label: 'clap' },
 ];
 
 interface FloatingReaction {
@@ -32,12 +33,12 @@ export default function ReactionsOverlay({ pickerOpen, onClose, onReaction }: Re
   const send = useCallback(
     (emoji: string) => {
       const id = ++reactionCounter;
-      const x = 40 + Math.random() * 20;
+      const x = 30 + Math.random() * 40;
       setFloating((prev) => [...prev, { id, emoji, x }]);
       timers.current.push(
         setTimeout(() => {
           setFloating((prev) => prev.filter((r) => r.id !== id));
-        }, 2000),
+        }, 2200),
       );
       onReaction?.(emoji);
       onClose();
@@ -53,15 +54,15 @@ export default function ReactionsOverlay({ pickerOpen, onClose, onReaction }: Re
 
   return (
     <>
-      {/* Emoji Picker */}
+      {/* Emoji Picker -- positioned above the toolbar */}
       {pickerOpen && (
-        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1 bg-[#1a1a2e]/95 backdrop-blur-md rounded-full px-3 py-2 border border-white/[0.06] shadow-2xl">
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1.5 bg-bw-gray-700/95 backdrop-blur-md rounded-2xl px-4 py-3 border border-white/[0.08] shadow-2xl">
           {REACTIONS.map((r) => (
             <button
               key={r.label}
               onClick={() => send(r.emoji)}
               title={r.label}
-              className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors text-xl"
+              className="w-11 h-11 flex items-center justify-center rounded-xl hover:bg-white/10 hover:scale-110 transition-all duration-150 text-2xl"
             >
               {r.emoji}
             </button>
@@ -69,31 +70,35 @@ export default function ReactionsOverlay({ pickerOpen, onClose, onReaction }: Re
         </div>
       )}
 
-      {/* Floating Reactions */}
+      {/* Floating Reactions -- float up from bottom and fade out */}
       {floating.map((r) => (
         <div
           key={r.id}
-          className="fixed z-50 pointer-events-none text-4xl"
+          className="fixed z-50 pointer-events-none text-5xl"
           style={{
             left: `${r.x}%`,
-            bottom: '100px',
-            animation: 'floatUp 2s ease-out forwards',
+            bottom: '120px',
+            animation: 'reactionFloatUp 2.2s ease-out forwards',
           }}
         >
           {r.emoji}
         </div>
       ))}
 
-      {/* Keyframe animation style */}
+      {/* Keyframe animation */}
       <style jsx global>{`
-        @keyframes floatUp {
+        @keyframes reactionFloatUp {
           0% {
             opacity: 1;
             transform: translateY(0) scale(1);
           }
+          60% {
+            opacity: 1;
+            transform: translateY(-120px) scale(1.3);
+          }
           100% {
             opacity: 0;
-            transform: translateY(-200px) scale(1.5);
+            transform: translateY(-240px) scale(1.5);
           }
         }
       `}</style>

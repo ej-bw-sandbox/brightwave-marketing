@@ -4,55 +4,149 @@
  */
 
 export interface ProspectContext {
-  name: string;
-  email: string;
-  company: string;
-  role: string;
-  aum: string;
-  firmType: string;
+  // Identity (may come from URL params or form)
+  name?: string
+  email?: string
+  company?: string
+  // Role/firm context
+  role?: string
+  firmType?: string
+  teamSize?: number
+  // ROI calculator outputs
+  annualCostSavings?: number
+  totalHoursSaved?: number
+  roi?: number
+  dealsEvaluated?: number
+  dealsCompleted?: number
+  avgDealSize?: number
+  avgHourlyRate?: number
+  timeframe?: string
+  urgency?: number
+  additionalDealsCapacity?: number
+  // AUM (may come from URL param)
+  aum?: string
 }
 
 export interface DemoPersonaConfig {
-  personaId?: string;
-  anamPersonaId: string;
-  llmModel: string;
-  knowledgeBase?: string;
-  greeting?: string;
-  calendarLink: string;
+  personaId?: string
+  anamPersonaId: string
+  llmModel: string
+  knowledgeBase?: string
+  greeting?: string
+  calendarLink: string
 }
 
-const PROSPECT_FIELDS: (keyof ProspectContext)[] = [
+/**
+ * All localStorage key names that may contain prospect or ROI data.
+ */
+const STORAGE_KEYS = [
+  'brightwave_prospect',
+  'bw_prospect',
+  'bw_roi',
+  'brightwave_roi',
+  'roiCalc',
+  'prospect',
+]
+
+/**
+ * String fields we recognize from prospect/ROI data.
+ */
+const STRING_FIELDS: (keyof ProspectContext)[] = [
   'name',
   'email',
   'company',
   'role',
-  'aum',
   'firmType',
-];
+  'timeframe',
+  'aum',
+]
 
-const STORAGE_KEY = 'brightwave_prospect';
+/**
+ * Numeric fields we recognize from prospect/ROI data.
+ */
+const NUMBER_FIELDS: (keyof ProspectContext)[] = [
+  'teamSize',
+  'annualCostSavings',
+  'totalHoursSaved',
+  'roi',
+  'dealsEvaluated',
+  'dealsCompleted',
+  'avgDealSize',
+  'avgHourlyRate',
+  'urgency',
+  'additionalDealsCapacity',
+]
+
+/**
+ * Attempts to parse a JSON value from localStorage at the given key.
+ * Returns null if the key does not exist, the value is not valid JSON,
+ * or the parsed value is not a plain object.
+ */
+function tryParseStorageKey(key: string): Record<string, unknown> | null {
+  try {
+    const raw = localStorage.getItem(key)
+    if (!raw) return null
+    const parsed = JSON.parse(raw)
+    if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) return null
+    return parsed as Record<string, unknown>
+  } catch {
+    return null
+  }
+}
 
 /**
  * Reads prospect context from localStorage.
- * Returns a partial ProspectContext (only fields that exist in storage).
+ * Scans multiple well-known key names and merges any relevant fields found.
+ * Returns a partial ProspectContext.
  */
 function readLocalStorage(): Partial<ProspectContext> {
-  if (typeof window === 'undefined') return {};
+  if (typeof window === 'undefined') return {}
+
+  const result: Partial<ProspectContext> = {}
+
+  // Collect data from all known keys
+  const allData: Record<string, unknown>[] = []
+
+  for (const key of STORAGE_KEYS) {
+    const parsed = tryParseStorageKey(key)
+    if (parsed) allData.push(parsed)
+  }
+
+  // Also scan ALL localStorage keys for any JSON objects that contain
+  // recognizable prospect or ROI fields
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return {};
-    const parsed = JSON.parse(raw);
-    if (typeof parsed !== 'object' || parsed === null) return {};
-    const result: Partial<ProspectContext> = {};
-    for (const field of PROSPECT_FIELDS) {
-      if (typeof parsed[field] === 'string' && parsed[field].trim()) {
-        result[field] = parsed[field].trim();
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i)
+      if (!key || STORAGE_KEYS.includes(key)) continue
+      const parsed = tryParseStorageKey(key)
+      if (!parsed) continue
+      // Only include if it has at least one field we recognize
+      const hasKnownField = [...STRING_FIELDS, ...NUMBER_FIELDS].some(
+        (f) => f in parsed,
+      )
+      if (hasKnownField) allData.push(parsed)
+    }
+  } catch {
+    // localStorage iteration failed -- continue with what we have
+  }
+
+  // Merge all found data (later keys overwrite earlier ones for the same field)
+  for (const data of allData) {
+    for (const field of STRING_FIELDS) {
+      const val = data[field]
+      if (typeof val === 'string' && val.trim()) {
+        ;(result as Record<string, unknown>)[field] = val.trim()
       }
     }
-    return result;
-  } catch {
-    return {};
+    for (const field of NUMBER_FIELDS) {
+      const val = data[field]
+      if (typeof val === 'number' && !Number.isNaN(val)) {
+        ;(result as Record<string, unknown>)[field] = val
+      }
+    }
   }
+
+  return result
 }
 
 /**
@@ -60,14 +154,26 @@ function readLocalStorage(): Partial<ProspectContext> {
  * Returns a partial ProspectContext (only fields present in the URL).
  */
 function readQueryParams(searchParams: URLSearchParams): Partial<ProspectContext> {
-  const result: Partial<ProspectContext> = {};
-  for (const field of PROSPECT_FIELDS) {
-    const value = searchParams.get(field);
+  const result: Partial<ProspectContext> = {}
+
+  for (const field of STRING_FIELDS) {
+    const value = searchParams.get(field)
     if (value && value.trim()) {
-      result[field] = value.trim();
+      ;(result as Record<string, unknown>)[field] = value.trim()
     }
   }
-  return result;
+
+  for (const field of NUMBER_FIELDS) {
+    const value = searchParams.get(field)
+    if (value) {
+      const num = Number(value)
+      if (!Number.isNaN(num)) {
+        ;(result as Record<string, unknown>)[field] = num
+      }
+    }
+  }
+
+  return result
 }
 
 /**
@@ -75,44 +181,39 @@ function readQueryParams(searchParams: URLSearchParams): Partial<ProspectContext
  * Query params take priority over localStorage values.
  */
 export function getProspectContext(searchParams: URLSearchParams): ProspectContext {
-  const fromStorage = readLocalStorage();
-  const fromParams = readQueryParams(searchParams);
+  const fromStorage = readLocalStorage()
+  const fromParams = readQueryParams(searchParams)
 
-  const merged: ProspectContext = {
-    name: fromParams.name ?? fromStorage.name ?? '',
-    email: fromParams.email ?? fromStorage.email ?? '',
-    company: fromParams.company ?? fromStorage.company ?? '',
-    role: fromParams.role ?? fromStorage.role ?? '',
-    aum: fromParams.aum ?? fromStorage.aum ?? '',
-    firmType: fromParams.firmType ?? fromStorage.firmType ?? '',
-  };
+  // Merge: query params override storage
+  const merged: ProspectContext = { ...fromStorage, ...fromParams }
 
   // Persist the merged context back to localStorage for future use
   if (typeof window !== 'undefined') {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+      localStorage.setItem('brightwave_prospect', JSON.stringify(merged))
     } catch {
       // Storage full or unavailable -- silent fail
     }
   }
 
-  return merged;
+  return merged
 }
 
 /**
  * Returns the prospect's first name for personalized greetings.
+ * Returns an empty string if no name is available.
  */
 export function getFirstName(prospect: ProspectContext): string {
-  const name = prospect.name.trim();
-  if (!name) return '';
-  return name.split(' ')[0];
+  const name = (prospect.name ?? '').trim()
+  if (!name) return ''
+  return name.split(' ')[0]
 }
 
 /**
  * Formats elapsed seconds into MM:SS display format.
  */
 export function formatElapsed(seconds: number): string {
-  const m = String(Math.floor(seconds / 60)).padStart(2, '0');
-  const s = String(seconds % 60).padStart(2, '0');
-  return `${m}:${s}`;
+  const m = String(Math.floor(seconds / 60)).padStart(2, '0')
+  const s = String(seconds % 60).padStart(2, '0')
+  return `${m}:${s}`
 }

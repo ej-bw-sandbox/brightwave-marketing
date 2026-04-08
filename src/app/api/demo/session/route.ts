@@ -16,7 +16,7 @@ import type { ProspectInfo } from '@/lib/demo/types'
 
 interface SessionRequestBody {
   personaId?: string
-  prospect: Partial<ProspectInfo>
+  prospect: Partial<ProspectInfo> & Record<string, unknown>
 }
 
 interface PersonaConfig {
@@ -45,30 +45,100 @@ const DEFAULT_PERSONA_CONFIG: PersonaConfig = {
   qualificationThreshold: 60,
 }
 
+/**
+ * Builds a personalization block from prospect context including ROI data.
+ */
+function buildPersonalizationBlock(
+  prospect: Partial<ProspectInfo> & Record<string, unknown>,
+): string {
+  const name = prospect.name as string | undefined
+  const company = prospect.company as string | undefined
+  const role = prospect.role as string | undefined
+  const firmType = prospect.firmType as string | undefined
+  const aum = prospect.aum as string | undefined
+  const email = prospect.email as string | undefined
+  const teamSize = prospect.teamSize as number | undefined
+  const annualCostSavings = prospect.annualCostSavings as number | undefined
+  const roi = prospect.roi as number | undefined
+  const totalHoursSaved = prospect.totalHoursSaved as number | undefined
+  const timeframe = prospect.timeframe as string | undefined
+  const dealsEvaluated = prospect.dealsEvaluated as number | undefined
+  const avgDealSize = prospect.avgDealSize as number | undefined
+  const additionalDealsCapacity = prospect.additionalDealsCapacity as number | undefined
+
+  const hasAnyData = name || company || role || firmType || aum || email ||
+    teamSize || annualCostSavings || roi || totalHoursSaved || timeframe
+
+  if (!hasAnyData) {
+    return `\n## Current Prospect\nYou do not have any information about this prospect yet. Start by warmly introducing yourself and asking for their name and what brings them to Brightwave today. Do NOT assume or invent a name for them.\n`
+  }
+
+  const lines: string[] = ['\n## Current Prospect']
+
+  if (name) {
+    lines.push(`You are speaking with ${name}${company ? ` from ${company}` : ''}.`)
+  } else {
+    lines.push(
+      `You are speaking with a prospect${company ? ` from ${company}` : ''}. You do not know their name yet -- ask for it naturally at the start of the conversation. Do NOT assume or invent a name.`,
+    )
+  }
+
+  if (role) lines.push(`Their role: ${role}.`)
+  if (firmType) lines.push(`Firm type: ${firmType}.`)
+  if (teamSize) lines.push(`Team size: ${teamSize} people.`)
+  if (aum) lines.push(`AUM: ${aum}.`)
+  if (email) lines.push(`Email: ${email}.`)
+
+  // ROI calculator data
+  const hasRoiData = annualCostSavings || roi || totalHoursSaved
+  if (hasRoiData) {
+    lines.push('')
+    lines.push('### ROI Calculator Results (from their earlier analysis)')
+    if (annualCostSavings) {
+      lines.push(`Their estimated annual savings with Brightwave: $${annualCostSavings.toLocaleString()}.`)
+    }
+    if (roi) {
+      lines.push(`Their calculated ROI: ${Math.round(roi)}%.`)
+    }
+    if (totalHoursSaved) {
+      lines.push(`Estimated hours saved per year: ${totalHoursSaved.toLocaleString()}.`)
+    }
+    if (dealsEvaluated) {
+      lines.push(`Deals evaluated per year: ${dealsEvaluated}.`)
+    }
+    if (avgDealSize) {
+      lines.push(`Average deal size: $${avgDealSize}M.`)
+    }
+    if (additionalDealsCapacity) {
+      lines.push(`Additional deals their team could handle: ${additionalDealsCapacity}.`)
+    }
+    if (timeframe) {
+      lines.push(`Buying timeframe: ${timeframe}.`)
+    }
+    lines.push(
+      'Use this data to personalize your pitch. Lead with their specific ROI numbers when relevant -- these are powerful because the prospect calculated them themselves.',
+    )
+  }
+
+  lines.push('')
+  return lines.join('\n')
+}
+
 function buildSystemPrompt(
   persona: PersonaConfig,
-  prospect: Partial<ProspectInfo>,
+  prospect: Partial<ProspectInfo> & Record<string, unknown>,
 ): string {
   // If there is a full system prompt override, use it directly
   if (persona.systemPromptOverride) {
     return persona.systemPromptOverride
   }
 
+  const personalization = buildPersonalizationBlock(prospect)
+
   // If there is a KB override, build a custom prompt with that KB
   if (persona.knowledgeBaseOverride) {
-    const personalization = prospect.name
-      ? `\n## Current Prospect\nYou are speaking with ${prospect.name}` +
-        `${prospect.company ? ` from ${prospect.company}` : ''}` +
-        `${prospect.role ? `, a ${prospect.role}` : ''}` +
-        `${prospect.firmType ? ` at a ${prospect.firmType} firm` : ''}` +
-        `${prospect.aum ? ` with ${prospect.aum} AUM` : ''}` +
-        `${prospect.email ? ` Email: ${prospect.email}` : ''}\n`
-      : ''
-
     return `You are Max, Brightwave's AI sales guide. You are a knowledgeable, professional, and consultative salesperson who helps prospects understand how Brightwave can transform their investment research workflow.
-
 ${personalization}
-
 ## Knowledge Base
 ${persona.knowledgeBaseOverride}
 
@@ -212,13 +282,17 @@ export async function POST(request: Request) {
       process.env.NEXT_PUBLIC_CALENDLY_WORKSHOP_URL ||
       null
 
+    // Build greeting: use name if available, otherwise a generic warm opener
+    const prospectName = prospect.name ? ` ${prospect.name}` : ''
+    const defaultGreeting = prospect.name
+      ? `Hello${prospectName}! I'm Max from Brightwave. I'd love to show you how we're transforming investment research. What does your current research workflow look like?`
+      : `Hello! I'm Max from Brightwave. Thanks for taking the time to chat. Before we dive in, may I ask your name?`
+
     return Response.json({
       sessionToken,
       sessionId,
       personaConfig: {
-        greeting:
-          persona.greeting ||
-          `Hello${prospect.name ? ` ${prospect.name}` : ''}! I'm Max from Brightwave. I'd love to show you how we're transforming investment research. What does your current research workflow look like?`,
+        greeting: persona.greeting || defaultGreeting,
         calendarLink,
         qualificationThreshold: persona.qualificationThreshold,
       },
