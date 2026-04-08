@@ -5,7 +5,7 @@ export const contactQuery = `
     linkedinUrl,
     twitterUrl,
     contactForm->{
-      formTitle, formSubtitle, formVariant,
+      formTitle, formSubtitle, formVariant, slug,
       fields[]{ _key, fieldName, fieldLabel, fieldPlaceholder, fieldType, isRequired, options[]{ _key, value, label } },
       submitButtonText, successMessage, errorMessage, apiEndpoint, notificationEmail
     },

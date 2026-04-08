@@ -143,9 +143,9 @@ export const structure: StructureResolver = (S) =>
                       S.listItem()
                         .title('Private Markets')
                         .child(
-                          S.document()
-                            .schemaType('privateMarketsWizardForm')
-                            .documentId('privateMarketsWizardForm')
+                          S.documentList()
+                            .title('Private Markets Wizard Forms')
+                            .filter('_type == "privateMarketsWizardForm"')
                         ),
                     ])
                 ),
@@ -158,9 +158,9 @@ export const structure: StructureResolver = (S) =>
                       S.listItem()
                         .title('Contact')
                         .child(
-                          S.document()
-                            .schemaType('contactForm')
-                            .documentId('contactForm')
+                          S.documentList()
+                            .title('Contact Forms')
+                            .filter('_type == "contactForm"')
                         ),
                     ])
                 ),
@@ -285,4 +285,3 @@ export const structure: StructureResolver = (S) =>
             ])
         ),
     ])
-

@@ -33,6 +33,13 @@ export const contactForm = defineType({
       },
       validation: (r) => r.required(),
     }),
+    defineField({
+      name: 'slug',
+      title: 'Slug',
+      type: 'slug',
+      options: { source: 'formTitle' },
+      validation: Rule => Rule.required(),
+    }),
 
     // ── Fields ──
     defineField({
@@ -155,12 +162,6 @@ export const contactForm = defineType({
     }),
   ],
   preview: {
-    select: { variant: 'formVariant', title: 'formTitle' },
-    prepare({ variant, title }) {
-      return {
-        title: title || 'Contact Form',
-        subtitle: variant ? `Variant: ${variant}` : '',
-      }
-    },
+    select: { title: 'formTitle', subtitle: 'formVariant' },
   },
 })

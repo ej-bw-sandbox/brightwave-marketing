@@ -5,6 +5,22 @@ export const privateMarketsWizardForm = defineType({
   title: 'Private Markets Wizard Form',
   type: 'document',
   fields: [
+    // ── Identification ──
+    defineField({
+      name: 'title',
+      title: 'Form Name',
+      type: 'string',
+      description: 'Internal name to identify this form (e.g. "Private Markets ROI Calculator")',
+      validation: Rule => Rule.required(),
+    }),
+    defineField({
+      name: 'slug',
+      title: 'Slug',
+      type: 'slug',
+      options: { source: 'title' },
+      validation: Rule => Rule.required(),
+    }),
+
     // ── Step Titles ──
     defineField({
       name: 'step1Title',
@@ -170,8 +186,6 @@ export const privateMarketsWizardForm = defineType({
     }),
   ],
   preview: {
-    prepare() {
-      return { title: 'Private Markets Wizard Form' }
-    },
+    select: { title: 'title' },
   },
 })

@@ -27,6 +27,7 @@ export const enterpriseQuery = `
     },
     roiCalcTitle, roiCalcCtaLabel, roiCalcCtaUrl,
     wizardForm->{
+      title, slug,
       step1Title, step2Title, step3Title, step4Title, step5Title,
       firmTypeOptions[]{ _key, value, label, teamSize, dealsEvaluated, dealsCompleted, avgDealSize, avgHourlyRate },
       urgencyMinLabel, urgencyMaxLabel,

@@ -18,8 +18,6 @@ const singletonTypes = new Set([
   'partnerTermsPage',
   'referralPage',
   'thankYouContactPage',
-  'privateMarketsWizardForm',
-  'contactForm',
 ])
 
 const singletonActions = new Set(['publish', 'discardChanges', 'restore'])
