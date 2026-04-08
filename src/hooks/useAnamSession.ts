@@ -28,6 +28,7 @@ type AnamClientType = any;
  *
  * Communicates with:
  *   POST /api/demo/session  - get session token (Agent B)
+ *   POST /api/demo/chat     - stream LLM responses (chat route)
  *   POST /api/demo/events   - fire analytics events (Agent C)
  *   GET  /api/demo/qualification - poll qualification result (Agent C)
  */
@@ -71,19 +72,30 @@ export function useAnamSession() {
     [],
   );
 
-  // -- Fire analytics events to Agent C's endpoint -----------------------
+  // -- Fire analytics events to the events endpoint ----------------------
   const fireEvent = useCallback(
-    async (event: string, payload: Record<string, unknown> = {}) => {
+    async (eventType: string, payload: Record<string, unknown> = {}) => {
       if (!sessionId) return;
+      const prospect = configRef.current?.prospect;
       try {
         await fetch('/api/demo/events', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             sessionId,
-            event,
-            timestamp: Date.now(),
-            ...payload,
+            eventType,
+            payload,
+            prospect: prospect
+              ? {
+                  name: prospect.name,
+                  email: prospect.email,
+                  company: prospect.company,
+                  role: prospect.role,
+                  aum: prospect.aum,
+                  firmType: prospect.firmType,
+                }
+              : { name: '', email: '', company: '', role: '' },
+            timestamp: new Date().toISOString(),
           }),
         });
       } catch {
@@ -143,8 +155,8 @@ export function useAnamSession() {
       appendMessage('user', transcript);
       conversationRef.current.push({ role: 'user', content: transcript });
 
-      // Fire chat event
-      fireEvent('message_sent', { role: 'user', content: transcript });
+      // Fire message event
+      fireEvent('message', { speaker: 'user', text: transcript });
 
       try {
         const chatRes = await fetch('/api/demo/chat', {
@@ -191,6 +203,10 @@ export function useAnamSession() {
 
         if (fullResponse) {
           conversationRef.current.push({ role: 'assistant', content: fullResponse });
+
+          // Fire agent message event
+          fireEvent('message', { speaker: 'agent', text: fullResponse });
+
           isSpeakingRef.current = true;
           try {
             await anamClient.talk(fullResponse);
@@ -227,7 +243,7 @@ export function useAnamSession() {
       configRef.current = config;
 
       try {
-        // 1. Request session token from backend (Agent B's endpoint)
+        // 1. Request session token from backend
         const sessionRes = await fetch('/api/demo/session', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -241,11 +257,23 @@ export function useAnamSession() {
           throw new Error(`Session API returned ${sessionRes.status}`);
         }
 
-        const { sessionToken, sessionId: sid } = await sessionRes.json();
+        const sessionData = await sessionRes.json();
+        const { sessionToken, personaConfig, sessionId: sid } = sessionData;
         if (!sessionToken) {
           throw new Error('No session token returned from API');
         }
-        setSessionId(sid || null);
+
+        // Use returned sessionId, or generate a client-side one as fallback
+        const resolvedSessionId = sid || `demo-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+        setSessionId(resolvedSessionId);
+
+        // Apply persona config overrides from the server
+        if (personaConfig?.greeting) {
+          config.persona.greeting = personaConfig.greeting;
+        }
+        if (personaConfig?.calendarLink) {
+          config.persona.calendarLink = personaConfig.calendarLink;
+        }
 
         // 2. Dynamic-import the Anam SDK (browser-only, avoid SSR)
         const anamSdk = await import('@anam-ai/js-sdk');
@@ -323,10 +351,7 @@ export function useAnamSession() {
         setStatus('connected');
 
         // Fire session_start event
-        fireEvent('session_start', {
-          prospect: config.prospect,
-          personaId: config.persona.anamPersonaId,
-        });
+        fireEvent('session_start');
       } catch (err) {
         const message = err instanceof Error ? err.message : 'Failed to start session';
         console.error('[useAnamSession] Error:', message, err);
