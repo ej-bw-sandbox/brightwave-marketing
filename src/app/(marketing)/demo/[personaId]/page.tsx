@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import { client } from '@/lib/sanity/client';
-import { demoPersonaQuery } from '@/lib/sanity/queries/demo';
+import { demoPersonaQuery } from '@/lib/sanity/queries/demoPersona';
 import type { DemoPersonaConfig } from '@/lib/demo-utils';
 import DemoPage from '@/components/demo/DemoPage';
 
