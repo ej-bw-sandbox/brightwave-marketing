@@ -1,20 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-
-/* ── Types ── */
-
-interface DownloadPlatform {
-  _key: string
-  platform: string
-  displayName: string
-  description?: string
-  downloadUrl?: string
-  version?: string
-  fileSize?: string
-  systemRequirements?: string
-  comingSoon?: boolean
-}
+import type { DownloadManifest, ManifestArtifact } from '@/lib/downloads/manifest'
+import { getDownloadUrl, formatBytes } from '@/lib/downloads/manifest'
 
 /* ── OS Detection ── */
 
@@ -43,7 +31,7 @@ function detectOS(): DetectedOS {
   return null
 }
 
-/* ── Colors (explicit, dark surface) ── */
+/* ── Colors ── */
 const c = {
   text: '#ffffff',
   textMuted: '#a5a6a8',
@@ -80,14 +68,6 @@ function AppleIcon({ className }: { className?: string }) {
   )
 }
 
-function AndroidIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 576 512" fill="currentColor">
-      <path d="M420.55 301.93a24 24 0 1 1 24-24 24 24 0 0 1-24 24zm-265.1 0a24 24 0 1 1 24-24 24 24 0 0 1-24 24zm273.7-144.48l47.94-83a10 10 0 1 0-17.27-10l-48.54 84.07a301.25 301.25 0 0 0-246.56 0L116.18 64.45a10 10 0 1 0-17.27 10l47.94 83C64.53 202.22 8.24 285.55 0 384h576c-8.24-98.45-64.54-181.78-146.85-226.55z" />
-    </svg>
-  )
-}
-
 function DownloadIcon({ className }: { className?: string }) {
   return (
     <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -104,28 +84,120 @@ function ChevronIcon({ className }: { className?: string }) {
   )
 }
 
-const platformIcons: Record<string, React.FC<{ className?: string }>> = {
+/* ── Platform display config ── */
+
+interface PlatformGroup {
+  key: string
+  label: string
+  iconKey: 'apple' | 'windows' | 'linux'
+  artifact: ManifestArtifact
+}
+
+const iconComponents = {
+  apple: AppleIcon,
   windows: WindowsIcon,
   linux: LinuxIcon,
-  'macos-intel': AppleIcon,
-  'macos-silicon': AppleIcon,
-  ios: AppleIcon,
-  android: AndroidIcon,
+}
+
+/** Map detected OS to a specific artifact */
+function findPrimaryArtifact(artifacts: ManifestArtifact[], os: DetectedOS): ManifestArtifact | null {
+  switch (os) {
+    case 'macos-silicon':
+      return artifacts.find((a) => a.platform === 'mac' && a.arch === 'arm64') ?? null
+    case 'macos-intel':
+      return artifacts.find((a) => a.platform === 'mac' && a.arch === 'x64') ?? null
+    case 'windows':
+      return artifacts.find((a) => a.platform === 'win') ?? null
+    case 'linux':
+      return artifacts.find((a) => a.platform === 'linux' && a.arch === 'x64' && a.format === 'AppImage') ?? null
+    default:
+      return null
+  }
+}
+
+const platformIconKey: Record<string, 'apple' | 'windows' | 'linux'> = {
+  mac: 'apple',
+  win: 'windows',
+  linux: 'linux',
+}
+
+const platformDisplayName: Record<string, string> = {
+  mac: 'macOS',
+  win: 'Windows',
+  linux: 'Linux',
+}
+
+/** Build one representative item per platform variant for the "also available" row.
+ *  Mac splits by arch (Apple Silicon vs Intel); others pick the first artifact. */
+function buildPlatformGroups(artifacts: ManifestArtifact[]): PlatformGroup[] {
+  const groups: PlatformGroup[] = []
+
+  // Mac: split by arch since the distinction matters
+  for (const arch of ['arm64', 'x64'] as const) {
+    const a = artifacts.find((a) => a.platform === 'mac' && a.arch === arch)
+    if (a) {
+      const suffix = a.label // "Apple Silicon" / "Intel" from manifest
+      groups.push({ key: `mac-${arch}`, label: `macOS (${suffix})`, iconKey: 'apple', artifact: a })
+    }
+  }
+
+  // Other platforms: one representative each (prefer .exe for win, AppImage for linux)
+  const preferredFormats: Record<string, string> = { win: 'exe', linux: 'AppImage' }
+  for (const platform of ['win', 'linux'] as const) {
+    const preferred = artifacts.find((a) => a.platform === platform && a.format === preferredFormats[platform] && a.arch === 'x64')
+    const fallback = artifacts.find((a) => a.platform === platform)
+    const a = preferred ?? fallback
+    if (a) {
+      groups.push({
+        key: platform,
+        label: platformDisplayName[platform] ?? a.label,
+        iconKey: platformIconKey[platform] ?? 'linux',
+        artifact: a,
+      })
+    }
+  }
+
+  return groups
+}
+
+/** Group artifacts by platform for the "view all" table */
+const platformOrder: Record<string, number> = { mac: 0, win: 1, linux: 2 }
+
+function groupByPlatform(artifacts: ManifestArtifact[]) {
+  const groups: Record<string, ManifestArtifact[]> = {}
+  for (const a of artifacts) {
+    ;(groups[a.platform] ??= []).push(a)
+  }
+  return Object.entries(groups)
+    .map(([platform, items]) => ({
+      platform,
+      label: platformDisplayName[platform] ?? platform,
+      iconKey: platformIconKey[platform] ?? 'linux' as const,
+      order: platformOrder[platform] ?? 99,
+      items,
+    }))
+    .sort((a, b) => a.order - b.order)
 }
 
 /* ── Main Section ── */
 
-export function DownloadSection({ platforms }: { platforms: DownloadPlatform[] }) {
+export function DownloadSection({ manifest }: { manifest: DownloadManifest | null }) {
   const [detectedOS, setDetectedOS] = useState<DetectedOS>(null)
   const [ready, setReady] = useState(false)
   const [showAll, setShowAll] = useState(false)
-
-  const available = platforms.filter((p) => !p.comingSoon && p.downloadUrl)
 
   useEffect(() => {
     setDetectedOS(detectOS())
     setReady(true)
   }, [])
+
+  if (!manifest || manifest.artifacts.length === 0) {
+    return (
+      <p className="text-sm" style={{ color: c.textMuted }}>
+        Downloads are temporarily unavailable. Please check back shortly.
+      </p>
+    )
+  }
 
   if (!ready) {
     return (
@@ -136,80 +208,91 @@ export function DownloadSection({ platforms }: { platforms: DownloadPlatform[] }
     )
   }
 
-  const detectedItem = detectedOS ? platforms.find((p) => p.platform === detectedOS) : null
-  const isDetectedAvailable = detectedItem && !detectedItem.comingSoon && detectedItem.downloadUrl
-  const isDetectedComingSoon = detectedItem?.comingSoon
+  const { artifacts, version } = manifest
+  const groups = buildPlatformGroups(artifacts)
+  const primaryArtifact = findPrimaryArtifact(artifacts, detectedOS)
 
-  const primary = isDetectedAvailable ? detectedItem : available[0]
-  const others = available.filter((p) => p.platform !== primary?.platform)
+  // Fall back to first group's artifact if OS not detected
+  const primary = primaryArtifact ?? groups[0]?.artifact
+  const primaryGroup = groups.find((g) => g.artifact === primary)
+  const others = groups.filter((g) => g.artifact !== primary)
+
+  const PrimaryIcon = primaryGroup ? iconComponents[primaryGroup.iconKey] : AppleIcon
+  const primaryLabel = primaryGroup?.label ?? primary?.label ?? 'your platform'
 
   return (
     <div className="flex flex-col items-center w-full">
 
-      {/* Coming soon notice for detected OS */}
-      {isDetectedComingSoon && detectedItem && (
+      {/* Mobile / unsupported OS notice */}
+      {(detectedOS === 'ios' || detectedOS === 'android') && (
         <div
           className="rounded-2xl px-8 py-6 mb-10 text-center backdrop-blur-sm"
           style={{ backgroundColor: c.surface, border: `1px solid ${c.border}` }}
         >
-          <p className="text-base font-semibold" style={{ color: c.text }}>{detectedItem.displayName} is coming soon.</p>
-          <p className="text-sm mt-1" style={{ color: c.textMuted }}>Download for an available platform below.</p>
+          <p className="text-base font-semibold" style={{ color: c.text }}>
+            Brightwave is available for desktop platforms.
+          </p>
+          <p className="text-sm mt-1" style={{ color: c.textMuted }}>
+            Download for macOS, Windows, or Linux below.
+          </p>
         </div>
       )}
 
       {/* Primary download */}
-      {primary && (() => {
-        const PrimaryIcon = platformIcons[primary.platform] || WindowsIcon
-        return (
-          <>
-            <div className="w-20 h-20 mb-8" style={{ color: c.text }}>
-              <PrimaryIcon className="w-full h-full" />
+      {primary && (
+        <>
+          <div className="w-20 h-20 mb-8" style={{ color: c.text }}>
+            <PrimaryIcon className="w-full h-full" />
+          </div>
+          <a stagger-cta="" href={getDownloadUrl(primary.filename)} className="cta-p-sm w-inline-block">
+            <div>
+              <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">
+                Download for {primaryLabel}
+              </div>
             </div>
-            <a stagger-cta="" href={primary.downloadUrl} className="cta-p-sm w-inline-block">
-              <div>
-                <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">Download for {primary.displayName}</div>
+            <div className="flip-small">
+              <div className="flip-bg"></div>
+            </div>
+            <div className="flip-big">
+              <div className="svg cta-sm-arrow w-embed">
+                <svg width={14} height={14} viewBox="0 0 14 14" fill="none">
+                  <g clipPath="url(#dl-clip)">
+                    <path d="M2.27832 1.625L12.3577 1.44906L12.5325 11.4643" stroke="white" strokeWidth="1.0876" strokeLinejoin="bevel" />
+                    <path d="M12.3563 1.44945L1.48389 12.6365" stroke="white" strokeWidth="1.0876" strokeLinejoin="bevel" />
+                  </g>
+                  <defs>
+                    <clipPath id="dl-clip">
+                      <rect width={12} height="11.9237" fill="white" transform="translate(0.896484 1.10547) rotate(-1)" />
+                    </clipPath>
+                  </defs>
+                </svg>
               </div>
-              <div className="flip-small">
-                <div className="flip-bg"></div>
-              </div>
-              <div className="flip-big">
-                <div className="svg cta-sm-arrow w-embed">
-                  <svg width={14} height={14} viewBox="0 0 14 14" fill="none">
-                    <g clipPath="url(#dl-clip)">
-                      <path d="M2.27832 1.625L12.3577 1.44906L12.5325 11.4643" stroke="white" strokeWidth="1.0876" strokeLinejoin="bevel" />
-                      <path d="M12.3563 1.44945L1.48389 12.6365" stroke="white" strokeWidth="1.0876" strokeLinejoin="bevel" />
-                    </g>
-                    <defs>
-                      <clipPath id="dl-clip">
-                        <rect width={12} height="11.9237" fill="white" transform="translate(0.896484 1.10547) rotate(-1)" />
-                      </clipPath>
-                    </defs>
-                  </svg>
-                </div>
-              </div>
-            </a>
-          </>
-        )
-      })()}
+            </div>
+          </a>
+          <p className="text-xs mt-3" style={{ color: c.textSubtle }}>
+            v{version} · {formatBytes(primary.size)} · .{primary.format}
+          </p>
+        </>
+      )}
 
       {/* Also available for */}
       {others.length > 0 && (
         <div className="mt-10 flex flex-col md:flex-row items-center gap-4 text-sm">
           <span style={{ color: c.textSubtle }}>Also available for</span>
           <div className="flex gap-3">
-            {others.map((p) => {
-              const Icon = platformIcons[p.platform] || WindowsIcon
+            {others.map((g) => {
+              const Icon = iconComponents[g.iconKey]
               return (
                 <a
-                  key={p._key || p.platform}
-                  href={p.downloadUrl}
+                  key={g.key}
+                  href={getDownloadUrl(g.artifact.filename)}
                   className="flex items-center gap-2.5 px-5 py-3 rounded-xl font-medium text-sm transition-all hover:brightness-125"
                   style={{ backgroundColor: c.surface, color: c.text, border: `1px solid ${c.border}` }}
                 >
                   <div className="w-5 h-5" style={{ color: c.text }}>
                     <Icon className="w-full h-full" />
                   </div>
-                  {p.displayName}
+                  {g.label}
                 </a>
               )
             })}
@@ -218,7 +301,7 @@ export function DownloadSection({ platforms }: { platforms: DownloadPlatform[] }
       )}
 
       {/* View all platforms */}
-      <div className="mt-12 w-full max-w-md">
+      <div className="mt-12 w-full max-w-lg">
         <button
           className="flex items-center gap-2 mx-auto cursor-pointer text-sm transition-opacity hover:opacity-80"
           style={{ color: c.textSubtle }}
@@ -230,37 +313,50 @@ export function DownloadSection({ platforms }: { platforms: DownloadPlatform[] }
 
         {showAll && (
           <div className="mt-6 rounded-2xl overflow-hidden" style={{ border: `1px solid ${c.border}` }}>
-            {platforms.map((p, i) => {
-              const Icon = platformIcons[p.platform] || WindowsIcon
-              const isAvail = !p.comingSoon && p.downloadUrl
+            {groupByPlatform(artifacts).map((group, gi) => {
+              const Icon = iconComponents[group.iconKey] ?? WindowsIcon
               return (
-                <div
-                  key={p._key || p.platform}
-                  className="flex items-center justify-between px-6 py-4"
-                  style={{ borderTop: i > 0 ? `1px solid ${c.border}` : undefined }}
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="w-6 h-6" style={{ color: isAvail ? c.text : c.textSubtle }}>
+                <div key={group.platform}>
+                  {/* Platform header */}
+                  <div
+                    className="flex items-center gap-3 px-6 py-3"
+                    style={{
+                      backgroundColor: 'rgba(255,255,255,0.03)',
+                      borderTop: gi > 0 ? `1px solid ${c.border}` : undefined,
+                    }}
+                  >
+                    <div className="w-5 h-5" style={{ color: c.text }}>
                       <Icon className="w-full h-full" />
                     </div>
-                    <span className="text-sm font-medium" style={{ color: isAvail ? c.text : c.textSubtle }}>
-                      {p.displayName}
+                    <span className="text-sm font-semibold" style={{ color: c.text }}>
+                      {group.label}
                     </span>
                   </div>
-                  {isAvail ? (
-                    <a
-                      href={p.downloadUrl}
-                      className="text-sm font-medium flex items-center gap-1.5 transition-opacity hover:opacity-80"
-                      style={{ color: c.yellow }}
+                  {/* Artifacts */}
+                  {group.items.map((a) => (
+                    <div
+                      key={a.filename}
+                      className="flex items-center justify-between px-6 py-3.5"
+                      style={{ borderTop: `1px solid ${c.border}` }}
                     >
-                      <DownloadIcon className="w-4 h-4" />
-                      Download
-                    </a>
-                  ) : (
-                    <span className="text-xs uppercase tracking-wider" style={{ color: c.textSubtle }}>
-                      Coming Soon
-                    </span>
-                  )}
+                      <div className="flex items-center gap-3">
+                        <span className="text-sm" style={{ color: c.text }}>
+                          {a.label}
+                        </span>
+                        <span className="text-xs" style={{ color: c.textSubtle }}>
+                          .{a.format} · {formatBytes(a.size)}
+                        </span>
+                      </div>
+                      <a
+                        href={getDownloadUrl(a.filename)}
+                        className="text-sm font-medium flex items-center gap-1.5 transition-opacity hover:opacity-80"
+                        style={{ color: c.yellow }}
+                      >
+                        <DownloadIcon className="w-4 h-4" />
+                        Download
+                      </a>
+                    </div>
+                  ))}
                 </div>
               )
             })}
