@@ -51,76 +51,46 @@ const DEFAULT_PERSONA_CONFIG: PersonaConfig = {
 function buildPersonalizationBlock(
   prospect: Partial<ProspectInfo> & Record<string, unknown>,
 ): string {
-  const name = prospect.name as string | undefined
-  const company = prospect.company as string | undefined
-  const role = prospect.role as string | undefined
-  const firmType = prospect.firmType as string | undefined
-  const aum = prospect.aum as string | undefined
-  const email = prospect.email as string | undefined
-  const teamSize = prospect.teamSize as number | undefined
-  const annualCostSavings = prospect.annualCostSavings as number | undefined
-  const roi = prospect.roi as number | undefined
-  const totalHoursSaved = prospect.totalHoursSaved as number | undefined
-  const timeframe = prospect.timeframe as string | undefined
-  const dealsEvaluated = prospect.dealsEvaluated as number | undefined
-  const avgDealSize = prospect.avgDealSize as number | undefined
-  const additionalDealsCapacity = prospect.additionalDealsCapacity as number | undefined
+  if (!prospect || Object.keys(prospect).length === 0) return ''
 
-  const hasAnyData = name || company || role || firmType || aum || email ||
-    teamSize || annualCostSavings || roi || totalHoursSaved || timeframe
+  const lines: string[] = ['## About This Prospect']
 
-  if (!hasAnyData) {
-    return `\n## Current Prospect\nYou do not have any information about this prospect yet. Start by warmly introducing yourself and asking for their name and what brings them to Brightwave today. Do NOT assume or invent a name for them.\n`
+  // Identity
+  if (prospect.name) lines.push(`- Name: ${prospect.name}`)
+  if (prospect.email) lines.push(`- Email: ${prospect.email}`)
+  if (prospect.company) lines.push(`- Company: ${prospect.company}`)
+  if (prospect.role) lines.push(`- Role: ${prospect.role}`)
+
+  // Firm context
+  if (prospect.firmType) lines.push(`- Firm Type: ${prospect.firmType}`)
+  if (prospect.teamSize) lines.push(`- Team Size: ${prospect.teamSize} people`)
+
+  // ROI data — this is gold, use it
+  if (prospect.annualCostSavings) {
+    lines.push(`- Estimated Annual Cost Savings: $${Number(prospect.annualCostSavings).toLocaleString()}`)
   }
-
-  const lines: string[] = ['\n## Current Prospect']
-
-  if (name) {
-    lines.push(`You are speaking with ${name}${company ? ` from ${company}` : ''}.`)
-  } else {
-    lines.push(
-      `You are speaking with a prospect${company ? ` from ${company}` : ''}. You do not know their name yet -- ask for it naturally at the start of the conversation. Do NOT assume or invent a name.`,
-    )
+  if (prospect.roi) {
+    lines.push(`- Estimated ROI: ${prospect.roi}%`)
   }
-
-  if (role) lines.push(`Their role: ${role}.`)
-  if (firmType) lines.push(`Firm type: ${firmType}.`)
-  if (teamSize) lines.push(`Team size: ${teamSize} people.`)
-  if (aum) lines.push(`AUM: ${aum}.`)
-  if (email) lines.push(`Email: ${email}.`)
-
-  // ROI calculator data
-  const hasRoiData = annualCostSavings || roi || totalHoursSaved
-  if (hasRoiData) {
-    lines.push('')
-    lines.push('### ROI Calculator Results (from their earlier analysis)')
-    if (annualCostSavings) {
-      lines.push(`Their estimated annual savings with Brightwave: $${annualCostSavings.toLocaleString()}.`)
-    }
-    if (roi) {
-      lines.push(`Their calculated ROI: ${Math.round(roi)}%.`)
-    }
-    if (totalHoursSaved) {
-      lines.push(`Estimated hours saved per year: ${totalHoursSaved.toLocaleString()}.`)
-    }
-    if (dealsEvaluated) {
-      lines.push(`Deals evaluated per year: ${dealsEvaluated}.`)
-    }
-    if (avgDealSize) {
-      lines.push(`Average deal size: $${avgDealSize}M.`)
-    }
-    if (additionalDealsCapacity) {
-      lines.push(`Additional deals their team could handle: ${additionalDealsCapacity}.`)
-    }
-    if (timeframe) {
-      lines.push(`Buying timeframe: ${timeframe}.`)
-    }
-    lines.push(
-      'Use this data to personalize your pitch. Lead with their specific ROI numbers when relevant -- these are powerful because the prospect calculated them themselves.',
-    )
+  if (prospect.totalHoursSaved) {
+    lines.push(`- Estimated Hours Saved Per Year: ${prospect.totalHoursSaved}`)
   }
+  if (prospect.dealsEvaluated) {
+    lines.push(`- Deals Evaluated Per Year: ${prospect.dealsEvaluated}`)
+  }
+  if (prospect.avgDealSize) {
+    lines.push(`- Average Deal Size: $${Number(prospect.avgDealSize).toLocaleString()}`)
+  }
+  if (prospect.timeframe) lines.push(`- Buying Timeframe: ${prospect.timeframe}`)
+  if (prospect.urgency) lines.push(`- Urgency: ${prospect.urgency}`)
 
   lines.push('')
+  lines.push('Use this information to personalize the conversation. Reference their specific numbers when relevant.')
+  lines.push('If they have ROI data, lead with those numbers to establish value quickly.')
+  lines.push(prospect.name
+    ? `Address them as ${prospect.name.split(' ')[0]}.`
+    : 'You do not know their name yet — ask for it naturally early in the conversation.')
+
   return lines.join('\n')
 }
 
@@ -138,7 +108,9 @@ function buildSystemPrompt(
   // If there is a KB override, build a custom prompt with that KB
   if (persona.knowledgeBaseOverride) {
     return `You are Max, Brightwave's AI sales guide. You are a knowledgeable, professional, and consultative salesperson who helps prospects understand how Brightwave can transform their investment research workflow.
+
 ${personalization}
+
 ## Knowledge Base
 ${persona.knowledgeBaseOverride}
 

@@ -14,6 +14,14 @@ export interface ProspectInfo {
   role: string
   aum?: string
   firmType?: string
+  teamSize?: number
+  annualCostSavings?: number
+  totalHoursSaved?: number
+  roi?: number
+  dealsEvaluated?: number
+  avgDealSize?: number
+  timeframe?: string
+  urgency?: string
 }
 
 /** A single timestamped transcript entry from the conversation. */
