@@ -45,14 +45,14 @@ export const demoPersona = defineType({
       title: 'Avatar ID',
       type: 'string',
       description: 'Anam.ai avatar UUID. Default: 8a339c9f-0666-46bd-ab27-e90acd0409dc',
-      validation: (Rule: { required: () => unknown }) => Rule.required(),
+      validation: (r) => r.required(),
     }),
     defineField({
       name: 'anamVoiceId',
       title: 'Voice ID',
       type: 'string',
       description: 'Anam.ai voice UUID. Default: b482f972-1b1b-4337-ae60-940b90b5bb41',
-      validation: (Rule: { required: () => unknown }) => Rule.required(),
+      validation: (r) => r.required(),
     }),
     defineField({
       name: 'llmModel',
