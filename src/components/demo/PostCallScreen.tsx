@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
 import type { ProspectContext } from '@/lib/demo-utils';
 import { getFirstName } from '@/lib/demo-utils';
 import { BrightwaveLogo } from '@/components/layout/logo';
@@ -84,7 +83,7 @@ export default function PostCallScreen({
         clearInterval(pollRef.current);
         pollRef.current = null;
       }
-    }, 30000);
+    }, 3000);
 
     return () => {
       if (pollRef.current) clearInterval(pollRef.current);
@@ -93,80 +92,76 @@ export default function PostCallScreen({
     };
   }, [pollQualification]);
 
+  const isQualified = qualification === 'qualified';
+  const ctaLabel = isQualified ? 'Book Your Workflow Workshop' : 'Start Your Free Trial';
+  const ctaHref = isQualified ? resolvedCalendarLink : trialLink;
+
   return (
     <div className="min-h-screen bg-bw-gray-800 flex flex-col items-center justify-center px-4">
-      {/* Loading state */}
+      {/* Loading spinner while pending */}
       {qualification === 'pending' && (
-        <div className="flex flex-col items-center gap-4">
+        <div className="flex flex-col items-center gap-4 mb-8">
           <div className="w-10 h-10 rounded-full border-2 border-white/10 border-t-bw-yellow-550 animate-spin" />
           <p className="text-white/60 text-sm">Preparing your results...</p>
         </div>
       )}
 
-      {/* Qualified */}
-      {qualification === 'qualified' && (
+      {/* Resolved content */}
+      {qualification !== 'pending' && (
         <div className="flex flex-col items-center gap-6 max-w-md text-center">
-          <div className="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center">
-            <svg className="w-8 h-8 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <div
+            className={cn(
+              'w-16 h-16 rounded-full flex items-center justify-center',
+              isQualified ? 'bg-green-500/10' : 'bg-bw-yellow-550/10',
+            )}
+          >
+            <svg
+              className={cn('w-8 h-8', isQualified ? 'text-green-400' : 'text-bw-yellow-550')}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={1.5}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
             </svg>
           </div>
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">
-              Great news{firstName ? `, ${firstName}` : ''}! You&apos;re a great fit.
+              {isQualified
+                ? `Great news${firstName ? `, ${firstName}` : ''}! You're a great fit.`
+                : `Thanks for connecting${firstName ? `, ${firstName}` : ''}!`}
             </h1>
             <p className="text-white/60 text-sm sm:text-base">
-              Based on our conversation, Brightwave can deliver significant value for
-              {prospect.company ? ` ${prospect.company}` : ' your team'}. Let&apos;s set up a
-              hands-on workflow workshop tailored to your use cases.
+              {isQualified
+                ? `Based on our conversation, Brightwave can deliver significant value for${prospect.company ? ` ${prospect.company}` : ' your team'}. Let's set up a hands-on workflow workshop tailored to your use cases.`
+                : 'Explore Brightwave on your own and see how research can transform your workflow.'}
             </p>
           </div>
-          <Button asChild size="lg" className="text-base font-semibold shadow-lg">
-            <a
-              href={resolvedCalendarLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2"
+          <a
+            href={ctaHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-bw-yellow-550 text-bw-gray-800 hover:bg-bw-yellow-400 font-semibold px-8 py-3 rounded-full text-base inline-flex items-center gap-2"
+          >
+            {ctaLabel}
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
             >
-              Book Your Workflow Workshop
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-              </svg>
-            </a>
-          </Button>
-        </div>
-      )}
-
-      {/* Unqualified / Error */}
-      {(qualification === 'unqualified' || qualification === 'error') && (
-        <div className="flex flex-col items-center gap-6 max-w-md text-center">
-          <div className="w-16 h-16 rounded-full bg-bw-yellow-550/10 flex items-center justify-center">
-            <svg className="w-8 h-8 text-bw-yellow-550" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+              />
             </svg>
-          </div>
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">
-              Thanks for connecting{firstName ? `, ${firstName}` : ''}!
-            </h1>
-            <p className="text-white/60 text-sm sm:text-base">
-              Explore Brightwave on your own and see how research can transform
-              your workflow.
-            </p>
-          </div>
-          <Button asChild size="lg" className="text-base font-semibold shadow-lg">
-            <a
-              href={trialLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2"
-            >
-              Start Your Free Trial
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-              </svg>
-            </a>
-          </Button>
+          </a>
         </div>
       )}
 
