@@ -42,7 +42,7 @@ export default async function Page() {
                       <div className="cta-182">
                         <a stagger-cta="" href={doc.linkedinUrl} className="cta-p-sm w-inline-block">
                           <div>
-                            <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">LinkedIn</div>
+                            <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">{doc?.linkedinLabel ?? "LinkedIn"}</div>
                           </div>
                           <div className="flip-small">
                             <div className="flip-bg"></div>
@@ -134,11 +134,11 @@ export default async function Page() {
                         </div>
                       </div>
                       <div className="w-dyn-empty">
-                        <div>No items found.</div>
+                        <div>{doc?.emptyStateText ?? "No items found."}</div>
                       </div>
                     </div>
                     <div inject-tablet="founders" className="cta-founders">
-                      <a stagger-cta="" href="/blog" className="cta-p-sm cc-stroke w-inline-block">
+                      <a stagger-cta="" href={doc?.readMoreUrl ?? "/blog"} className="cta-p-sm cc-stroke w-inline-block">
                         {doc.readMoreLabel && (
                           <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">{doc.readMoreLabel}</div>
                         )}
@@ -186,11 +186,11 @@ export default async function Page() {
                         </div>
                       </div>
                       <div className="w-dyn-empty">
-                        <div>No items found.</div>
+                        <div>{doc?.emptyStateText ?? "No items found."}</div>
                       </div>
                     </div>
                     <div inject-tablet="founders" className="cta-founders">
-                      <a stagger-cta="" href="/blog" className="cta-p-sm cc-stroke w-inline-block">
+                      <a stagger-cta="" href={doc?.readMoreUrl ?? "/blog"} className="cta-p-sm cc-stroke w-inline-block">
                         {doc.readMoreLabel && (
                           <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">{doc.readMoreLabel}</div>
                         )}

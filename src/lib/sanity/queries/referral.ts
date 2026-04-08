@@ -16,6 +16,9 @@ export const referralQuery = `
     recentBlogsSectionTitle,
     latestPostsSectionTitle,
     readMoreLabel,
+    readMoreUrl,
+    linkedinLabel,
+    emptyStateText,
     seo
   }
 `

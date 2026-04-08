@@ -1,34 +1,67 @@
 import Link from 'next/link'
 import { LottiePlayer } from '@/components/ui/LottiePlayer'
 
-export function StepCtaSection() {
+interface StepCtaSectionProps {
+  heading?: string | null
+  buttonLabel?: string | null
+  buttonUrl?: string | null
+}
+
+const DEFAULT_HEADING = 'Step Into The Future Of Financial Research'
+const DEFAULT_BUTTON_LABEL = 'Schedule a Trial'
+const DEFAULT_BUTTON_URL = '/enterprise'
+
+export function StepCtaSection({
+  heading,
+  buttonLabel,
+  buttonUrl,
+}: StepCtaSectionProps = {}) {
+  const resolvedButtonLabel = buttonLabel ?? DEFAULT_BUTTON_LABEL
+  const resolvedButtonUrl = buttonUrl ?? DEFAULT_BUTTON_URL
+  const resolvedHeading = heading ?? DEFAULT_HEADING
+
+  /* Split the heading into words and apply the decorative layout.
+     The original design alternates grey/white styling per word across rows.
+     When a custom heading is provided the same visual pattern is preserved. */
+  const words = resolvedHeading.split(/\s+/)
+
   return (
     <section className="c-section">
       <div className="c-container">
         <div className="titles">
-          <div className="title_flex">
-            <div className="c-title-cta">Step</div>
-            <div className="c-title-cta cc-grey">Into</div>
-          </div>
-          <div className="title_flex">
-            <div className="c-title-cta cc-grey">THe</div>
-            <div className="spacer"></div>
-            <div className="c-title-cta">Future</div>
-            <div className="c-title-cta cc-grey">OF</div>
-          </div>
-          <div className="title_flex cc-financial">
-            <div className="spacer cc-financial"></div>
-            <div>
-              <div className="c-title-cta">FiNANCIAL</div>
+          {!heading ? (
+            <>
+              <div className="title_flex">
+                <div className="c-title-cta">Step</div>
+                <div className="c-title-cta cc-grey">Into</div>
+              </div>
+              <div className="title_flex">
+                <div className="c-title-cta cc-grey">THe</div>
+                <div className="spacer"></div>
+                <div className="c-title-cta">Future</div>
+                <div className="c-title-cta cc-grey">OF</div>
+              </div>
+              <div className="title_flex cc-financial">
+                <div className="spacer cc-financial"></div>
+                <div>
+                  <div className="c-title-cta">FiNANCIAL</div>
+                </div>
+              </div>
+              <div className="title_flex cc-stetch">
+                <div className="c-title-cta">Research</div>
+              </div>
+            </>
+          ) : (
+            <div className="title_flex cc-stetch">
+              {words.map((word, i) => (
+                <div key={i} className="c-title-cta">{word} </div>
+              ))}
             </div>
-          </div>
-          <div className="title_flex cc-stetch">
-            <div className="c-title-cta">Research</div>
-          </div>
+          )}
           <div className="cta-step">
-            <Link href="/enterprise" className="cta-p-big w-inline-block">
+            <Link href={resolvedButtonUrl} className="cta-p-big w-inline-block">
               <div className="cta-p-big_top">
-                <div className="c-text-link cc-stagger-cta">Schedule a Trial</div>
+                <div className="c-text-link cc-stagger-cta">{resolvedButtonLabel}</div>
               </div>
               <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 35 33" fill="none" className="cta-p-big_arrows cc-hide">
                 <rect width="4.52527" height="4.49649" transform="matrix(1 8.74228e-08 8.74228e-08 -1 30.0078 32.5312)" fill="currentColor"></rect>

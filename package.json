@@ -14,7 +14,8 @@
     "sanity:migrate": "sanity migration run",
     "format": "prettier --write .",
     "analyze": "ANALYZE=true next build",
-    "seed:forms": "npx tsx scripts/seed-forms.ts"
+    "seed:forms": "npx tsx scripts/seed-forms.ts",
+    "seed:pages": "npx tsx scripts/seed-pages.ts"
   },
   "dependencies": {
     "@anam-ai/js-sdk": "^4.12.0",

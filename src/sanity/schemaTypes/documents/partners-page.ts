@@ -87,6 +87,26 @@ export const partnersPage = defineType({
       }],
     }),
 
+    // ── Step CTA Section ──
+    defineField({
+      name: 'stepCtaHeading',
+      title: 'Step CTA Heading',
+      type: 'string',
+      description: 'Headline for the bottom CTA section (defaults to "Step Into The Future Of Financial Research")',
+    }),
+    defineField({
+      name: 'stepCtaButtonLabel',
+      title: 'Step CTA Button Label',
+      type: 'string',
+      description: 'CTA button text (defaults to "Schedule a Trial")',
+    }),
+    defineField({
+      name: 'stepCtaButtonUrl',
+      title: 'Step CTA Button URL',
+      type: 'string',
+      description: 'CTA button link (defaults to /enterprise)',
+    }),
+
     // ── Contact Form ──
     defineField({
       name: 'contactForm',

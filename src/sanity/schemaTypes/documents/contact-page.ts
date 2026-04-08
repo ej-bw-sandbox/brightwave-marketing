@@ -41,6 +41,24 @@ export const contactPage = defineType({
       title: 'Read More CTA Label',
       type: 'string',
     }),
+    defineField({
+      name: 'readMoreUrl',
+      title: 'Read More URL',
+      type: 'string',
+      description: 'URL for the Read More CTA (defaults to /blog)',
+    }),
+    defineField({
+      name: 'linkedinLabel',
+      title: 'LinkedIn Link Label',
+      type: 'string',
+      description: 'Display label for the LinkedIn social link (defaults to LinkedIn)',
+    }),
+    defineField({
+      name: 'emptyStateText',
+      title: 'Empty State Text',
+      type: 'string',
+      description: 'Message shown when no blog/post items are found (defaults to "No items found.")',
+    }),
     defineField({ name: 'seo', title: 'SEO', type: 'seo' }),
   ],
   preview: {

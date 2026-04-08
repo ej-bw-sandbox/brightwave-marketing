@@ -46,6 +46,9 @@ interface PartnersPageDoc {
     apiEndpoint?: string
     notificationEmail?: string
   }
+  stepCtaHeading?: string
+  stepCtaButtonLabel?: string
+  stepCtaButtonUrl?: string
   seo?: {
     metaTitle?: string
     metaDescription?: string
@@ -343,7 +346,11 @@ export default async function Page() {
             </section>
       </div>
 
-      <StepCtaSection />
+      <StepCtaSection
+          heading={doc.stepCtaHeading}
+          buttonLabel={doc.stepCtaButtonLabel}
+          buttonUrl={doc.stepCtaButtonUrl}
+        />
     </>
   )
 }

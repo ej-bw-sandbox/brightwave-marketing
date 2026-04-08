@@ -30,6 +30,9 @@ export const partnersQuery = `
       question,
       answer
     },
+    stepCtaHeading,
+    stepCtaButtonLabel,
+    stepCtaButtonUrl,
     contactForm->{
       formTitle, formSubtitle, formVariant,
       fields[]{ _key, fieldName, fieldLabel, fieldPlaceholder, fieldType, isRequired, options[]{ _key, value, label } },

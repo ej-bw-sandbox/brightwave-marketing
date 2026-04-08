@@ -14,6 +14,9 @@ export const contactQuery = `
     recentBlogsSectionTitle,
     latestPostsSectionTitle,
     readMoreLabel,
+    readMoreUrl,
+    linkedinLabel,
+    emptyStateText,
     seo
   }
 `
