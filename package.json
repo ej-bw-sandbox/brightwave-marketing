@@ -13,7 +13,8 @@
     "sanity:typegen": "sanity typegen generate",
     "sanity:migrate": "sanity migration run",
     "format": "prettier --write .",
-    "analyze": "ANALYZE=true next build"
+    "analyze": "ANALYZE=true next build",
+    "seed:forms": "npx tsx scripts/seed-forms.ts"
   },
   "dependencies": {
     "@anam-ai/js-sdk": "^4.12.0",
