@@ -172,7 +172,7 @@ export function DownloadSection({ manifest }: { manifest: DownloadManifest | nul
     return (
       <div className="flex flex-col items-center w-full animate-pulse">
         <div className="w-72 h-14 rounded-xl mb-16" style={{ backgroundColor: c.surface }} />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 w-full max-w-4xl">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full max-w-5xl">
           {[0, 1, 2].map((i) => (
             <div key={i} className="h-48 rounded-2xl" style={{ backgroundColor: c.surface }} />
           ))}
@@ -235,9 +235,9 @@ export function DownloadSection({ manifest }: { manifest: DownloadManifest | nul
       )}
 
       {/* Section heading */}
-      <div className="w-full max-w-4xl mb-8">
+      <div className="w-full max-w-5xl mb-8">
         <h2 className="text-xl font-semibold" style={{ color: c.text }}>
-          Get started
+          All platforms
         </h2>
         <p className="text-sm mt-1" style={{ color: c.textMuted }}>
           v{version}
@@ -245,51 +245,51 @@ export function DownloadSection({ manifest }: { manifest: DownloadManifest | nul
       </div>
 
       {/* Platform cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 w-full max-w-4xl">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full max-w-5xl">
         {platformGroups.map((group) => {
           const Icon = iconComponents[group.iconKey]
           return (
             <div
               key={group.platform}
-              className="rounded-2xl p-6 flex flex-col"
+              className="rounded-2xl p-7 flex flex-col"
               style={{
                 backgroundColor: c.surface,
                 border: `1px solid ${c.border}`,
               }}
             >
               {/* Card header */}
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-5 h-5" style={{ color: c.text }}>
+              <div className="flex items-center gap-3 mb-1">
+                <div className="w-6 h-6" style={{ color: c.text }}>
                   <Icon className="w-full h-full" />
                 </div>
-                <h3 className="text-base font-semibold" style={{ color: c.text }}>
+                <h3 className="text-lg font-semibold" style={{ color: c.text }}>
                   {group.label}
                 </h3>
               </div>
-              <p className="text-sm mb-5" style={{ color: c.textSubtle }}>
+              <p className="text-sm mb-6" style={{ color: c.textMuted }}>
                 {group.description}
               </p>
 
               {/* Download rows */}
-              <div className="flex flex-col gap-0 mt-auto">
-                {group.items.map((a, i) => (
+              <div className="flex flex-col mt-auto" style={{ borderTop: `1px solid ${c.border}` }}>
+                {group.items.map((a) => (
                   <a
                     key={a.filename}
                     href={getDownloadUrl(a.filename)}
                     className="group flex items-center justify-between py-3 transition-colors"
                     style={{
-                      borderTop: i > 0 ? `1px solid ${c.border}` : undefined,
+                      borderBottom: `1px solid ${c.border}`,
                       color: c.text,
                     }}
                   >
-                    <div className="flex flex-col">
-                      <span className="text-sm">{a.label}</span>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-sm font-medium">{a.label}</span>
                       <span className="text-xs" style={{ color: c.textSubtle }}>
                         .{a.format} · {formatBytes(a.size)}
                       </span>
                     </div>
                     <span
-                      className="text-sm font-medium flex items-center gap-1.5 opacity-70 group-hover:opacity-100 transition-opacity"
+                      className="flex items-center gap-1.5 opacity-50 group-hover:opacity-100 transition-opacity"
                       style={{ color: c.yellow }}
                     >
                       <DownloadIcon className="w-4 h-4" />
