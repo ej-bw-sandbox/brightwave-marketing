@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { client } from '@/lib/sanity/client'
 import { contactQuery } from '@/lib/sanity/queries/contact'
+import { contactFormQuery } from '@/lib/sanity/queries/forms'
 import { buildMetadata } from '@/lib/metadata'
 import ContactForm from '@/components/forms/ContactForm'
 
@@ -17,9 +18,13 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function Page() {
   let doc: any = null
+  let formConfig: any = null
   try {
-    doc = await client.fetch(contactQuery, {}, { next: { tags: ['contactPage'], revalidate: 60 } })
-  } catch { doc = null }
+    ;[doc, formConfig] = await Promise.all([
+      client.fetch(contactQuery, {}, { next: { tags: ['contactPage'], revalidate: 60 } }),
+      client.fetch(contactFormQuery, { variant: 'contact' }, { next: { tags: ['contactForm'], revalidate: 60 } }),
+    ])
+  } catch { doc = null; formConfig = null }
 
   return (
     <>
@@ -88,7 +93,7 @@ export default async function Page() {
               </div>
             </div>
             <div id="w-node-bd5556b5-87c1-cfbe-5a84-873f47e0ef7f-09dd82b0" className="v-40">
-              <ContactForm />
+              <ContactForm formConfig={formConfig} />
             </div>
           </div>
         </div>

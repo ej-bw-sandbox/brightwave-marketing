@@ -2,6 +2,15 @@
 
 import { useState, type FormEvent } from 'react'
 
+interface ContactFormConfig {
+  formTitle?: string
+  formSubtitle?: string
+  submitButtonText?: string
+  successMessage?: string
+  errorMessage?: string
+  apiEndpoint?: string
+}
+
 interface FormData {
   firstName: string
   lastName: string
@@ -10,7 +19,12 @@ interface FormData {
   message: string
 }
 
-export default function ContactForm() {
+const DEFAULT_TITLE = 'Tell us a bit about yourself'
+const DEFAULT_SUBMIT_TEXT = 'Submit'
+const DEFAULT_SUCCESS_MESSAGE = 'We received your message and will be in touch shortly.'
+const DEFAULT_ERROR_MESSAGE = 'Network error. Please try again.'
+
+export default function ContactForm({ formConfig }: { formConfig?: ContactFormConfig | null } = {}) {
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
     lastName: '',
@@ -20,6 +34,11 @@ export default function ContactForm() {
   })
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
+
+  const title = formConfig?.formTitle ?? DEFAULT_TITLE
+  const submitText = formConfig?.submitButtonText ?? DEFAULT_SUBMIT_TEXT
+  const successMessage = formConfig?.successMessage ?? DEFAULT_SUCCESS_MESSAGE
+  const apiEndpoint = formConfig?.apiEndpoint ?? '/api/contact'
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))
@@ -31,7 +50,7 @@ export default function ContactForm() {
     setErrorMsg('')
 
     try {
-      const res = await fetch('/api/contact', {
+      const res = await fetch(apiEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -39,14 +58,14 @@ export default function ContactForm() {
       const data = await res.json()
       if (!res.ok) {
         setStatus('error')
-        setErrorMsg(data.error || 'Something went wrong.')
+        setErrorMsg(data.error || formConfig?.errorMessage || 'Something went wrong.')
         return
       }
       setStatus('success')
       setFormData({ firstName: '', lastName: '', email: '', company: '', message: '' })
     } catch {
       setStatus('error')
-      setErrorMsg('Network error. Please try again.')
+      setErrorMsg(formConfig?.errorMessage ?? DEFAULT_ERROR_MESSAGE)
     }
   }
 
@@ -58,7 +77,7 @@ export default function ContactForm() {
           <div className="c-title-5">Thank you!</div>
         </div>
         <div className="c-text-3" style={{ marginTop: '1rem' }}>
-          We received your message and will be in touch shortly.
+          {successMessage}
         </div>
       </div>
     )
@@ -68,7 +87,7 @@ export default function ContactForm() {
     <div className="v-40">
       <div className="eyebrow-flex">
         <div className="block"></div>
-        <div className="c-title-5">Tell us a bit about yourself</div>
+        <div className="c-title-5">{title}</div>
       </div>
       <form onSubmit={handleSubmit} hubspot-form="">
         <div className="hs-flex" style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
@@ -190,7 +209,7 @@ export default function ContactForm() {
           <div className="hs_submit" style={{ paddingTop: '1rem' }}>
             <input
               type="submit"
-              value={status === 'loading' ? 'Sending...' : 'Submit'}
+              value={status === 'loading' ? 'Sending...' : submitText}
               disabled={status === 'loading'}
               style={{
                 border: '1px solid transparent',

@@ -127,6 +127,32 @@ export const structure: StructureResolver = (S) =>
 
       S.divider(),
 
+      // ── Forms ──
+      S.listItem()
+        .title('Forms')
+        .child(
+          S.list()
+            .title('Forms')
+            .items([
+              S.listItem()
+                .title('Private Markets Wizard')
+                .child(
+                  S.document()
+                    .schemaType('privateMarketsWizardForm')
+                    .documentId('privateMarketsWizardForm')
+                ),
+              S.listItem()
+                .title('Contact')
+                .child(
+                  S.document()
+                    .schemaType('contactForm')
+                    .documentId('contactForm')
+                ),
+            ])
+        ),
+
+      S.divider(),
+
       // ── Resources ──
       S.listItem()
         .title('Resources')

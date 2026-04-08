@@ -19,6 +19,31 @@ interface CalcData {
 }
 
 /* ------------------------------------------------------------------ */
+/*  Sanity form config type                                            */
+/* ------------------------------------------------------------------ */
+
+interface WizardFormConfig {
+  step1Title?: string
+  step2Title?: string
+  step3Title?: string
+  step4Title?: string
+  step5Title?: string
+  firmTypeOptions?: { value: string; label: string; teamSize?: number; dealsEvaluated?: number; dealsCompleted?: number; avgDealSize?: number; avgHourlyRate?: number }[]
+  urgencyMinLabel?: string
+  urgencyMaxLabel?: string
+  timeframeOptions?: { value: string; label: string }[]
+  roleOptions?: string[]
+  resultsHeadline?: string
+  resultsSubheadline?: string
+  instantDemoLabel?: string
+  instantDemoUrl?: string
+  scheduleDemoLabel?: string
+  scheduleDemoUrl?: string
+  apiEndpoint?: string
+  hubspotFormId?: string
+}
+
+/* ------------------------------------------------------------------ */
 /*  Firm-type benchmarks                                               */
 /* ------------------------------------------------------------------ */
 
@@ -32,7 +57,7 @@ interface FirmBenchmark {
   avgHourlyRate: number
 }
 
-const FIRM_TYPES: FirmBenchmark[] = [
+const DEFAULT_FIRM_TYPES: FirmBenchmark[] = [
   { value: 'buyout',         label: 'Buyout',                      teamSize: 15, dealsEvaluated: 150, dealsCompleted: 5,  avgDealSize: 400,  avgHourlyRate: 300 },
   { value: 'growth',         label: 'Growth Equity',               teamSize: 12, dealsEvaluated: 200, dealsCompleted: 8,  avgDealSize: 150,  avgHourlyRate: 275 },
   { value: 'infrastructure', label: 'Infrastructure',              teamSize: 10, dealsEvaluated: 80,  dealsCompleted: 3,  avgDealSize: 500,  avgHourlyRate: 300 },
@@ -44,7 +69,7 @@ const FIRM_TYPES: FirmBenchmark[] = [
   { value: 'fof',            label: 'Secondaries & Fund of Funds', teamSize: 10, dealsEvaluated: 100, dealsCompleted: 6,  avgDealSize: 200,  avgHourlyRate: 275 },
 ]
 
-const ROLES = [
+const DEFAULT_ROLES = [
   'Analyst',
   'Associate',
   'Vice President',
@@ -57,15 +82,35 @@ const ROLES = [
   'Other',
 ]
 
-const TIMEFRAMES = [
+const DEFAULT_TIMEFRAMES = [
   { value: 'immediately', label: 'Immediately' },
   { value: 'this-quarter', label: 'This Quarter' },
-  { value: '3-6-months', label: '3–6 Months' },
+  { value: '3-6-months', label: '3\u20136 Months' },
   { value: '6-plus-months', label: 'More than 6 Months' },
 ]
 
-function getBenchmark(firmType: string): FirmBenchmark | undefined {
-  return FIRM_TYPES.find(f => f.value === firmType)
+const DEFAULT_STEP_TITLES = {
+  step1: 'Tell us about your firm',
+  step2: "What\u2019s your annual deal activity?",
+  step3: "What is your deal team\u2019s average hourly rate?",
+  step4: 'How urgent is this for your firm?',
+  step5: 'Where should we send the impact report?',
+}
+
+const DEFAULT_RESULTS_HEADLINE = 'Your Brightwave Impact'
+const DEFAULT_INSTANT_DEMO_LABEL = 'Instant Demo'
+const DEFAULT_INSTANT_DEMO_URL = 'https://app.brightwave.io/demo'
+const DEFAULT_SCHEDULE_DEMO_LABEL = 'Schedule a Demo'
+const DEFAULT_SCHEDULE_DEMO_URL = 'https://calendly.com/d/cv37-bhv-664/brightwave-trial'
+const DEFAULT_URGENCY_MIN = 'Not urgent'
+const DEFAULT_URGENCY_MAX = 'Extremely urgent'
+
+/* ------------------------------------------------------------------ */
+/*  Helpers                                                            */
+/* ------------------------------------------------------------------ */
+
+function getBenchmarkFromList(firmTypes: FirmBenchmark[], firmType: string): FirmBenchmark | undefined {
+  return firmTypes.find(f => f.value === firmType)
 }
 
 /* ------------------------------------------------------------------ */
@@ -215,7 +260,49 @@ const CALC_CSS = `
 
 const TOTAL_STEPS = 5
 
-export function RoiCalculator({ title = 'See How Much', ctaLabel = 'Schedule a Demo', ctaUrl = 'https://calendly.com/d/cv37-bhv-664/brightwave-trial' }: { title?: string; ctaLabel?: string; ctaUrl?: string } = {}) {
+export function RoiCalculator({
+  title = 'See How Much',
+  ctaLabel,
+  ctaUrl,
+  formConfig,
+}: {
+  title?: string
+  ctaLabel?: string
+  ctaUrl?: string
+  formConfig?: WizardFormConfig | null
+} = {}) {
+  // Resolve options from Sanity config or defaults
+  const firmTypes: FirmBenchmark[] = (formConfig?.firmTypeOptions ?? DEFAULT_FIRM_TYPES).map(ft => ({
+    value: ft.value,
+    label: ft.label,
+    teamSize: ft.teamSize ?? 10,
+    dealsEvaluated: ft.dealsEvaluated ?? 100,
+    dealsCompleted: ft.dealsCompleted ?? 5,
+    avgDealSize: ft.avgDealSize ?? 250,
+    avgHourlyRate: ft.avgHourlyRate ?? 275,
+  }))
+  const roles = formConfig?.roleOptions ?? DEFAULT_ROLES
+  const timeframes = formConfig?.timeframeOptions ?? DEFAULT_TIMEFRAMES
+
+  const stepTitles = {
+    step1: formConfig?.step1Title ?? DEFAULT_STEP_TITLES.step1,
+    step2: formConfig?.step2Title ?? DEFAULT_STEP_TITLES.step2,
+    step3: formConfig?.step3Title ?? DEFAULT_STEP_TITLES.step3,
+    step4: formConfig?.step4Title ?? DEFAULT_STEP_TITLES.step4,
+    step5: formConfig?.step5Title ?? DEFAULT_STEP_TITLES.step5,
+  }
+
+  const urgencyMin = formConfig?.urgencyMinLabel ?? DEFAULT_URGENCY_MIN
+  const urgencyMax = formConfig?.urgencyMaxLabel ?? DEFAULT_URGENCY_MAX
+  const resultsHeadline = formConfig?.resultsHeadline ?? DEFAULT_RESULTS_HEADLINE
+
+  const instantDemoLabel = formConfig?.instantDemoLabel ?? DEFAULT_INSTANT_DEMO_LABEL
+  const instantDemoUrl = formConfig?.instantDemoUrl ?? DEFAULT_INSTANT_DEMO_URL
+  const scheduleDemoLabel = formConfig?.scheduleDemoLabel ?? ctaLabel ?? DEFAULT_SCHEDULE_DEMO_LABEL
+  const scheduleDemoUrl = formConfig?.scheduleDemoUrl ?? ctaUrl ?? DEFAULT_SCHEDULE_DEMO_URL
+
+  const apiEndpoint = formConfig?.apiEndpoint ?? '/api/roi-calculator'
+
   const [currentStep, setCurrentStep] = useState(1)
   const [data, setData] = useState<Partial<CalcData>>({ urgency: 5 })
   const [name, setName] = useState('')
@@ -236,7 +323,7 @@ export function RoiCalculator({ title = 'See How Much', ctaLabel = 'Schedule a D
   // Prefill fields when firm type changes
   useEffect(() => {
     if (!data.firmType) return
-    const b = getBenchmark(data.firmType)
+    const b = getBenchmarkFromList(firmTypes, data.firmType)
     if (!b) return
     setData(d => ({
       ...d,
@@ -289,7 +376,7 @@ export function RoiCalculator({ title = 'See How Much', ctaLabel = 'Schedule a D
       resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
     }, 100)
 
-    const firmLabel = FIRM_TYPES.find(f => f.value === data.firmType)?.label || data.firmType || ''
+    const firmLabel = firmTypes.find(f => f.value === data.firmType)?.label || data.firmType || ''
     const leadScore = computeLeadScore({
       annualCostSavings,
       brightwaveAnnualCost,
@@ -300,7 +387,7 @@ export function RoiCalculator({ title = 'See How Much', ctaLabel = 'Schedule a D
       dealsCompleted,
     })
 
-    fetch('/api/roi-calculator', {
+    fetch(apiEndpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -327,7 +414,7 @@ export function RoiCalculator({ title = 'See How Much', ctaLabel = 'Schedule a D
   const isStep4Valid = !!data.urgency && !!data.timeframe
   const isStep5Valid = !!data.role && name.trim().length > 0 && isValidEmail(businessEmail)
 
-  const benchmark = data.firmType ? getBenchmark(data.firmType) : null
+  const benchmark = data.firmType ? getBenchmarkFromList(firmTypes, data.firmType) : null
 
   return (
     <>
@@ -345,12 +432,12 @@ export function RoiCalculator({ title = 'See How Much', ctaLabel = 'Schedule a D
 
           {/* Step 1: Firm Type + Team Size */}
           <div className={`bw-calc-step${currentStep === 1 ? ' bw-active' : ''}`}>
-            <h3 className="bw-calc-step-title">Tell us about your firm</h3>
+            <h3 className="bw-calc-step-title">{stepTitles.step1}</h3>
             <div className="bw-calc-input-group">
               <label className="bw-calc-label">What type of firm are you?</label>
               <select className="bw-calc-select" value={data.firmType || ''} onChange={e => selectFirm(e.target.value)}>
                 <option value="" disabled>Select firm type...</option>
-                {FIRM_TYPES.map(ft => (
+                {firmTypes.map(ft => (
                   <option key={ft.value} value={ft.value}>{ft.label}</option>
                 ))}
               </select>
@@ -372,7 +459,7 @@ export function RoiCalculator({ title = 'See How Much', ctaLabel = 'Schedule a D
 
           {/* Step 2: Deal Activity */}
           <div className={`bw-calc-step${currentStep === 2 ? ' bw-active' : ''}`}>
-            <h3 className="bw-calc-step-title">What&apos;s your annual deal activity?</h3>
+            <h3 className="bw-calc-step-title">{stepTitles.step2}</h3>
             <div className="bw-calc-input-group">
               <label className="bw-calc-label">Deals evaluated each year</label>
               <input
@@ -411,7 +498,7 @@ export function RoiCalculator({ title = 'See How Much', ctaLabel = 'Schedule a D
 
           {/* Step 3: Labor Cost */}
           <div className={`bw-calc-step${currentStep === 3 ? ' bw-active' : ''}`}>
-            <h3 className="bw-calc-step-title">What is your deal team's average hourly rate?</h3>
+            <h3 className="bw-calc-step-title">{stepTitles.step3}</h3>
             <div className="bw-calc-input-group">
               <label className="bw-calc-label">Average investment team member hourly rate</label>
               <div style={{ position: 'relative' }}>
@@ -434,7 +521,7 @@ export function RoiCalculator({ title = 'See How Much', ctaLabel = 'Schedule a D
 
           {/* Step 4: Urgency & Timeline */}
           <div className={`bw-calc-step${currentStep === 4 ? ' bw-active' : ''}`}>
-            <h3 className="bw-calc-step-title">How urgent is this for your firm?</h3>
+            <h3 className="bw-calc-step-title">{stepTitles.step4}</h3>
             <div className="bw-calc-slider-wrap">
               <label className="bw-calc-label">How urgent is finding a full-stack AI solution to streamline investing operations?</label>
               <div className="bw-calc-slider-value">{data.urgency ?? 5}</div>
@@ -444,14 +531,14 @@ export function RoiCalculator({ title = 'See How Much', ctaLabel = 'Schedule a D
                 onChange={e => setData(d => ({ ...d, urgency: parseInt(e.target.value) }))}
               />
               <div className="bw-calc-slider-label">
-                <span>Not urgent</span>
-                <span>Extremely urgent</span>
+                <span>{urgencyMin}</span>
+                <span>{urgencyMax}</span>
               </div>
             </div>
             <div className="bw-calc-input-group">
               <label className="bw-calc-label">What is your timeframe for implementing a solution that fits your firm&apos;s needs?</label>
               <div className="bw-calc-timeframe-options">
-                {TIMEFRAMES.map(tf => (
+                {timeframes.map(tf => (
                   <div
                     key={tf.value}
                     className={`bw-calc-tf-option${data.timeframe === tf.value ? ' bw-selected' : ''}`}
@@ -470,7 +557,7 @@ export function RoiCalculator({ title = 'See How Much', ctaLabel = 'Schedule a D
 
           {/* Step 5: Contact Info + Role */}
           <div className={`bw-calc-step${currentStep === 5 ? ' bw-active' : ''}`}>
-            <h3 className="bw-calc-step-title">Where should we send the impact report?</h3>
+            <h3 className="bw-calc-step-title">{stepTitles.step5}</h3>
             <div className="bw-calc-input-group">
               <label className="bw-calc-label">Name</label>
               <input type="text" className="bw-calc-input" placeholder="Jane Smith" value={name} onChange={e => setName(e.target.value)} />
@@ -483,7 +570,7 @@ export function RoiCalculator({ title = 'See How Much', ctaLabel = 'Schedule a D
               <label className="bw-calc-label">What&apos;s your role?</label>
               <select className="bw-calc-select" value={data.role || ''} onChange={e => setData(d => ({ ...d, role: e.target.value }))}>
                 <option value="" disabled>Select your role...</option>
-                {ROLES.map(r => (
+                {roles.map(r => (
                   <option key={r} value={r}>{r}</option>
                 ))}
               </select>
@@ -498,7 +585,7 @@ export function RoiCalculator({ title = 'See How Much', ctaLabel = 'Schedule a D
           {results && currentStep === TOTAL_STEPS + 1 && (
             <div ref={resultsRef}>
               <div className="bw-calc-results">
-                <h3 className="bw-calc-results-title">Your Brightwave Impact</h3>
+                <h3 className="bw-calc-results-title">{resultsHeadline}</h3>
                 <div className="bw-calc-metric">
                   <div className="bw-calc-metric-label">Annual Cost Savings</div>
                   <div className="bw-calc-metric-value">{formatCurrency(results.annualCostSavings)}</div>
@@ -520,9 +607,26 @@ export function RoiCalculator({ title = 'See How Much', ctaLabel = 'Schedule a D
                   <div className="bw-calc-metric-subvalue">your team could evaluate per year</div>
                 </div>
                 <div className="bw-calc-cta">
-                  <a href={ctaUrl} target="_blank" rel="noopener noreferrer" className="bw-calc-cta-btn">
-                    {ctaLabel}
-                  </a>
+                  <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+                    <a
+                      href={instantDemoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bw-calc-cta-btn"
+                      style={{ flex: 1, textAlign: 'center' }}
+                    >
+                      {instantDemoLabel}
+                    </a>
+                    <a
+                      href={scheduleDemoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bw-calc-cta-btn"
+                      style={{ flex: 1, textAlign: 'center', background: 'black', color: 'white', border: '1px solid rgba(255,255,255,0.3)' }}
+                    >
+                      {scheduleDemoLabel}
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>

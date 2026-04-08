@@ -39,6 +39,10 @@ import { testimonial } from './documents/testimonial'
 // Demo
 import { demoPersona } from './documents/demoPersona'
 
+// Forms
+import { privateMarketsWizardForm } from './documents/private-markets-wizard-form'
+import { contactForm } from './documents/contact-form'
+
 // Legacy types (kept for migration compatibility)
 import { blogPost } from './documents/blog-post'
 import { newsPost } from './documents/news'
@@ -94,6 +98,10 @@ export const schemaTypes = [
 
   // Demo
   demoPersona,
+
+  // Forms
+  privateMarketsWizardForm,
+  contactForm,
 
   // Campaigns
   abmPage,
