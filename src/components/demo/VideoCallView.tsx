@@ -356,7 +356,7 @@ export default function VideoCallView({
         {/* Loading overlay */}
         {isConnecting && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-bw-gray-800">
-            <div className="relative mb-6">
+            <div className="relative mb-6 mx-auto">
               <div className="w-20 h-20 rounded-full bg-white/[0.05] flex items-center justify-center">
                 <svg className="w-10 h-10 text-bw-yellow-550" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
