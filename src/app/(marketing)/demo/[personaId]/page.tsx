@@ -34,6 +34,7 @@ async function fetchPersonaConfig(personaId: string): Promise<DemoPersonaConfig>
     }
 
     return {
+      personaId: doc.personaId || undefined,
       anamPersonaId: doc.anamPersonaId || DEFAULT_PERSONA.anamPersonaId,
       llmModel: doc.llmModel || DEFAULT_PERSONA.llmModel,
       knowledgeBase: doc.knowledgeBase || undefined,
