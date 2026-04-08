@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import { trackConversion } from '@/lib/analytics/events'
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -372,6 +373,54 @@ export function RoiCalculator({
     setResults(calcResults)
     setCurrentStep(TOTAL_STEPS + 1) // results step
 
+    // Save results to localStorage for persistence across page reloads
+    try {
+      const roiResults = {
+        firmType: data.firmType,
+        teamSize,
+        dealsEvaluated,
+        dealsCompleted,
+        avgDealSize: data.avgDealSize,
+        avgHourlyRate,
+        urgency: data.urgency,
+        timeframe: data.timeframe,
+        role: data.role,
+        annualCostSavings: calcResults.annualCostSavings,
+        totalHoursSaved: calcResults.totalHoursSaved,
+        fteEquivalent: calcResults.fteEquivalent,
+        dealVelocityWeeks: calcResults.dealVelocityWeeks,
+        additionalDealsCapacity: calcResults.additionalDealsCapacity,
+        screeningHoursSaved: calcResults.screeningHoursSaved,
+        ddHoursSaved: calcResults.ddHoursSaved,
+        brightwaveAnnualCost: calcResults.brightwaveAnnualCost,
+        roi: calcResults.roi,
+        completedAt: new Date().toISOString(),
+      }
+      localStorage.setItem('bw_roi_results', JSON.stringify(roiResults))
+    } catch {
+      // localStorage may be unavailable (e.g. private browsing quota exceeded)
+    }
+
+    // Fire client-side PostHog + gtag tracking event
+    trackConversion('roi_calculator_completed', {
+      firmType: data.firmType,
+      teamSize,
+      dealsEvaluated,
+      dealsCompleted,
+      avgDealSize: data.avgDealSize,
+      avgHourlyRate,
+      urgency: data.urgency,
+      timeframe: data.timeframe,
+      role: data.role,
+      annualCostSavings: calcResults.annualCostSavings,
+      totalHoursSaved: calcResults.totalHoursSaved,
+      fteEquivalent: calcResults.fteEquivalent,
+      dealVelocityWeeks: calcResults.dealVelocityWeeks,
+      additionalDealsCapacity: calcResults.additionalDealsCapacity,
+      brightwaveAnnualCost: calcResults.brightwaveAnnualCost,
+      roi: calcResults.roi,
+    })
+
     setTimeout(() => {
       resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
     }, 100)
@@ -402,7 +451,7 @@ export function RoiCalculator({
         dealValue: seats * PRICE_PER_USER_YEAR,
         leadScore,
       }),
-    }).catch(() => {})
+    }).catch(err => console.error('[roi-calculator] API submission failed:', err))
   }
 
   const isStep1Valid = !!data.firmType && !!data.teamSize && data.teamSize >= 1
