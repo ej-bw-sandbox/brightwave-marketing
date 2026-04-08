@@ -232,9 +232,7 @@ export function useAnamSession() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            anamPersonaId: config.persona.anamPersonaId,
-            llmModel: config.persona.llmModel,
-            knowledgeBase: config.persona.knowledgeBase,
+            personaId: config.persona.personaId,
             prospect: config.prospect,
           }),
         });
