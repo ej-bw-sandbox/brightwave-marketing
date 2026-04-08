@@ -36,6 +36,9 @@ import { thankYouPage } from './documents/thank-you-page'
 // Social Proof
 import { testimonial } from './documents/testimonial'
 
+// Demo
+import { demoPersona } from './documents/demoPersona'
+
 // Legacy types (kept for migration compatibility)
 import { blogPost } from './documents/blog-post'
 import { newsPost } from './documents/news'
@@ -88,6 +91,9 @@ export const schemaTypes = [
 
   // Social Proof
   testimonial,
+
+  // Demo
+  demoPersona,
 
   // Campaigns
   abmPage,
