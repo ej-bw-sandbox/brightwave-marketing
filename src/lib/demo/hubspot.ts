@@ -11,7 +11,7 @@
  * never propagate to the user-facing session end flow. Errors are logged
  * to the console for operational visibility.
  *
- * Requires env var: HUBSPOT_API_KEY (HubSpot private app token)
+ * Requires env var: HUBSPOT_ACCESS_TOKEN (HubSpot private app token)
  */
 
 import type { ConversationSummary } from './types'
@@ -23,16 +23,16 @@ async function hubspotFetch(
   path: string,
   options: RequestInit = {},
 ): Promise<Response> {
-  const apiKey = process.env.HUBSPOT_API_KEY
-  if (!apiKey) {
-    throw new Error('HUBSPOT_API_KEY environment variable is not set')
+  const token = process.env.HUBSPOT_ACCESS_TOKEN
+  if (!token) {
+    throw new Error('HUBSPOT_ACCESS_TOKEN environment variable is not set')
   }
 
   return fetch(`${HUBSPOT_API_BASE}${path}`, {
     ...options,
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${apiKey}`,
+      Authorization: `Bearer ${token}`,
       ...options.headers,
     },
   })
@@ -268,11 +268,11 @@ export async function saveDemoToHubSpot(
   summary: ConversationSummary,
 ): Promise<{ success: boolean; contactId?: string; error?: string }> {
   try {
-    if (!process.env.HUBSPOT_API_KEY) {
+    if (!process.env.HUBSPOT_ACCESS_TOKEN) {
       console.warn(
-        '[hubspot] HUBSPOT_API_KEY is not set — skipping HubSpot save.',
+        '[hubspot] HUBSPOT_ACCESS_TOKEN is not set — skipping HubSpot save.',
       )
-      return { success: false, error: 'HUBSPOT_API_KEY not configured' }
+      return { success: false, error: 'HUBSPOT_ACCESS_TOKEN not configured' }
     }
 
     const contactId = await upsertContact(summary)

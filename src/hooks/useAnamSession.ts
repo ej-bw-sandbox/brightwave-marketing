@@ -78,7 +78,7 @@ export function useAnamSession() {
       if (!sessionId) return;
       const prospect = configRef.current?.prospect;
       try {
-        await fetch('/api/demo/events', {
+        const res = await fetch('/api/demo/events', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -87,18 +87,22 @@ export function useAnamSession() {
             payload,
             prospect: prospect
               ? {
-                  name: prospect.name,
-                  email: prospect.email,
-                  company: prospect.company,
-                  role: prospect.role,
-                  firmType: prospect.firmType,
+                  name: prospect.name || '',
+                  email: prospect.email || '',
+                  company: prospect.company || '',
+                  role: prospect.role || '',
+                  firmType: prospect.firmType || '',
                 }
               : { name: '', email: '', company: '', role: '' },
             timestamp: new Date().toISOString(),
           }),
         });
-      } catch {
-        // Non-critical -- don't block UX for analytics
+        if (!res.ok) {
+          const errorBody = await res.text();
+          console.error(`[useAnamSession] Event ${eventType} failed (${res.status}):`, errorBody);
+        }
+      } catch (err) {
+        console.error(`[useAnamSession] Event ${eventType} fetch error:`, err);
       }
     },
     [sessionId],
@@ -385,8 +389,12 @@ export function useAnamSession() {
     setStatus('ended');
     setMicLevel(0);
 
-    // Fire session_end event
-    fireEvent('session_end');
+    // Fire session_end event with conversation transcript as fallback data
+    // so the server has the full conversation even if earlier message events
+    // were lost (e.g. due to validation failures or network issues).
+    fireEvent('session_end', {
+      conversationHistory: conversationRef.current,
+    });
   }, [fireEvent]);
 
   const toggleMic = useCallback(() => {

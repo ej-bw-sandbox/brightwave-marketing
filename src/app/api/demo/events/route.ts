@@ -96,17 +96,19 @@ export async function POST(request: Request): Promise<Response> {
     )
   }
 
-  if (!prospect || !prospect.email) {
-    return Response.json(
-      { error: 'Missing prospect information (email required)' },
-      { status: 400 },
-    )
-  }
-
   if (!timestamp) {
     return Response.json(
       { error: 'Missing timestamp' },
       { status: 400 },
+    )
+  }
+
+  // Prospect validation: require email only on session_end (for HubSpot save).
+  // Other event types are accepted even without an email so that session
+  // data (messages, reactions, etc.) is never lost due to missing form fields.
+  if (eventType === 'session_end' && (!prospect || !prospect.email)) {
+    console.warn(
+      `[events] session_end for ${sessionId} has no prospect email — HubSpot save will be skipped.`,
     )
   }
 
@@ -138,15 +140,43 @@ export async function POST(request: Request): Promise<Response> {
     session.ended = true
 
     // Extract qualification from the session_end payload
-    const endPayload = payload as { qualification?: QualificationResult }
+    const endPayload = payload as {
+      qualification?: QualificationResult
+      conversationHistory?: { role: string; content: string }[]
+    }
     if (endPayload.qualification) {
       session.qualification = endPayload.qualification
     }
 
-    // Build the summary and save to HubSpot asynchronously.
-    // We do not await the full pipeline — the response is returned immediately
-    // so the user experiences no delay. Errors are logged server-side.
-    buildConversationSummary(sessionId, session.events)
+    // If the session_end includes a conversation history fallback (sent by the
+    // client in case earlier message events were lost), inject them into the
+    // session events so the summary builder has the full transcript.
+    if (endPayload.conversationHistory && Array.isArray(endPayload.conversationHistory)) {
+      const existingMessageCount = session.events.filter(
+        (e) => e.eventType === 'message',
+      ).length
+      // Only backfill if we have fewer stored messages than the client sent
+      // (subtract 1 for session_end which was just pushed)
+      if (existingMessageCount <= 1 && endPayload.conversationHistory.length > 0) {
+        console.log(
+          `[events] Backfilling ${endPayload.conversationHistory.length} conversation entries from session_end payload for session ${sessionId}`,
+        )
+        for (const entry of endPayload.conversationHistory) {
+          const speaker = entry.role === 'user' ? 'user' : 'agent'
+          session.events.push({
+            sessionId,
+            eventType: 'message',
+            payload: { speaker, text: entry.content },
+            prospect: prospect || { name: '', email: '', company: '', role: '' },
+            timestamp,
+          } as DemoSessionEvent)
+        }
+      }
+    }
+
+    // Return 200 immediately — process summary + HubSpot save in the background
+    // so the frontend is not blocked waiting for external API calls.
+    const responsePromise = buildConversationSummary(sessionId, session.events)
       .then(async (summary) => {
         session.summary = summary
 
@@ -155,11 +185,23 @@ export async function POST(request: Request): Promise<Response> {
           session.qualification = summary.qualification
         }
 
-        // Save to HubSpot (non-blocking for the user)
+        // Only attempt HubSpot save if we have a prospect email
+        if (!prospect || !prospect.email) {
+          console.warn(
+            `[events] Skipping HubSpot save for session ${sessionId}: no prospect email`,
+          )
+          return
+        }
+
+        // Save to HubSpot
         const result = await saveDemoToHubSpot(summary)
         if (!result.success) {
           console.error(
             `[events] HubSpot save failed for session ${sessionId}: ${result.error}`,
+          )
+        } else {
+          console.log(
+            `[events] HubSpot save succeeded for session ${sessionId} (contact: ${result.contactId})`,
           )
         }
       })
@@ -169,6 +211,12 @@ export async function POST(request: Request): Promise<Response> {
           error,
         )
       })
+
+    // Use waitUntil if available (Vercel), otherwise the promise runs detached
+    if (typeof globalThis !== 'undefined' && 'waitUntil' in (request as unknown as Record<string, unknown>)) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (request as any).waitUntil(responsePromise)
+    }
 
     return Response.json({
       success: true,
