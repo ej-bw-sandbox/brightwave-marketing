@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { Camera, Mic, MicOff, AlertCircle, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { BrightwaveLogo } from '@/components/layout/logo';
 import type { ProspectContext } from '@/lib/demo-utils';
 import { getFirstName } from '@/lib/demo-utils';
 
@@ -93,26 +95,7 @@ export default function PreCallLobby({ prospect, onStart }: PreCallLobbyProps) {
     <div className="min-h-screen bg-[#0a0a12] flex flex-col items-center justify-center px-4">
       {/* Logo */}
       <div className="mb-8">
-        <svg
-          width="180"
-          height="36"
-          viewBox="0 0 180 36"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          className="text-white"
-        >
-          <text
-            x="0"
-            y="28"
-            fill="currentColor"
-            fontFamily="system-ui, -apple-system, sans-serif"
-            fontSize="24"
-            fontWeight="700"
-            letterSpacing="-0.02em"
-          >
-            Brightwave
-          </text>
-        </svg>
+        <BrightwaveLogo className="text-white" />
       </div>
 
       {/* Greeting */}
@@ -120,7 +103,7 @@ export default function PreCallLobby({ prospect, onStart }: PreCallLobbyProps) {
         {firstName ? `Welcome, ${firstName}!` : 'Welcome to your demo!'}
       </h1>
       <p className="text-white/60 text-sm sm:text-base mb-8 text-center max-w-md">
-        You&apos;re about to meet your AI-powered Brightwave guide.
+        You&apos;re about to meet your Brightwave guide.
         {prospect.company ? ` We've prepared a personalized experience for ${prospect.company}.` : ''}
       </p>
 
@@ -211,18 +194,14 @@ export default function PreCallLobby({ prospect, onStart }: PreCallLobbyProps) {
       )}
 
       {/* Start Button */}
-      <button
+      <Button
         onClick={handleStart}
         disabled={permissionState === 'pending'}
-        className={cn(
-          'px-8 py-3.5 rounded-xl font-semibold text-base transition-all',
-          'bg-indigo-600 hover:bg-indigo-500 text-white',
-          'disabled:opacity-50 disabled:cursor-not-allowed',
-          'shadow-lg shadow-indigo-600/25 hover:shadow-indigo-600/40',
-        )}
+        size="lg"
+        className="text-base font-semibold shadow-lg"
       >
         Start Demo
-      </button>
+      </Button>
 
       {permissionState === 'denied' && (
         <p className="text-white/40 text-xs mt-3 text-center">
