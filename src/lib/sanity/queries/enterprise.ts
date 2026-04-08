@@ -26,6 +26,17 @@ export const enterpriseQuery = `
       companyLogo{ asset->{ _id, url } }
     },
     roiCalcTitle, roiCalcCtaLabel, roiCalcCtaUrl,
+    wizardForm->{
+      step1Title, step2Title, step3Title, step4Title, step5Title,
+      firmTypeOptions[]{ _key, value, label, teamSize, dealsEvaluated, dealsCompleted, avgDealSize, avgHourlyRate },
+      urgencyMinLabel, urgencyMaxLabel,
+      timeframeOptions[]{ _key, value, label },
+      roleOptions,
+      resultsHeadline, resultsSubheadline,
+      instantDemoLabel, instantDemoUrl,
+      scheduleDemoLabel, scheduleDemoUrl,
+      apiEndpoint, hubspotFormId
+    },
     footerTagline, footerCtaLabel, footerCtaUrl,
     seo
   }

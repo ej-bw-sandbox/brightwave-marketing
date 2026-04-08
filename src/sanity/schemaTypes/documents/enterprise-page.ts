@@ -151,6 +151,15 @@ export const enterpriseSalesPage = defineType({
     defineField({ name: 'roiCalcCtaLabel', title: 'ROI Calculator CTA Label', type: 'string', initialValue: 'Schedule a Demo' }),
     defineField({ name: 'roiCalcCtaUrl', title: 'ROI Calculator CTA URL', type: 'string', initialValue: 'https://calendly.com/d/cv37-bhv-664/brightwave-trial' }),
 
+    // Wizard Form Reference
+    defineField({
+      name: 'wizardForm',
+      title: 'ROI Calculator Form',
+      type: 'reference',
+      to: [{ type: 'privateMarketsWizardForm' }],
+      description: 'The Private Markets wizard form to display on this page',
+    }),
+
     // Footer
     defineField({ name: 'footerTagline', title: 'Footer Tagline', type: 'string' }),
     defineField({ name: 'footerCtaLabel', title: 'Footer CTA Label', type: 'string' }),

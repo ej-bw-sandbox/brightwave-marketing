@@ -32,6 +32,13 @@ export const referralPage = defineType({
       validation: (rule) => rule.uri({ scheme: ['https'] }),
     }),
     defineField({
+      name: 'contactForm',
+      title: 'Contact Form',
+      type: 'reference',
+      to: [{ type: 'contactForm' }],
+      description: 'The contact form to display on this page',
+    }),
+    defineField({
       name: 'recentBlogsSectionTitle',
       title: 'Recent Blogs Section Title',
       type: 'string',

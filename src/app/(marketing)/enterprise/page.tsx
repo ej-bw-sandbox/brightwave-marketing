@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import { client } from '@/lib/sanity/client'
 import { enterpriseQuery } from '@/lib/sanity/queries/enterprise'
-import { privateMarketsWizardFormQuery } from '@/lib/sanity/queries/forms'
 import { buildMetadata } from '@/lib/metadata'
 import { LottiePlayer } from '@/components/ui/LottiePlayer'
 import { TestimonialSlider } from '@/components/ui/TestimonialSlider'
@@ -20,13 +19,9 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function EnterprisePricingPage() {
   let doc: any = null
-  let wizardFormConfig: any = null
   try {
-    ;[doc, wizardFormConfig] = await Promise.all([
-      client.fetch(enterpriseQuery, {}, { next: { tags: ['enterpriseSalesPage', 'testimonial'], revalidate: 60 } }),
-      client.fetch(privateMarketsWizardFormQuery, {}, { next: { tags: ['privateMarketsWizardForm'], revalidate: 60 } }),
-    ])
-  } catch { doc = null; wizardFormConfig = null }
+    doc = await client.fetch(enterpriseQuery, {}, { next: { tags: ['enterpriseSalesPage', 'testimonial', 'privateMarketsWizardForm'], revalidate: 60 } })
+  } catch { doc = null }
 
   return (
     <>
@@ -94,7 +89,7 @@ html.wf-design-mode .num-slider_item{
               </div>
             </div>
             <div className="c-ent-price_wizard-wrapper">
-              <RoiCalculator title={doc?.roiCalcTitle || 'Get Started'} ctaLabel={doc?.roiCalcCtaLabel || 'Schedule a Demo'} ctaUrl={doc?.roiCalcCtaUrl || 'https://calendly.com/d/cv37-bhv-664/brightwave-trial'} formConfig={wizardFormConfig} />
+              <RoiCalculator title={doc?.roiCalcTitle || 'Get Started'} ctaLabel={doc?.roiCalcCtaLabel || 'Schedule a Demo'} ctaUrl={doc?.roiCalcCtaUrl || 'https://calendly.com/d/cv37-bhv-664/brightwave-trial'} formConfig={doc?.wizardForm} />
             </div>
           </div>
         </div>
