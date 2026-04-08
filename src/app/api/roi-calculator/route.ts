@@ -94,10 +94,10 @@ export async function POST(req: NextRequest) {
       message: roiSummary,
       website: domain ? `https://${domain}` : '',
       // Custom properties
-      lead_score_custom: leadScore ? String(leadScore) : '',
+      lead_score: leadScore ? String(leadScore) : '',
       urgency_score: urgency ? String(urgency) : '',
-      implementation_timeframe: timeframe || '',
-      firm_type: firmTypeValue || '',
+      implementation_timeframe: timeframeLabel[timeframe] || timeframe || '',
+      firm_type: firmType || '',
     }
 
     let contactId: string | null = null
@@ -151,7 +151,7 @@ export async function POST(req: NextRequest) {
             industry: 'FINANCE',
             numberofemployees: teamSize ? String(teamSize) : '',
             hubspot_owner_id: BRADY_OWNER_ID,
-            firm_type: firmTypeValue || '',
+            firm_type: firmType || '',
             annualrevenue: avgDealSize && dealsCompleted
               ? String(avgDealSize * dealsCompleted * 1_000_000)
               : '',
