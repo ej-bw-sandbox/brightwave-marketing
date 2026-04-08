@@ -13,6 +13,7 @@ export interface ProspectContext {
 }
 
 export interface DemoPersonaConfig {
+  personaId?: string;
   anamPersonaId: string;
   llmModel: string;
   knowledgeBase?: string;
