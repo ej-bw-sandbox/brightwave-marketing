@@ -31,7 +31,6 @@ export default function DemoPage({ persona }: DemoPageProps) {
     endSession,
     toggleMic,
     sendText,
-    raiseHand,
     sendReaction,
   } = useAnamSession();
 
@@ -98,7 +97,6 @@ export default function DemoPage({ persona }: DemoPageProps) {
       onToggleMic={toggleMic}
       onSendText={sendText}
       onEndCall={handleEndCall}
-      onRaiseHand={raiseHand}
       onReaction={handleReaction}
     />
   );

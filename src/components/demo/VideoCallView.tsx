@@ -18,7 +18,6 @@ interface VideoCallViewProps {
   onToggleMic: () => void;
   onSendText: (text: string) => void;
   onEndCall: () => void;
-  onRaiseHand: () => void;
   onReaction: (emoji: string) => void;
 }
 
@@ -272,11 +271,11 @@ function EndCallModal({
 
 /* ────────────────────────────────────────────────────────────────────────────
  * Main VideoCallView
- * Matches sales-avatar/page.tsx VideoCallInner:
+ * Matches sales-avatar reference exactly:
  *   - fixed inset-0, bg-bw-gray-800
  *   - Full-viewport video element
  *   - Loading/error/ended overlays
- *   - StatusIndicators top-left, BrightwaveLogo top-left (below status)
+ *   - StatusIndicators top-left
  *   - Brand mark top-right
  *   - SelfViewPip, BottomToolbar, ReactionsOverlay, ChatSidePanel, EndCallModal
  * ──────────────────────────────────────────────────────────────────────── */
@@ -289,13 +288,11 @@ export default function VideoCallView({
   onToggleMic,
   onSendText,
   onEndCall,
-  onRaiseHand,
   onReaction,
 }: VideoCallViewProps) {
   const [cameraOn, setCameraOn] = useState(true);
   const [chatOpen, setChatOpen] = useState(false);
   const [reactionsOpen, setReactionsOpen] = useState(false);
-  const [handRaised, setHandRaised] = useState(false);
   const [endCallModalOpen, setEndCallModalOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const lastSeenCountRef = useRef(0);
@@ -320,11 +317,6 @@ export default function VideoCallView({
   const handleToggleReactions = useCallback(() => {
     setReactionsOpen((prev) => !prev);
   }, []);
-
-  const handleToggleHand = () => {
-    setHandRaised((prev) => !prev);
-    onRaiseHand();
-  };
 
   const handleEndCall = () => {
     setEndCallModalOpen(true);
@@ -356,7 +348,7 @@ export default function VideoCallView({
         {/* Loading overlay */}
         {isConnecting && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-bw-gray-800">
-            <div className="relative mb-6 mx-auto">
+            <div className="relative mb-6">
               <div className="w-20 h-20 rounded-full bg-white/[0.05] flex items-center justify-center">
                 <svg className="w-10 h-10 text-bw-yellow-550" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
@@ -404,25 +396,6 @@ export default function VideoCallView({
         <BrightwaveLogo className="text-white/60 h-4 w-auto" />
       </div>
 
-      {/* ── Participant name label ────────────────────────────────────── */}
-      {isLive && (
-        <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-20">
-          <div className="bg-black/60 backdrop-blur-sm rounded-lg px-4 py-2">
-            <span className="text-sm text-white font-medium">
-              Brightwave Guide
-            </span>
-          </div>
-        </div>
-      )}
-
-      {/* ── Hand raised indicator ─────────────────────────────────────── */}
-      {handRaised && (
-        <div className="absolute top-20 right-4 z-30 flex items-center gap-2 bg-bw-yellow-500/20 border border-bw-yellow-400/30 rounded-full px-4 py-2 backdrop-blur-sm animate-bounce">
-          <span className="text-xl" role="img" aria-label="raised hand">{'\u270B'}</span>
-          <span className="text-bw-yellow-300 text-sm font-medium">Hand Raised</span>
-        </div>
-      )}
-
       {/* ── Self-view PiP ────────────────────────────────────────────── */}
       <SelfViewPip visible={cameraOn} />
 
@@ -431,13 +404,11 @@ export default function VideoCallView({
         isMicMuted={isMicMuted}
         isCameraOn={cameraOn}
         isChatOpen={chatOpen}
-        isHandRaised={handRaised}
         isReactionsOpen={reactionsOpen}
         unreadCount={unreadCount}
         onToggleMic={onToggleMic}
         onToggleCamera={() => setCameraOn((prev) => !prev)}
         onToggleChat={handleToggleChat}
-        onToggleHand={handleToggleHand}
         onToggleReactions={handleToggleReactions}
         onEndCall={handleEndCall}
       />

@@ -6,13 +6,11 @@ interface BottomToolbarProps {
   isMicMuted: boolean;
   isCameraOn: boolean;
   isChatOpen: boolean;
-  isHandRaised: boolean;
   isReactionsOpen: boolean;
   unreadCount: number;
   onToggleMic: () => void;
   onToggleCamera: () => void;
   onToggleChat: () => void;
-  onToggleHand: () => void;
   onToggleReactions: () => void;
   onEndCall: () => void;
 }
@@ -64,26 +62,23 @@ function TBtn({
 
 /* ────────────────────────────────────────────────────────────────────────────
  * BottomToolbar — floating pill centered at bottom
- * Matches sales-avatar/BottomToolbar.tsx:
+ * Matches sales-avatar reference exactly:
  *   fixed bottom-6 left-1/2 -translate-x-1/2 z-30
- *   bg-[#1a1a2e]/90 -> bg-bw-gray-700/90
- *   backdrop-blur-md rounded-2xl px-3 py-2.5
+ *   bg-bw-gray-700/90 backdrop-blur-md rounded-2xl px-3 py-2.5
  *   border border-white/[0.06] shadow-2xl
  *   gap-1.5 between buttons
  *   Dividers: w-px h-8 bg-white/10 mx-1
- *   End call: separate button bg-red-600 hover:bg-red-500 rounded-xl px-5 py-2.5
+ *   Buttons: Mute, Camera | Chat, React | End (red pill)
  * ──────────────────────────────────────────────────────────────────────── */
 export default function BottomToolbar({
   isMicMuted,
   isCameraOn,
   isChatOpen,
-  isHandRaised,
   isReactionsOpen,
   unreadCount,
   onToggleMic,
   onToggleCamera,
   onToggleChat,
-  onToggleHand,
   onToggleReactions,
   onEndCall,
 }: BottomToolbarProps) {
@@ -150,18 +145,6 @@ export default function BottomToolbar({
         icon={
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M15.182 15.182a4.5 4.5 0 01-6.364 0M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75zm-.375 0h.008v.015h-.008V9.75zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75zm-.375 0h.008v.015h-.008V9.75z" />
-          </svg>
-        }
-      />
-
-      {/* Raise Hand */}
-      <TBtn
-        active={isHandRaised}
-        onClick={onToggleHand}
-        label="Hand"
-        icon={
-          <svg className={cn('w-5 h-5', isHandRaised ? 'text-bw-yellow-400' : '')} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M10.05 4.575a1.575 1.575 0 10-3.15 0v3m3.15-3v-1.5a1.575 1.575 0 013.15 0v1.5m-3.15 0l.075 5.925m3.075-5.925a1.575 1.575 0 013.15 0v1.5m-3.15-1.5v5.925m3.15-5.925v3.75a48.424 48.424 0 01-.338 6.138M10.05 4.575L9.975 10.5m.075-5.925a1.575 1.575 0 00-3.15 0v5.137m3.15-5.137L7.575 15.15m-.075-.187a48.208 48.208 0 00-.314 5.868" />
           </svg>
         }
       />
