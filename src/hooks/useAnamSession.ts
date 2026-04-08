@@ -91,7 +91,6 @@ export function useAnamSession() {
                   email: prospect.email,
                   company: prospect.company,
                   role: prospect.role,
-                  aum: prospect.aum,
                   firmType: prospect.firmType,
                 }
               : { name: '', email: '', company: '', role: '' },
