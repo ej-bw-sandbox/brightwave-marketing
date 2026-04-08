@@ -16,10 +16,12 @@ interface BottomToolbarProps {
 }
 
 /* ────────────────────────────────────────────────────────────────────────────
- * TBtn — Toolbar button matching sales-avatar's TBtn:
- *   w-12 h-12, rounded-xl, icon w-5 h-5, label text-[9px] mt-0.5
- *   States: active (bg-white/10 text-white), danger (bg-red-600/20 text-red-400),
- *           default (text-white/60 hover:bg-white/10 hover:text-white)
+ * TBtn — Toolbar icon-tile button
+ *   Every icon button renders as a uniform dark square tile:
+ *     w-12 h-12 rounded-xl bg-bw-gray-700, hover:bg-bw-gray-600
+ *   Active state: bg-bw-gray-600 highlight
+ *   Danger state: bg-red-600/20 text-red-400
+ *   Label: text-[9px] text-white/70 beneath icon
  * ──────────────────────────────────────────────────────────────────────── */
 function TBtn({
   icon,
@@ -41,16 +43,14 @@ function TBtn({
       onClick={onClick}
       title={label}
       className={cn(
-        'relative flex flex-col items-center justify-center w-12 h-12 rounded-xl transition-all',
-        danger
-          ? 'bg-red-600/20 text-red-400 hover:bg-red-600/30'
-          : active
-            ? 'bg-white/10 text-white'
-            : 'text-white/60 hover:bg-white/10 hover:text-white',
+        'relative w-12 h-12 rounded-xl bg-bw-gray-700 flex flex-col items-center justify-center gap-1 hover:bg-bw-gray-600 transition-colors',
+        danger && 'bg-red-600/20 text-red-400 hover:bg-red-600/30',
+        active && !danger && 'bg-bw-gray-600 text-white',
+        !active && !danger && 'text-white',
       )}
     >
       {icon}
-      <span className="text-[9px] mt-0.5 leading-none">{label}</span>
+      <span className="text-[9px] text-white/70 leading-none">{label}</span>
       {badge != null && badge > 0 && (
         <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] flex items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold px-1">
           {badge > 99 ? '99+' : badge}
