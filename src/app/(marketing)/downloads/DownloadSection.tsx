@@ -170,13 +170,11 @@ export function DownloadSection({ manifest }: { manifest: DownloadManifest | nul
 
   if (!ready) {
     return (
-      <div className="flex flex-col items-center w-full animate-pulse">
+      <div className="flex flex-col items-center w-full animate-pulse" style={{ maxWidth: 720 }}>
         <div className="w-72 h-14 rounded-xl mb-16" style={{ backgroundColor: c.surface }} />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 w-full max-w-4xl">
-          {[0, 1, 2].map((i) => (
-            <div key={i} className="h-48 rounded-2xl" style={{ backgroundColor: c.surface }} />
-          ))}
-        </div>
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="w-full h-24 rounded-2xl mb-4" style={{ backgroundColor: c.surface }} />
+        ))}
       </div>
     )
   }
@@ -186,12 +184,12 @@ export function DownloadSection({ manifest }: { manifest: DownloadManifest | nul
   const platformGroups = groupByPlatform(artifacts)
 
   return (
-    <div className="flex flex-col items-center w-full">
+    <div className="flex flex-col items-center w-full" style={{ maxWidth: 720 }}>
 
       {/* Mobile / unsupported OS notice */}
       {(detectedOS === 'ios' || detectedOS === 'android') && (
         <div
-          className="rounded-2xl px-8 py-6 mb-10 text-center backdrop-blur-sm"
+          className="rounded-2xl px-8 py-6 mb-10 text-center backdrop-blur-sm w-full"
           style={{ backgroundColor: c.surface, border: `1px solid ${c.border}` }}
         >
           <p className="text-base font-semibold" style={{ color: c.text }}>
@@ -234,62 +232,62 @@ export function DownloadSection({ manifest }: { manifest: DownloadManifest | nul
         </div>
       )}
 
-      {/* Section heading */}
-      <div className="w-full max-w-4xl mb-8">
-        <h2 className="text-xl font-semibold" style={{ color: c.text }}>
-          Get started
-        </h2>
-        <p className="text-sm mt-1" style={{ color: c.textMuted }}>
-          v{version}
-        </p>
-      </div>
+      {/* Version */}
+      <p className="text-sm mb-8 self-start" style={{ color: c.textMuted }}>
+        v{version}
+      </p>
 
-      {/* Platform cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 w-full max-w-4xl">
+      {/* Platform sections */}
+      <div className="flex flex-col gap-4 w-full">
         {platformGroups.map((group) => {
           const Icon = iconComponents[group.iconKey]
           return (
             <div
               key={group.platform}
-              className="rounded-2xl p-6 flex flex-col"
+              className="rounded-2xl w-full"
               style={{
                 backgroundColor: c.surface,
                 border: `1px solid ${c.border}`,
               }}
             >
-              {/* Card header */}
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-5 h-5" style={{ color: c.text }}>
+              {/* Platform header */}
+              <div className="flex items-center gap-3 px-6 pt-5 pb-3">
+                <div className="w-5 h-5 shrink-0" style={{ color: c.text }}>
                   <Icon className="w-full h-full" />
                 </div>
-                <h3 className="text-base font-semibold" style={{ color: c.text }}>
-                  {group.label}
-                </h3>
+                <div>
+                  <h3 className="text-base font-semibold" style={{ color: c.text }}>
+                    {group.label}
+                  </h3>
+                  <p className="text-xs" style={{ color: c.textMuted }}>
+                    {group.description}
+                  </p>
+                </div>
               </div>
-              <p className="text-sm mb-5" style={{ color: c.textSubtle }}>
-                {group.description}
-              </p>
 
               {/* Download rows */}
-              <div className="flex flex-col gap-0 mt-auto">
-                {group.items.map((a, i) => (
+              <div className="px-6 pb-2">
+                {group.items.map((a) => (
                   <a
                     key={a.filename}
                     href={getDownloadUrl(a.filename)}
-                    className="group flex items-center justify-between py-3 transition-colors"
+                    className="group flex items-center justify-between py-3"
                     style={{
-                      borderTop: i > 0 ? `1px solid ${c.border}` : undefined,
+                      borderTop: `1px solid ${c.border}`,
                       color: c.text,
                     }}
                   >
-                    <div className="flex flex-col">
-                      <span className="text-sm">{a.label}</span>
+                    <div className="flex items-center gap-3">
+                      <span className="text-sm font-medium">{a.label}</span>
                       <span className="text-xs" style={{ color: c.textSubtle }}>
-                        .{a.format} · {formatBytes(a.size)}
+                        .{a.format}
+                      </span>
+                      <span className="text-xs" style={{ color: c.textSubtle }}>
+                        {formatBytes(a.size)}
                       </span>
                     </div>
                     <span
-                      className="text-sm font-medium flex items-center gap-1.5 opacity-70 group-hover:opacity-100 transition-opacity"
+                      className="flex items-center gap-1.5 opacity-50 group-hover:opacity-100 transition-opacity"
                       style={{ color: c.yellow }}
                     >
                       <DownloadIcon className="w-4 h-4" />
