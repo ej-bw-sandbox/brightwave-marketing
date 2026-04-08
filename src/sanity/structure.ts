@@ -114,6 +114,19 @@ export const structure: StructureResolver = (S) =>
 
       S.divider(),
 
+      // ── Demo ──
+      S.listItem()
+        .title('Demo')
+        .child(
+          S.list()
+            .title('Demo')
+            .items([
+              S.documentTypeListItem('demoPersona').title('Personas'),
+            ])
+        ),
+
+      S.divider(),
+
       // ── Resources ──
       S.listItem()
         .title('Resources')
