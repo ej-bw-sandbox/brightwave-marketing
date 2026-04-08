@@ -6,6 +6,7 @@ import { PortableText } from '@portabletext/react'
 import { ptComponents } from '@/lib/sanity/portable-text-components'
 import { LottiePlayer } from '@/components/ui/LottiePlayer'
 import { StepCtaSection } from '@/components/sections/StepCtaSection'
+import ContactForm from '@/components/forms/ContactForm'
 
 interface PartnersPageDoc {
   title: string
@@ -32,6 +33,19 @@ interface PartnersPageDoc {
   aboutParagraphs: string[]
   faqHeading: string
   faq: { question: string; answer: any }[]
+  contactForm?: {
+    formTitle?: string
+    formSubtitle?: string
+    formVariant?: 'contact' | 'referral' | 'partners'
+    fields?: any[]
+    referralCodeField?: any
+    partnerTypeField?: any
+    submitButtonText?: string
+    successMessage?: string
+    errorMessage?: string
+    apiEndpoint?: string
+    notificationEmail?: string
+  }
   seo?: {
     metaTitle?: string
     metaDescription?: string
@@ -40,7 +54,7 @@ interface PartnersPageDoc {
   }
 }
 
-const fetchOptions = { next: { tags: ['partnersPage'] as string[], revalidate: 60 } }
+const fetchOptions = { next: { tags: ['partnersPage', 'contactForm'] as string[], revalidate: 60 } }
 
 export async function generateMetadata(): Promise<Metadata> {
   const doc = await client.fetch<PartnersPageDoc | null>(partnersQuery, {}, fetchOptions)
@@ -266,6 +280,17 @@ export default async function Page() {
                 </div>
               </div>
             </section>
+            {doc.contactForm && (
+              <section className="c-section">
+                <div className="c-container">
+                  <div className="grid cc-contact">
+                    <div id="w-node-partner-form" className="v-40">
+                      <ContactForm formConfig={doc.contactForm} />
+                    </div>
+                  </div>
+                </div>
+              </section>
+            )}
             <section className="c-section partner-about">
               <div className="c-container">
                 <div className="partner-about_title">

@@ -25,3 +25,39 @@ ANTHROPIC_API_KEY                  # Claude for summary generation
 
 ### HubSpot Custom Properties (create before deploy)
 `brightwave_demo_taken` (bool), `brightwave_qualification_score` (number), `brightwave_qualified` (bool), `brightwave_recommended_next_step` (string), `brightwave_demo_date` (date)
+
+## Forms (Sanity Studio > Forms > Static)
+
+Three singleton `contactForm` documents power form content across the site. Each uses `formVariant` to distinguish its purpose. All form copy (titles, labels, placeholders, button text, success/error messages) is editable in Sanity Studio under **Forms > Static**.
+
+### Singletons
+
+| Studio Label | Document ID | formVariant | Page |
+|---|---|---|---|
+| Contact Form | `contactForm` | `contact` | `/contact` |
+| Referral Form | `referralContactForm` | `referral` | `/referral` |
+| Partners Form | `partnersContactForm` | `partners` | `/partners` |
+
+### Schema (`contactForm`)
+- `formTitle`, `formSubtitle` — heading and supporting copy
+- `formVariant` — `contact` | `referral` | `partners`
+- `fields[]` — ordered array of form fields (fieldName, fieldLabel, fieldPlaceholder, fieldType, isRequired, options)
+- `referralCodeField` — referral code configuration (visible only when variant is `referral`)
+- `partnerTypeField` — partner type selector configuration (visible only when variant is `partners`)
+- `submitButtonText`, `successMessage`, `errorMessage` — submission UX copy
+- `apiEndpoint` — server route for form submissions (default: `/api/contact`)
+- `notificationEmail` — optional email for submission notifications
+
+### Key Files
+- Schema: `src/sanity/schemaTypes/documents/contact-form.ts`
+- Structure: `src/sanity/structure.ts` (Forms > Static section)
+- GROQ queries: `src/lib/sanity/queries/forms.ts` (standalone query + TypeScript types)
+- Page queries: `src/lib/sanity/queries/contact.ts`, `referral.ts`, `partners.ts` (dereference `contactForm->{}`)
+- Component: `src/components/forms/ContactForm.tsx` (accepts `FormConfig` prop with hardcoded fallbacks)
+- Pages: `src/app/(marketing)/contact/page.tsx`, `referral/page.tsx`, `partners/page.tsx`
+
+### How it works
+1. Each page schema (contactPage, referralPage, partnersPage) has a `contactForm` reference field pointing to the relevant singleton
+2. Page queries use `contactForm->{...}` to dereference the form config inline
+3. The `ContactForm` component renders fields dynamically from the Sanity config, falling back to hardcoded defaults if Sanity returns null
+4. Form submissions go to the existing `/api/contact` route — only the copy/content is Sanity-managed, not the submission logic

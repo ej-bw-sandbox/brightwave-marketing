@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { client } from '@/lib/sanity/client'
 import { referralQuery } from '@/lib/sanity/queries/referral'
 import { buildMetadata } from '@/lib/metadata'
+import ContactForm from '@/components/forms/ContactForm'
 
 export async function generateMetadata(): Promise<Metadata> {
   const doc = await client.fetch(referralQuery, {}, { next: { tags: ['referralPage'], revalidate: 60 } })
@@ -17,7 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Page() {
   let doc: any = null
   try {
-    doc = await client.fetch(referralQuery, {}, { next: { tags: ['referralPage'], revalidate: 60 } })
+    doc = await client.fetch(referralQuery, {}, { next: { tags: ['referralPage', 'contactForm'], revalidate: 60 } })
   } catch { doc = null }
 
   if (!doc) return null
@@ -37,6 +38,7 @@ export default async function Page() {
                       <div className="c-text-4"></div>
                     </div>
                     <div className="h-16">
+                      {doc.linkedinUrl && (
                       <div className="cta-182">
                         <a stagger-cta="" href={doc.linkedinUrl} className="cta-p-sm w-inline-block">
                           <div>
@@ -60,6 +62,8 @@ export default async function Page() {
                           </div>
                         </a>
                       </div>
+                      )}
+                      {doc.twitterUrl && (
                       <div className="cta-182">
                         <a stagger-cta="" href={doc.twitterUrl} className="cta-p-sm w-inline-block">
                           <div className="x-logo-wrap"><img src="/webflow-images/X_logos-world_2.svg" loading="lazy" alt="" className="x-logo" /><img src="/webflow-images/X_logos-world_2.svg" loading="lazy" alt="" className="x-logo cc-absolute" /></div>
@@ -81,26 +85,26 @@ export default async function Page() {
                           </div>
                         </a>
                       </div>
+                      )}
                     </div>
                   </div>
                   <div id="w-node-bd5556b5-87c1-cfbe-5a84-873f47e0ef7f-846a10af" className="v-40">
-                    <div className="eyebrow-flex">
-                      <div className="block"></div>
-                      <div className="c-title-5">{doc.formSectionTitle}</div>
-                    </div>
-                    <div className="form-hidden-classes">
-                      <div className="hs-flex">
-                        <div id="hubspot-form" hubspot-form="" className="cta-hubspot-form w-embed w-script">
-
-
-                        </div>
-                        <div id="calendly-form" enable-calendly="true" className="cta-calendly-form w-embed w-script">{/*   Calendly inline widget begin   */}
-                          <div className="calendly-inline-widget" data-url={doc.calendlyUrl} style={{minWidth: '100%', height: '700px'}}></div>
-
-                          {/*   Calendly inline widget end   */}
+                    {doc.formSectionTitle && (
+                      <div className="eyebrow-flex" style={{ marginBottom: '1rem' }}>
+                        <div className="block"></div>
+                        <div className="c-title-5">{doc.formSectionTitle}</div>
+                      </div>
+                    )}
+                    {doc.calendlyUrl && (
+                      <div className="form-hidden-classes">
+                        <div className="hs-flex">
+                          <div id="calendly-form" enable-calendly="true" className="cta-calendly-form w-embed w-script">
+                            <div className="calendly-inline-widget" data-url={doc.calendlyUrl} style={{minWidth: '100%', height: '700px'}}></div>
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    )}
+                    <ContactForm formConfig={doc?.contactForm} />
                   </div>
                 </div>
               </div>
@@ -110,7 +114,9 @@ export default async function Page() {
                 <div className="c-container">
                   <div className="founders">
                     <div className="founders-flex">
-                      <h2 className="c-title-2">{doc.recentBlogsSectionTitle}</h2>
+                      {doc.recentBlogsSectionTitle && (
+                        <h2 className="c-title-2">{doc.recentBlogsSectionTitle}</h2>
+                      )}
                     </div>
                     <div className="w-dyn-list">
                       <div role="list" className="grid cc-cards w-dyn-items">
@@ -133,7 +139,9 @@ export default async function Page() {
                     </div>
                     <div inject-tablet="founders" className="cta-founders">
                       <a stagger-cta="" href="/blog" className="cta-p-sm cc-stroke w-inline-block">
-                        <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">{doc.readMoreLabel}</div>
+                        {doc.readMoreLabel && (
+                          <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">{doc.readMoreLabel}</div>
+                        )}
                         <div className="flip-small">
                           <div className="flip-bg"></div>
                         </div>
@@ -161,7 +169,9 @@ export default async function Page() {
                 <div className="c-container">
                   <div className="founders">
                     <div className="founders-flex">
-                      <h2 className="c-title-2">{doc.latestPostsSectionTitle}</h2>
+                      {doc.latestPostsSectionTitle && (
+                        <h2 className="c-title-2">{doc.latestPostsSectionTitle}</h2>
+                      )}
                     </div>
                     <div className="w-dyn-list">
                       <div role="list" className="grid cc-cards w-dyn-items">
@@ -181,7 +191,9 @@ export default async function Page() {
                     </div>
                     <div inject-tablet="founders" className="cta-founders">
                       <a stagger-cta="" href="/blog" className="cta-p-sm cc-stroke w-inline-block">
-                        <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">{doc.readMoreLabel}</div>
+                        {doc.readMoreLabel && (
+                          <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">{doc.readMoreLabel}</div>
+                        )}
                         <div className="flip-small">
                           <div className="flip-bg"></div>
                         </div>

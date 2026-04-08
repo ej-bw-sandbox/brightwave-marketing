@@ -30,6 +30,13 @@ export const partnersQuery = `
       question,
       answer
     },
+    contactForm->{
+      formTitle, formSubtitle, formVariant,
+      fields[]{ _key, fieldName, fieldLabel, fieldPlaceholder, fieldType, isRequired, options[]{ _key, value, label } },
+      referralCodeField{ fieldLabel, fieldPlaceholder, isRequired },
+      partnerTypeField{ fieldLabel, options[]{ value, label }, isRequired },
+      submitButtonText, successMessage, errorMessage, apiEndpoint, notificationEmail
+    },
     seo
   }
 `

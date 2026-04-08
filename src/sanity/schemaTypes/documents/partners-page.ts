@@ -87,6 +87,15 @@ export const partnersPage = defineType({
       }],
     }),
 
+    // ── Contact Form ──
+    defineField({
+      name: 'contactForm',
+      title: 'Contact Form',
+      type: 'reference',
+      to: [{ type: 'contactForm' }],
+      description: 'The contact form to display on this page',
+    }),
+
     defineField({ name: 'seo', title: 'SEO', type: 'seo' }),
   ],
 })

@@ -23,22 +23,16 @@ export const contactForm = defineType({
       name: 'formVariant',
       title: 'Form Variant',
       type: 'string',
-      description: 'Differentiates Contact vs Referral forms.',
+      description: 'Differentiates Contact, Referral and Partners forms.',
       options: {
         list: [
           { title: 'Contact', value: 'contact' },
           { title: 'Referral', value: 'referral' },
+          { title: 'Partners', value: 'partners' },
         ],
         layout: 'dropdown',
       },
       validation: (r) => r.required(),
-    }),
-    defineField({
-      name: 'slug',
-      title: 'Slug',
-      type: 'slug',
-      options: { source: 'formTitle' },
-      validation: Rule => Rule.required(),
     }),
 
     // ── Fields ──
@@ -119,6 +113,48 @@ export const contactForm = defineType({
       ],
     }),
 
+    // ── Variant-specific fields ──
+    defineField({
+      name: 'referralCodeField',
+      title: 'Referral Code Field',
+      type: 'object',
+      description: 'Optional referral code field configuration (referral variant only).',
+      fields: [
+        defineField({ name: 'fieldLabel', title: 'Label', type: 'string', initialValue: 'Referral Code' }),
+        defineField({ name: 'fieldPlaceholder', title: 'Placeholder', type: 'string', initialValue: 'Enter your referral code' }),
+        defineField({ name: 'isRequired', title: 'Required', type: 'boolean', initialValue: false }),
+      ],
+      hidden: ({ document }) => document?.formVariant !== 'referral',
+    }),
+    defineField({
+      name: 'partnerTypeField',
+      title: 'Partner Type Field',
+      type: 'object',
+      description: 'Optional partner type selector configuration (partners variant only).',
+      fields: [
+        defineField({ name: 'fieldLabel', title: 'Label', type: 'string', initialValue: 'Partner Type' }),
+        defineField({
+          name: 'options',
+          title: 'Options',
+          type: 'array',
+          of: [
+            {
+              type: 'object',
+              fields: [
+                defineField({ name: 'value', title: 'Value', type: 'string', validation: (r) => r.required() }),
+                defineField({ name: 'label', title: 'Label', type: 'string', validation: (r) => r.required() }),
+              ],
+              preview: {
+                select: { title: 'label', subtitle: 'value' },
+              },
+            },
+          ],
+        }),
+        defineField({ name: 'isRequired', title: 'Required', type: 'boolean', initialValue: true }),
+      ],
+      hidden: ({ document }) => document?.formVariant !== 'partners',
+    }),
+
     // ── Submission ──
     defineField({
       name: 'submitButtonText',
@@ -162,6 +198,12 @@ export const contactForm = defineType({
     }),
   ],
   preview: {
-    select: { title: 'formTitle', subtitle: 'formVariant' },
+    select: { variant: 'formVariant', title: 'formTitle' },
+    prepare({ variant, title }) {
+      return {
+        title: title || 'Contact Form',
+        subtitle: variant ? `Variant: ${variant}` : '',
+      }
+    },
   },
 })

@@ -1,46 +1,64 @@
 'use client'
 
 import { useState, type FormEvent } from 'react'
-
-interface ContactFormConfig {
-  formTitle?: string
-  formSubtitle?: string
-  submitButtonText?: string
-  successMessage?: string
-  errorMessage?: string
-  apiEndpoint?: string
-}
-
-interface FormData {
-  firstName: string
-  lastName: string
-  email: string
-  company: string
-  message: string
-}
+import type { FormConfig } from '@/lib/sanity/queries/forms'
 
 const DEFAULT_TITLE = 'Tell us a bit about yourself'
 const DEFAULT_SUBMIT_TEXT = 'Submit'
 const DEFAULT_SUCCESS_MESSAGE = 'We received your message and will be in touch shortly.'
 const DEFAULT_ERROR_MESSAGE = 'Network error. Please try again.'
 
-export default function ContactForm({ formConfig }: { formConfig?: ContactFormConfig | null } = {}) {
-  const [formData, setFormData] = useState<FormData>({
-    firstName: '',
-    lastName: '',
-    email: '',
-    company: '',
-    message: '',
-  })
+const inputStyle: React.CSSProperties = {
+  fontSize: '1.125em',
+  width: '100%',
+  height: '3rem',
+  backgroundColor: 'transparent',
+  border: 'none',
+  borderBottom: '1px solid var(--lightmode--onsurface-border)',
+  color: 'var(--lightmode--onsurface)',
+  outline: 'none',
+}
+
+const labelStyle: React.CSSProperties = {
+  fontSize: '0.875em',
+  color: 'var(--lightmode--onsurface-border)',
+}
+
+const selectStyle: React.CSSProperties = {
+  ...inputStyle,
+  appearance: 'none',
+  cursor: 'pointer',
+}
+
+interface DefaultField {
+  fieldName: string
+  fieldLabel: string
+  fieldPlaceholder: string
+  fieldType: 'text' | 'email' | 'textarea' | 'select'
+  isRequired: boolean
+}
+
+const DEFAULT_FIELDS: DefaultField[] = [
+  { fieldName: 'firstName', fieldLabel: 'First Name', fieldPlaceholder: 'First name', fieldType: 'text', isRequired: true },
+  { fieldName: 'lastName', fieldLabel: 'Last Name', fieldPlaceholder: 'Last name', fieldType: 'text', isRequired: false },
+  { fieldName: 'email', fieldLabel: 'Email', fieldPlaceholder: 'you@company.com', fieldType: 'email', isRequired: true },
+  { fieldName: 'company', fieldLabel: 'Company', fieldPlaceholder: 'Company name', fieldType: 'text', isRequired: false },
+  { fieldName: 'message', fieldLabel: 'Message', fieldPlaceholder: 'How can we help?', fieldType: 'textarea', isRequired: false },
+]
+
+export default function ContactForm({ formConfig }: { formConfig?: FormConfig | null } = {}) {
+  const [formData, setFormData] = useState<Record<string, string>>({})
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
 
   const title = formConfig?.formTitle ?? DEFAULT_TITLE
+  const subtitle = formConfig?.formSubtitle
   const submitText = formConfig?.submitButtonText ?? DEFAULT_SUBMIT_TEXT
   const successMessage = formConfig?.successMessage ?? DEFAULT_SUCCESS_MESSAGE
   const apiEndpoint = formConfig?.apiEndpoint ?? '/api/contact'
+  const fields = formConfig?.fields?.length ? formConfig.fields : DEFAULT_FIELDS
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
@@ -62,7 +80,7 @@ export default function ContactForm({ formConfig }: { formConfig?: ContactFormCo
         return
       }
       setStatus('success')
-      setFormData({ firstName: '', lastName: '', email: '', company: '', message: '' })
+      setFormData({})
     } catch {
       setStatus('error')
       setErrorMsg(formConfig?.errorMessage ?? DEFAULT_ERROR_MESSAGE)
@@ -89,120 +107,114 @@ export default function ContactForm({ formConfig }: { formConfig?: ContactFormCo
         <div className="block"></div>
         <div className="c-title-5">{title}</div>
       </div>
+      {subtitle && (
+        <div className="c-text-4" style={{ marginTop: '0.5rem' }}>
+          {subtitle}
+        </div>
+      )}
       <form onSubmit={handleSubmit} hubspot-form="">
         <div className="hs-flex" style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
-          <div className="hs-form-field" style={{ marginBottom: '1.5em' }}>
-            <label style={{ fontSize: '0.875em', color: 'var(--lightmode--onsurface-border)' }}>First Name *</label>
-            <div className="input" style={{ position: 'relative' }}>
-              <input
-                type="text"
-                name="firstName"
-                placeholder="First name"
-                value={formData.firstName}
-                onChange={handleChange}
-                required
-                style={{
-                  fontSize: '1.125em',
-                  width: '100%',
-                  height: '3rem',
-                  backgroundColor: 'transparent',
-                  border: 'none',
-                  borderBottom: '1px solid var(--lightmode--onsurface-border)',
-                  color: 'var(--lightmode--onsurface)',
-                  outline: 'none',
-                }}
-              />
+          {fields.map((field) => (
+            <div
+              key={field.fieldName}
+              className={`hs-form-field${field.fieldType === 'textarea' ? ' hs-fieldtype-textarea' : ''}`}
+              style={{ marginBottom: field.fieldType === 'textarea' ? '2em' : '1.5em' }}
+            >
+              <label style={labelStyle}>
+                {field.fieldLabel}{field.isRequired ? ' *' : ''}
+              </label>
+              <div className="input" style={{ position: 'relative' }}>
+                {field.fieldType === 'textarea' ? (
+                  <textarea
+                    name={field.fieldName}
+                    placeholder={field.fieldPlaceholder ?? ''}
+                    value={formData[field.fieldName] ?? ''}
+                    onChange={handleChange}
+                    required={field.isRequired ?? false}
+                    rows={3}
+                    style={{
+                      ...inputStyle,
+                      height: 'auto',
+                      resize: 'none',
+                    }}
+                  />
+                ) : field.fieldType === 'select' ? (
+                  <select
+                    name={field.fieldName}
+                    value={formData[field.fieldName] ?? ''}
+                    onChange={handleChange}
+                    required={field.isRequired ?? false}
+                    style={selectStyle}
+                  >
+                    <option value="">{field.fieldPlaceholder || 'Select...'}</option>
+                    {(field.options ?? []).map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    type={field.fieldType || 'text'}
+                    name={field.fieldName}
+                    placeholder={field.fieldPlaceholder ?? ''}
+                    value={formData[field.fieldName] ?? ''}
+                    onChange={handleChange}
+                    required={field.isRequired ?? false}
+                    style={inputStyle}
+                  />
+                )}
+              </div>
             </div>
-          </div>
-          <div className="hs-form-field" style={{ marginBottom: '1.5em' }}>
-            <label style={{ fontSize: '0.875em', color: 'var(--lightmode--onsurface-border)' }}>Last Name</label>
-            <div className="input" style={{ position: 'relative' }}>
-              <input
-                type="text"
-                name="lastName"
-                placeholder="Last name"
-                value={formData.lastName}
-                onChange={handleChange}
-                style={{
-                  fontSize: '1.125em',
-                  width: '100%',
-                  height: '3rem',
-                  backgroundColor: 'transparent',
-                  border: 'none',
-                  borderBottom: '1px solid var(--lightmode--onsurface-border)',
-                  color: 'var(--lightmode--onsurface)',
-                  outline: 'none',
-                }}
-              />
+          ))}
+
+          {/* Referral code field (referral variant only) */}
+          {formConfig?.formVariant === 'referral' && formConfig?.referralCodeField && (
+            <div className="hs-form-field" style={{ marginBottom: '1.5em' }}>
+              <label style={labelStyle}>
+                {formConfig.referralCodeField.fieldLabel ?? 'Referral Code'}
+                {formConfig.referralCodeField.isRequired ? ' *' : ''}
+              </label>
+              <div className="input" style={{ position: 'relative' }}>
+                <input
+                  type="text"
+                  name="referralCode"
+                  placeholder={formConfig.referralCodeField.fieldPlaceholder ?? 'Enter your referral code'}
+                  value={formData.referralCode ?? ''}
+                  onChange={handleChange}
+                  required={formConfig.referralCodeField.isRequired ?? false}
+                  style={inputStyle}
+                />
+              </div>
             </div>
-          </div>
-          <div className="hs-form-field" style={{ marginBottom: '1.5em' }}>
-            <label style={{ fontSize: '0.875em', color: 'var(--lightmode--onsurface-border)' }}>Email *</label>
-            <div className="input" style={{ position: 'relative' }}>
-              <input
-                type="email"
-                name="email"
-                placeholder="you@company.com"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                style={{
-                  fontSize: '1.125em',
-                  width: '100%',
-                  height: '3rem',
-                  backgroundColor: 'transparent',
-                  border: 'none',
-                  borderBottom: '1px solid var(--lightmode--onsurface-border)',
-                  color: 'var(--lightmode--onsurface)',
-                  outline: 'none',
-                }}
-              />
+          )}
+
+          {/* Partner type field (partners variant only) */}
+          {formConfig?.formVariant === 'partners' && formConfig?.partnerTypeField && (
+            <div className="hs-form-field" style={{ marginBottom: '1.5em' }}>
+              <label style={labelStyle}>
+                {formConfig.partnerTypeField.fieldLabel ?? 'Partner Type'}
+                {formConfig.partnerTypeField.isRequired ? ' *' : ''}
+              </label>
+              <div className="input" style={{ position: 'relative' }}>
+                <select
+                  name="partnerType"
+                  value={formData.partnerType ?? ''}
+                  onChange={handleChange}
+                  required={formConfig.partnerTypeField.isRequired ?? false}
+                  style={selectStyle}
+                >
+                  <option value="">Select partner type...</option>
+                  {(formConfig.partnerTypeField.options ?? []).map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
-          </div>
-          <div className="hs-form-field" style={{ marginBottom: '1.5em' }}>
-            <label style={{ fontSize: '0.875em', color: 'var(--lightmode--onsurface-border)' }}>Company</label>
-            <div className="input" style={{ position: 'relative' }}>
-              <input
-                type="text"
-                name="company"
-                placeholder="Company name"
-                value={formData.company}
-                onChange={handleChange}
-                style={{
-                  fontSize: '1.125em',
-                  width: '100%',
-                  height: '3rem',
-                  backgroundColor: 'transparent',
-                  border: 'none',
-                  borderBottom: '1px solid var(--lightmode--onsurface-border)',
-                  color: 'var(--lightmode--onsurface)',
-                  outline: 'none',
-                }}
-              />
-            </div>
-          </div>
-          <div className="hs-form-field hs-fieldtype-textarea" style={{ marginBottom: '2em' }}>
-            <label style={{ fontSize: '0.875em', color: 'var(--lightmode--onsurface-border)' }}>Message</label>
-            <div className="input" style={{ position: 'relative' }}>
-              <textarea
-                name="message"
-                placeholder="How can we help?"
-                value={formData.message}
-                onChange={handleChange}
-                rows={3}
-                style={{
-                  fontSize: '1.125em',
-                  width: '100%',
-                  backgroundColor: 'transparent',
-                  border: 'none',
-                  borderBottom: '1px solid var(--lightmode--onsurface-border)',
-                  color: 'var(--lightmode--onsurface)',
-                  outline: 'none',
-                  resize: 'none',
-                }}
-              />
-            </div>
-          </div>
+          )}
+
           {status === 'error' && (
             <div style={{ color: '#CC8A6E', marginBottom: '1em', fontSize: '0.875em' }}>{errorMsg}</div>
           )}
