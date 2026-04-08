@@ -98,6 +98,7 @@ export default function DemoPage({ persona }: DemoPageProps) {
       onSendText={sendText}
       onEndCall={handleEndCall}
       onReaction={handleReaction}
+      calendarLink={persona.calendarLink}
     />
   );
 }

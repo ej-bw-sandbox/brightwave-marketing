@@ -19,6 +19,7 @@ interface VideoCallViewProps {
   onSendText: (text: string) => void;
   onEndCall: () => void;
   onReaction: (emoji: string) => void;
+  calendarLink?: string;
 }
 
 /* ────────────────────────────────────────────────────────────────────────────
@@ -206,48 +207,48 @@ function EndCallModal({
   open,
   onConfirm,
   onCancel,
+  calendarLink,
 }: {
   open: boolean;
   onConfirm: () => void;
   onCancel: () => void;
+  calendarLink?: string;
 }) {
   if (!open) return null;
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onCancel} />
+      <div className="absolute inset-0 bg-black" />
       <div className="relative bg-bw-gray-700 border border-white/[0.08] rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden">
         <div className="p-6">
           <h2 className="text-xl font-bold text-white mb-2">Leave the call?</h2>
           <p className="text-sm text-white/50 mb-6">Before you go, would you like to connect with our team?</p>
           <div className="space-y-3">
             {/* Schedule option */}
-            <a
-              href="https://brightwave.io/demo"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full flex items-center gap-4 p-4 rounded-xl border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.06] hover:border-bw-yellow-550/30 transition-all text-left group"
+            <button
+              onClick={() => window.open(calendarLink || process.env.NEXT_PUBLIC_CALENDLY_WORKSHOP_URL || '#', '_blank')}
+              className="w-full flex items-center gap-4 p-4 rounded-xl border border-white/[0.08] bg-bw-gray-600 hover:bg-white/[0.06] transition-all text-left group"
             >
-              <div className="w-10 h-10 rounded-lg bg-blue-500/15 flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 rounded-lg bg-blue-900/40 flex items-center justify-center flex-shrink-0">
                 <svg className="w-5 h-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128H5.228A2.25 2.25 0 013 16.878v-.003c0-1.113.285-2.16.786-3.07" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
                 </svg>
               </div>
               <div className="flex-1">
-                <span className="text-sm font-semibold text-white group-hover:text-bw-yellow-550 transition-colors">Talk to a live person</span>
+                <span className="text-sm font-semibold text-white">Talk to a live person</span>
                 <p className="text-xs text-white/40 mt-0.5">Schedule time with our sales team</p>
               </div>
               <svg className="w-4 h-4 text-white/30" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
               </svg>
-            </a>
+            </button>
 
             {/* End call option */}
             <button
               onClick={onConfirm}
-              className="w-full flex items-center gap-4 p-4 rounded-xl border border-red-900/30 bg-red-900/10 hover:bg-red-900/20 transition-all text-left"
+              className="w-full flex items-center gap-4 p-4 rounded-xl border border-red-900/30 bg-red-900/20 hover:bg-red-900/30 transition-all text-left"
             >
-              <div className="w-10 h-10 rounded-lg bg-red-500/15 flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 rounded-lg bg-red-900/40 flex items-center justify-center flex-shrink-0">
                 <svg className="w-5 h-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
                 </svg>
@@ -259,7 +260,7 @@ function EndCallModal({
             </button>
 
             {/* Cancel */}
-            <button onClick={onCancel} className="w-full py-3 text-sm text-white/40 hover:text-white transition-colors">
+            <button onClick={onCancel} className="w-full py-3 text-sm text-white/40 hover:text-white/60 transition-colors text-center">
               Cancel &mdash; return to call
             </button>
           </div>
@@ -289,6 +290,7 @@ export default function VideoCallView({
   onSendText,
   onEndCall,
   onReaction,
+  calendarLink,
 }: VideoCallViewProps) {
   const [cameraOn, setCameraOn] = useState(true);
   const [chatOpen, setChatOpen] = useState(false);
@@ -433,6 +435,7 @@ export default function VideoCallView({
         open={endCallModalOpen}
         onConfirm={handleConfirmEnd}
         onCancel={() => setEndCallModalOpen(false)}
+        calendarLink={calendarLink}
       />
     </main>
   );
