@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { CheckCircle, ArrowRight, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 import type { ProspectContext } from '@/lib/demo-utils';
 import { getFirstName } from '@/lib/demo-utils';
 
@@ -115,19 +116,17 @@ export default function PostCallScreen({
               hands-on workflow workshop tailored to your use cases.
             </p>
           </div>
-          <a
-            href={resolvedCalendarLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={cn(
-              'inline-flex items-center gap-2 px-8 py-3.5 rounded-xl font-semibold text-base transition-all',
-              'bg-indigo-600 hover:bg-indigo-500 text-white',
-              'shadow-lg shadow-indigo-600/25 hover:shadow-indigo-600/40',
-            )}
-          >
-            Book Your Workflow Workshop
-            <ArrowRight className="w-4 h-4" />
-          </a>
+          <Button asChild size="lg" className="text-base font-semibold shadow-lg">
+            <a
+              href={resolvedCalendarLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2"
+            >
+              Book Your Workflow Workshop
+              <ArrowRight className="w-4 h-4" />
+            </a>
+          </Button>
         </div>
       )}
 
@@ -142,23 +141,21 @@ export default function PostCallScreen({
               Thanks for connecting{firstName ? `, ${firstName}` : ''}!
             </h1>
             <p className="text-white/60 text-sm sm:text-base">
-              Explore Brightwave on your own and see how AI-powered research can transform
+              Explore Brightwave on your own and see how research can transform
               your workflow.
             </p>
           </div>
-          <a
-            href={trialLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={cn(
-              'inline-flex items-center gap-2 px-8 py-3.5 rounded-xl font-semibold text-base transition-all',
-              'bg-indigo-600 hover:bg-indigo-500 text-white',
-              'shadow-lg shadow-indigo-600/25 hover:shadow-indigo-600/40',
-            )}
-          >
-            Start Your Free Trial
-            <ArrowRight className="w-4 h-4" />
-          </a>
+          <Button asChild size="lg" className="text-base font-semibold shadow-lg">
+            <a
+              href={trialLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2"
+            >
+              Start Your Free Trial
+              <ArrowRight className="w-4 h-4" />
+            </a>
+          </Button>
         </div>
       )}
 
