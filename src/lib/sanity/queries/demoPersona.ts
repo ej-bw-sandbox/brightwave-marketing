@@ -1,6 +1,9 @@
 export const DEMO_PERSONA_QUERY = `*[_type == "demoPersona" && personaId == $personaId && isActive == true][0]{
   personaId,
   anamPersonaId,
+  anamAvatarId,
+  anamVoiceId,
+  anamPersonaName,
   llmModel,
   systemPromptOverride,
   knowledgeBaseOverride,
@@ -17,6 +20,9 @@ export const demoPersonaQuery = `
   *[_type == "demoPersona" && personaId == $personaId && isActive == true][0]{
     personaId,
     anamPersonaId,
+    anamAvatarId,
+    anamVoiceId,
+    anamPersonaName,
     llmModel,
     "knowledgeBase": knowledgeBaseOverride,
     systemPromptOverride,
