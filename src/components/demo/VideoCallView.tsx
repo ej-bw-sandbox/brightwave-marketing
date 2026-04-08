@@ -215,13 +215,13 @@ function EndCallModal({
         <div className="flex gap-3">
           <button
             onClick={onCancel}
-            className="flex-1 px-4 py-2.5 rounded-xl border border-white/10 text-white/70 hover:bg-white/5 text-sm font-medium transition-colors"
+            className="flex-1 px-4 py-2.5 rounded-xl border border-white/30 text-white bg-white/10 hover:bg-white/20 text-sm font-medium transition-colors"
           >
             Continue Demo
           </button>
           <button
             onClick={onConfirm}
-            className="flex-1 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-sm font-medium transition-colors"
+            className="flex-1 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-sm font-medium transition-colors"
           >
             End Call
           </button>
