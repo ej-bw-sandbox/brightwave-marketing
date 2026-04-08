@@ -24,6 +24,7 @@ interface PersonaConfig {
   anamPersonaId: string
   anamAvatarId: string
   anamVoiceId: string
+  anamLlmId: string
   anamPersonaName: string
   llmModel: string
   systemPromptOverride: string | null
@@ -38,6 +39,7 @@ const DEFAULT_PERSONA_CONFIG: PersonaConfig = {
   anamPersonaId: 'c1298d71-48b2-40c9-98d1-e3d7c0bf8030',
   anamAvatarId: process.env.ANAM_AVATAR_ID ?? '8a339c9f-0666-46bd-ab27-e90acd0409dc',
   anamVoiceId: process.env.ANAM_VOICE_ID ?? 'b482f972-1b1b-4337-ae60-940b90b5bb41',
+  anamLlmId: process.env.ANAM_LLM_ID ?? '0934d97d-0c3a-4f33-91b0-5e136a0ef466',
   anamPersonaName: process.env.ANAM_PERSONA_NAME ?? 'Max',
   llmModel: 'claude-3-5-sonnet-20241022',
   systemPromptOverride: null,
@@ -185,6 +187,7 @@ export async function POST(request: Request) {
             name: personaName,
             avatarId,
             voiceId,
+            llmId: persona?.anamLlmId ?? defaults.anamLlmId,
             systemPrompt,
           },
         }),
@@ -232,3 +235,4 @@ export async function POST(request: Request) {
     )
   }
 }
+

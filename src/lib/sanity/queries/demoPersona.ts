@@ -3,6 +3,7 @@ export const DEMO_PERSONA_QUERY = `*[_type == "demoPersona" && personaId == $per
   anamPersonaId,
   anamAvatarId,
   anamVoiceId,
+  anamLlmId,
   anamPersonaName,
   llmModel,
   systemPromptOverride,
@@ -22,6 +23,7 @@ export const demoPersonaQuery = `
     anamPersonaId,
     anamAvatarId,
     anamVoiceId,
+    anamLlmId,
     anamPersonaName,
     llmModel,
     "knowledgeBase": knowledgeBaseOverride,
@@ -31,3 +33,4 @@ export const demoPersonaQuery = `
     qualificationThreshold
   }
 `;
+

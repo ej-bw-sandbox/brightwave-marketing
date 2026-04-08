@@ -55,6 +55,12 @@ export const demoPersona = defineType({
       validation: (r) => r.required(),
     }),
     defineField({
+      name: 'anamLlmId',
+      title: 'LLM ID',
+      type: 'string',
+      description: 'Anam.ai LLM UUID. Default: 0934d97d-0c3a-4f33-91b0-5e136a0ef466 (Anam default)',
+    }),
+    defineField({
       name: 'llmModel',
       title: 'LLM Model',
       type: 'string',
@@ -135,3 +141,4 @@ export const demoPersona = defineType({
     },
   },
 })
+
