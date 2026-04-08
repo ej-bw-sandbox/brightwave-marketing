@@ -36,6 +36,7 @@ interface DefaultField {
   fieldPlaceholder: string
   fieldType: 'text' | 'email' | 'textarea' | 'select'
   isRequired: boolean
+  options?: { value: string; label: string }[]
 }
 
 const DEFAULT_FIELDS: DefaultField[] = [
