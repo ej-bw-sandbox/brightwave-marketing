@@ -135,18 +135,34 @@ export const structure: StructureResolver = (S) =>
             .title('Forms')
             .items([
               S.listItem()
-                .title('Private Markets Wizard')
+                .title('Wizard')
                 .child(
-                  S.document()
-                    .schemaType('privateMarketsWizardForm')
-                    .documentId('privateMarketsWizardForm')
+                  S.list()
+                    .title('Wizard')
+                    .items([
+                      S.listItem()
+                        .title('Private Markets')
+                        .child(
+                          S.document()
+                            .schemaType('privateMarketsWizardForm')
+                            .documentId('privateMarketsWizardForm')
+                        ),
+                    ])
                 ),
               S.listItem()
-                .title('Contact')
+                .title('Static')
                 .child(
-                  S.document()
-                    .schemaType('contactForm')
-                    .documentId('contactForm')
+                  S.list()
+                    .title('Static')
+                    .items([
+                      S.listItem()
+                        .title('Contact')
+                        .child(
+                          S.document()
+                            .schemaType('contactForm')
+                            .documentId('contactForm')
+                        ),
+                    ])
                 ),
             ])
         ),
@@ -269,3 +285,4 @@ export const structure: StructureResolver = (S) =>
             ])
         ),
     ])
+
