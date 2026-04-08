@@ -22,9 +22,9 @@ interface SessionRequestBody {
 interface PersonaConfig {
   personaId: string
   anamPersonaId: string
-  anamAvatarId: string | null
-  anamVoiceId: string | null
-  anamPersonaName: string | null
+  anamAvatarId: string
+  anamVoiceId: string
+  anamPersonaName: string
   llmModel: string
   systemPromptOverride: string | null
   knowledgeBaseOverride: string | null
@@ -36,9 +36,9 @@ interface PersonaConfig {
 const DEFAULT_PERSONA_CONFIG: PersonaConfig = {
   personaId: 'default',
   anamPersonaId: 'c1298d71-48b2-40c9-98d1-e3d7c0bf8030',
-  anamAvatarId: null,
-  anamVoiceId: null,
-  anamPersonaName: null,
+  anamAvatarId: process.env.ANAM_AVATAR_ID ?? '8a339c9f-0666-46bd-ab27-e90acd0409dc',
+  anamVoiceId: process.env.ANAM_VOICE_ID ?? 'b482f972-1b1b-4337-ae60-940b90b5bb41',
+  anamPersonaName: process.env.ANAM_PERSONA_NAME ?? 'Max',
   llmModel: 'claude-3-5-sonnet-20241022',
   systemPromptOverride: null,
   knowledgeBaseOverride: null,
@@ -162,16 +162,11 @@ export async function POST(request: Request) {
       )
     }
 
-    // Resolve avatar and voice IDs: Sanity -> env var fallback
-    const avatarId =
-      persona.anamAvatarId ||
-      process.env.ANAM_AVATAR_ID ||
-      '8a339c9f-0666-46bd-ab27-e90acd0409dc'
-    const voiceId =
-      persona.anamVoiceId ||
-      process.env.ANAM_VOICE_ID ||
-      'b482f972-1b1b-4337-ae60-940b90b5bb41'
-    const personaName = persona.anamPersonaName || 'Max'
+    // Resolve avatar and voice IDs: Sanity -> defaults (which already include env var fallback)
+    const defaults = DEFAULT_PERSONA_CONFIG
+    const avatarId = persona?.anamAvatarId ?? defaults.anamAvatarId
+    const voiceId = persona?.anamVoiceId ?? defaults.anamVoiceId
+    const personaName = persona?.anamPersonaName ?? defaults.anamPersonaName
 
     // Build the persona config for the new Anam API format.
     // The new API requires `personaConfig` with inline persona definition
