@@ -1,3 +1,32 @@
+## Editing Sanity Content Programmatically
+
+When the user asks to update CMS-managed content (announcement bar text, form copy, page settings, etc.), use the Sanity HTTP API directly rather than telling them to edit in Studio.
+
+### How to read
+```bash
+source .env.local && curl -s \
+  -H "Authorization: Bearer $SANITY_API_TOKEN" \
+  "https://v4tc8ohn.api.sanity.io/v2024-01-01/data/query/production?query=<URL-encoded GROQ>"
+```
+
+### How to write
+```bash
+source .env.local && curl -s -X POST \
+  "https://v4tc8ohn.api.sanity.io/v2024-01-01/data/mutate/production" \
+  -H "Authorization: Bearer $SANITY_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"mutations":[{"patch":{"id":"<documentId>","set":{"field.path":"value"}}}]}'
+```
+
+### Common document IDs
+- `siteSettings` — header CTAs, footer, announcement bar, social links
+- `contactForm` / `referralContactForm` / `partnersContactForm` — form content
+
+### Notes
+- Project ID: `v4tc8ohn`, dataset: `production`
+- The `SANITY_API_TOKEN` from `.env.local` has write access
+- After mutating, Next.js ISR cache (`revalidate: 60`) may delay local updates — hard-refresh or restart dev server
+
 ## Demo Page (`/demo/[personaId]`)
 
 AI-powered video demo at `/demo/[personaId]` using Anam.ai — Zoom/Meet-style video call with a digital AI sales agent.
