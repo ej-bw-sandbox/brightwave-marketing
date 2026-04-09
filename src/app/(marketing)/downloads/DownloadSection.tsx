@@ -200,32 +200,33 @@ export function DownloadSection({ manifest }: { manifest: DownloadManifest | nul
 
   if (!ready) {
     return (
-      <div className="flex flex-col items-center w-full animate-pulse" style={{ maxWidth: 720 }}>
-        <div className="w-72 h-14 rounded-xl mb-16" style={{ backgroundColor: c.surface }} />
-        {[0, 1, 2].map((i) => (
-          <div key={i} className="w-full h-24 rounded-2xl mb-4" style={{ backgroundColor: c.surface }} />
-        ))}
+      <div style={{ width: '100%' }} className="animate-pulse">
+        <div className="rounded-xl" style={{ width: 288, height: 56, margin: '0 auto 4rem', backgroundColor: c.surface }} />
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', width: '100%' }}>
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="rounded-2xl" style={{ height: 160, backgroundColor: c.surface }} />
+          ))}
+        </div>
       </div>
     )
   }
 
-  const { artifacts, version } = manifest
+  const { artifacts } = manifest
   const primary = findPrimaryArtifact(artifacts, detectedOS)
   const platformGroups = groupByPlatform(artifacts)
 
   return (
-    <div className="flex flex-col items-center w-full" style={{ maxWidth: 720 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
 
       {/* Mobile / unsupported OS notice */}
       {(detectedOS === 'ios' || detectedOS === 'android') && (
         <div
-          className="rounded-2xl px-8 py-6 mb-10 text-center backdrop-blur-sm w-full"
-          style={{ backgroundColor: c.surface, border: `1px solid ${c.border}` }}
+          style={{ backgroundColor: c.surface, border: `1px solid ${c.border}`, borderRadius: '1rem', padding: '1.5rem 2rem', marginBottom: '2.5rem', textAlign: 'center' }}
         >
-          <p className="text-base font-semibold" style={{ color: c.text }}>
+          <p style={{ fontSize: '1rem', fontWeight: 600, color: c.text, margin: 0 }}>
             Brightwave is available for desktop platforms.
           </p>
-          <p className="text-sm mt-1" style={{ color: c.textMuted }}>
+          <p style={{ fontSize: '0.875rem', color: c.textMuted, marginTop: '0.25rem' }}>
             Download for macOS, Windows, or Linux below.
           </p>
         </div>
@@ -233,7 +234,7 @@ export function DownloadSection({ manifest }: { manifest: DownloadManifest | nul
 
       {/* Primary CTA */}
       {primary && detectedOS !== 'ios' && detectedOS !== 'android' && (
-        <div className="mb-16">
+        <div style={{ marginBottom: '4rem', alignSelf: 'center' }}>
           <a stagger-cta="" href={getDownloadUrl(primary.filename)} className="cta-p-sm w-inline-block">
             <div>
               <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">
@@ -262,59 +263,54 @@ export function DownloadSection({ manifest }: { manifest: DownloadManifest | nul
         </div>
       )}
 
-      {/* Version */}
-      <p className="text-sm mb-8 self-start" style={{ color: c.textMuted }}>
-        v{version}
-      </p>
-
       {/* Platform sections */}
-      <div className="flex flex-col gap-4 w-full">
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', width: '100%' }}>
         {platformGroups.map((group) => {
           const { component: Icon, sizeClass: iconSize } = iconComponents[group.iconKey]
           return (
             <div
               key={group.platform}
-              className="rounded-2xl w-full"
               style={{
                 backgroundColor: c.surface,
                 border: `1px solid ${c.border}`,
+                borderRadius: '1rem',
+                overflow: 'hidden',
               }}
             >
               {/* Platform header */}
-              <div className="flex items-baseline gap-3 px-6 pt-5 pb-3">
-                <div className="w-5 shrink-0 flex items-center justify-center translate-y-[1px]" style={{ color: c.text }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', padding: '1rem 1rem 0.75rem' }}>
+                <div style={{ width: 20, height: 20, flexShrink: 0, color: c.text, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <Icon className={iconSize} />
                 </div>
-                <h3 className="text-base font-semibold" style={{ color: c.text }}>
+                <h3 style={{ fontSize: '1rem', fontWeight: 600, color: c.text, margin: 0 }}>
                   {group.label}
                 </h3>
               </div>
 
               {/* Download rows */}
-              <div className="px-6 pb-2">
+              <div style={{ padding: '0 1rem 0.5rem' }}>
                 {group.items.map((a) => (
                   <a
                     key={a.filename}
                     href={getDownloadUrl(a.filename)}
-                    className="group flex items-center justify-between py-3"
                     style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: '0.5rem',
+                      padding: '0.625rem 0',
                       borderTop: `1px solid ${c.border}`,
                       color: c.text,
+                      textDecoration: 'none',
                     }}
                   >
-                    <div className="flex items-center gap-3">
-                      <span className="text-sm font-medium">{a.label}</span>
-                      <span className="text-xs" style={{ color: c.textSubtle }}>
-                        .{a.format}
-                      </span>
-                      <span className="text-xs" style={{ color: c.textSubtle }}>
-                        {formatBytes(a.size)}
+                    <div style={{ minWidth: 0 }}>
+                      <span style={{ fontSize: '0.875rem', fontWeight: 500, display: 'block', color: c.text }}>{a.label}</span>
+                      <span style={{ fontSize: '0.75rem', color: c.textSubtle }}>
+                        .{a.format} &middot; {formatBytes(a.size)}
                       </span>
                     </div>
-                    <span
-                      className="flex items-center gap-1.5 opacity-50 group-hover:opacity-100 transition-opacity"
-                      style={{ color: c.yellow }}
-                    >
+                    <span style={{ flexShrink: 0, color: c.yellow, opacity: 0.5 }}>
                       <DownloadIcon className="w-4 h-4" />
                     </span>
                   </a>

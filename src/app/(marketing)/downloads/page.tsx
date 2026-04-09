@@ -29,13 +29,15 @@ export default async function Page() {
     <>
       <section className="c-section relative overflow-hidden">
         <div className="c-container relative z-10">
-          <div className="flex flex-col items-center text-center py-16 md:py-24">
+          <div className="flex flex-col items-center text-center pt-16 md:pt-24 pb-8">
             {doc.headline && (
               <h1 className="c-title-1">{doc.headline}</h1>
             )}
             {doc.subheadline && (
-              <p className="c-text-2 max-w-3xl mt-4 mb-16 text-bw-gray-300">{doc.subheadline}</p>
+              <p className="c-text-2 max-w-3xl mt-4 mb-0 text-bw-gray-300">{doc.subheadline}</p>
             )}
+          </div>
+          <div className="pb-16 md:pb-24">
             <DownloadSection manifest={manifest} />
           </div>
         </div>
