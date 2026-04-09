@@ -82,7 +82,7 @@ const sep: React.CSSProperties = { height: 1, background: '#eee', margin: '4px 0
 
 const chevron = <I size={12} stroke="#999"><path d="m9 18 6-6-6-6" /></I>
 const searchIcon = <I size={14} stroke="#999"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /></I>
-const extLink = <I size={14} stroke="#999"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><path d="M15 3h6v6" /><path d="M10 14L21 3" /></I>
+
 
 function hi(e: React.MouseEvent) { (e.currentTarget as HTMLElement).style.background = '#f5f5f5' }
 function ho(e: React.MouseEvent) { (e.currentTarget as HTMLElement).style.background = 'transparent' }
@@ -117,7 +117,6 @@ const mockSkills = [
 ]
 
 const outputFormats = [
-  { label: 'Blueprints', hasSub: true, icon: <><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M14 2v6h6" /></> },
   { label: 'Report', icon: <><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M14 2v6h6" /><path d="M16 13H8" /><path d="M16 17H8" /><path d="M10 9H8" /></> },
   { label: 'Presentation', icon: <><rect width="18" height="18" x="3" y="3" rx="2" /><path d="M3 9h18" /><path d="M9 21V9" /></> },
   { label: 'Table', icon: <><rect width="18" height="18" x="3" y="3" rx="2" /><path d="M3 9h18" /><path d="M3 15h18" /><path d="M9 3v18" /><path d="M15 3v18" /></> },
@@ -151,7 +150,7 @@ function SubApps({ onAction }: { onAction: () => void }) {
           <I size={16}><path d="M15 7h2a5 5 0 0 1 0 10h-2m-6 0H7A5 5 0 0 1 7 7h2" /><path d="M8 12h8" /></I>
           Connected apps
         </div>
-        {extLink}
+
       </div>
       <div style={sHead}>Apps</div>
       {connectedApps.map(a => (
@@ -193,7 +192,7 @@ function SubSkills({ onAction }: { onAction: () => void }) {
           <I size={16}><rect width="7" height="7" x="3" y="3" rx="1" /><rect width="7" height="7" x="14" y="3" rx="1" /><rect width="7" height="7" x="3" y="14" rx="1" /><rect width="7" height="7" x="14" y="14" rx="1" /></I>
           Skills library
         </div>
-        {extLink}
+
       </div>
       {mockSkills.map(g => (
         <div key={g.section}>
@@ -214,7 +213,7 @@ function SubOutput({ onAction }: { onAction: () => void }) {
     <div style={{ ...panel, left: '100%', top: 0, marginLeft: 4, minWidth: 230 }}>
       {outputFormats.map((f, i) => (
         <div key={f.label}>
-          {i === 1 && <div style={sep} />}
+{}
           <div onClick={onAction} style={{ ...row, justifyContent: 'space-between' }} onMouseEnter={hi} onMouseLeave={ho}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               <I size={16}>{f.icon}</I>{f.label}
@@ -235,7 +234,7 @@ function SubTemplates({ onAction }: { onAction: () => void }) {
           <I size={16}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M14 2v6h6" /></I>
           Template library
         </div>
-        {extLink}
+
       </div>
       {mockTemplates.map(g => (
         <div key={g.section}>
