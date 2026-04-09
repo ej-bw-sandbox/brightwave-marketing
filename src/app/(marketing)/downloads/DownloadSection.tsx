@@ -47,8 +47,8 @@ const c = {
 
 function WindowsIcon({ className }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 88 88" fill="currentColor">
-      <path d="M0 12.402l35.687-4.86v35.342H0V12.402zM39.635 6.467L87.794 0v42.884H39.635V6.467zM0 46.852h35.687v35.334L0 77.299V46.852zM39.635 46.852H87.794v42.884L39.635 83.218V46.852z" />
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M0 3.5l9.8-1.35v9.55H0zm10.8-1.5L24 0v11.7H10.8zM0 12.8h9.8v9.55L0 21zm10.8 0H24V24l-13.2-2.3z" />
     </svg>
   )
 }
@@ -63,8 +63,8 @@ function LinuxIcon({ className }: { className?: string }) {
 
 function AppleIcon({ className }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 384 512" fill="currentColor">
-      <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z" />
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701" />
     </svg>
   )
 }
@@ -97,10 +97,10 @@ const platformIconKey: Record<string, 'apple' | 'windows' | 'linux'> = {
   linux: 'linux',
 }
 
-const iconComponents = {
-  apple: AppleIcon,
-  windows: WindowsIcon,
-  linux: LinuxIcon,
+const iconComponents: Record<string, { component: React.FC<{ className?: string }>; sizeClass: string }> = {
+  apple: { component: AppleIcon, sizeClass: 'w-5 h-5' },
+  windows: { component: WindowsIcon, sizeClass: 'w-5 h-5' },
+  linux: { component: LinuxIcon, sizeClass: 'w-[18px] h-5' },
 }
 
 /** Map detected OS to a specific artifact */
@@ -240,7 +240,7 @@ export function DownloadSection({ manifest }: { manifest: DownloadManifest | nul
       {/* Platform sections */}
       <div className="flex flex-col gap-4 w-full">
         {platformGroups.map((group) => {
-          const Icon = iconComponents[group.iconKey]
+          const { component: Icon, sizeClass: iconSize } = iconComponents[group.iconKey]
           return (
             <div
               key={group.platform}
@@ -251,18 +251,13 @@ export function DownloadSection({ manifest }: { manifest: DownloadManifest | nul
               }}
             >
               {/* Platform header */}
-              <div className="flex items-center gap-3 px-6 pt-5 pb-3">
-                <div className="w-5 h-5 shrink-0" style={{ color: c.text }}>
-                  <Icon className="w-full h-full" />
+              <div className="flex items-baseline gap-3 px-6 pt-5 pb-3">
+                <div className="w-5 shrink-0 flex items-center justify-center translate-y-[1px]" style={{ color: c.text }}>
+                  <Icon className={iconSize} />
                 </div>
-                <div>
-                  <h3 className="text-base font-semibold" style={{ color: c.text }}>
-                    {group.label}
-                  </h3>
-                  <p className="text-xs" style={{ color: c.textMuted }}>
-                    {group.description}
-                  </p>
-                </div>
+                <h3 className="text-base font-semibold" style={{ color: c.text }}>
+                  {group.label}
+                </h3>
               </div>
 
               {/* Download rows */}
