@@ -214,11 +214,8 @@ function SubOutput({ onAction }: { onAction: () => void }) {
       {outputFormats.map((f, i) => (
         <div key={f.label}>
 {}
-          <div onClick={onAction} style={{ ...row, justifyContent: 'space-between' }} onMouseEnter={hi} onMouseLeave={ho}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <I size={16}>{f.icon}</I>{f.label}
-            </div>
-            {f.hasSub && chevron}
+          <div onClick={onAction} style={row} onMouseEnter={hi} onMouseLeave={ho}>
+            <I size={16}>{f.icon}</I>{f.label}
           </div>
         </div>
       ))}
