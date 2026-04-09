@@ -32,15 +32,43 @@ function detectOS(): DetectedOS {
 }
 
 /* ── Colors ── */
-const c = {
+const darkColors = {
   text: '#ffffff',
   textMuted: '#a5a6a8',
   textSubtle: '#5a5b5c',
   surface: '#1a1a1b',
-  surfaceHover: '#222223',
   border: 'rgba(255,255,255,0.08)',
   yellow: '#e7e70d',
-  bg: '#0f0f0f',
+  sectionBg: '#0f0f0f',
+  sectionText: '#ffffff',
+  subtitleColor: '#a5a6a8',
+}
+
+const lightColors = {
+  text: '#0f0f0f',
+  textMuted: '#5a5b5c',
+  textSubtle: '#a5a6a8',
+  surface: '#eff1f5',
+  border: 'rgba(0,0,0,0.08)',
+  yellow: '#b8b800',
+  sectionBg: '#ffffff',
+  sectionText: '#0f0f0f',
+  subtitleColor: '#5a5b5c',
+}
+
+function useTheme() {
+  const [isDark, setIsDark] = useState(true)
+  useEffect(() => {
+    const check = () => {
+      const html = document.documentElement
+      setIsDark(html.getAttribute('theme') === 'dark' || html.classList.contains('u-dark-mode'))
+    }
+    check()
+    const observer = new MutationObserver(check)
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['theme', 'class'] })
+    return () => observer.disconnect()
+  }, [])
+  return isDark
 }
 
 /* ── Platform Icons ── */
@@ -154,6 +182,8 @@ function groupByPlatform(artifacts: ManifestArtifact[]) {
 export function DownloadSection({ manifest }: { manifest: DownloadManifest | null }) {
   const [detectedOS, setDetectedOS] = useState<DetectedOS>(null)
   const [ready, setReady] = useState(false)
+  const isDark = useTheme()
+  const c = isDark ? darkColors : lightColors
 
   useEffect(() => {
     setDetectedOS(detectOS())

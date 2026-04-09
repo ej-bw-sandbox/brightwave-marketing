@@ -27,23 +27,14 @@ export default async function Page() {
 
   return (
     <>
-      <section
-        className="c-section relative overflow-hidden"
-        style={{ backgroundColor: '#0f0f0f', color: '#ffffff' }}
-      >
-        {/* Ambient glow */}
-        <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(231,231,13,0.04) 0%, transparent 70%)' }}
-        />
-
+      <section className="c-section relative overflow-hidden">
         <div className="c-container relative z-10">
           <div className="flex flex-col items-center text-center py-16 md:py-24">
             {doc.headline && (
-              <h1 className="c-title-1 text-white">{doc.headline}</h1>
+              <h1 className="c-title-1">{doc.headline}</h1>
             )}
             {doc.subheadline && (
-              <p className="c-text-2 max-w-3xl mt-4 mb-16" style={{ color: '#a5a6a8' }}>{doc.subheadline}</p>
+              <p className="c-text-2 max-w-3xl mt-4 mb-16 text-bw-gray-300">{doc.subheadline}</p>
             )}
             <DownloadSection manifest={manifest} />
           </div>
