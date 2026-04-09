@@ -316,7 +316,7 @@ export default function HeroPrompt() {
               <div style={{ position: 'relative' }} data-menu>
                 <div onClick={() => { setPlusOpen(v => !v); setActiveSub(null) }} role="button" tabIndex={0}
                   style={{ width: 36, height: 36, borderRadius: 10, border: '1px solid #d9d9d9', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-                  <I size={18} stroke="#888"><path d="M12 5v14" /><path d="M5 12h14" /></I>
+                  <I size={18} stroke="#555"><path d="M12 5v14" /><path d="M5 12h14" /></I>
                 </div>
                 {plusOpen && (
                   <div style={{ ...panel, bottom: '100%', left: 0, marginBottom: 6, minWidth: 220 }}>
@@ -384,7 +384,7 @@ export default function HeroPrompt() {
                 {/* Mic */}
                 <div onClick={openPopup} role="button" tabIndex={0}
                   style={{ width: 36, height: 36, borderRadius: 10, border: '1px solid #d9d9d9', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-                  <I size={18} stroke="#888"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" /><path d="M19 10v2a7 7 0 0 1-14 0v-2" /><line x1="12" x2="12" y1="19" y2="22" /></I>
+                  <I size={18} stroke="#555"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" /><path d="M19 10v2a7 7 0 0 1-14 0v-2" /><line x1="12" x2="12" y1="19" y2="22" /></I>
                 </div>
 
                 {/* Send */}
