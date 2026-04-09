@@ -95,7 +95,7 @@ export const siteSettings = defineType({
       fields: [
         { name: 'enabled', title: 'Enabled', type: 'boolean', initialValue: false },
         { name: 'text', title: 'Text', type: 'string' },
-        { name: 'link', title: 'Link', type: 'url' },
+        { name: 'link', title: 'Link', type: 'string', description: 'Absolute URL or relative path (e.g. /downloads)' },
         { name: 'linkText', title: 'Link Text', type: 'string' },
       ],
     }),
