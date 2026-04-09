@@ -46,11 +46,11 @@ const darkColors = {
 
 const lightColors = {
   text: '#0f0f0f',
-  textMuted: '#5a5b5c',
-  textSubtle: '#a5a6a8',
-  surface: '#eff1f5',
-  border: 'rgba(0,0,0,0.08)',
-  yellow: '#b8b800',
+  textMuted: '#414142',
+  textSubtle: '#5a5b5c',
+  surface: '#f5f5f5',
+  border: 'rgba(0,0,0,0.12)',
+  yellow: '#1a1a1a',
   sectionBg: '#ffffff',
   sectionText: '#0f0f0f',
   subtitleColor: '#5a5b5c',
@@ -125,10 +125,10 @@ const platformIconKey: Record<string, 'apple' | 'windows' | 'linux'> = {
   linux: 'linux',
 }
 
-const iconComponents: Record<string, { component: React.FC<{ className?: string }>; sizeClass: string }> = {
-  apple: { component: AppleIcon, sizeClass: 'w-5 h-5' },
-  windows: { component: WindowsIcon, sizeClass: 'w-5 h-5' },
-  linux: { component: LinuxIcon, sizeClass: 'w-[18px] h-5' },
+const iconComponents: Record<string, { component: React.FC<{ className?: string }>; sizeClass: string; offsetY: number }> = {
+  apple: { component: AppleIcon, sizeClass: 'w-5 h-5', offsetY: -1 },
+  windows: { component: WindowsIcon, sizeClass: 'w-5 h-5', offsetY: 0 },
+  linux: { component: LinuxIcon, sizeClass: 'w-[18px] h-5', offsetY: 0 },
 }
 
 /** Map detected OS to a specific artifact */
@@ -266,7 +266,7 @@ export function DownloadSection({ manifest }: { manifest: DownloadManifest | nul
       {/* Platform sections */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', width: '100%' }}>
         {platformGroups.map((group) => {
-          const { component: Icon, sizeClass: iconSize } = iconComponents[group.iconKey]
+          const { component: Icon, sizeClass: iconSize, offsetY } = iconComponents[group.iconKey]
           return (
             <div
               key={group.platform}
@@ -279,7 +279,7 @@ export function DownloadSection({ manifest }: { manifest: DownloadManifest | nul
             >
               {/* Platform header */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', padding: '1rem 1rem 0.75rem' }}>
-                <div style={{ width: 20, height: 20, flexShrink: 0, color: c.text, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ width: 20, height: 20, flexShrink: 0, color: c.text, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', top: offsetY }}>
                   <Icon className={iconSize} />
                 </div>
                 <h3 style={{ fontSize: '1rem', fontWeight: 600, color: c.text, margin: 0 }}>
@@ -310,8 +310,8 @@ export function DownloadSection({ manifest }: { manifest: DownloadManifest | nul
                         .{a.format} &middot; {formatBytes(a.size)}
                       </span>
                     </div>
-                    <span style={{ flexShrink: 0, color: c.yellow, opacity: 0.5 }}>
-                      <DownloadIcon className="w-4 h-4" />
+                    <span style={{ flexShrink: 0, color: c.yellow, opacity: 0.7 }}>
+                      <DownloadIcon className="w-5 h-5" />
                     </span>
                   </a>
                 ))}
