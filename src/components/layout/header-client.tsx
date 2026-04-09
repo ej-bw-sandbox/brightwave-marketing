@@ -336,7 +336,7 @@ export function HeaderClient({
         <div className="announcement-bar" style={{ background: '#1a1a2e', color: '#fff', textAlign: 'center', padding: '10px 16px', fontSize: '14px' }}>
           <span>{announcementBar.text}</span>
           {announcementBar.link && announcementBar.linkText && (
-            <a href={announcementBar.link} style={{ color: '#818cf8', marginLeft: '8px', textDecoration: 'underline' }}>{announcementBar.linkText}</a>
+            <Link href={announcementBar.link} style={{ color: '#818cf8', marginLeft: '8px', textDecoration: 'underline' }}>{announcementBar.linkText}</Link>
           )}
         </div>
       )}
