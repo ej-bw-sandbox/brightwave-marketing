@@ -185,21 +185,21 @@ export default async function UseCaseDetailPage({ params }: Props) {
       {/* ============================================================ */}
       {/* 1. HERO — 2/3 copy + 1/3 stat sidebar (dark, cc-hero)       */}
       {/* ============================================================ */}
-      <section className="c-section cc-hero">
+      <section className="c-section cc-template">
         <div className="c-container">
           {doc.eyebrow && (
-            <div className="eyebrow cc-no-bp" style={{ marginBottom: '2rem' }}>
-              <div className="block cc-primary" />
-              <span className="c-title-5">{stripHtml(doc.eyebrow)}</span>
+            <div className="eyebrow-flex" style={{ marginBottom: '2rem' }}>
+              <div className="block"></div>
+              <div className="c-title-5">{stripHtml(doc.eyebrow)}</div>
             </div>
           )}
 
-          <h1 className="c-title-1" style={{ paddingBottom: '2rem', borderBottom: '1px solid rgba(255,255,255,0.2)', marginBottom: '2rem' }}>
-            {doc.h1 || doc.title}
-          </h1>
+          <div className="bp40-underline">
+            <h1 className="c-title-1">{doc.h1 || doc.title}</h1>
+          </div>
 
           {(doc.heroSubtitle || doc.h2Hero) && (
-            <p className="c-text-3" style={{ color: 'rgba(255,255,255,0.5)', marginBottom: '2.5rem' }}>
+            <p className="c-text-3" style={{ marginTop: '2rem', marginBottom: '2.5rem' }}>
               {stripHtml(doc.heroSubtitle || doc.h2Hero)}
             </p>
           )}
@@ -219,16 +219,16 @@ export default async function UseCaseDetailPage({ params }: Props) {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(12rem, 1fr))', gap: '1rem', marginBottom: doc.heroImage?.asset ? '3rem' : '0' }}>
               {statPills.map((pill: any, i: number) => (
                 <div key={i} style={{
-                  background: 'rgba(255,255,255,0.03)',
-                  border: '1px solid rgba(255,255,255,0.08)',
-                  borderLeft: i === 0 ? '2px solid var(--lightmode--primary, #e7e70d)' : '1px solid rgba(255,255,255,0.08)',
+                  background: 'var(--colorprimitives--gray-75, #f5f5f5)',
+                  border: '1px solid var(--lightmode--onsurface-border, #e5e5e5)',
+                  borderLeft: i === 0 ? '2px solid var(--lightmode--primary, #e7e70d)' : '1px solid var(--lightmode--onsurface-border, #e5e5e5)',
                   padding: '1.5rem',
                   display: 'flex', flexDirection: 'column', gap: '0.25rem',
                 }}>
-                  <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.15em', color: 'rgba(255,255,255,0.4)', fontWeight: 600 }}>
+                  <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.15em', opacity: 0.5, fontWeight: 600 }}>
                     {pill.label}
                   </span>
-                  <span className="c-title-3" style={{ color: '#fff' }}>{pill.value}</span>
+                  <span className="c-title-3">{pill.value}</span>
                 </div>
               ))}
             </div>
