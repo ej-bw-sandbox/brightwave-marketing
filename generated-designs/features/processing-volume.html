@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Processing Volume</title>
+    <style>
+        body { background: #111111; min-height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0; padding: 2rem; }
+        @keyframes flow { from { stroke-dashoffset: 40; } to { stroke-dashoffset: 0; } }
+        .path-flow { stroke-dasharray: 4 8; animation: flow 1.5s linear infinite; }
+        .path-flow-fast { stroke-dasharray: 6 12; animation: flow 0.8s linear infinite; }
+        .glow-yellow { filter: drop-shadow(0 0 6px rgba(231, 231, 13, 0.6)); }
+        .glow-white { filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.4)); }
+    </style>
+</head>
+<body>
+    <div style="position:relative;width:760px;height:400px;background:#2D2D2D;border-radius:8px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);overflow:hidden;border:1px solid rgba(255,255,255,0.05);">
+        <svg style="position:absolute;inset:0;width:100%;height:100%;" viewBox="0 0 760 400" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <pattern id="structural-grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1" /><circle cx="0" cy="0" r="1" fill="rgba(255,255,255,0.1)" /></pattern>
+                <linearGradient id="yellow-beam" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="rgba(231,231,13,0)" /><stop offset="70%" stop-color="rgba(231,231,13,0.5)" /><stop offset="100%" stop-color="rgba(231,231,13,1)" /></linearGradient>
+                <radialGradient id="radial-glow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(231,231,13,0.08)" /><stop offset="100%" stop-color="rgba(231,231,13,0)" /></radialGradient>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#structural-grid)" />
+            <path d="M 0 10 L 10 0 M 750 0 L 760 10 M 760 390 L 750 400 M 10 400 L 0 390" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" fill="none" />
+            <line x1="20" y1="20" x2="40" y2="20" stroke="rgba(255,255,255,0.3)" stroke-width="2" />
+            <line x1="20" y1="20" x2="20" y2="40" stroke="rgba(255,255,255,0.3)" stroke-width="2" />
+            <line x1="740" y1="380" x2="720" y2="380" stroke="rgba(255,255,255,0.3)" stroke-width="2" />
+            <line x1="740" y1="380" x2="740" y2="360" stroke="rgba(255,255,255,0.3)" stroke-width="2" />
+            <!-- Input cluster -->
+            <g opacity="0.85">
+                <path d="M 40 60 Q 120 80 180 140 T 260 140" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1" />
+                <path d="M 30 180 Q 90 190 140 200 T 260 200" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1" />
+                <path d="M 50 320 Q 130 310 190 260 T 260 260" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1" />
+                <!-- Dense nodes -->
+                <rect x="35" y="45" width="4" height="4" fill="#ffffff" opacity="0.6"/><rect x="50" y="55" width="6" height="6" fill="none" stroke="#ffffff" stroke-width="1.2" />
+                <polygon points="70,40 73,43 70,46 67,43" fill="#ffffff" /><circle cx="85" cy="65" r="2" fill="#ffffff" opacity="0.8" />
+                <circle cx="110" cy="50" r="1.5" fill="#E7E70D" opacity="0.7" /><rect x="120" y="70" width="5" height="5" fill="#ffffff" />
+                <circle cx="30" cy="110" r="2.5" fill="none" stroke="#ffffff" stroke-width="1" /><rect x="55" y="105" width="4" height="4" fill="#ffffff" />
+                <rect x="80" y="115" width="6" height="8" fill="none" stroke="#ffffff" stroke-width="1.2" /><polygon points="105,110 110,115 105,120 100,115" fill="#ffffff" opacity="0.7" />
+                <circle cx="135" cy="130" r="2" fill="#E7E70D" /><rect x="75" y="145" width="5" height="5" fill="#ffffff" />
+                <rect x="25" y="170" width="5" height="5" fill="#ffffff" /><polygon points="50,175 55,180 50,185 45,180" fill="none" stroke="#ffffff" stroke-width="1.2" />
+                <circle cx="75" cy="175" r="3" fill="#ffffff" opacity="0.9" /><rect x="95" y="165" width="4" height="4" fill="#E7E70D" />
+                <rect x="115" y="180" width="7" height="3" fill="#ffffff" /><circle cx="145" cy="170" r="2" fill="none" stroke="#ffffff" stroke-width="1" />
+                <rect x="40" y="200" width="6" height="6" fill="none" stroke="#ffffff" stroke-width="1" /><circle cx="90" cy="205" r="2" fill="#ffffff" opacity="0.5" />
+                <rect x="125" y="195" width="4" height="4" fill="#ffffff" /><circle cx="165" cy="185" r="1.5" fill="#E7E70D" />
+                <circle cx="35" cy="235" r="1.5" fill="#ffffff" /><rect x="60" y="225" width="4" height="4" fill="#ffffff" opacity="0.6" />
+                <polygon points="85,230 90,235 85,240 80,235" fill="#ffffff" /><circle cx="130" cy="245" r="2.5" fill="#ffffff" />
+                <rect x="75" y="255" width="3" height="3" fill="#E7E70D" /><circle cx="145" cy="255" r="1.5" fill="#ffffff" />
+                <rect x="25" y="295" width="6" height="4" fill="#ffffff" opacity="0.7" /><circle cx="55" cy="285" r="2" fill="none" stroke="#ffffff" stroke-width="1" />
+                <polygon points="75,295 80,300 75,305 70,300" fill="#ffffff" opacity="0.4" /><rect x="95" y="285" width="4" height="4" fill="#ffffff" />
+                <circle cx="120" cy="305" r="2" fill="#E7E70D" /><rect x="40" y="325" width="3" height="3" fill="#ffffff" />
+            </g>
+            <!-- Parallel pipelines -->
+            <g stroke="rgba(255,255,255,0.2)" stroke-width="1.5" fill="none">
+                <path d="M 220 100 L 680 100" /><path d="M 240 140 L 700 140" />
+                <path d="M 200 200 L 720 200" stroke-width="2" stroke="rgba(255,255,255,0.25)" />
+                <path d="M 240 260 L 700 260" /><path d="M 220 300 L 680 300" />
+            </g>
+            <g fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5">
+                <path d="M 260 140 L 300 100 L 380 100" /><path d="M 260 200 L 320 140 L 440 140" />
+                <path d="M 280 260 L 340 200 L 400 200 L 440 160 L 520 160" /><path d="M 260 300 L 300 260 L 380 260 L 440 320 L 500 320" />
+                <path d="M 360 100 L 400 140 L 480 140 L 520 100" /><path d="M 400 260 L 440 200 L 540 200 L 580 240 L 640 240" />
+                <path d="M 320 140 L 320 200" stroke-dasharray="2 4" /><path d="M 480 140 L 480 260" stroke-dasharray="2 4" />
+            </g>
+            <g fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="1.5" stroke-linecap="round">
+                <path class="path-flow" d="M 260 140 L 300 100 L 360 100" />
+                <path class="path-flow-fast" d="M 200 200 L 420 200" stroke="#ffffff" stroke-width="2" />
+                <path class="path-flow" d="M 280 260 L 340 200 L 380 200" />
+                <path class="path-flow" d="M 420 140 L 480 140 L 520 180 L 600 180" />
+                <path class="path-flow-fast" d="M 460 200 L 540 200 L 580 240 L 660 240" />
+            </g>
+            <path d="M 360 100 L 400 140 L 460 140 M 520 160 L 560 160 L 600 120 L 680 120" fill="none" stroke="url(#yellow-beam)" stroke-width="2" class="path-flow" />
+            <!-- Nodes -->
+            <g>
+                <circle cx="300" cy="100" r="3" fill="#E7E70D" class="glow-yellow" /><circle cx="360" cy="100" r="2" fill="#E7E70D" />
+                <circle cx="520" cy="100" r="3" fill="#ffffff" /><rect x="230" y="96" width="8" height="8" fill="#ffffff" class="glow-white" />
+                <circle cx="320" cy="140" r="3.5" fill="#E7E70D" class="glow-yellow" /><circle cx="400" cy="140" r="2.5" fill="#E7E70D" />
+                <circle cx="480" cy="140" r="3" fill="#E7E70D" class="glow-yellow" />
+                <circle cx="340" cy="200" r="4" fill="#E7E70D" class="glow-yellow" /><circle cx="400" cy="200" r="4" fill="#E7E70D" class="glow-yellow" />
+                <circle cx="540" cy="200" r="3.5" fill="#E7E70D" class="glow-yellow" />
+                <rect x="370" y="194" width="12" height="12" fill="#ffffff" rx="2" />
+                <circle cx="480" cy="200" r="7" fill="#2D2D2D" stroke="#ffffff" stroke-width="2" /><circle cx="480" cy="200" r="3" fill="#ffffff" />
+                <rect x="600" y="195" width="20" height="10" fill="#ffffff" class="glow-white" />
+                <circle cx="280" cy="260" r="2.5" fill="#E7E70D" /><circle cx="380" cy="260" r="3" fill="#E7E70D" class="glow-yellow" />
+                <circle cx="480" cy="260" r="3" fill="#E7E70D" class="glow-yellow" /><circle cx="440" cy="260" r="4" fill="#ffffff" />
+                <circle cx="260" cy="300" r="2.5" fill="#E7E70D" class="glow-yellow" /><rect x="320" y="296" width="8" height="8" fill="#ffffff" />
+                <circle cx="640" cy="300" r="5" fill="none" stroke="#ffffff" stroke-width="1.5" /><circle cx="640" cy="300" r="1.5" fill="#E7E70D" />
+            </g>
+            <!-- Output -->
+            <g fill="#ffffff">
+                <rect x="700" y="98" width="15" height="4" opacity="0.8" /><rect x="725" y="98" width="5" height="4" opacity="0.4" />
+                <polygon points="720,137 726,140 720,143" /><polygon points="730,137 736,140 730,143" /><polygon points="740,137 746,140 740,143" opacity="0.5" />
+                <rect x="730" y="196" width="30" height="8" opacity="0.9" />
+                <polygon points="710,257 716,260 710,263" /><polygon points="720,257 726,260 720,263" /><polygon points="730,257 736,260 730,263" />
+                <rect x="710" y="298" width="10" height="4" opacity="0.8" /><rect x="725" y="298" width="10" height="4" opacity="0.4" />
+            </g>
+            <circle cx="340" cy="200" r="100" fill="url(#radial-glow)" opacity="0.5" pointer-events="none" />
+        </svg>
+    </div>
+</body>
+</html>

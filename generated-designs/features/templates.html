@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Templates</title>
+    <style>
+        body { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: #141414; overflow: hidden; margin: 0; }
+        @keyframes flow { to { stroke-dashoffset: -40; } }
+        @keyframes pulse-glow { 0%, 100% { filter: drop-shadow(0 0 4px rgba(231, 231, 13, 0.4)); transform: scale(1); } 50% { filter: drop-shadow(0 0 8px rgba(231, 231, 13, 0.8)); transform: scale(1.1); } }
+        .animate-flow { stroke-dasharray: 4 6; animation: flow 1.5s linear infinite; }
+        .pulse-node { transform-origin: center; transform-box: fill-box; animation: pulse-glow 3s ease-in-out infinite; }
+        svg { shape-rendering: geometricPrecision; }
+    </style>
+</head>
+<body>
+    <div style="position:relative;overflow:hidden;box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.1);width:760px;height:400px;background:#2D2D2D;">
+        <svg width="760" height="400" viewBox="0 0 760 400" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <pattern id="bg-grid" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="0.75" fill="rgba(255,255,255,0.06)" /></pattern>
+                <g id="layout-a"><rect x="10" y="10" width="90" height="20" rx="2" fill="currentColor" fill-opacity="0.15" /><rect x="10" y="38" width="40" height="50" rx="1" fill="currentColor" fill-opacity="0.1" /><rect x="60" y="38" width="40" height="50" rx="1" fill="currentColor" fill-opacity="0.1" /><line x1="10" y1="96" x2="100" y2="96" stroke="currentColor" stroke-width="1" stroke-opacity="0.2" /><line x1="10" y1="104" x2="70" y2="104" stroke="currentColor" stroke-width="1" stroke-opacity="0.2" /><line x1="10" y1="112" x2="85" y2="112" stroke="currentColor" stroke-width="1" stroke-opacity="0.2" /></g>
+                <g id="layout-b"><rect x="10" y="10" width="30" height="10" rx="1" fill="currentColor" fill-opacity="0.1" /><rect x="10" y="30" width="12" height="12" rx="2" fill="currentColor" fill-opacity="0.2" /><line x1="28" y1="36" x2="100" y2="36" stroke="currentColor" stroke-width="2" stroke-opacity="0.15" /><rect x="10" y="50" width="12" height="12" rx="2" fill="currentColor" fill-opacity="0.2" /><line x1="28" y1="56" x2="80" y2="56" stroke="currentColor" stroke-width="2" stroke-opacity="0.15" /><rect x="10" y="70" width="12" height="12" rx="2" fill="currentColor" fill-opacity="0.2" /><line x1="28" y1="76" x2="90" y2="76" stroke="currentColor" stroke-width="2" stroke-opacity="0.15" /><rect x="10" y="90" width="12" height="12" rx="2" fill="currentColor" fill-opacity="0.2" /><line x1="28" y1="96" x2="60" y2="96" stroke="currentColor" stroke-width="2" stroke-opacity="0.15" /></g>
+                <g id="layout-c"><rect x="10" y="10" width="90" height="12" rx="1" fill="currentColor" fill-opacity="0.1" /><rect x="10" y="30" width="42" height="35" rx="2" fill="currentColor" fill-opacity="0.15" /><rect x="58" y="30" width="42" height="35" rx="2" fill="currentColor" fill-opacity="0.15" /><rect x="10" y="75" width="90" height="40" rx="2" fill="currentColor" fill-opacity="0.2" /></g>
+                <filter id="accent-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur1" /><feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur2" /><feMerge><feMergeNode in="blur1" /><feMergeNode in="blur2" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#bg-grid)" />
+            <!-- Tick marks -->
+            <path d="M 0,20 L 5,20 M 0,60 L 10,60 M 0,100 L 5,100 M 0,140 L 10,140 M 0,180 L 5,180 M 0,220 L 10,220 M 0,260 L 5,260 M 0,300 L 10,300 M 0,340 L 5,340 M 0,380 L 10,380" stroke="rgba(255,255,255,0.15)" stroke-width="1" />
+            <path d="M 40,0 L 40,5 M 100,0 L 100,10 M 160,0 L 160,5 M 220,0 L 220,10 M 280,0 L 280,5 M 340,0 L 340,10 M 400,0 L 400,5 M 460,0 L 460,10 M 520,0 L 520,5 M 580,0 L 580,10 M 640,0 L 640,5 M 700,0 L 700,10" stroke="rgba(255,255,255,0.15)" stroke-width="1" />
+            <line x1="220" y1="0" x2="220" y2="400" stroke="rgba(255,255,255,0.03)" stroke-width="1" />
+            <line x1="400" y1="0" x2="400" y2="400" stroke="rgba(255,255,255,0.03)" stroke-width="1" />
+            <line x1="0" y1="220" x2="760" y2="220" stroke="rgba(255,255,255,0.03)" stroke-width="1" />
+            <!-- Reuse paths -->
+            <g stroke="rgba(255,255,255,0.25)" stroke-width="1" fill="none">
+                <path d="M 255,180 L 255,200 L 95,200 L 95,220" />
+                <path d="M 295,180 L 295,205 L 455,205 L 455,220" />
+                <path d="M 330,110 L 375,110 L 375,25 L 635,25 L 635,40" />
+                <path d="M 375,70 L 520,70 L 520,290 L 510,290" opacity="0.5" />
+                <path d="M 220,130 L 170,130 L 170,290 L 150,290" opacity="0.5" />
+            </g>
+            <g stroke="#E7E70D" stroke-width="1.5" fill="none" opacity="0.9" class="animate-flow">
+                <path d="M 255,180 L 255,200 L 95,200 L 95,220" />
+                <path d="M 330,110 L 375,110 L 375,25 L 635,25 L 635,40" />
+            </g>
+            <!-- Template grid -->
+            <g transform="translate(40, 40)" color="#ffffff"><rect width="110" height="140" rx="3" stroke="currentColor" stroke-width="1" stroke-opacity="0.15" fill="#2D2D2D" /><use href="#layout-b" opacity="0.3" /></g>
+            <g transform="translate(220, 40)" color="#ffffff">
+                <rect width="110" height="140" rx="3" stroke="currentColor" stroke-width="1.5" fill="#2D2D2D" />
+                <rect x="-4" y="-4" width="20" height="20" fill="none" stroke="#E7E70D" stroke-width="2" stroke-dasharray="8 30" opacity="0.7"/>
+                <rect x="94" y="-4" width="20" height="20" fill="none" stroke="#E7E70D" stroke-width="2" stroke-dasharray="8 30" opacity="0.7" transform="rotate(90 104 6)"/>
+                <g opacity="0.9"><rect x="10" y="10" width="90" height="15" rx="1" fill="currentColor" fill-opacity="0.25" /><rect x="10" y="32" width="40" height="30" rx="1" fill="currentColor" fill-opacity="0.4" stroke="#E7E70D" stroke-width="0.5" /><rect x="60" y="32" width="40" height="30" rx="1" fill="currentColor" fill-opacity="0.15" /><rect x="10" y="70" width="90" height="50" rx="2" fill="currentColor" fill-opacity="0.2" /><line x1="20" y1="80" x2="70" y2="80" stroke="#E7E70D" stroke-width="1.5" opacity="0.8" /><line x1="20" y1="90" x2="50" y2="90" stroke="currentColor" stroke-width="1.5" opacity="0.5" /><line x1="20" y1="100" x2="80" y2="100" stroke="currentColor" stroke-width="1.5" opacity="0.5" /></g>
+            </g>
+            <g transform="translate(400, 40)" color="#ffffff"><rect width="110" height="140" rx="3" stroke="currentColor" stroke-width="1" stroke-opacity="0.15" fill="#2D2D2D" /><use href="#layout-a" opacity="0.3" /></g>
+            <g transform="translate(580, 40)" color="#ffffff"><rect width="110" height="140" rx="3" stroke="currentColor" stroke-width="1" stroke-opacity="0.6" fill="#2D2D2D" /><use href="#layout-c" opacity="0.7" /><path d="M -5,10 L 0,10 L 0,5" stroke="#E7E70D" stroke-width="1.5" fill="none" opacity="0.8"/></g>
+            <g transform="translate(40, 220)" color="#ffffff"><rect width="110" height="140" rx="3" stroke="currentColor" stroke-width="1" stroke-opacity="0.6" fill="#2D2D2D" /><use href="#layout-a" opacity="0.7" /><rect x="10" y="38" width="40" height="50" rx="1" fill="none" stroke="#E7E70D" stroke-width="1" opacity="0.7" /></g>
+            <g transform="translate(220, 220)" color="#ffffff"><rect width="110" height="140" rx="3" stroke="currentColor" stroke-width="1" stroke-dasharray="2 4" stroke-opacity="0.15" fill="#2D2D2D" /><use href="#layout-c" opacity="0.2" /></g>
+            <g transform="translate(400, 220)" color="#ffffff"><rect width="110" height="140" rx="3" stroke="currentColor" stroke-width="1" stroke-opacity="0.5" fill="#2D2D2D" /><use href="#layout-b" opacity="0.6" /></g>
+            <g transform="translate(580, 220)" color="#ffffff"><rect width="110" height="140" rx="3" stroke="currentColor" stroke-width="1" stroke-opacity="0.15" fill="#2D2D2D" /><use href="#layout-a" opacity="0.3" /></g>
+            <!-- Junction nodes -->
+            <circle cx="255" cy="180" r="2.5" fill="#FFFFFF" /><rect x="253" y="198" width="4" height="4" fill="#FFFFFF" />
+            <polygon points="95,196 99,200 95,204 91,200" fill="#FFFFFF" />
+            <circle cx="95" cy="220" r="3.5" fill="#E7E70D" filter="url(#accent-glow)" class="pulse-node" />
+            <circle cx="295" cy="180" r="2.5" fill="#FFFFFF" /><rect x="293" y="203" width="4" height="4" fill="#FFFFFF" opacity="0.6" />
+            <polygon points="455,201 459,205 455,209 451,205" fill="#FFFFFF" opacity="0.6" />
+            <circle cx="455" cy="220" r="3" fill="#E7E70D" opacity="0.7" />
+            <circle cx="330" cy="110" r="2.5" fill="#E7E70D" /><polygon points="375,106 379,110 375,114 371,110" fill="#FFFFFF" />
+            <rect x="373" y="23" width="4" height="4" fill="#FFFFFF" /><polygon points="635,21 639,25 635,29 631,25" fill="#FFFFFF" />
+            <circle cx="635" cy="40" r="3.5" fill="#E7E70D" filter="url(#accent-glow)" class="pulse-node" />
+            <circle cx="375" cy="70" r="1.5" fill="#FFFFFF" opacity="0.5" /><circle cx="510" cy="290" r="2" fill="#FFFFFF" opacity="0.5" />
+            <circle cx="170" cy="130" r="1.5" fill="#FFFFFF" opacity="0.5" /><circle cx="150" cy="290" r="2" fill="#FFFFFF" opacity="0.5" />
+            <circle cx="220" cy="40" r="2" fill="#E7E70D" /><circle cx="330" cy="40" r="2" fill="#E7E70D" /><circle cx="220" cy="180" r="2" fill="#E7E70D" />
+        </svg>
+    </div>
+</body>
+</html>

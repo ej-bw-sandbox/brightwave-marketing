@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Process Oversight Illustration</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .svc-container {
+            width: 760px;
+            height: 400px;
+            background-color: #2D2D2D;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        svg { display: block; width: 100%; height: 100%; }
+        .bg-grid { stroke: rgba(255, 255, 255, 0.04); stroke-width: 1; fill: none; }
+        .bg-grid-major { stroke: rgba(255, 255, 255, 0.08); stroke-width: 1; stroke-dasharray: 4 4; fill: none; }
+        .path-sub { stroke: rgba(255, 255, 255, 0.35); stroke-width: 1.5; fill: none; stroke-linecap: square; }
+        .path-main { stroke: rgba(255, 255, 255, 0.85); stroke-width: 2.5; fill: none; stroke-linecap: square; stroke-linejoin: miter; }
+        .path-meta { stroke: rgba(255, 255, 255, 0.4); stroke-width: 1; fill: none; stroke-dasharray: 3 4; }
+        .path-bridge { stroke: rgba(231, 231, 13, 0.6); stroke-width: 1.5; fill: none; stroke-dasharray: 2 3; }
+        .path-solid-bridge { stroke: rgba(255, 255, 255, 0.6); stroke-width: 1.5; fill: none; }
+        .hub-bracket { stroke: rgba(255, 255, 255, 0.3); stroke-width: 2; fill: none; }
+        .node-white { fill: #FFFFFF; }
+        .node-yellow { fill: #E7E70D; }
+        .node-outline { fill: #2D2D2D; stroke: #FFFFFF; stroke-width: 2; }
+    </style>
+</head>
+<body>
+
+<div class="svc-container">
+    <svg viewBox="0 0 760 400" xmlns="http://www.w3.org/2000/svg">
+
+        <defs>
+            <rect id="n-square" x="-4" y="-4" width="8" height="8" class="node-white" />
+            <rect id="n-square-lg" x="-5" y="-5" width="10" height="10" class="node-white" />
+            <circle id="n-circle" r="4.5" class="node-white" />
+            <polygon id="n-diamond" points="0,-6 6,0 0,6 -6,0" class="node-white" />
+            <polygon id="n-diamond-lg" points="0,-8 8,0 0,8 -8,0" class="node-white" />
+            <circle id="a-dot" r="2.5" class="node-yellow" />
+            <circle id="a-dot-lg" r="3.5" class="node-yellow" />
+            <pattern id="grid-pattern" width="20" height="20" patternUnits="userSpaceOnUse">
+                <path d="M 20 0 L 0 0 0 20" class="bg-grid" />
+            </pattern>
+        </defs>
+
+        <rect width="100%" height="100%" fill="url(#grid-pattern)" />
+        <path d="M 380 0 V 400" class="bg-grid-major" />
+        <path d="M 0 200 H 760" class="bg-grid-major" />
+
+        <!-- Team Inputs -->
+        <path d="M 40 80 H 130 L 160 110 H 220" class="path-sub" />
+        <path d="M 40 140 H 130 L 160 110" class="path-sub" />
+        <path d="M 40 260 H 130 L 160 290 H 220" class="path-sub" />
+        <path d="M 40 320 H 130 L 160 290" class="path-sub" />
+
+        <!-- Main Process Lanes -->
+        <path d="M 160 110 H 260 L 300 150 H 460 L 500 110 H 720" class="path-main" />
+        <path d="M 160 290 H 260 L 300 250 H 460 L 500 290 H 720" class="path-main" />
+
+        <!-- Hub Brackets -->
+        <path d="M 260 70 H 240 V 90" class="hub-bracket" />
+        <path d="M 260 330 H 240 V 310" class="hub-bracket" />
+        <path d="M 500 70 H 520 V 90" class="hub-bracket" />
+        <path d="M 500 330 H 520 V 310" class="hub-bracket" />
+        <rect x="240" y="70" width="280" height="260" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
+
+        <!-- Cross-Lane Bridges -->
+        <path d="M 300 150 V 250" class="path-solid-bridge" />
+        <path d="M 460 150 V 250" class="path-solid-bridge" />
+        <path d="M 380 90 V 310" class="path-bridge" />
+        <path d="M 260 200 H 500" class="path-solid-bridge" />
+
+        <!-- Meta Lines -->
+        <path d="M 270 135 H 295 L 315 155 H 445 L 465 135 H 490" class="path-meta" />
+        <path d="M 270 265 H 295 L 315 245 H 445 L 465 265 H 490" class="path-meta" />
+
+        <!-- Input Nodes -->
+        <use href="#n-square" x="40" y="80" />
+        <use href="#n-square" x="40" y="140" />
+        <use href="#n-square" x="40" y="260" />
+        <use href="#n-square" x="40" y="320" />
+
+        <!-- Convergence Checks -->
+        <use href="#n-circle" x="160" y="110" />
+        <use href="#a-dot" x="160" y="110" />
+        <use href="#n-circle" x="160" y="290" />
+        <use href="#a-dot" x="160" y="290" />
+
+        <!-- Hub Entry -->
+        <use href="#n-diamond" x="260" y="110" />
+        <use href="#n-diamond" x="260" y="290" />
+
+        <!-- Hub Corner Nodes -->
+        <use href="#n-square-lg" x="300" y="150" />
+        <use href="#n-square-lg" x="460" y="150" />
+        <use href="#n-square-lg" x="300" y="250" />
+        <use href="#n-square-lg" x="460" y="250" />
+        <use href="#a-dot" x="300" y="150" />
+        <use href="#a-dot" x="460" y="150" />
+        <use href="#a-dot" x="300" y="250" />
+        <use href="#a-dot" x="460" y="250" />
+
+        <!-- Bridge Crossings -->
+        <use href="#n-circle" x="300" y="200" />
+        <use href="#n-circle" x="460" y="200" />
+
+        <!-- Center Oversight Node -->
+        <circle cx="380" cy="200" r="14" class="node-outline" stroke-dasharray="4 2" />
+        <circle cx="380" cy="200" r="9" class="node-outline" />
+        <use href="#n-diamond-lg" x="380" y="200" />
+        <use href="#a-dot-lg" x="380" y="200" />
+
+        <!-- Spine Accents -->
+        <use href="#n-circle" x="380" y="150" />
+        <use href="#n-circle" x="380" y="250" />
+        <use href="#a-dot" x="380" y="110" />
+        <use href="#a-dot" x="380" y="290" />
+
+        <!-- Hub Exit -->
+        <use href="#n-diamond" x="500" y="110" />
+        <use href="#n-diamond" x="500" y="290" />
+
+        <!-- Output Progress -->
+        <use href="#n-circle" x="620" y="110" />
+        <use href="#a-dot" x="620" y="110" />
+        <use href="#n-circle" x="620" y="290" />
+        <use href="#a-dot" x="620" y="290" />
+
+        <!-- Final Output -->
+        <circle cx="720" cy="110" r="6" class="node-outline" />
+        <use href="#a-dot" x="720" y="110" />
+        <circle cx="720" cy="290" r="6" class="node-outline" />
+        <use href="#a-dot" x="720" y="290" />
+
+        <!-- Monitor Bar (Top Right) -->
+        <g transform="translate(680, 40)">
+            <rect x="0" y="0" width="24" height="2" fill="rgba(255,255,255,0.6)" />
+            <rect x="0" y="6" width="32" height="2" fill="rgba(255,255,255,0.2)" />
+            <rect x="0" y="12" width="16" height="2" fill="#E7E70D" />
+            <circle cx="36" cy="1" r="1.5" class="node-white" />
+        </g>
+
+        <!-- Coordinate ID (Top Left) -->
+        <g transform="translate(40, 40)">
+            <rect x="0" y="0" width="4" height="4" fill="rgba(255,255,255,0.8)" />
+            <rect x="6" y="0" width="4" height="4" fill="rgba(255,255,255,0.4)" />
+            <rect x="12" y="0" width="4" height="4" fill="rgba(255,255,255,0.2)" />
+            <use href="#a-dot" x="22" y="2" />
+        </g>
+
+        <!-- Timeline -->
+        <path d="M 40 370 H 720" class="path-meta" style="stroke-opacity: 0.3;" />
+        <path d="M 240 370 H 520" stroke="#E7E70D" stroke-width="2" fill="none" />
+        <polygon points="380,366 384,372 376,372" fill="#FFFFFF" />
+        <path d="M 40 368 V 372 M 140 368 V 372 M 240 368 V 374 M 340 368 V 372 M 420 368 V 372 M 520 368 V 374 M 620 368 V 372 M 720 368 V 372" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" fill="none" />
+
+    </svg>
+</div>
+
+</body>
+</html>

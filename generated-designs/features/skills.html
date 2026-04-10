@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skills</title>
+    <style>
+        body { background: #1A1A1A; width: 100%; min-height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0; padding: 2rem; }
+        @keyframes pulse-flow { 0% { stroke-dashoffset: 20; opacity: 0.3; } 50% { opacity: 0.8; } 100% { stroke-dashoffset: 0; opacity: 0.3; } }
+        .data-flow { stroke-dasharray: 4 6; animation: pulse-flow 2s linear infinite; }
+    </style>
+</head>
+<body>
+    <div style="width:760px;height:400px;background:#2D2D2D;position:relative;box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);overflow:hidden;border-radius:2px;border:1px solid rgba(255,255,255,0.05);">
+        <svg width="760" height="400" viewBox="0 0 760 400" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;">
+            <defs>
+                <pattern id="grid-pattern" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="rgba(255,255,255,0.06)" /><path d="M 0,0 L 20,0 L 20,20 L 0,20 Z" fill="none" stroke="rgba(255,255,255,0.015)" stroke-width="0.5"/></pattern>
+                <radialGradient id="core-glow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.08" /><stop offset="100%" stop-color="#2D2D2D" stop-opacity="0" /></radialGradient>
+                <filter id="node-shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.35"/></filter>
+                <linearGradient id="fade-out-left" x1="100%" y1="0%" x2="0%" y2="0%"><stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.4" /><stop offset="100%" stop-color="#FFFFFF" stop-opacity="0" /></linearGradient>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid-pattern)" />
+            <circle cx="380" cy="200" r="280" fill="url(#core-glow)" />
+            <!-- Brackets -->
+            <g stroke="rgba(255,255,255,0.2)" stroke-width="1.5" fill="none" stroke-linecap="square">
+                <path d="M 30,50 L 30,30 L 50,30" /><path d="M 730,350 L 730,370 L 710,370" />
+            </g>
+            <!-- Technical notations -->
+            <g stroke="rgba(255,255,255,0.15)" stroke-width="1" fill="none">
+                <line x1="300" y1="300" x2="460" y2="300" stroke-dasharray="2 3" />
+                <line x1="300" y1="295" x2="300" y2="305" stroke="rgba(255,255,255,0.3)" />
+                <line x1="460" y1="295" x2="460" y2="305" stroke="rgba(255,255,255,0.3)" />
+                <line x1="380" y1="300" x2="380" y2="292" stroke="rgba(255,255,255,0.3)" />
+                <line x1="600" y1="30" x2="600" y2="120" stroke-dasharray="1 4" />
+            </g>
+            <!-- Data busses -->
+            <g stroke="rgba(255,255,255,0.05)" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M 210,150 L 260,150 L 260,172.5 L 332,172.5" />
+                <path d="M 427.5,227.5 L 480,227.5 L 480,220 L 555,220" />
+            </g>
+            <!-- Connection paths -->
+            <g stroke="rgba(255,255,255,0.4)" stroke-width="1.5" fill="none" stroke-linejoin="miter">
+                <path d="M 210,150 L 260,150 L 260,172.5 L 332,172.5" />
+                <path d="M 180,260 L 180,227.5 L 332,227.5" />
+                <path d="M 427.5,227.5 L 480,227.5 L 480,220 L 555,220" />
+                <path d="M 592.5,75 L 592.5,120 L 600,120 L 600,175" />
+                <path d="M 140,135 L 60,135" stroke="url(#fade-out-left)" />
+                <path d="M 380,255 L 380,340 L 480,340" />
+                <line x1="427" y1="192" x2="432" y2="192" stroke="#FFFFFF" stroke-width="2"/>
+                <line x1="427" y1="208" x2="432" y2="208" stroke="#FFFFFF" stroke-width="2"/>
+            </g>
+            <path d="M 210,150 L 260,150 L 260,172.5" stroke="#E7E70D" stroke-width="1.5" fill="none" class="data-flow" />
+            <!-- Nodes -->
+            <g filter="url(#node-shadow)">
+                <!-- Core hexagon -->
+                <g transform="translate(380, 200)">
+                    <polygon points="0,-55 47.6,-27.5 47.6,27.5 0,55 -47.6,27.5 -47.6,-27.5" fill="#FFFFFF" />
+                    <polygon points="0,-45 39,-22.5 39,22.5 0,45 -39,22.5 -39,-22.5" fill="none" stroke="#CBD5E1" stroke-width="1.5" />
+                    <circle cx="0" cy="0" r="12" fill="none" stroke="#CBD5E1" stroke-width="1.5" />
+                    <circle cx="0" cy="0" r="4" fill="#CBD5E1" />
+                </g>
+                <!-- Plugin module -->
+                <g transform="translate(433, 200)">
+                    <path d="M 0,-15 L 23,-15 L 33,-5 L 33,5 L 23,15 L 0,15 Z" fill="#FFFFFF" />
+                    <path d="M 4,-10 L 20,-10 L 28,-2 L 28,2 L 20,10 L 4,10 Z" fill="none" stroke="#CBD5E1" stroke-width="1" />
+                </g>
+                <!-- Input square -->
+                <g><rect x="140" y="100" width="70" height="70" rx="3" fill="#FFFFFF" /><rect x="148" y="108" width="54" height="54" rx="1.5" fill="none" stroke="#CBD5E1" stroke-width="1.5" /><line x1="148" y1="135" x2="202" y2="135" stroke="#CBD5E1" stroke-width="1" /></g>
+                <!-- Output circle -->
+                <g><circle cx="600" cy="220" r="45" fill="#FFFFFF" /><circle cx="600" cy="220" r="35" fill="none" stroke="#CBD5E1" stroke-width="1.5" /><circle cx="600" cy="220" r="20" fill="none" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="4 2" /></g>
+                <!-- Diamond -->
+                <g><polygon points="180,260 220,300 180,340 140,300" fill="#FFFFFF" /><polygon points="180,272 208,300 180,328 152,300" fill="none" stroke="#CBD5E1" stroke-width="1.5" /></g>
+                <!-- Array blocks -->
+                <g><rect x="575" y="45" width="105" height="35" rx="4" fill="#3F3F46" /><rect x="580" y="50" width="25" height="25" rx="2" fill="#FFFFFF" /><rect x="615" y="50" width="25" height="25" rx="2" fill="#FFFFFF" /><rect x="650" y="50" width="25" height="25" rx="2" fill="#FFFFFF" /><line x1="605" y1="62.5" x2="615" y2="62.5" stroke="#E5E7EB" stroke-width="2" /><line x1="640" y1="62.5" x2="650" y2="62.5" stroke="#E5E7EB" stroke-width="2" /></g>
+            </g>
+            <!-- Connection ports -->
+            <g fill="#2D2D2D" stroke="#FFFFFF" stroke-width="1.5">
+                <circle cx="332.4" cy="172.5" r="4" /><circle cx="332.4" cy="227.5" r="4" /><circle cx="380" cy="255" r="4" />
+                <circle cx="427.6" cy="172.5" r="3" /><circle cx="427.6" cy="227.5" r="3" />
+                <rect x="207" y="146" width="6" height="8" rx="1" />
+                <circle cx="555" cy="220" r="4.5" /><circle cx="600" cy="175" r="4.5" />
+                <circle cx="592.5" cy="75" r="3" /><circle cx="480" cy="340" r="4" />
+            </g>
+            <!-- Yellow accents -->
+            <g>
+                <circle cx="260" cy="150" r="3.5" fill="#E7E70D" /><circle cx="260" cy="150" r="8" fill="none" stroke="#E7E70D" stroke-width="1" opacity="0.4" />
+                <circle cx="260" cy="172.5" r="3.5" fill="#E7E70D" /><circle cx="260" cy="172.5" r="8" fill="none" stroke="#E7E70D" stroke-width="1" opacity="0.4" />
+                <circle cx="180" cy="227.5" r="3.5" fill="#E7E70D" /><circle cx="180" cy="227.5" r="8" fill="none" stroke="#E7E70D" stroke-width="1" opacity="0.4" />
+                <circle cx="480" cy="227.5" r="3.5" fill="#E7E70D" /><circle cx="480" cy="227.5" r="8" fill="none" stroke="#E7E70D" stroke-width="1" opacity="0.4" />
+                <circle cx="480" cy="220" r="3.5" fill="#E7E70D" /><circle cx="480" cy="220" r="8" fill="none" stroke="#E7E70D" stroke-width="1" opacity="0.4" />
+                <circle cx="592.5" cy="120" r="3.5" fill="#E7E70D" /><circle cx="592.5" cy="120" r="8" fill="none" stroke="#E7E70D" stroke-width="1" opacity="0.4" />
+                <circle cx="600" cy="120" r="3.5" fill="#E7E70D" /><circle cx="600" cy="120" r="8" fill="none" stroke="#E7E70D" stroke-width="1" opacity="0.4" />
+                <circle cx="210" cy="150" r="1.5" fill="#E7E70D" /><circle cx="555" cy="220" r="1.5" fill="#E7E70D" />
+                <circle cx="180" cy="260" r="1.5" fill="#E7E70D" /><circle cx="332.4" cy="172.5" r="1.5" fill="#E7E70D" />
+            </g>
+        </svg>
+    </div>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Manager Workflow</title>
+    <style>
+        body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: #1a1a1a; }
+        @keyframes drawIn {
+            0% { opacity: 0; transform: scale(0.98); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        .illustration-container { animation: drawIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    </style>
+</head>
+<body>
+
+<div class="illustration-container" style="width: 760px; height: 400px; background-color: #2D2D2D; position: relative; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);">
+    <svg width="760" height="400" viewBox="0 0 760 400" xmlns="http://www.w3.org/2000/svg">
+
+        <!-- Background -->
+        <g id="grid-and-frame">
+            <circle cx="380" cy="200" r="120" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1" stroke-dasharray="4 6" />
+            <circle cx="380" cy="200" r="220" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1" />
+            <circle cx="380" cy="200" r="320" fill="none" stroke="rgba(255,255,255,0.02)" stroke-width="1" />
+            <line x1="40" y1="100" x2="720" y2="100" stroke="rgba(255,255,255,0.05)" stroke-width="1" stroke-dasharray="10 10" />
+            <line x1="40" y1="300" x2="720" y2="300" stroke="rgba(255,255,255,0.05)" stroke-width="1" stroke-dasharray="10 10" />
+            <rect x="25" y="25" width="710" height="350" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1" />
+            <path d="M 25,45 L 25,25 L 45,25" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" />
+            <path d="M 735,45 L 735,25 L 715,25" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" />
+            <path d="M 25,355 L 25,375 L 45,375" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" />
+            <path d="M 735,355 L 735,375 L 715,375" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" />
+            <path d="M 195,100 L 205,100 M 200,95 L 200,105" stroke="rgba(255,255,255,0.2)" stroke-width="1" />
+            <path d="M 555,100 L 565,100 M 560,95 L 560,105" stroke="rgba(255,255,255,0.2)" stroke-width="1" />
+            <path d="M 195,300 L 205,300 M 200,295 L 200,305" stroke="rgba(255,255,255,0.2)" stroke-width="1" />
+            <path d="M 555,300 L 565,300 M 560,295 L 560,305" stroke="rgba(255,255,255,0.2)" stroke-width="1" />
+        </g>
+
+        <!-- Macro Structure -->
+        <g id="macro-paths">
+            <polygon points="380,40 640,200 380,360 120,200" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+            <polygon points="380,90 520,200 380,310 240,200" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1" />
+            <ellipse cx="380" cy="200" rx="160" ry="50" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1" transform="rotate(-20 380 200)" stroke-dasharray="8 6" />
+            <ellipse cx="380" cy="200" rx="40" ry="150" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1" transform="rotate(35 380 200)" />
+            <path d="M 80,240 Q 380,80 680,240" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="2" />
+        </g>
+
+        <!-- Connections & Clusters -->
+        <g id="connections-and-clusters">
+            <!-- Risk Floor -->
+            <line x1="160" y1="340" x2="600" y2="340" stroke="rgba(255,255,255,0.6)" stroke-width="1.5" />
+            <line x1="380" y1="245" x2="380" y2="334" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-dasharray="5 3" />
+            <line x1="200" y1="335" x2="280" y2="260" stroke="rgba(255,255,255,0.3)" stroke-width="1" />
+            <line x1="560" y1="332" x2="480" y2="260" stroke="rgba(255,255,255,0.3)" stroke-width="1" />
+            <rect x="195" y="335" width="10" height="10" fill="#2D2D2D" stroke="#E7E70D" stroke-width="1.5" />
+            <circle cx="380" cy="340" r="5" fill="#ffffff" />
+            <polygon points="560,332 568,345 552,345" fill="#2D2D2D" stroke="#ffffff" stroke-width="1.5" />
+            <circle cx="240" cy="340" r="2" fill="#E7E70D" />
+            <circle cx="520" cy="340" r="2" fill="#E7E70D" />
+
+            <!-- Left Cluster (Alpha) -->
+            <line x1="340" y1="190" x2="180" y2="140" stroke="rgba(255,255,255,0.6)" stroke-width="1.5" />
+            <rect x="172" y="132" width="16" height="16" fill="#2D2D2D" stroke="#ffffff" stroke-width="2" transform="rotate(45 180 140)" />
+            <circle cx="180" cy="140" r="3" fill="#E7E70D" />
+            <line x1="180" y1="140" x2="120" y2="90" stroke="rgba(255,255,255,0.4)" stroke-width="1" />
+            <circle cx="120" cy="90" r="5" fill="#ffffff" opacity="0.8"/>
+            <line x1="180" y1="140" x2="90" y2="170" stroke="rgba(255,255,255,0.4)" stroke-width="1" />
+            <rect x="86" y="166" width="8" height="8" fill="none" stroke="#ffffff" stroke-width="1.5"/>
+            <line x1="180" y1="140" x2="240" y2="80" stroke="rgba(255,255,255,0.4)" stroke-width="1" />
+            <polygon points="240,75 245,85 235,85" fill="none" stroke="#ffffff" stroke-width="1.5" />
+            <circle cx="240" cy="80" r="2" fill="#E7E70D" />
+
+            <!-- Left Sub-Node -->
+            <line x1="380" y1="200" x2="260" y2="280" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" />
+            <circle cx="260" cy="280" r="22" fill="#2D2D2D" stroke="#ffffff" stroke-width="1.5" />
+            <rect x="252" y="272" width="16" height="16" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="1" transform="rotate(45 260 280)" />
+            <circle cx="260" cy="280" r="14" fill="none" stroke="#ffffff" stroke-width="2" stroke-dasharray="20 60" opacity="0.8" />
+            <circle cx="320" cy="240" r="2.5" fill="#E7E70D" />
+
+            <!-- Right Cluster (Defensive) -->
+            <path d="M 420,200 L 520,210 L 580,260" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" />
+            <circle cx="520" cy="210" r="3" fill="#E7E70D" />
+            <rect x="572" y="252" width="16" height="16" fill="#2D2D2D" stroke="#ffffff" stroke-width="2" />
+            <line x1="588" y1="260" x2="660" y2="270" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+            <circle cx="660" cy="270" r="6" fill="#2D2D2D" stroke="#ffffff" stroke-width="2"/>
+            <line x1="580" y1="268" x2="580" y2="315" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+            <rect x="575" y="315" width="10" height="10" fill="#ffffff" opacity="0.7"/>
+            <path d="M 580,252 L 580,200 L 620,180" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1" />
+            <circle cx="580" cy="200" r="2.5" fill="#E7E70D" />
+
+            <!-- Right Sub-Node -->
+            <line x1="380" y1="200" x2="500" y2="110" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" />
+            <circle cx="500" cy="110" r="26" fill="#2D2D2D" stroke="#ffffff" stroke-width="1.5" opacity="0.9" />
+            <circle cx="500" cy="110" r="18" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1" />
+            <polygon points="500,98 510,118 490,118" fill="none" stroke="#ffffff" stroke-width="1.5" />
+            <circle cx="500" cy="110" r="2.5" fill="#E7E70D" />
+            <circle cx="440" cy="155" r="2.5" fill="#ffffff" opacity="0.5" />
+
+            <!-- Rebalancing Feedback Loop -->
+            <path d="M 180,130 C 250,20 500,40 580,250" fill="none" stroke="#E7E70D" stroke-width="1.5" stroke-dasharray="4 6" opacity="0.8" />
+            <polygon points="260,61 272,61 266,70" fill="#E7E70D" opacity="0.8" />
+        </g>
+
+        <!-- Micro Charts -->
+        <g id="micro-charts">
+            <rect x="135" y="70" width="2" height="10" fill="#ffffff" opacity="0.4" />
+            <rect x="140" y="65" width="2" height="15" fill="#ffffff" opacity="0.6" />
+            <rect x="145" y="75" width="2" height="5" fill="#E7E70D" />
+            <rect x="150" y="60" width="2" height="20" fill="#ffffff" opacity="0.9" />
+            <polyline points="665,285 675,275 685,280 695,265" fill="none" stroke="#ffffff" stroke-width="1" opacity="0.6" />
+            <circle cx="665" cy="285" r="1.5" fill="#ffffff" />
+            <circle cx="675" cy="275" r="1.5" fill="#ffffff" />
+            <circle cx="685" cy="280" r="1.5" fill="#E7E70D" />
+            <circle cx="695" cy="265" r="1.5" fill="#ffffff" />
+        </g>
+
+        <!-- Allocation Pie (Left) -->
+        <g transform="translate(100, 240)">
+            <path d="M 45,0 L 150,0 L 240,-40" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" />
+            <circle cx="150" cy="0" r="2.5" fill="#E7E70D" />
+            <circle cx="80" cy="0" r="1.5" fill="#ffffff" />
+            <circle cx="210" cy="-14" r="1.5" fill="#ffffff" />
+            <circle cx="0" cy="0" r="40" fill="#2D2D2D" stroke="rgba(255,255,255,0.08)" stroke-width="6" />
+            <circle cx="0" cy="0" r="40" fill="none" stroke="#ffffff" stroke-width="7" stroke-dasharray="100 251" transform="rotate(-90)" opacity="0.9" />
+            <circle cx="0" cy="0" r="40" fill="none" stroke="#ffffff" stroke-width="7" stroke-dasharray="63 251" stroke-dashoffset="-100" transform="rotate(-90)" opacity="0.4" />
+            <circle cx="0" cy="0" r="40" fill="none" stroke="#E7E70D" stroke-width="7" stroke-dasharray="38 251" stroke-dashoffset="-163" transform="rotate(-90)" />
+            <circle cx="0" cy="0" r="5" fill="none" stroke="#E7E70D" stroke-width="1.5" />
+        </g>
+
+        <!-- Balance Scale (Right) -->
+        <g transform="translate(650, 140)">
+            <path d="M 0,20 L -30,60 L -230,60" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1" stroke-dasharray="3 3" />
+            <polygon points="0,20 -10,40 10,40" fill="#2D2D2D" stroke="#ffffff" stroke-width="1.5" />
+            <line x1="-40" y1="12" x2="50" y2="5" stroke="#ffffff" stroke-width="2" />
+            <circle cx="0" cy="9" r="2.5" fill="#E7E70D" />
+            <line x1="-30" y1="11" x2="-30" y2="45" stroke="rgba(255,255,255,0.5)" stroke-width="1" />
+            <rect x="-40" y="45" width="20" height="20" fill="#2D2D2D" stroke="#ffffff" stroke-width="1.5" />
+            <line x1="-35" y1="52" x2="-25" y2="52" stroke="#ffffff" stroke-width="1" />
+            <line x1="-35" y1="58" x2="-25" y2="58" stroke="#ffffff" stroke-width="1" />
+            <line x1="40" y1="6" x2="40" y2="30" stroke="rgba(255,255,255,0.5)" stroke-width="1" />
+            <circle cx="40" cy="40" r="10" fill="#2D2D2D" stroke="#E7E70D" stroke-width="1.5" />
+            <circle cx="40" cy="40" r="3" fill="#ffffff" />
+        </g>
+
+        <!-- Central Hub -->
+        <g id="central-hub">
+            <circle cx="380" cy="200" r="50" fill="#2D2D2D" />
+            <circle cx="380" cy="200" r="48" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1" />
+            <circle cx="380" cy="200" r="40" fill="none" stroke="#ffffff" stroke-width="5" stroke-dasharray="110 251" transform="rotate(-110 380 200)" opacity="0.9" />
+            <circle cx="380" cy="200" r="40" fill="none" stroke="#ffffff" stroke-width="5" stroke-dasharray="50 251" transform="rotate(30 380 200)" opacity="0.5" />
+            <circle cx="380" cy="200" r="40" fill="none" stroke="#E7E70D" stroke-width="5" stroke-dasharray="30 251" transform="rotate(120 380 200)" />
+            <circle cx="380" cy="200" r="26" fill="#2D2D2D" stroke="rgba(255,255,255,0.2)" stroke-width="1" />
+            <polygon points="380,182 398,200 380,218 362,200" fill="none" stroke="#ffffff" stroke-width="1.5" />
+            <circle cx="380" cy="200" r="4" fill="#E7E70D" />
+            <line x1="380" y1="50" x2="380" y2="150" stroke="rgba(255,255,255,0.2)" stroke-width="1" stroke-dasharray="4 4" />
+            <polygon points="380,42 386,52 374,52" fill="none" stroke="#ffffff" stroke-width="1.5" />
+            <circle cx="380" cy="80" r="2.5" fill="#E7E70D" />
+            <circle cx="380" cy="120" r="1.5" fill="#ffffff" opacity="0.5" />
+        </g>
+
+    </svg>
+</div>
+
+</body>
+</html>

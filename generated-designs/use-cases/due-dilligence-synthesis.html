@@ -1,0 +1,189 @@
+<!-- aesthetic_dna: Cyber-Technical Abstract Minimalism, palette: Charcoal (#2D2D2D), White, Yellow (#E7E70D) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Due Diligence Synthesis</title>
+    <style>
+        @keyframes data-flow {
+            to { stroke-dashoffset: -100; }
+        }
+        @keyframes subtle-pulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.3); opacity: 1; }
+        }
+        @keyframes core-spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .anim-flow {
+            stroke-dasharray: 6 8;
+            animation: data-flow 4s linear infinite;
+        }
+        .anim-flow-reverse {
+            stroke-dasharray: 4 6;
+            animation: data-flow 3s linear infinite reverse;
+        }
+        .anim-pulse {
+            transform-origin: center;
+            animation: subtle-pulse 3s ease-in-out infinite;
+        }
+        .anim-spin-slow {
+            transform-origin: 640px 200px;
+            animation: core-spin 40s linear infinite;
+        }
+        .anim-spin-slower-reverse {
+            transform-origin: 640px 200px;
+            animation: core-spin 60s linear infinite reverse;
+        }
+        svg { shape-rendering: geometricPrecision; }
+        body { background: #1A1A1A; margin: 0; display: flex; align-items: center; justify-content: center; min-height: 100vh; overflow: hidden; }
+    </style>
+</head>
+<body>
+    <div style="position:relative;width:760px;height:400px;background:#2D2D2D;box-shadow:0 20px 60px -15px rgba(0,0,0,0.8);overflow:hidden;">
+        <svg viewBox="0 0 760 400" width="760" height="400" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <filter id="glow-yellow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur stdDeviation="2.5" result="blur" />
+                    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+                <filter id="glow-white" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur stdDeviation="1.5" result="blur" />
+                    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+                <pattern id="bg-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+                </pattern>
+                <pattern id="data-matrix" x="0" y="0" width="12" height="12" patternUnits="userSpaceOnUse">
+                    <circle cx="2" cy="2" r="1" fill="#FFFFFF" opacity="0.1"/>
+                </pattern>
+                <polygon id="node-hex-s" points="0,-4 3.5,-2 3.5,2 0,4 -3.5,2 -3.5,-2" />
+                <polygon id="node-hex-m" points="0,-6 5.2,-3 5.2,3 0,6 -5.2,3 -5.2,-3" />
+                <polygon id="node-dia-s" points="0,-4.5 4.5,0 0,4.5 -4.5,0" />
+                <polygon id="node-dia-m" points="0,-6.5 6.5,0 0,6.5 -6.5,0" />
+                <rect id="node-sq-s" x="-3.5" y="-3.5" width="7" height="7" />
+                <rect id="node-sq-m" x="-5" y="-5" width="10" height="10" />
+                <circle id="node-cir-s" r="3.5" />
+                <circle id="node-cir-m" r="5" />
+                <circle id="junct-y" r="3" fill="#E7E70D" />
+                <circle id="junct-y-lg" r="4.5" fill="#E7E70D" />
+            </defs>
+            <rect width="760" height="400" fill="url(#bg-grid)" />
+            <path d="M 20,40 H 40 M 20,20 V 40" fill="none" stroke="#E7E70D" stroke-width="1.5" />
+            <path d="M 740,360 H 720 M 740,380 V 360" fill="none" stroke="#E7E70D" stroke-width="1.5" />
+            <path d="M 380,0 V 400" fill="none" stroke="#FFFFFF" stroke-opacity="0.04" stroke-width="1" stroke-dasharray="4 4" />
+            <rect x="520" y="80" width="200" height="240" fill="url(#data-matrix)" opacity="0.6" />
+            <rect x="520" y="80" width="200" height="240" fill="none" stroke="#FFFFFF" stroke-opacity="0.05" stroke-width="1" />
+            <g fill="none" stroke="#FFFFFF" stroke-opacity="0.06" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M 30,200 H 180 L 220,180 H 460 H 640" />
+                <path d="M 200,110 H 320 L 360,140 H 420 L 460,200" />
+                <path d="M 240,350 H 320 L 360,310 H 380 L 400,290 H 420 L 460,200" />
+                <path d="M 420,110 H 540 L 640,200" />
+                <path d="M 420,290 H 540 L 640,200" />
+            </g>
+            <g fill="none" stroke="#FFFFFF" stroke-opacity="0.25" stroke-width="1" stroke-linejoin="round">
+                <path d="M 40,80 H 120 L 160,110 H 320 L 360,140 H 420" />
+                <path d="M 60,110 H 160" />
+                <path d="M 80,50 H 140 L 160,80" />
+                <path d="M 120,80 L 150,50" />
+                <path d="M 420,110 H 540 L 640,200" />
+                <path d="M 30,200 H 180 L 220,180 H 460 L 640,200" stroke-opacity="0.4" stroke-width="1.5" />
+                <path d="M 50,170 H 150 L 180,200" />
+                <path d="M 70,230 H 140 L 180,200" />
+                <path d="M 90,140 H 160 L 220,180" />
+                <path d="M 90,200 L 120,170" />
+                <path d="M 120,230 L 150,200" />
+                <path d="M 160,140 H 200 L 220,160 M 220,160 V 180" />
+                <path d="M 40,320 H 140 L 180,350 H 320 L 360,310 H 380 L 400,290 H 420" />
+                <path d="M 60,350 H 180" />
+                <path d="M 100,380 H 140 L 180,350" />
+                <path d="M 120,290 H 200 L 240,320" />
+                <path d="M 420,290 H 540 L 640,200" />
+                <path d="M 360,140 V 170 L 380,190 H 420" />
+                <path d="M 360,310 V 240 L 380,220 V 190" />
+                <path d="M 320,110 H 380 L 420,150 V 200" stroke-opacity="0.15" />
+                <path d="M 420,200 V 290" />
+            </g>
+            <g fill="none" stroke="#E7E70D" stroke-opacity="0.8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M 220,180 H 460" class="anim-flow" />
+                <path d="M 420,110 H 540 L 640,200" class="anim-flow" stroke-width="1" />
+                <path d="M 420,290 H 540 L 640,200" class="anim-flow-reverse" stroke-width="1" />
+                <path d="M 160,110 H 320 L 360,140 H 420" class="anim-flow" stroke-width="1" stroke-opacity="0.5"/>
+            </g>
+            <g fill="#FFFFFF" stroke="#FFFFFF" stroke-width="1">
+                <use href="#node-sq-s" x="40" y="80" />
+                <use href="#node-sq-m" x="120" y="80" fill="#2D2D2D" />
+                <use href="#node-sq-s" x="60" y="110" />
+                <use href="#node-sq-s" x="80" y="50" />
+                <use href="#node-sq-m" x="140" y="50" fill="#2D2D2D" />
+            </g>
+            <g fill="#FFFFFF" stroke="#FFFFFF" stroke-width="1.5">
+                <use href="#node-hex-m" x="30" y="200" />
+                <use href="#node-hex-s" x="90" y="200" fill="#2D2D2D" />
+                <use href="#node-hex-m" x="180" y="200" fill="#2D2D2D" />
+                <use href="#node-hex-s" x="50" y="170" />
+                <use href="#node-hex-s" x="150" y="170" />
+                <use href="#node-hex-s" x="70" y="230" fill="#2D2D2D" />
+                <use href="#node-hex-m" x="140" y="230" />
+                <use href="#node-hex-s" x="90" y="140" />
+                <use href="#node-hex-s" x="160" y="140" fill="#2D2D2D" />
+                <use href="#node-hex-m" x="220" y="180" fill="#2D2D2D" />
+            </g>
+            <g fill="#FFFFFF" stroke="#FFFFFF" stroke-width="1">
+                <use href="#node-dia-s" x="40" y="320" />
+                <use href="#node-dia-m" x="140" y="320" fill="#2D2D2D" stroke-width="1.5" />
+                <use href="#node-dia-m" x="60" y="350" />
+                <use href="#node-dia-s" x="100" y="380" />
+                <use href="#node-dia-s" x="140" y="380" fill="#2D2D2D" />
+                <use href="#node-dia-s" x="120" y="290" />
+                <use href="#node-dia-m" x="200" y="290" fill="#2D2D2D" />
+            </g>
+            <g fill="#2D2D2D" stroke="#FFFFFF" stroke-width="1.5">
+                <use href="#node-sq-m" x="320" y="110" fill="#FFFFFF" />
+                <use href="#node-cir-m" x="360" y="140" />
+                <use href="#node-dia-m" x="420" y="110" />
+                <use href="#node-cir-m" x="380" y="190" fill="#FFFFFF" />
+                <use href="#node-hex-m" x="420" y="200" />
+                <use href="#node-sq-m" x="460" y="200" fill="#FFFFFF" />
+                <use href="#node-cir-s" x="320" y="310" />
+                <use href="#node-hex-m" x="360" y="310" />
+                <use href="#node-cir-m" x="380" y="220" />
+                <use href="#node-dia-m" x="420" y="290" fill="#FFFFFF" />
+            </g>
+            <g fill="#FFFFFF">
+                <use href="#node-sq-s" x="540" y="110" />
+                <use href="#node-sq-s" x="540" y="290" />
+            </g>
+            <use href="#junct-y" x="160" y="110" filter="url(#glow-yellow)" />
+            <use href="#junct-y" x="160" y="80" />
+            <use href="#junct-y" x="180" y="350" />
+            <use href="#junct-y" x="240" y="320" />
+            <use href="#junct-y-lg" x="220" y="180" filter="url(#glow-yellow)" />
+            <use href="#junct-y" x="360" y="140" />
+            <use href="#junct-y" x="380" y="190" />
+            <use href="#junct-y" x="360" y="310" />
+            <use href="#junct-y" x="400" y="290" />
+            <use href="#junct-y" x="590" y="155" />
+            <use href="#junct-y" x="590" y="245" />
+            <g class="synthesis-core">
+                <circle cx="640" cy="200" r="75" fill="none" stroke="#FFFFFF" stroke-opacity="0.1" stroke-width="1" stroke-dasharray="4 8" class="anim-spin-slow" />
+                <circle cx="640" cy="200" r="60" fill="none" stroke="#FFFFFF" stroke-opacity="0.15" stroke-width="1.5" stroke-dasharray="30 10" class="anim-spin-slower-reverse" />
+                <polygon points="570,200 605,140 675,140 710,200 675,260 605,260" fill="#2D2D2D" stroke="#FFFFFF" stroke-width="1.5" stroke-opacity="0.4" />
+                <polygon points="640,155 680,200 640,245 600,200" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.8" />
+                <polygon points="640,170 670,200 640,230 610,200" fill="#FFFFFF" filter="url(#glow-white)" opacity="0.9" />
+                <path d="M 570,200 H 610 M 670,200 H 710 M 640,140 V 170 M 640,230 V 260" fill="none" stroke="#E7E70D" stroke-opacity="0.4" stroke-width="1.5" />
+                <g class="anim-pulse">
+                    <circle cx="640" cy="200" r="12" fill="none" stroke="#E7E70D" stroke-width="1" opacity="0.3" />
+                    <circle cx="640" cy="200" r="5" fill="#E7E70D" filter="url(#glow-yellow)" />
+                </g>
+                <circle cx="570" cy="200" r="6" fill="#2D2D2D" stroke="#FFFFFF" stroke-width="2" />
+                <circle cx="710" cy="200" r="3" fill="#FFFFFF" />
+                <rect x="637" y="137" width="6" height="6" fill="#2D2D2D" stroke="#E7E70D" stroke-width="1.5" />
+                <rect x="637" y="257" width="6" height="6" fill="#2D2D2D" stroke="#E7E70D" stroke-width="1.5" />
+            </g>
+        </svg>
+    </div>
+</body>
+</html>

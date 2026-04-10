@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Management Presentation Prep - Architecture</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #1a1a1a;
+        }
+        .illustration-card {
+            width: 760px;
+            height: 400px;
+            background-color: #2D2D2D;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); opacity: 0.9; filter: drop-shadow(0 0 2px rgba(231, 231, 13, 0.4)); }
+            50% { transform: scale(1.2); opacity: 1; filter: drop-shadow(0 0 8px rgba(231, 231, 13, 0.8)); }
+        }
+        @keyframes flowData {
+            to { stroke-dashoffset: -40; }
+        }
+        .dot-accent {
+            transform-origin: center;
+            transform-box: fill-box;
+            animation: pulseGlow 4s infinite ease-in-out;
+        }
+        .dot-accent.delay-1 { animation-delay: 1s; }
+        .dot-accent.delay-2 { animation-delay: 2.5s; }
+        .data-stream {
+            stroke-dasharray: 4 6;
+            animation: flowData 3s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="illustration-card">
+        <svg width="760" height="400" viewBox="0 0 760 400" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <rect id="node-sq-lg" x="-6" y="-6" width="12" height="12" fill="#FFFFFF" />
+                <circle id="node-circ-lg" r="7" fill="#FFFFFF" />
+                <polygon id="node-hex-lg" points="0,-8 6.9,-4 6.9,4 0,8 -6.9,4 -6.9,-4" fill="#FFFFFF" />
+                <rect id="node-sq" x="-4" y="-4" width="8" height="8" fill="#FFFFFF" />
+                <rect id="node-dia" x="-4" y="-4" width="8" height="8" fill="#FFFFFF" transform="rotate(45)" />
+                <circle id="node-circ" r="5" fill="#FFFFFF" />
+                <polygon id="node-hex" points="0,-5 4.3,-2.5 4.3,2.5 0,5 -4.3,2.5 -4.3,-2.5" fill="#FFFFFF" />
+                <rect id="node-sq-g" x="-3" y="-3" width="6" height="6" fill="#2D2D2D" stroke="#777777" stroke-width="1.5" />
+                <circle id="node-circ-g" r="3.5" fill="#2D2D2D" stroke="#777777" stroke-width="1.5" />
+                <circle id="dot-yellow" r="3" fill="#E7E70D" />
+            </defs>
+            <g stroke="#3A3A3A" stroke-width="1" fill="none">
+                <line x1="80" y1="20" x2="80" y2="380" stroke-dasharray="2 4" />
+                <line x1="160" y1="20" x2="160" y2="380" stroke-dasharray="2 4" />
+                <rect x="280" y="80" width="160" height="240" rx="4" fill="#303030" stroke="#444444" stroke-width="1.5" />
+                <line x1="320" y1="80" x2="320" y2="320" stroke-dasharray="2 2" />
+                <line x1="400" y1="80" x2="400" y2="320" stroke-dasharray="2 2" />
+                <rect x="500" y="60" width="220" height="280" rx="6" stroke="#4a4a4a" stroke-width="1.5" />
+                <line x1="520" y1="100" x2="700" y2="100" stroke="#4a4a4a" />
+                <rect x="520" y="120" width="80" height="200" rx="2" stroke-dasharray="3 3" stroke="#444" />
+                <rect x="620" y="120" width="80" height="200" rx="2" stroke-dasharray="3 3" stroke="#444" />
+            </g>
+            <g stroke="#777777" fill="none" stroke-width="1.5" stroke-linejoin="round">
+                <path d="M 40 80 H 120 V 120 H 280" class="data-stream" />
+                <path d="M 60 140 H 160 V 160 H 280" />
+                <path d="M 40 320 H 100 V 280 H 280" class="data-stream" />
+                <path d="M 80 240 H 140 V 200 H 280" />
+                <path d="M 120 360 H 180 V 240 H 280" />
+                <path d="M 30 180 H 60" stroke="#555" stroke-width="1" />
+                <path d="M 50 220 H 90" stroke="#555" stroke-width="1" />
+            </g>
+            <path d="M 40 200 H 280" stroke="#FFFFFF" fill="none" stroke-width="2" stroke-dasharray="8 4" stroke-linejoin="round" />
+            <g stroke="#999999" fill="none" stroke-width="1.5" stroke-linejoin="round">
+                <path d="M 280 120 H 320 V 140 H 400 V 120 H 440" />
+                <path d="M 280 160 H 360 V 200" />
+                <path d="M 280 240 H 320 V 260 H 400 V 240 H 440" />
+                <path d="M 280 280 H 360 V 260 H 400 V 200" />
+            </g>
+            <path d="M 280 200 H 440" stroke="#FFFFFF" fill="none" stroke-width="2.5" stroke-linejoin="round" />
+            <g stroke="#888888" fill="none" stroke-width="1.5" stroke-linejoin="round">
+                <path d="M 440 120 H 560 V 160 H 660" />
+                <path d="M 440 240 H 560 V 280 H 660" />
+                <path d="M 560 200 V 160" stroke="#FFFFFF" stroke-width="1.5" />
+                <path d="M 560 200 V 240" stroke="#FFFFFF" stroke-width="1.5" />
+                <path d="M 560 240 H 660" />
+            </g>
+            <path d="M 440 200 H 660" stroke="#FFFFFF" fill="none" stroke-width="2.5" stroke-linejoin="round" />
+            <use href="#node-circ-g" x="40" y="80" />
+            <use href="#node-sq-g" x="120" y="120" />
+            <use href="#node-circ" x="160" y="160" />
+            <use href="#node-dia" x="80" y="240" />
+            <use href="#node-sq-g" x="140" y="200" />
+            <use href="#node-circ-g" x="100" y="280" />
+            <use href="#node-dia" x="180" y="240" />
+            <use href="#node-hex" x="100" y="200" />
+            <use href="#node-hex" x="180" y="200" />
+            <use href="#node-dia" x="280" y="120" />
+            <use href="#node-dia" x="280" y="160" />
+            <use href="#node-circ-lg" x="280" y="200" />
+            <use href="#node-dia" x="280" y="240" />
+            <use href="#node-dia" x="280" y="280" />
+            <use href="#node-sq" x="320" y="140" />
+            <use href="#node-hex" x="360" y="200" />
+            <use href="#node-sq" x="320" y="260" />
+            <use href="#node-circ" x="400" y="120" />
+            <use href="#node-circ" x="400" y="240" />
+            <use href="#node-hex-lg" x="400" y="200" />
+            <use href="#node-sq" x="440" y="120" />
+            <use href="#node-sq-lg" x="440" y="200" />
+            <use href="#node-sq" x="440" y="240" />
+            <use href="#node-circ" x="560" y="160" />
+            <use href="#node-hex-lg" x="560" y="200" />
+            <use href="#node-circ" x="560" y="240" />
+            <use href="#node-sq-g" x="560" y="280" />
+            <use href="#node-dia" x="660" y="160" />
+            <use href="#node-circ-lg" x="660" y="200" />
+            <use href="#node-dia" x="660" y="240" />
+            <use href="#node-sq-g" x="660" y="280" />
+            <use href="#dot-yellow" x="160" y="160" class="dot-accent delay-1" />
+            <use href="#dot-yellow" x="100" y="200" class="dot-accent" />
+            <use href="#dot-yellow" x="360" y="200" class="dot-accent delay-2" />
+            <use href="#dot-yellow" x="400" y="120" class="dot-accent delay-1" />
+            <use href="#dot-yellow" x="400" y="240" class="dot-accent" />
+            <use href="#dot-yellow" x="560" y="200" class="dot-accent delay-2" />
+            <use href="#dot-yellow" x="560" y="240" class="dot-accent delay-1" />
+            <use href="#dot-yellow" x="660" y="200" class="dot-accent" />
+        </svg>
+    </div>
+</body>
+</html>

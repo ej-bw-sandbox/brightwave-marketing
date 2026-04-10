@@ -1,0 +1,140 @@
+<!-- aesthetic_dna: Minimalist Geometric, Abstract Technical, palette: Charcoal (#2D2D2D), White, Yellow (#E7E70D) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal Document Review - Illustration Card</title>
+    <style>
+        body { margin: 0; padding: 0; background-color: #111111; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+        .card-container { width: 760px; height: 400px; background-color: #2D2D2D; position: relative; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+    </style>
+</head>
+<body>
+    <div class="card-container">
+        <svg width="760" height="400" viewBox="0 0 760 400" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <pattern id="base-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+                    <circle cx="40" cy="40" r="1" fill="rgba(255,255,255,0.05)"/>
+                </pattern>
+                <pattern id="micro-grid" width="10" height="10" patternUnits="userSpaceOnUse">
+                    <path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.015)" stroke-width="0.5"/>
+                </pattern>
+                <linearGradient id="scan-grad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#E7E70D" stop-opacity="0" />
+                    <stop offset="80%" stop-color="#E7E70D" stop-opacity="0.05" />
+                    <stop offset="100%" stop-color="#E7E70D" stop-opacity="0.2" />
+                </linearGradient>
+                <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur stdDeviation="3" result="blur" />
+                    <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+                </filter>
+            </defs>
+            <rect width="760" height="400" fill="url(#micro-grid)" />
+            <rect width="760" height="400" fill="url(#base-grid)" />
+            <g stroke="rgba(255,255,255,0.04)" stroke-width="1" fill="none">
+                <path d="M 80,0 L 80,400 M 0,320 L 760,320 M 160,0 L 160,400 M 0,80 L 760,80" />
+                <circle cx="380" cy="200" r="150" stroke-dasharray="4 6" />
+                <circle cx="380" cy="200" r="190" stroke-dasharray="1 10" stroke-width="2" />
+            </g>
+            <g id="document-stack" transform="translate(420, 0)">
+                <rect x="40" y="60" width="240" height="300" fill="#292929" stroke="rgba(255,255,255,0.1)" stroke-width="1" />
+                <rect x="60" y="80" width="240" height="300" fill="#2B2B2B" stroke="rgba(255,255,255,0.15)" stroke-width="1" />
+                <rect x="80" y="100" width="240" height="280" fill="#2D2D2D" stroke="rgba(255,255,255,0.3)" stroke-width="1" />
+                <rect x="100" y="120" width="200" height="240" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
+                <g stroke="rgba(255,255,255,0.15)" stroke-width="2">
+                    <line x1="120" y1="140" x2="280" y2="140" stroke="rgba(255,255,255,0.4)" stroke-width="3" />
+                    <line x1="120" y1="150" x2="240" y2="150" />
+                    <rect x="120" y="170" width="160" height="40" fill="rgba(255,255,255,0.02)" stroke="none" />
+                    <line x1="120" y1="180" x2="270" y2="180" stroke-dasharray="4 4" />
+                    <line x1="120" y1="190" x2="260" y2="190" stroke-dasharray="2 2" />
+                    <line x1="120" y1="200" x2="200" y2="200" stroke-dasharray="6 2" />
+                    <line x1="100" y1="225" x2="300" y2="225" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+                    <rect x="120" y="240" width="160" height="60" fill="rgba(231,231,13,0.03)" stroke="rgba(231,231,13,0.1)" stroke-width="1" />
+                    <line x1="130" y1="250" x2="270" y2="250" stroke="rgba(255,255,255,0.2)" />
+                    <line x1="130" y1="265" x2="250" y2="265" stroke="rgba(231,231,13,0.4)" stroke-width="3" />
+                    <line x1="130" y1="280" x2="220" y2="280" stroke="rgba(255,255,255,0.2)" />
+                    <path d="M 110,240 L 105,240 L 105,300 L 110,300" fill="none" stroke="rgba(231,231,13,0.5)" stroke-width="1.5" />
+                    <line x1="120" y1="320" x2="160" y2="320" stroke-width="4" stroke="rgba(255,255,255,0.3)" />
+                    <line x1="170" y1="320" x2="280" y2="320" stroke-width="4" stroke="rgba(255,255,255,0.1)" />
+                    <line x1="120" y1="335" x2="160" y2="335" stroke-width="4" stroke="rgba(255,255,255,0.3)" />
+                    <line x1="170" y1="335" x2="240" y2="335" stroke-width="4" stroke="rgba(255,255,255,0.1)" />
+                </g>
+                <rect x="80" y="200" width="240" height="70" fill="url(#scan-grad)" />
+                <line x1="70" y1="270" x2="330" y2="270" stroke="#E7E70D" stroke-width="1.5" filter="url(#glow)" />
+                <path d="M 70,265 L 70,275 M 330,265 L 330,275" stroke="#E7E70D" stroke-width="1.5" />
+            </g>
+            <g id="logic-network">
+                <g stroke="rgba(255,255,255,0.15)" stroke-width="1.5" fill="none">
+                    <path d="M 40,200 L 280,200" />
+                    <path d="M 160,60 L 160,340" />
+                    <path d="M 0,140 L 120,140 L 160,180 L 160,200" />
+                    <path d="M 80,320 L 80,260 L 140,200" />
+                    <path d="M 160,200 L 220,140 L 540,140" />
+                    <path d="M 280,200 L 320,200 L 360,240 L 525,240" stroke="rgba(231,231,13,0.3)" stroke-width="2" />
+                    <path d="M 240,60 L 240,120 L 340,220 L 340,320 L 540,320" />
+                </g>
+                <g stroke="rgba(255,255,255,0.06)" stroke-width="1" fill="none">
+                    <path d="M 40,100 L 120,100 L 120,60 M 120,100 L 200,180" />
+                    <path d="M 200,340 L 200,280 L 260,220 L 260,180" />
+                    <path d="M 320,80 L 380,80 L 380,140" />
+                    <path d="M 60,240 L 140,240 L 160,220" />
+                </g>
+                <g stroke="rgba(255,255,255,0.2)" stroke-width="1" stroke-dasharray="2 3" fill="none">
+                    <line x1="380" y1="140" x2="520" y2="140" />
+                    <line x1="340" y1="320" x2="540" y2="320" />
+                </g>
+                <line x1="360" y1="265" x2="550" y2="265" stroke="rgba(231,231,13,0.5)" stroke-width="1.5" stroke-dasharray="4 4" fill="none" />
+            </g>
+            <g id="white-nodes">
+                <polygon points="160,188 170,194 170,206 160,212 150,206 150,194" fill="none" stroke="#FFFFFF" stroke-width="2" />
+                <circle cx="160" cy="200" r="3" fill="#FFFFFF" />
+                <rect x="116" y="136" width="8" height="8" fill="#FFFFFF" />
+                <rect x="216" y="136" width="8" height="8" fill="none" stroke="#FFFFFF" stroke-width="1.5" />
+                <rect x="336" y="316" width="8" height="8" fill="#FFFFFF" />
+                <rect x="376" y="76" width="8" height="8" fill="none" stroke="#FFFFFF" stroke-width="1.5" />
+                <circle cx="80" cy="260" r="4" fill="#FFFFFF" />
+                <circle cx="280" cy="200" r="5" fill="none" stroke="#FFFFFF" stroke-width="2" />
+                <circle cx="120" cy="180" r="3" fill="#FFFFFF" />
+                <circle cx="240" cy="120" r="3" fill="#FFFFFF" />
+                <circle cx="260" cy="220" r="2" fill="#FFFFFF" />
+                <circle cx="140" cy="240" r="3" fill="#FFFFFF" />
+                <polygon points="200,275 205,280 200,285 195,280" fill="#FFFFFF" />
+                <polygon points="40,100 45,105 40,110 35,105" fill="none" stroke="#FFFFFF" stroke-width="1.5" />
+                <polygon points="120,60 125,65 120,70 115,65" fill="#FFFFFF" />
+            </g>
+            <g id="yellow-nodes">
+                <g transform="translate(320, 200)">
+                    <polygon points="0,-8 8,0 0,8 -8,0" fill="none" stroke="#E7E70D" stroke-width="2" filter="url(#glow)" />
+                    <circle cx="0" cy="0" r="2" fill="#E7E70D" />
+                    <circle cx="0" cy="0" r="14" fill="none" stroke="#E7E70D" stroke-opacity="0.4" stroke-width="1" stroke-dasharray="2 2" />
+                </g>
+                <circle cx="550" cy="265" r="5" fill="#E7E70D" filter="url(#glow)" />
+                <polygon points="550,256 554,260 550,264 546,260" fill="#2D2D2D" />
+                <rect x="500" y="240" width="4" height="12" fill="#E7E70D" opacity="0.8" />
+                <circle cx="502" cy="190" r="2" fill="#E7E70D" />
+                <path d="M 540,140 L 536,134 L 544,134 Z" fill="#E7E70D" />
+                <circle cx="160" cy="60" r="2.5" fill="#E7E70D" />
+                <circle cx="80" cy="320" r="2" fill="#E7E70D" />
+                <circle cx="360" cy="240" r="3" fill="#E7E70D" />
+                <rect x="138" y="198" width="4" height="4" fill="#E7E70D" />
+            </g>
+            <g stroke="rgba(255,255,255,0.2)" stroke-width="1" fill="none">
+                <path d="M 400,20 L 400,25 M 420,22 L 420,25 M 440,22 L 440,25 M 460,20 L 460,25 M 480,22 L 480,25 M 500,22 L 500,25 M 520,20 L 520,25" />
+                <path d="M 20,300 L 25,300 M 22,320 L 25,320 M 22,340 L 25,340 M 20,360 L 25,360 M 22,380 L 25,380" />
+                <g transform="translate(60, 60)">
+                    <line x1="-5" y1="0" x2="5" y2="0" />
+                    <line x1="0" y1="-5" x2="0" y2="5" />
+                </g>
+                <g transform="translate(700, 340)">
+                    <line x1="-5" y1="0" x2="5" y2="0" />
+                    <line x1="0" y1="-5" x2="0" y2="5" />
+                </g>
+            </g>
+            <rect width="760" height="400" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="2" />
+            <rect x="10" y="10" width="740" height="380" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1" />
+        </svg>
+    </div>
+</body>
+</html>

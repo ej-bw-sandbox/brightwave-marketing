@@ -8503,10 +8503,13 @@ figcaption {
 .c-cs-overview-featured_image-wrapper {
   position: relative;
   overflow: hidden;
+  aspect-ratio: 1.9 / 1;
 }
 
 .image-9, .c-cs-overview-featured_image {
   width: 100%;
+  aspect-ratio: 1.9 / 1;
+  object-fit: cover;
 }
 
 .c-cs-overview-featured_button-icon {
@@ -8536,6 +8539,8 @@ figcaption {
 
 .c-cs-card_image-wrapper {
   width: 100%;
+  aspect-ratio: 1.9 / 1;
+  object-fit: cover;
 }
 
 .c-cs-card_tag-wrapper {

@@ -310,7 +310,7 @@ export default function Page() {
                         <h2 className="output-h2">Key Features Designed for Investment Professionals</h2>
                         <h3 className="output-h3">Advanced Document Intelligence</h3>
                         <ul role="list" className="output-list">
-                          <li><strong>Process 2,000+ pages</strong> without losing context or detail</li>
+                          <li><strong>Process 10,000+ pages</strong> without losing context or detail</li>
                           <li><strong>Cross-reference analysis</strong> identifying contradictions and gaps</li>
                           <li><strong>Financial data extraction</strong> with automatic trend analysis</li>
                           <li><strong>Market intelligence integration</strong> with public company comparisons</li>
@@ -455,7 +455,7 @@ export default function Page() {
                         <h2 className="output-h2">The Data Room Challenge That Slows Every Deal</h2>
                         <h3 className="output-h3">The Reality of Modern Data Rooms: Impossible Without AI</h3>
                         <ul role="list" className="output-list">
-                          <li><strong>Document explosion</strong>: Platform deals now contain 2,000-10,000+ documents, making thorough manual review physically impossible in auction timelines</li>
+                          <li><strong>Document explosion</strong>: Platform deals now contain 10,000-10,000+ documents, making thorough manual review physically impossible in auction timelines</li>
                           <li><strong>The VDR maze</strong>: Clunky interfaces, slow downloads, inconsistent folder structures—finding that one critical contract takes hours</li>
                           <li><strong>Version control chaos</strong>: &quot;Is this the latest management deck?&quot; &quot;Which QofE version are we using?&quot; Documents update daily during live deals</li>
                           <li><strong>The junior analyst bottleneck</strong>: 2-5 analysts trying to review thousands of documents while supporting multiple deals simultaneously</li>
@@ -918,7 +918,7 @@ export default function Page() {
                         <h3 className="output-h3">The Ultimate Synthesis Challenge Under Extreme Time Pressure</h3>
                         <ul role="list" className="output-list">
                           <li><strong>Immovable IC dates</strong>: Committee meetings don&#x27;t move—missing the date means losing the deal</li>
-                          <li><strong>Information overload</strong>: Synthesizing findings from 2,000-10,000+ documents across all DD workstreams</li>
+                          <li><strong>Information overload</strong>: Synthesizing findings from 10,000-10,000+ documents across all DD workstreams</li>
                           <li><strong>The 3am scramble</strong>: Associates and VPs pulling all-nighters to format slides while errors creep in from exhaustion</li>
                           <li><strong>Version control nightmare</strong>: &quot;Is this the latest QofE report?&quot; &quot;Did we incorporate all consultant findings?&quot; &quot;Who has the updated management deck?&quot;</li>
                         </ul>
@@ -1141,7 +1141,7 @@ export default function Page() {
                         <p className="output-h3">Speed That Actually Matters</p>
                         <ul role="list" className="output-list">
                           <li><strong>CIM Analysis</strong>: Complete comprehensive analysis in 30 minutes instead of 4-8 hours</li>
-                          <li><strong>Data Room Review</strong>: Process 2,000+ documents simultaneously while competitors struggle with 10-50 document limits</li>
+                          <li><strong>Data Room Review</strong>: Process 10,000+ documents simultaneously while competitors struggle with 10-50 document limits</li>
                           <li><strong>97% Time Reduction</strong>: Spend 1.25 hours instead of 18 hours analyzing multiple CIMs</li>
                         </ul>
                         <h3 className="output-h3">Quality That Gets Recognized</h3>
@@ -1294,7 +1294,7 @@ export default function Page() {
                         <h3 className="output-h3">Execute Deals Faster</h3>
                         <ul role="list" className="output-list">
                           <li><strong>Competitive Process Advantage</strong>: Complete CIM analysis in 30 minutes while others take 4-8 hours</li>
-                          <li><strong>Data Room Mastery</strong>: Process 2,000+ documents simultaneously with comprehensive synthesis</li>
+                          <li><strong>Data Room Mastery</strong>: Process 10,000+ documents simultaneously with comprehensive synthesis</li>
                           <li><strong>40% Faster Response Times</strong>: Win competitive processes through superior speed and thoroughness</li>
                         </ul>
                         <h3 className="output-h3">Professional Quality Deliverables</h3>
@@ -1502,7 +1502,7 @@ export default function Page() {
                         <h2>Strategic Advantages for Principal-Level Leadership</h2>
                         <h3>Investment Decision Leadership</h3>
                         <ul role="list">
-                          <li><strong>Comprehensive Due Diligence</strong>: Process 2,000+ documents per transaction with systematic analysis</li>
+                          <li><strong>Comprehensive Due Diligence</strong>: Process 10,000+ documents per transaction with systematic analysis</li>
                           <li><strong>Risk Management Excellence</strong>: Multi-dimensional risk assessment across all deal parameters</li>
                           <li><strong>Value Creation Planning</strong>: Data-driven insights supporting post-acquisition strategic initiatives</li>
                         </ul>

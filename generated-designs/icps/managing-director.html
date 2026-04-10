@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Managing Director Vector Workflow</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        .illustration-card {
+            width: 760px;
+            height: 400px;
+            background-color: #2D2D2D;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes subtlePulse {
+            0% { filter: drop-shadow(0 0 4px rgba(231, 231, 13, 0.4)); transform: scale(1); }
+            50% { filter: drop-shadow(0 0 12px rgba(231, 231, 13, 0.8)); transform: scale(1.1); }
+            100% { filter: drop-shadow(0 0 4px rgba(231, 231, 13, 0.4)); transform: scale(1); }
+        }
+
+        .core-accent {
+            animation: subtlePulse 4s ease-in-out infinite;
+            transform-origin: center;
+        }
+
+        svg { display: block; }
+    </style>
+</head>
+<body>
+
+    <div class="illustration-card">
+        <svg width="760" height="400" viewBox="0 0 760 400" xmlns="http://www.w3.org/2000/svg">
+
+            <defs>
+                <pattern id="tech-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                    <rect width="40" height="40" fill="none" stroke="#ffffff" stroke-width="0.5" opacity="0.03" />
+                </pattern>
+                <pattern id="micro-grid" width="10" height="10" patternUnits="userSpaceOnUse">
+                    <circle cx="2" cy="2" r="0.5" fill="#ffffff" opacity="0.05" />
+                </pattern>
+                <filter id="accent-glow" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur" />
+                    <feMerge>
+                        <feMergeNode in="blur" />
+                        <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                </filter>
+            </defs>
+
+            <rect width="760" height="400" fill="#2D2D2D" />
+            <rect width="760" height="400" fill="url(#tech-grid)" />
+            <rect width="760" height="400" fill="url(#micro-grid)" />
+
+            <!-- Concentric Rings of Authority -->
+            <g opacity="0.15">
+                <circle cx="380" cy="200" r="320" fill="none" stroke="#ffffff" stroke-width="0.5" stroke-dasharray="2 10" />
+                <circle cx="380" cy="200" r="260" fill="none" stroke="#ffffff" stroke-width="1" />
+                <circle cx="380" cy="200" r="180" fill="none" stroke="#ffffff" stroke-width="0.5" stroke-dasharray="10 5" />
+                <circle cx="380" cy="200" r="120" fill="none" stroke="#ffffff" stroke-width="1.5" />
+                <circle cx="380" cy="200" r="75" fill="none" stroke="#ffffff" stroke-width="0.5" stroke-dasharray="4 4" />
+                <circle cx="380" cy="200" r="40" fill="none" stroke="#ffffff" stroke-width="2" />
+            </g>
+
+            <!-- Strategic Pathways -->
+            <g fill="none" stroke="#ffffff" stroke-width="1" opacity="0.25">
+                <path d="M 380 200 L 460 120 L 580 120 L 640 60 L 720 60" />
+                <path d="M 460 120 L 520 60 L 680 60" />
+                <path d="M 580 120 L 620 160 L 700 160" />
+                <path d="M 500 200 L 560 200 L 620 140" stroke-dasharray="4 4"/>
+                <path d="M 380 200 L 460 280 L 540 280 L 600 340 L 680 340" />
+                <path d="M 460 280 L 500 320" />
+                <path d="M 540 280 L 620 200 L 710 200" />
+                <path d="M 620 200 L 680 260" />
+                <path d="M 380 200 L 300 280 L 180 280 L 120 340 L 50 340" stroke-width="1.5" />
+                <path d="M 300 280 L 260 320 L 140 320" />
+                <path d="M 180 280 L 140 240 L 70 240" />
+                <path d="M 380 200 L 310 220 L 220 220" stroke-dasharray="2 4"/>
+                <path d="M 380 200 L 280 100 L 150 100 L 80 30" />
+                <path d="M 280 100 L 220 160 L 100 160" />
+                <path d="M 150 100 L 120 70 L 60 70" />
+                <path d="M 200 40 L 280 120" stroke-width="0.5"/>
+                <path d="M 500 200 A 120 120 0 0 0 380 80" stroke-dasharray="2 6" />
+                <path d="M 260 200 A 120 120 0 0 0 380 320" stroke-dasharray="2 6" />
+                <path d="M 640 200 A 260 260 0 0 1 380 460" stroke-width="0.5" />
+                <path d="M 120 200 A 260 260 0 0 1 380 -60" stroke-width="0.5" />
+            </g>
+
+            <!-- Nodes -->
+            <g fill="#ffffff">
+                <polygon points="380,185 395,200 380,215 365,200" opacity="0.9" />
+                <circle cx="380" cy="120" r="4" opacity="0.8" />
+                <circle cx="380" cy="280" r="4" opacity="0.8" />
+                <circle cx="260" cy="200" r="4" opacity="0.8" />
+                <circle cx="500" cy="200" r="4" opacity="0.8" />
+                <rect x="377" y="157" width="6" height="6" transform="rotate(45 380 160)" opacity="0.6"/>
+                <rect x="377" y="237" width="6" height="6" transform="rotate(45 380 240)" opacity="0.6"/>
+
+                <rect x="456" y="116" width="8" height="8" opacity="0.7"/>
+                <circle cx="580" cy="120" r="6" opacity="0.9" />
+                <circle cx="520" cy="60" r="3" opacity="0.5" />
+                <polygon points="640,50 650,60 640,70 630,60" opacity="0.8" />
+                <circle cx="680" cy="60" r="4" opacity="0.6" />
+                <rect x="716" y="56" width="8" height="8" opacity="0.8" />
+                <circle cx="620" cy="160" r="5" opacity="0.7" />
+                <circle cx="700" cy="160" r="3" opacity="0.5" />
+
+                <polygon points="460,270 470,280 460,290 450,280" opacity="0.8" />
+                <circle cx="540" cy="280" r="5" opacity="0.7" />
+                <rect x="596" y="336" width="8" height="8" opacity="0.6" />
+                <circle cx="680" cy="340" r="4" opacity="0.9" />
+                <circle cx="500" cy="320" r="3" opacity="0.4" />
+                <circle cx="620" cy="200" r="6" opacity="0.8" />
+                <polygon points="710,192 718,200 710,208 702,200" opacity="0.9" />
+                <circle cx="680" cy="260" r="4" opacity="0.5" />
+
+                <rect x="296" y="276" width="8" height="8" opacity="0.9" />
+                <rect x="176" y="276" width="8" height="8" opacity="0.8" />
+                <rect x="116" y="336" width="8" height="8" opacity="0.7" />
+                <rect x="46" y="336" width="8" height="8" opacity="0.4" />
+                <rect x="256" y="316" width="8" height="8" opacity="0.5" />
+                <rect x="136" y="316" width="8" height="8" opacity="0.6" />
+                <polygon points="140,232 148,240 140,248 132,240" opacity="0.8" />
+                <circle cx="70" cy="240" r="4" opacity="0.7" />
+                <circle cx="220" cy="220" r="3" opacity="0.5" />
+                <circle cx="310" cy="220" r="3" opacity="0.5" />
+
+                <polygon points="280,90 290,100 280,110 270,100" opacity="0.8" />
+                <circle cx="150" cy="100" r="5" opacity="0.7" />
+                <circle cx="80" cy="30" r="4" opacity="0.6" />
+                <circle cx="220" cy="160" r="4" opacity="0.8" />
+                <circle cx="100" cy="160" r="5" opacity="0.9" />
+                <polygon points="120,62 128,70 120,78 112,70" opacity="0.6" />
+                <rect x="56" y="66" width="8" height="8" opacity="0.5" />
+            </g>
+
+            <!-- Yellow Accents -->
+            <g fill="#E7E70D" filter="url(#accent-glow)">
+                <circle cx="380" cy="200" r="3" class="core-accent" />
+                <circle cx="456" cy="124" r="2.5" />
+                <circle cx="304" cy="276" r="2.5" />
+                <circle cx="280" cy="100" r="2" />
+                <circle cx="460" cy="280" r="2" />
+                <circle cx="580" cy="120" r="3" />
+                <circle cx="720" cy="60" r="2" />
+                <circle cx="620" cy="160" r="2.5" />
+                <circle cx="180" cy="280" r="3" />
+                <circle cx="140" cy="240" r="2" />
+                <circle cx="50" cy="340" r="2.5" />
+                <circle cx="150" cy="100" r="2.5" />
+                <circle cx="100" cy="160" r="2" />
+                <circle cx="620" cy="200" r="3" />
+                <circle cx="540" cy="280" r="2.5" />
+                <circle cx="680" cy="340" r="2" />
+            </g>
+
+            <g fill="#E7E70D" opacity="0.6">
+                <circle cx="420" cy="160" r="1.5" />
+                <circle cx="520" cy="120" r="1" />
+                <circle cx="340" cy="240" r="1.5" />
+                <circle cx="240" cy="280" r="1.5" />
+                <circle cx="330" cy="150" r="1" />
+                <circle cx="215" cy="100" r="1.5" />
+                <circle cx="420" cy="240" r="1" />
+                <circle cx="500" cy="280" r="1.5" />
+            </g>
+
+            <g fill="#ffffff" opacity="0.3">
+                <circle cx="305" cy="200" r="1" />
+                <circle cx="380" cy="75" r="1.5" />
+                <circle cx="380" cy="320" r="1" />
+                <circle cx="455" cy="200" r="1.5" />
+            </g>
+
+            <!-- Corner Reticles -->
+            <g stroke="#ffffff" stroke-width="1" fill="none" opacity="0.2">
+                <polyline points="20,40 20,20 40,20" />
+                <polyline points="720,20 740,20 740,40" />
+                <polyline points="740,360 740,380 720,380" />
+                <polyline points="40,380 20,380 20,360" />
+            </g>
+
+            <g stroke="#ffffff" opacity="0.15" stroke-width="1">
+                <line x1="330" y1="385" x2="430" y2="385" />
+                <line x1="330" y1="382" x2="330" y2="388" />
+                <line x1="380" y1="382" x2="380" y2="388" />
+                <line x1="430" y1="382" x2="430" y2="388" />
+            </g>
+
+        </svg>
+    </div>
+
+</body>
+</html>

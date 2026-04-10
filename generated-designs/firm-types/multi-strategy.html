@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Strategy Illustration</title>
+    <style>
+        body {
+            background-color: #111111;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        .card-container {
+            width: 760px;
+            height: 400px;
+            background-color: #2D2D2D;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05), 0 20px 40px rgba(0, 0, 0, 0.5);
+            border-radius: 2px;
+        }
+        svg { shape-rendering: geometricPrecision; }
+        @keyframes pulse-glow {
+            0%, 100% { filter: drop-shadow(0 0 4px rgba(231, 231, 13, 0.6)); }
+            50% { filter: drop-shadow(0 0 8px rgba(231, 231, 13, 1)); }
+        }
+        .junction-node { animation: pulse-glow 4s infinite ease-in-out; }
+    </style>
+</head>
+<body>
+    <div class="card-container">
+        <svg width="760" height="400" viewBox="0 0 760 400" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;">
+            <defs>
+                <pattern id="tech-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#FFFFFF" stroke-opacity="0.03" stroke-width="1"/>
+                </pattern>
+                <pattern id="hash-pattern" width="8" height="8" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+                    <line x1="0" y1="0" x2="0" y2="8" stroke="#FFFFFF" stroke-opacity="0.04" stroke-width="1" />
+                </pattern>
+                <g id="node-square"><rect x="-3" y="-3" width="6" height="6" fill="#FFFFFF" /></g>
+                <g id="node-square-lg"><rect x="-4.5" y="-4.5" width="9" height="9" fill="none" stroke="#FFFFFF" stroke-width="1.5" /><rect x="-2" y="-2" width="4" height="4" fill="#FFFFFF" /></g>
+                <g id="node-diamond"><polygon points="0,-4 4,0 0,4 -4,0" fill="#FFFFFF" /></g>
+                <g id="node-diamond-outline"><polygon points="0,-6 6,0 0,6 -6,0" fill="none" stroke="#FFFFFF" stroke-width="1" /></g>
+                <g id="node-hexagon"><polygon points="0,-4.5 4,-2.25 4,2.25 0,4.5 -4,2.25 -4,-2.25" fill="#FFFFFF" /></g>
+                <g id="node-hexagon-lg"><polygon points="0,-6 5.5,-3 5.5,3 0,6 -5.5,3 -5.5,-3" fill="none" stroke="#FFFFFF" stroke-width="1.5" /></g>
+                <g id="accent-dot"><circle cx="0" cy="0" r="3.5" fill="#E7E70D" /></g>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#tech-grid)"/>
+            <circle cx="160" cy="110" r="80" fill="none" stroke="#FFFFFF" stroke-opacity="0.04" stroke-dasharray="4 6" stroke-width="1"/>
+            <circle cx="160" cy="110" r="110" fill="none" stroke="#FFFFFF" stroke-opacity="0.02" stroke-width="1"/>
+            <rect x="80" y="240" width="140" height="120" fill="url(#hash-pattern)" rx="4" />
+            <rect x="80" y="240" width="140" height="120" fill="none" stroke="#FFFFFF" stroke-opacity="0.05" stroke-width="1" rx="4" />
+            <path d="M 540 60 L 680 60 L 720 120 L 680 180 L 540 180 L 500 120 Z" fill="none" stroke="#FFFFFF" stroke-opacity="0.03" stroke-width="1"/>
+            <path d="M 40 200 H 260 L 300 160 H 460 L 510 210 H 720" fill="none" stroke="#FFFFFF" stroke-opacity="0.25" stroke-width="2"/>
+            <path d="M 40 192 H 255 L 295 152 H 455 L 505 202 H 720" fill="none" stroke="#FFFFFF" stroke-opacity="0.15" stroke-width="1"/>
+            <path d="M 40 208 H 265 L 305 168 H 465 L 515 218 H 720" fill="none" stroke="#FFFFFF" stroke-opacity="0.1" stroke-width="1"/>
+            <path d="M 320 250 H 480 L 520 210" fill="none" stroke="#FFFFFF" stroke-opacity="0.15" stroke-width="1" stroke-dasharray="3 3"/>
+            <!-- Cluster 1: Circles -->
+            <path d="M 160 110 L 120 70 M 160 110 L 210 60 M 160 110 L 230 130 M 160 110 L 100 150" fill="none" stroke="#FFFFFF" stroke-opacity="0.15" stroke-width="1"/>
+            <path d="M 120 70 H 80 V 120 L 100 150" fill="none" stroke="#FFFFFF" stroke-opacity="0.1" stroke-width="1"/>
+            <path d="M 210 60 H 260 V 90 L 230 130" fill="none" stroke="#FFFFFF" stroke-opacity="0.1" stroke-width="1"/>
+            <path d="M 160 110 V 200" fill="none" stroke="#FFFFFF" stroke-opacity="0.3" stroke-width="1.5"/>
+            <path d="M 230 130 V 200" fill="none" stroke="#FFFFFF" stroke-opacity="0.15" stroke-width="1"/>
+            <circle cx="160" cy="110" r="5" fill="none" stroke="#FFFFFF" stroke-width="1.5"/>
+            <circle cx="160" cy="110" r="2" fill="#FFFFFF"/>
+            <circle cx="120" cy="70" r="3" fill="#FFFFFF"/>
+            <circle cx="210" cy="60" r="3" fill="#FFFFFF"/>
+            <circle cx="230" cy="130" r="3" fill="#FFFFFF"/>
+            <circle cx="100" cy="150" r="3" fill="#FFFFFF"/>
+            <circle cx="80" cy="120" r="2" fill="#FFFFFF" fill-opacity="0.5"/>
+            <circle cx="260" cy="90" r="2" fill="#FFFFFF" fill-opacity="0.5"/>
+            <!-- Cluster 2: Squares -->
+            <path d="M 110 270 H 150 V 330 H 110 Z" fill="none" stroke="#FFFFFF" stroke-opacity="0.1" stroke-width="1"/>
+            <path d="M 150 270 H 190 V 330 H 150 Z" fill="none" stroke="#FFFFFF" stroke-opacity="0.1" stroke-width="1"/>
+            <path d="M 110 300 H 190" fill="none" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="1"/>
+            <path d="M 150 250 V 350" fill="none" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="1"/>
+            <path d="M 190 290 H 220 V 310 H 190" fill="none" stroke="#FFFFFF" stroke-opacity="0.15" stroke-width="1"/>
+            <path d="M 150 250 V 208" fill="none" stroke="#FFFFFF" stroke-opacity="0.3" stroke-width="1.5"/>
+            <path d="M 220 290 V 200" fill="none" stroke="#FFFFFF" stroke-opacity="0.1" stroke-width="1"/>
+            <use href="#node-square-lg" x="150" y="300" />
+            <use href="#node-square" x="110" y="270" />
+            <use href="#node-square" x="190" y="270" />
+            <use href="#node-square" x="110" y="330" />
+            <use href="#node-square" x="190" y="330" />
+            <use href="#node-square" x="150" y="250" />
+            <use href="#node-square" x="150" y="350" />
+            <use href="#node-square" x="220" y="290" />
+            <use href="#node-square" x="220" y="310" />
+            <!-- Cluster 3: Hexagons -->
+            <path d="M 520 90 L 560 60 L 620 60 L 660 90 L 640 140 L 580 150 L 540 120 Z" fill="none" stroke="#FFFFFF" stroke-opacity="0.1" stroke-width="1"/>
+            <path d="M 520 90 L 580 110 L 660 90 M 560 60 L 580 110 L 620 60 M 580 110 L 580 150" fill="none" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="1"/>
+            <path d="M 620 60 L 600 100 L 640 140" fill="none" stroke="#FFFFFF" stroke-opacity="0.15" stroke-width="1"/>
+            <path d="M 580 150 V 213" fill="none" stroke="#FFFFFF" stroke-opacity="0.3" stroke-width="1.5"/>
+            <path d="M 540 120 V 160 H 460" fill="none" stroke="#FFFFFF" stroke-opacity="0.1" stroke-width="1"/>
+            <use href="#node-hexagon-lg" x="580" y="110" />
+            <use href="#node-hexagon" x="520" y="90" />
+            <use href="#node-hexagon" x="560" y="60" />
+            <use href="#node-hexagon" x="620" y="60" />
+            <use href="#node-hexagon" x="660" y="90" />
+            <use href="#node-hexagon" x="640" y="140" />
+            <use href="#node-hexagon" x="580" y="150" />
+            <use href="#node-hexagon" x="540" y="120" />
+            <use href="#node-hexagon" x="600" y="100" />
+            <!-- Cluster 4: Diamonds -->
+            <path d="M 520 300 L 580 260 L 660 280 L 680 340 L 620 360 L 540 350 Z" fill="none" stroke="#FFFFFF" stroke-opacity="0.1" stroke-width="1"/>
+            <path d="M 580 260 L 620 310 L 620 360 M 520 300 L 620 310 L 680 340 M 660 280 L 620 310 L 540 350" fill="none" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="1"/>
+            <path d="M 540 300 L 580 320 L 640 300" fill="none" stroke="#FFFFFF" stroke-opacity="0.15" stroke-width="1"/>
+            <path d="M 580 260 L 540 220" fill="none" stroke="#FFFFFF" stroke-opacity="0.3" stroke-width="1.5"/>
+            <path d="M 660 280 L 620 240 V 210" fill="none" stroke="#FFFFFF" stroke-opacity="0.1" stroke-width="1"/>
+            <use href="#node-diamond" x="620" y="310" />
+            <use href="#node-diamond-outline" x="620" y="310" />
+            <use href="#node-diamond" x="520" y="300" />
+            <use href="#node-diamond" x="580" y="260" />
+            <use href="#node-diamond" x="660" y="280" />
+            <use href="#node-diamond" x="680" y="340" />
+            <use href="#node-diamond" x="620" y="360" />
+            <use href="#node-diamond" x="540" y="350" />
+            <use href="#node-diamond-outline" x="540" y="300" />
+            <use href="#node-diamond-outline" x="580" y="320" />
+            <use href="#node-diamond-outline" x="640" y="300" />
+            <!-- Cross-cluster routing -->
+            <path d="M 300 160 V 90 H 400" fill="none" stroke="#FFFFFF" stroke-opacity="0.05" stroke-width="1" stroke-dasharray="2 4"/>
+            <path d="M 320 250 V 320 H 420" fill="none" stroke="#FFFFFF" stroke-opacity="0.05" stroke-width="1" stroke-dasharray="2 4"/>
+            <circle cx="400" cy="90" r="1.5" fill="#FFFFFF" fill-opacity="0.3"/>
+            <circle cx="420" cy="320" r="1.5" fill="#FFFFFF" fill-opacity="0.3"/>
+            <!-- Yellow Accent Junctions -->
+            <use href="#accent-dot" x="160" y="200" class="junction-node"/>
+            <use href="#accent-dot" x="150" y="208" />
+            <use href="#accent-dot" x="300" y="160" />
+            <use href="#accent-dot" x="510" y="210" class="junction-node"/>
+            <use href="#accent-dot" x="580" y="213" />
+            <use href="#accent-dot" x="540" y="210" />
+            <use href="#accent-dot" x="120" y="70" />
+            <use href="#accent-dot" x="220" y="310" />
+            <use href="#accent-dot" x="660" y="90" />
+            <use href="#accent-dot" x="680" y="340" />
+            <!-- Micro decorative elements -->
+            <rect x="200" y="198" width="4" height="4" fill="#FFFFFF" fill-opacity="0.5"/>
+            <rect x="380" y="158" width="8" height="4" fill="#FFFFFF" fill-opacity="0.4"/>
+            <rect x="420" y="158" width="2" height="4" fill="#FFFFFF" fill-opacity="0.8"/>
+            <rect x="620" y="208" width="6" height="4" fill="#FFFFFF" fill-opacity="0.5"/>
+            <polygon points="280,160 275,155 275,165" fill="#FFFFFF" fill-opacity="0.6"/>
+            <polygon points="480,210 475,205 475,215" fill="#FFFFFF" fill-opacity="0.6"/>
+        </svg>
+        <div style="position:absolute;top:16px;left:16px;width:16px;height:16px;border-top:1px solid rgba(255,255,255,0.2);border-left:1px solid rgba(255,255,255,0.2);"></div>
+        <div style="position:absolute;top:16px;right:16px;width:16px;height:16px;border-top:1px solid rgba(255,255,255,0.2);border-right:1px solid rgba(255,255,255,0.2);"></div>
+        <div style="position:absolute;bottom:16px;left:16px;width:16px;height:16px;border-bottom:1px solid rgba(255,255,255,0.2);border-left:1px solid rgba(255,255,255,0.2);"></div>
+        <div style="position:absolute;bottom:16px;right:16px;width:16px;height:16px;border-bottom:1px solid rgba(255,255,255,0.2);border-right:1px solid rgba(255,255,255,0.2);"></div>
+    </div>
+</body>
+</html>

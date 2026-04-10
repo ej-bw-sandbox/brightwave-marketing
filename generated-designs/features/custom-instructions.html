@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Instructions</title>
+    <style>
+        body { background-color: #1A1A1A; margin: 0; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+        @keyframes subtle-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; transform: scale(0.98); } }
+        .pulse-node { transform-origin: center; animation: subtle-pulse 4s ease-in-out infinite; }
+    </style>
+</head>
+<body>
+    <div style="position:relative;width:760px;height:400px;background:#2D2D2D;box-shadow:0 20px 50px -12px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.05);border-radius:6px;overflow:hidden;display:flex;">
+        <svg viewBox="0 0 760 400" width="760" height="400" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <radialGradient id="bg-glow" cx="50%" cy="40%" r="60%"><stop offset="0%" stop-color="#383838" /><stop offset="100%" stop-color="#2D2D2D" /></radialGradient>
+                <filter id="accent-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.5" result="blur" /><feMerge><feMergeNode in="blur" /><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
+                <filter id="white-glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="2" result="blur" /><feComponentTransfer in="blur" result="glow"><feFuncA type="linear" slope="0.5" /></feComponentTransfer><feMerge><feMergeNode in="glow" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
+                <pattern id="tech-grid" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="0.5" fill="rgba(255,255,255,0.06)" /></pattern>
+                <pattern id="hatch" width="4" height="4" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse"><line x1="0" y1="0" x2="0" y2="4" stroke="rgba(255,255,255,0.04)" stroke-width="1" /></pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#bg-glow)" />
+            <rect width="100%" height="100%" fill="url(#tech-grid)" />
+            <rect x="420" y="60" width="280" height="280" fill="url(#hatch)" stroke="rgba(255,255,255,0.05)" stroke-width="1" rx="4" />
+            <rect x="420" y="60" width="280" height="280" fill="none" stroke="rgba(255,255,255,0.1)" stroke-dasharray="4 4" stroke-width="1" rx="4" />
+            <path d="M 20 20 L 40 20 M 20 20 L 20 40" stroke="rgba(255,255,255,0.2)" stroke-width="1" fill="none" />
+            <path d="M 740 20 L 720 20 M 740 20 L 740 40" stroke="rgba(255,255,255,0.2)" stroke-width="1" fill="none" />
+            <path d="M 20 380 L 40 380 M 20 380 L 20 360" stroke="rgba(255,255,255,0.2)" stroke-width="1" fill="none" />
+            <path d="M 740 380 L 720 380 M 740 380 L 740 360" stroke="rgba(255,255,255,0.2)" stroke-width="1" fill="none" />
+            <g id="guide-rails">
+                <line x1="60" y1="100" x2="700" y2="100" stroke="rgba(255,255,255,0.12)" stroke-width="1" />
+                <line x1="60" y1="100" x2="340" y2="100" stroke="rgba(255,255,255,0.8)" stroke-width="1.5" />
+                <line x1="60" y1="150" x2="700" y2="150" stroke="rgba(255,255,255,0.12)" stroke-width="1" />
+                <line x1="60" y1="150" x2="220" y2="150" stroke="rgba(255,255,255,0.8)" stroke-width="1.5" />
+                <line x1="460" y1="150" x2="620" y2="150" stroke="rgba(255,255,255,0.4)" stroke-dasharray="2 3" stroke-width="1.5" />
+                <line x1="60" y1="200" x2="700" y2="200" stroke="rgba(255,255,255,0.15)" stroke-width="1" />
+                <line x1="60" y1="200" x2="540" y2="200" stroke="#FFFFFF" stroke-width="2" />
+                <line x1="60" y1="190" x2="60" y2="210" stroke="#FFFFFF" stroke-width="2" />
+                <line x1="60" y1="250" x2="700" y2="250" stroke="rgba(255,255,255,0.12)" stroke-width="1" />
+                <line x1="60" y1="250" x2="380" y2="250" stroke="rgba(255,255,255,0.8)" stroke-width="1.5" />
+                <line x1="60" y1="300" x2="700" y2="300" stroke="rgba(255,255,255,0.12)" stroke-width="1" />
+                <line x1="60" y1="300" x2="160" y2="300" stroke="rgba(255,255,255,0.8)" stroke-width="1.5" />
+            </g>
+            <g id="logic-pathways" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1.5">
+                <path d="M 260 100 V 170 H 300 V 200" />
+                <path d="M 340 100 H 460 V 150" />
+                <path d="M 540 200 H 580 V 250 H 660 V 120 H 620" stroke-dasharray="3 3" />
+                <path d="M 160 300 V 340 H 420 V 250" stroke="rgba(255,255,255,0.15)" stroke-width="1" />
+                <path d="M 440 280 V 320 H 500" stroke="rgba(255,255,255,0.2)" stroke-width="1" />
+                <line x1="500" y1="318" x2="500" y2="322" stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
+                <path d="M 600 80 V 100 H 680" stroke="rgba(255,255,255,0.2)" stroke-width="1" />
+            </g>
+            <g id="adjustment-nodes" filter="url(#white-glow)">
+                <rect x="330" y="94" width="20" height="12" rx="2" fill="#2D2D2D" stroke="#FFFFFF" stroke-width="1.5" />
+                <rect x="336" y="97" width="8" height="6" fill="#FFFFFF" />
+                <rect x="216" y="146" width="8" height="8" fill="#FFFFFF" transform="rotate(45, 220, 150)" />
+                <rect x="456" y="146" width="8" height="8" fill="none" stroke="#FFFFFF" stroke-width="1.5" transform="rotate(45, 460, 150)" />
+                <rect x="616" y="146" width="8" height="8" fill="#FFFFFF" />
+                <circle cx="540" cy="200" r="9" fill="#2D2D2D" stroke="#FFFFFF" stroke-width="2" />
+                <rect x="296" y="196" width="8" height="8" fill="#FFFFFF" />
+                <rect x="376" y="244" width="8" height="12" rx="1" fill="#FFFFFF" />
+                <rect x="656" y="116" width="8" height="8" fill="#FFFFFF" transform="rotate(45, 660, 120)" />
+                <polygon points="160,294 166,300 160,306 154,300" fill="#FFFFFF" />
+                <rect x="338" y="198" width="4" height="4" fill="rgba(255,255,255,0.5)" />
+                <rect x="418" y="248" width="4" height="4" fill="rgba(255,255,255,0.5)" />
+            </g>
+            <g id="accent-junctions" class="pulse-node" filter="url(#accent-glow)">
+                <circle cx="260" cy="100" r="3.5" fill="#E7E70D" />
+                <circle cx="300" cy="200" r="3.5" fill="#E7E70D" />
+                <circle cx="460" cy="100" r="3.5" fill="#E7E70D" />
+                <circle cx="580" cy="250" r="3.5" fill="#E7E70D" />
+                <circle cx="540" cy="200" r="2.5" fill="#E7E70D" />
+            </g>
+            <g fill="#E7E70D" opacity="0.6">
+                <circle cx="260" cy="170" r="1.5" /><circle cx="300" cy="170" r="1.5" /><circle cx="580" cy="200" r="1.5" />
+                <circle cx="420" cy="250" r="1.5" /><circle cx="420" cy="340" r="1.5" /><circle cx="160" cy="340" r="1.5" />
+            </g>
+            <g stroke="rgba(255,255,255,0.2)" stroke-width="1">
+                <line x1="60" y1="210" x2="60" y2="214" /><line x1="100" y1="210" x2="100" y2="213" /><line x1="140" y1="210" x2="140" y2="213" />
+                <line x1="180" y1="210" x2="180" y2="214" /><line x1="220" y1="210" x2="220" y2="213" /><line x1="260" y1="210" x2="260" y2="213" />
+                <line x1="300" y1="210" x2="300" y2="214" /><line x1="340" y1="210" x2="340" y2="213" /><line x1="380" y1="210" x2="380" y2="213" />
+                <line x1="420" y1="210" x2="420" y2="214" /><line x1="460" y1="210" x2="460" y2="213" /><line x1="500" y1="210" x2="500" y2="213" />
+                <line x1="540" y1="210" x2="540" y2="214" />
+                <rect x="90" y="248" width="4" height="4" fill="rgba(255,255,255,0.15)" stroke="none" transform="rotate(45, 92, 250)" />
+                <rect x="130" y="248" width="4" height="4" fill="rgba(255,255,255,0.15)" stroke="none" transform="rotate(45, 132, 250)" />
+                <rect x="170" y="248" width="4" height="4" fill="rgba(255,255,255,0.15)" stroke="none" transform="rotate(45, 172, 250)" />
+            </g>
+        </svg>
+        <div style="position:absolute;inset:0;background:linear-gradient(to top right, transparent, rgba(255,255,255,0.02), transparent);pointer-events:none;"></div>
+    </div>
+</body>
+</html>

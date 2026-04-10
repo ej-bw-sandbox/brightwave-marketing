@@ -67,9 +67,9 @@ export default async function ComparisonPage({ params }: Props) {
                   <div className="c-box-hero_bottom-right"></div>
                   <div className="c-comparison-hero_icon-combo">
                     <div className="c-comparison-hero_icon">
-                      <div className="c-comparison-hero_image-wrapper">
+                      <div className="c-comparison-hero_image-wrapper" style={{ backgroundColor: '#fff', width: '12.0625rem', height: '12.0625rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         {competitorLogoUrl ? (
-                          <img src={competitorLogoUrl} loading="lazy" alt={doc.competitor || ''} className="c-comparison-hero_image" />
+                          <img src={competitorLogoUrl} loading="lazy" alt={doc.competitor || ''} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', padding: '1.5rem' }} />
                         ) : (
                           <img src="https://d3e54v103j8qbb.cloudfront.net/plugins/Basic/assets/placeholder.60f9b1840c.svg" loading="lazy" alt="" className="c-comparison-hero_image w-dyn-bind-empty" />
                         )}
@@ -82,7 +82,7 @@ export default async function ComparisonPage({ params }: Props) {
                       <div className="c-comparison-hero_line"></div>
                     </div>
                     <div className="c-comparison-hero_icon">
-                      <div className="c-comparison-hero_image-wrapper">
+                      <div className="c-comparison-hero_image-wrapper" style={{ backgroundColor: '#fff', width: '12.0625rem', height: '12.0625rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <img src="/images/brightwave_tile.png" loading="lazy" alt="Brightwave" className="c-comparison-hero_image" />
                       </div>
                       <div className="c-comparison-hero_label">

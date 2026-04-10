@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes flow-data { 0% { stroke-dashoffset: 200; opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { stroke-dashoffset: 0; opacity: 0; } }
+        @keyframes float-node { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-4px); } }
+        @keyframes pulse-ring { 0% { transform: scale(0.8); opacity: 0.8; } 100% { transform: scale(2.5); opacity: 0; } }
+        .animated-flow { stroke-dasharray: 10 190; stroke-dashoffset: 200; animation: flow-data 3s linear infinite; }
+        .animated-flow:nth-child(1) { animation-delay: 0s; }
+        .animated-flow:nth-child(2) { animation-delay: 1.5s; stroke-dasharray: 15 185; animation-duration: 2.5s; }
+        .animated-flow:nth-child(3) { animation-delay: 0.7s; animation-duration: 3.2s; }
+        .animated-flow:nth-child(4) { animation-delay: 2.1s; stroke-dasharray: 8 192; }
+        .float-1 { animation: float-node 6s ease-in-out infinite; }
+        .float-2 { animation: float-node 5s ease-in-out infinite reverse; }
+        .float-3 { animation: float-node 7s ease-in-out infinite 1s; }
+        .pulse-circle { transform-origin: center; animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite; }
+    </style>
+</head>
+<body class="bg-[#0B0B0C] min-h-screen flex items-center justify-center antialiased">
+    <div class="w-[760px] h-[400px] bg-[#2D2D2D] relative overflow-hidden rounded-xl border border-white/5">
+        <svg viewBox="0 0 760 400" xmlns="http://www.w3.org/2000/svg" class="w-full h-full absolute inset-0">
+            <defs>
+                <filter id="glow-yellow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur stdDeviation="3" result="blur" />
+                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                </filter>
+                <filter id="shadow-page">
+                    <feDropShadow dx="-5" dy="10" stdDeviation="15" flood-color="#000" flood-opacity="0.5"/>
+                </filter>
+                <linearGradient id="flow-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="rgba(255,255,255,0)" />
+                    <stop offset="20%" stop-color="rgba(255,255,255,0.1)" />
+                    <stop offset="100%" stop-color="rgba(255,255,255,0.8)" />
+                </linearGradient>
+                <linearGradient id="paper-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#343434" />
+                    <stop offset="100%" stop-color="#2a2a2a" />
+                </linearGradient>
+                <pattern id="dot-grid" patternUnits="userSpaceOnUse" width="20" height="20">
+                    <circle cx="2" cy="2" r="1" fill="rgba(255,255,255,0.03)" />
+                </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#dot-grid)" />
+            <g class="float-1">
+                <path d="M 60 120 L 100 80 L 140 140 Z" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+                <circle cx="60" cy="120" r="3" fill="rgba(255,255,255,0.5)" />
+                <rect x="96" y="76" width="8" height="8" fill="rgba(255,255,255,0.3)" />
+                <polygon points="140,135 145,145 135,145" fill="rgba(255,255,255,0.7)" />
+            </g>
+            <g class="float-2">
+                <path d="M 80 250 L 150 200 L 180 280 L 120 310 Z" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1" stroke-dasharray="4 4"/>
+                <rect x="76" y="246" width="8" height="8" rx="2" fill="rgba(255,255,255,0.4)" />
+                <circle cx="150" cy="200" r="4" fill="rgba(255,255,255,0.8)" />
+                <circle cx="180" cy="280" r="2.5" fill="rgba(255,255,255,0.3)" />
+                <rect x="117" y="307" width="6" height="6" transform="rotate(45 120 310)" fill="rgba(255,255,255,0.6)" />
+            </g>
+            <g class="float-3">
+                <circle cx="220" cy="100" r="2" fill="rgba(255,255,255,0.4)" />
+                <circle cx="250" cy="320" r="1.5" fill="rgba(255,255,255,0.5)" />
+            </g>
+            <g>
+                <path d="M 140 140 C 250 140, 320 85, 460 85" fill="none" stroke="url(#flow-grad)" stroke-width="1.5" />
+                <path d="M 150 200 C 280 200, 350 160, 460 160" fill="none" stroke="url(#flow-grad)" stroke-width="1.5" />
+                <path d="M 180 280 C 300 280, 380 240, 460 240" fill="none" stroke="url(#flow-grad)" stroke-width="1.5" />
+                <path d="M 120 310 C 250 350, 350 310, 460 310" fill="none" stroke="url(#flow-grad)" stroke-width="1.5" />
+                <path d="M 140 140 C 250 140, 320 85, 460 85" fill="none" stroke="#E7E70D" stroke-width="2" class="animated-flow" />
+                <path d="M 150 200 C 280 200, 350 160, 460 160" fill="none" stroke="#fff" stroke-width="2" class="animated-flow" />
+                <path d="M 180 280 C 300 280, 380 240, 460 240" fill="none" stroke="#E7E70D" stroke-width="2" class="animated-flow" />
+                <path d="M 120 310 C 250 350, 350 310, 460 310" fill="none" stroke="#fff" stroke-width="2" class="animated-flow" />
+            </g>
+            <g transform="translate(500, 30) rotate(8)">
+                <rect x="0" y="0" width="220" height="300" rx="4" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+            </g>
+            <g transform="translate(480, 35) rotate(4)">
+                <rect x="0" y="0" width="220" height="300" rx="4" fill="rgba(45,45,45,0.5)" stroke="rgba(255,255,255,0.15)" stroke-width="1" filter="url(#shadow-page)" />
+                <line x1="20" y1="30" x2="180" y2="30" stroke="rgba(255,255,255,0.1)" stroke-width="4" stroke-linecap="round"/>
+                <rect x="20" y="60" width="180" height="80" rx="2" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1" stroke-dasharray="2 4"/>
+            </g>
+            <g transform="translate(460, 40)" filter="url(#shadow-page)">
+                <rect x="0" y="0" width="220" height="310" rx="4" fill="url(#paper-grad)" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" />
+                <line x1="24" y1="30" x2="160" y2="30" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
+                <line x1="24" y1="46" x2="100" y2="46" stroke="rgba(255,255,255,0.5)" stroke-width="2.5" stroke-linecap="round"/>
+                <rect x="24" y="80" width="172" height="90" rx="3" fill="rgba(0,0,0,0.2)" stroke="rgba(255,255,255,0.2)" stroke-width="1" />
+                <rect x="40" y="110" width="12" height="40" rx="1" fill="#ffffff" opacity="0.4"/>
+                <rect x="58" y="90" width="12" height="60" rx="1" fill="#ffffff" opacity="0.8"/>
+                <rect x="76" y="125" width="12" height="25" rx="1" fill="#ffffff" opacity="0.3"/>
+                <rect x="94" y="100" width="12" height="50" rx="1" fill="#ffffff" opacity="0.6"/>
+                <rect x="112" y="130" width="12" height="20" rx="1" fill="#ffffff" opacity="0.2"/>
+                <rect x="130" y="85" width="12" height="65" rx="1" fill="#ffffff" opacity="0.9"/>
+                <rect x="148" y="115" width="12" height="35" rx="1" fill="#ffffff" opacity="0.5"/>
+                <g transform="translate(24, 190)">
+                    <rect x="-8" y="0" width="2" height="36" fill="#E7E70D" />
+                    <line x1="0" y1="4" x2="172" y2="4" stroke="rgba(255,255,255,0.7)" stroke-width="3" stroke-linecap="round"/>
+                    <line x1="0" y1="16" x2="150" y2="16" stroke="rgba(255,255,255,0.7)" stroke-width="3" stroke-linecap="round"/>
+                    <line x1="0" y1="28" x2="120" y2="28" stroke="rgba(255,255,255,0.3)" stroke-width="3" stroke-linecap="round"/>
+                </g>
+                <g transform="translate(24, 250)">
+                    <line x1="0" y1="4" x2="172" y2="4" stroke="rgba(255,255,255,0.6)" stroke-width="3" stroke-linecap="round"/>
+                    <line x1="0" y1="16" x2="160" y2="16" stroke="rgba(255,255,255,0.6)" stroke-width="3" stroke-linecap="round"/>
+                    <line x1="0" y1="28" x2="140" y2="28" stroke="rgba(255,255,255,0.6)" stroke-width="3" stroke-linecap="round"/>
+                </g>
+            </g>
+            <g>
+                <g transform="translate(460, 85)">
+                    <circle cx="0" cy="0" r="12" class="pulse-circle" fill="none" stroke="#E7E70D" stroke-width="1"/>
+                    <circle cx="0" cy="0" r="4.5" fill="#E7E70D" filter="url(#glow-yellow)"/>
+                </g>
+                <g transform="translate(460, 160)">
+                    <circle cx="0" cy="0" r="12" class="pulse-circle" fill="none" stroke="#E7E70D" stroke-width="1" style="animation-delay: 0.5s"/>
+                    <circle cx="0" cy="0" r="4.5" fill="#E7E70D" filter="url(#glow-yellow)"/>
+                </g>
+                <g transform="translate(460, 240)">
+                    <circle cx="0" cy="0" r="12" class="pulse-circle" fill="none" stroke="#E7E70D" stroke-width="1" style="animation-delay: 1.2s"/>
+                    <circle cx="0" cy="0" r="4.5" fill="#E7E70D" filter="url(#glow-yellow)"/>
+                </g>
+                <g transform="translate(460, 310)">
+                    <circle cx="0" cy="0" r="12" class="pulse-circle" fill="none" stroke="#E7E70D" stroke-width="1" style="animation-delay: 0.8s"/>
+                    <circle cx="0" cy="0" r="4.5" fill="#E7E70D" filter="url(#glow-yellow)"/>
+                </g>
+            </g>
+        </svg>
+    </div>
+</body>
+</html>

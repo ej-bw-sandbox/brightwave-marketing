@@ -1,0 +1,145 @@
+<!-- aesthetic_dna: minimalist_geometric_network, ui_paradigm: pure_illustration_card, palette: charcoal_white_yellow -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Board Review Materials Synthesis</title>
+    <style>
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        @keyframes flow-dash {
+            to { stroke-dashoffset: -24; }
+        }
+        .data-flow {
+            stroke-dasharray: 4 8;
+            animation: flow-dash 1.5s linear infinite;
+        }
+        .pulse-node {
+            animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        body {
+            margin: 0;
+            background: #111;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <div style="width:760px;height:400px;background:#2D2D2D;position:relative;overflow:hidden;box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);">
+        <svg width="760" height="400" viewBox="0 0 760 400" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;">
+            <defs>
+                <circle id="center-mask" cx="420" cy="200" r="48" fill="#2D2D2D" />
+                <rect id="node-sq" x="-7" y="-7" width="14" height="14" fill="#FFFFFF" />
+                <circle id="node-cir" r="7.5" fill="#FFFFFF" />
+                <polygon id="node-dia" points="0,-10 10,0 0,10 -10,0" fill="#FFFFFF" />
+                <polygon id="node-hex" points="0,-10 8.6,-5 8.6,5 0,10 -8.6,5 -8.6,-5" fill="#FFFFFF" />
+                <rect id="out-sq" x="-10" y="-10" width="20" height="20" fill="#FFFFFF" />
+                <circle id="out-cir" r="10.5" fill="#FFFFFF" />
+                <polygon id="out-dia" points="0,-14 14,0 0,14 -14,0" fill="#FFFFFF" />
+                <polygon id="out-hex" points="0,-14 12.1,-7 12.1,7 0,14 -12.1,7 -12.1,-7" fill="#FFFFFF" />
+                <rect id="doc-bound-sm" x="0" y="0" width="100" height="140" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1.5" />
+                <rect id="doc-bound-lg" x="0" y="0" width="160" height="220" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1" />
+                <pattern id="arch-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                    <line x1="40" y1="0" x2="40" y2="40" stroke="rgba(255,255,255,0.02)" stroke-width="1"/>
+                    <line x1="0" y1="40" x2="40" y2="40" stroke="rgba(255,255,255,0.02)" stroke-width="1"/>
+                    <path d="M 39,40 L 41,40 M 40,39 L 40,41" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
+                </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#arch-grid)" />
+            <use href="#doc-bound-sm" x="50" y="30" />
+            <path d="M 60,45 L 100,45 M 60,55 L 120,55 M 60,65 L 90,65" stroke="rgba(255,255,255,0.05)" stroke-width="2" stroke-linecap="square" />
+            <use href="#doc-bound-sm" x="60" y="230" />
+            <path d="M 70,245 L 140,245 M 70,255 L 110,255" stroke="rgba(255,255,255,0.05)" stroke-width="2" stroke-linecap="square" />
+            <use href="#doc-bound-lg" x="550" y="90" />
+            <path d="M 570,110 L 680,110 M 570,125 L 640,125 M 570,140 L 700,140" stroke="rgba(255,255,255,0.06)" stroke-width="2" stroke-linecap="square" />
+            <path d="M 20,20 L 35,20 M 20,20 L 20,35" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" fill="none" />
+            <path d="M 740,20 L 725,20 M 740,20 L 740,35" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" fill="none" />
+            <path d="M 20,380 L 35,380 M 20,380 L 20,365" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" fill="none" />
+            <path d="M 740,380 L 725,380 M 740,380 L 740,365" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" fill="none" />
+            <g fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" stroke-linejoin="miter">
+                <polyline points="100,80 260,80 300,120 300,160 340,200 420,200" />
+                <polyline points="160,40 160,80" />
+                <polyline points="80,140 100,140 120,160 120,200 420,200" />
+                <polyline points="80,200 420,200" />
+                <polyline points="140,140 140,200" />
+                <polyline points="100,340 220,340 280,280 280,240 320,200 420,200" />
+                <polyline points="120,280 280,280" />
+                <polyline points="180,380 180,340" />
+                <polyline points="40,260 80,260 100,240 100,220" stroke="rgba(255,255,255,0.06)" />
+                <polyline points="200,60 220,60 240,40" stroke="rgba(255,255,255,0.06)" />
+                <polyline points="300,160 340,200 380,200" stroke="rgba(255,255,255,0.4)" stroke-width="2" />
+                <polyline points="280,240 320,200 380,200" stroke="rgba(255,255,255,0.4)" stroke-width="2" />
+                <line x1="260" y1="200" x2="380" y2="200" stroke="rgba(255,255,255,0.4)" stroke-width="2" />
+                <line x1="320" y1="200" x2="380" y2="200" stroke="#E7E70D" stroke-width="1.5" class="data-flow" opacity="0.7" />
+                <polyline points="420,200 460,160 540,160 580,120 660,120" />
+                <polyline points="420,200 680,200" />
+                <polyline points="520,200 520,260 580,260" />
+                <polyline points="420,200 450,230 450,300 490,340 620,340" />
+                <g stroke="#FFFFFF" stroke-opacity="0.8" stroke-width="2">
+                    <line x1="475" y1="200" x2="495" y2="200" />
+                    <line x1="465" y1="160" x2="480" y2="145" />
+                    <line x1="468" y1="235" x2="485" y2="252" />
+                </g>
+            </g>
+            <use href="#node-cir" x="100" y="80" />
+            <use href="#node-sq" x="160" y="40" />
+            <use href="#node-hex" x="80" y="140" />
+            <use href="#node-cir" x="140" y="140" />
+            <use href="#node-dia" x="80" y="200" />
+            <use href="#node-sq" x="120" y="280" class="pulse-node" />
+            <use href="#node-dia" x="100" y="340" />
+            <use href="#node-hex" x="180" y="380" opacity="0.4" />
+            <circle cx="80" cy="200" r="16" fill="none" stroke="#E7E70D" stroke-width="1" opacity="0.6" stroke-dasharray="2 3" />
+            <use href="#out-hex" x="660" y="120" />
+            <use href="#out-sq" x="680" y="200" class="pulse-node" />
+            <use href="#out-cir" x="580" y="260" />
+            <use href="#out-dia" x="620" y="340" />
+            <rect x="666" y="186" width="28" height="28" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1" />
+            <g fill="#E7E70D">
+                <circle cx="260" cy="80" r="3.5" />
+                <circle cx="300" cy="120" r="3.5" />
+                <circle cx="300" cy="160" r="4.5" />
+                <circle cx="340" cy="200" r="4.5" />
+                <circle cx="160" cy="80" r="3" />
+                <circle cx="100" cy="140" r="3" />
+                <circle cx="120" cy="160" r="3.5" />
+                <circle cx="120" cy="200" r="4" />
+                <circle cx="140" cy="200" r="3.5" />
+                <circle cx="220" cy="340" r="3.5" />
+                <circle cx="280" cy="280" r="4" />
+                <circle cx="280" cy="240" r="4" />
+                <circle cx="320" cy="200" r="5" />
+                <circle cx="200" cy="140" r="2" opacity="0.5" />
+                <circle cx="240" cy="240" r="2" opacity="0.5" />
+                <circle cx="460" cy="160" r="4.5" />
+                <circle cx="540" cy="160" r="3.5" />
+                <circle cx="580" cy="120" r="3.5" />
+                <circle cx="520" cy="200" r="4" />
+                <circle cx="520" cy="260" r="3.5" />
+                <circle cx="450" cy="230" r="4.5" />
+                <circle cx="450" cy="300" r="3.5" />
+                <circle cx="490" cy="340" r="3.5" />
+            </g>
+            <use href="#center-mask" />
+            <circle cx="420" cy="200" r="76" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1.5" />
+            <circle cx="420" cy="200" r="72" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1" stroke-dasharray="3 7" stroke-dashoffset="0" class="pulse-node" />
+            <polygon points="420,144 476,200 420,256 364,200" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1" />
+            <polygon points="420,152 468,200 420,248 372,200" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="2" />
+            <path d="M 420,128 L 420,140 M 420,272 L 420,260" stroke="#FFFFFF" stroke-width="1.5" fill="none" opacity="0.4"/>
+            <path d="M 348,200 L 360,200 M 492,200 L 480,200" stroke="#FFFFFF" stroke-width="1.5" fill="none" opacity="0.4"/>
+            <polygon points="420,165 450.3,182.5 450.3,217.5 420,235 389.7,217.5 389.7,182.5" fill="#111111" />
+            <polygon points="420,170 446,185 446,215 420,230 394,215 394,185" fill="#FFFFFF" />
+            <line x1="404" y1="200" x2="436" y2="200" stroke="#2D2D2D" stroke-width="1.5" opacity="0.5" />
+            <line x1="420" y1="184" x2="420" y2="216" stroke="#2D2D2D" stroke-width="1.5" opacity="0.5" />
+            <circle cx="420" cy="200" r="7" fill="#E7E70D" />
+            <circle cx="420" cy="200" r="14" fill="none" stroke="#E7E70D" stroke-width="1" opacity="0.4" class="pulse-node" />
+        </svg>
+    </div>
+</body>
+</html>

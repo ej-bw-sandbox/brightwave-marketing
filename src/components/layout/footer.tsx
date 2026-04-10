@@ -23,7 +23,7 @@ const FALLBACK: SiteSettings = {
   copyrightText: '2026 Brightwave Inc. All rights reserved.',
   socialLinks: { linkedin: 'https://www.linkedin.com/company/brightwave-io/about/', twitter: 'https://x.com/brightwaveio' },
   footerColumns: [
-    { _key: 'col-solutions', title: 'Solutions', links: [{ _key: 'l-pm', label: 'Private Markets', url: '/private-markets/' }] },
+    { _key: 'col-solutions', title: 'Solutions', links: [{ _key: 'l-pm', label: 'Private Markets', url: '/private-markets-platform' }] },
     { _key: 'col-resources', title: 'Resources', links: [
       { _key: 'l-blog', label: 'Blog', url: '/blog' },
       { _key: 'l-eng-log', label: 'Engineering Log', url: '/engineering-log' },

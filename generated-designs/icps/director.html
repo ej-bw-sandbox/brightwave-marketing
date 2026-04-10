@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Director Workflow Illustration</title>
+    <style>
+        body { margin: 0; padding: 0; background-color: #111; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+
+        @keyframes slow-spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @keyframes reverse-spin {
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0deg); }
+        }
+        .spin-layer { transform-origin: center; animation: slow-spin 40s linear infinite; }
+        .spin-reverse { transform-origin: center; animation: reverse-spin 60s linear infinite; }
+
+        @keyframes pulse-dot {
+            0% { r: 3; opacity: 1; }
+            50% { r: 4.5; opacity: 0.8; }
+            100% { r: 3; opacity: 1; }
+        }
+        .active-node { animation: pulse-dot 3s ease-in-out infinite; }
+
+        @keyframes dash-flow {
+            to { stroke-dashoffset: -20; }
+        }
+        .flow-path {
+            stroke-dasharray: 4 6;
+            animation: dash-flow 1s linear infinite;
+        }
+    </style>
+</head>
+<body>
+
+    <div style="width: 760px; height: 400px; background-color: #2D2D2D; position: relative; overflow: hidden; flex-shrink: 0; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);">
+
+        <svg width="760" height="400" viewBox="0 0 760 400" xmlns="http://www.w3.org/2000/svg" style="position: absolute; inset: 0;">
+
+            <defs>
+                <marker id="arrow-left" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 10 0 L 0 5 L 10 10 z" fill="#FFFFFF" opacity="0.6"/>
+                </marker>
+                <marker id="arrow-right" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#FFFFFF" opacity="0.6"/>
+                </marker>
+                <marker id="arrow-down" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#FFFFFF" opacity="0.4"/>
+                </marker>
+
+                <pattern id="tech-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#FFFFFF" stroke-opacity="0.03" stroke-width="1"/>
+                    <circle cx="0" cy="0" r="1" fill="#FFFFFF" fill-opacity="0.08"/>
+                </pattern>
+
+                <radialGradient id="center-glow" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#E7E70D" stop-opacity="0.15" />
+                    <stop offset="100%" stop-color="#E7E70D" stop-opacity="0" />
+                </radialGradient>
+            </defs>
+
+            <rect width="100%" height="100%" fill="url(#tech-grid)" />
+
+            <!-- Corner Accents -->
+            <path d="M 20 40 L 20 20 L 40 20 M 740 20 L 740 40 M 720 20 L 740 20 M 20 360 L 20 380 L 40 380 M 740 360 L 740 380 L 720 380" fill="none" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="1"/>
+            <circle cx="20" cy="20" r="2" fill="#E7E70D" opacity="0.5"/>
+            <circle cx="740" cy="380" r="2" fill="#E7E70D" opacity="0.5"/>
+
+            <!-- Pathways -->
+            <g id="pathways">
+                <!-- Center to Left (Client Relationship - Bidirectional) -->
+                <path d="M 320 150 L 240 150 L 200 130  L 150 130" fill="none" stroke="#FFFFFF" stroke-opacity="0.5" stroke-width="1.5" marker-start="url(#arrow-left)"/>
+                <path d="M 150 170 L 200 170 L 240 150 L 320 150" fill="none" stroke="#FFFFFF" stroke-opacity="0.5" stroke-width="1.5" marker-end="url(#arrow-right)"/>
+
+                <!-- Center to Right (Strategic Oversight) -->
+                <path d="M 440 150 L 520 150 L 550 120 L 620 120" fill="none" stroke="#FFFFFF" stroke-opacity="0.4" stroke-width="1"/>
+                <path d="M 440 150 L 520 150 L 550 180 L 620 180" fill="none" stroke="#FFFFFF" stroke-opacity="0.4" stroke-width="1"/>
+                <path d="M 460 150 L 490 100 L 580 100 L 650 150" fill="none" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="1" stroke-dasharray="2 4"/>
+                <path d="M 520 150 L 650 150 L 680 180" fill="none" class="flow-path" stroke="#FFFFFF" stroke-opacity="0.6" stroke-width="1.5"/>
+                <path d="M 550 120 L 550 180 M 620 120 L 620 180 M 585 100 L 620 120 L 650 150 L 620 180 M 550 120 L 585 150 L 550 180" fill="none" stroke="#FFFFFF" stroke-opacity="0.15" stroke-width="1"/>
+
+                <!-- Center Downward (Hierarchy) -->
+                <path d="M 380 205 L 380 260" fill="none" stroke="#FFFFFF" stroke-opacity="0.7" stroke-width="2" marker-end="url(#arrow-down)"/>
+                <path d="M 220 260 L 540 260" fill="none" stroke="#FFFFFF" stroke-opacity="0.4" stroke-width="1.5"/>
+
+                <!-- Sub-branches -->
+                <path d="M 220 260 L 220 290 L 180 320" fill="none" stroke="#FFFFFF" stroke-opacity="0.3" stroke-width="1"/>
+                <path d="M 220 260 L 220 290 L 260 320" fill="none" stroke="#FFFFFF" stroke-opacity="0.3" stroke-width="1"/>
+                <path d="M 300 260 L 300 320" fill="none" stroke="#FFFFFF" stroke-opacity="0.3" stroke-width="1"/>
+                <path d="M 300 290 L 330 320" fill="none" stroke="#FFFFFF" stroke-opacity="0.3" stroke-width="1"/>
+                <path d="M 460 260 L 460 320" fill="none" class="flow-path" stroke="#FFFFFF" stroke-opacity="0.5" stroke-width="1.5"/>
+                <path d="M 460 290 L 430 320" fill="none" stroke="#FFFFFF" stroke-opacity="0.3" stroke-width="1"/>
+                <path d="M 540 260 L 540 290 L 500 320" fill="none" stroke="#FFFFFF" stroke-opacity="0.3" stroke-width="1"/>
+                <path d="M 540 260 L 540 290 L 580 320" fill="none" stroke="#FFFFFF" stroke-opacity="0.3" stroke-width="1"/>
+            </g>
+
+            <!-- Satellite Structures -->
+            <g id="nodes-and-clusters">
+
+                <!-- Left Cluster (Client Relationships) -->
+                <g style="transform-origin: 120px 150px;">
+                    <circle cx="120" cy="150" r="45" fill="none" stroke="#FFFFFF" stroke-opacity="0.1" stroke-width="1" stroke-dasharray="4 6"/>
+                    <path class="spin-layer" style="transform-origin: 120px 150px;" d="M 120 115 A 35 35 0 0 1 155 150 M 120 185 A 35 35 0 0 1 85 150" fill="none" stroke="#FFFFFF" stroke-opacity="0.4" stroke-width="2"/>
+                    <path class="spin-reverse" style="transform-origin: 120px 150px;" d="M 100 130 A 25 25 0 0 1 140 170" fill="none" stroke="#E7E70D" stroke-opacity="0.6" stroke-width="1.5"/>
+                    <circle cx="120" cy="150" r="12" fill="#2D2D2D" stroke="#FFFFFF" stroke-width="2"/>
+                    <circle cx="120" cy="150" r="4" fill="#FFFFFF"/>
+                    <circle cx="165" cy="150" r="3" fill="#FFFFFF" opacity="0.8"/>
+                    <circle cx="75" cy="150" r="3" fill="#FFFFFF" opacity="0.5"/>
+                    <circle cx="120" cy="105" r="3" fill="#E7E70D" opacity="0.8"/>
+                </g>
+
+                <!-- Right Cluster (Strategic Deals) -->
+                <g>
+                    <rect x="545" y="115" width="10" height="10" fill="#2D2D2D" stroke="#FFFFFF" stroke-width="1.5" transform="rotate(45 550 120)"/>
+                    <circle cx="550" cy="120" r="2" fill="#FFFFFF"/>
+                    <rect x="545" y="175" width="10" height="10" fill="#2D2D2D" stroke="#FFFFFF" stroke-opacity="0.5" stroke-width="1" transform="rotate(45 550 180)"/>
+                    <rect x="615" y="115" width="10" height="10" fill="#2D2D2D" stroke="#E7E70D" stroke-opacity="0.8" stroke-width="1.5" transform="rotate(45 620 120)"/>
+                    <rect x="615" y="175" width="10" height="10" fill="#2D2D2D" stroke="#FFFFFF" stroke-width="1.5" transform="rotate(45 620 180)"/>
+                    <circle cx="620" cy="180" r="2" fill="#FFFFFF"/>
+                    <rect x="640" y="140" width="20" height="20" fill="none" stroke="#FFFFFF" stroke-opacity="0.3" stroke-width="1" stroke-dasharray="2 2" transform="rotate(45 650 150)"/>
+                    <rect x="645" y="145" width="10" height="10" fill="#E7E70D" transform="rotate(45 650 150)"/>
+                    <circle cx="680" cy="180" r="4" fill="#FFFFFF" opacity="0.4"/>
+                    <circle cx="585" cy="150" r="3" fill="#FFFFFF" opacity="0.5"/>
+                </g>
+
+                <!-- Bottom Cluster (Hierarchy / Teams) -->
+                <g>
+                    <circle cx="220" cy="260" r="3" fill="#FFFFFF" opacity="0.7"/>
+                    <circle cx="300" cy="260" r="3" fill="#FFFFFF" opacity="0.7"/>
+                    <circle cx="380" cy="260" r="5" fill="#E7E70D" class="active-node"/>
+                    <circle cx="460" cy="260" r="3" fill="#FFFFFF" opacity="0.7"/>
+                    <circle cx="540" cy="260" r="3" fill="#FFFFFF" opacity="0.7"/>
+                    <polygon points="180,315 185,320 180,325 175,320" fill="#FFFFFF" opacity="0.6"/>
+                    <circle cx="260" cy="320" r="2" fill="#FFFFFF" opacity="0.4"/>
+                    <polygon points="300,314 306,317 306,323 300,326 294,323 294,317" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.8"/>
+                    <circle cx="330" cy="320" r="2" fill="#FFFFFF" opacity="0.4"/>
+                    <polygon points="460,312 468,316 468,324 460,328 452,324 452,316" fill="#2D2D2D" stroke="#E7E70D" stroke-width="1.5"/>
+                    <circle cx="460" cy="320" r="2" fill="#E7E70D"/>
+                    <circle cx="430" cy="320" r="2" fill="#FFFFFF" opacity="0.4"/>
+                    <polygon points="500,315 505,320 500,325 495,320" fill="#FFFFFF" opacity="0.6"/>
+                    <polygon points="580,315 585,320 580,325 575,320" fill="#FFFFFF" opacity="0.6"/>
+                </g>
+
+            </g>
+
+            <!-- Central Director Node -->
+            <g id="director-node" transform="translate(380, 150)">
+                <circle cx="0" cy="0" r="60" fill="url(#center-glow)"/>
+                <circle cx="0" cy="0" r="50" fill="none" stroke="#FFFFFF" stroke-opacity="0.1" stroke-width="1"/>
+                <circle cx="0" cy="0" r="44" fill="none" stroke="#FFFFFF" stroke-opacity="0.4" stroke-width="1" stroke-dasharray="2 8" class="spin-layer"/>
+                <polygon points="0,-35 30.3,-17.5 30.3,17.5 0,35 -30.3,17.5 -30.3,-17.5" fill="#2D2D2D" stroke="#FFFFFF" stroke-width="2"/>
+                <polygon points="0,-25 21.6,-12.5 21.6,12.5 0,25 -21.6,12.5 -21.6,-12.5" fill="none" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="1"/>
+                <rect x="-10" y="-10" width="20" height="20" fill="none" stroke="#FFFFFF" stroke-width="1.5" transform="rotate(45)"/>
+                <circle cx="0" cy="0" r="4.5" fill="#E7E70D" class="active-node"/>
+            </g>
+
+            <!-- Yellow Accent Junctions -->
+            <g id="accents" fill="#E7E70D">
+                <circle cx="320" cy="150" r="3" />
+                <circle cx="240" cy="150" r="2.5" opacity="0.8"/>
+                <circle cx="440" cy="150" r="3" />
+                <circle cx="520" cy="150" r="2.5" />
+                <circle cx="490" cy="100" r="2" opacity="0.8"/>
+                <circle cx="380" cy="205" r="3" />
+                <circle cx="460" cy="290" r="2.5" />
+            </g>
+
+        </svg>
+
+        <!-- Vignette Overlay -->
+        <div style="position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 50% 40%, transparent 40%, rgba(20,20,20,0.6) 100%);"></div>
+    </div>
+
+</body>
+</html>

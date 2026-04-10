@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Middle Market Illustration</title>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #09090b; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+        svg { display: block; shape-rendering: geometricPrecision; }
+        .node-pulse { animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: .7; transform: scale(1.05); }
+        }
+    </style>
+</head>
+<body>
+    <div style="position:relative;flex:none;width:760px;height:400px;background:#2D2D2D;box-shadow:0 20px 50px rgba(0,0,0,0.5);border-radius:2px;overflow:hidden;">
+        <svg viewBox="0 0 760 400" width="760" height="400" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <filter id="yellowGlow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur stdDeviation="4" result="blur" />
+                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                </filter>
+                <filter id="nodeShadow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.4"/>
+                </filter>
+                <pattern id="dotGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+                    <circle cx="20" cy="20" r="1.5" fill="#ffffff" opacity="0.04" />
+                    <path d="M 20 17 L 20 23 M 17 20 L 23 20" stroke="#ffffff" stroke-width="0.5" opacity="0.03" />
+                </pattern>
+                <g id="node-square-solid" filter="url(#nodeShadow)"><rect x="-6" y="-6" width="12" height="12" fill="#ffffff" /></g>
+                <g id="node-square-hollow" filter="url(#nodeShadow)"><rect x="-7" y="-7" width="14" height="14" fill="#2D2D2D" stroke="#ffffff" stroke-width="2" /><rect x="-2" y="-2" width="4" height="4" fill="#ffffff" opacity="0.5" /></g>
+                <g id="node-diamond-hollow" filter="url(#nodeShadow)"><polygon points="0,-9 9,0 0,9 -9,0" fill="#2D2D2D" stroke="#ffffff" stroke-width="1.5" /><circle cx="0" cy="0" r="1.5" fill="#E7E70D" /></g>
+                <g id="node-diamond-solid" filter="url(#nodeShadow)"><polygon points="0,-7 7,0 0,7 -7,0" fill="#ffffff" /></g>
+                <g id="node-circle-solid" filter="url(#nodeShadow)"><circle cx="0" cy="0" r="5" fill="#ffffff" /></g>
+                <g id="node-circle-main" filter="url(#nodeShadow)" class="node-pulse"><circle cx="0" cy="0" r="11" fill="#2D2D2D" stroke="#ffffff" stroke-width="1.5" /><circle cx="0" cy="0" r="6" fill="#ffffff" opacity="0.1" /><circle cx="0" cy="0" r="2.5" fill="#E7E70D" /></g>
+                <g id="accent-junction"><circle cx="0" cy="0" r="2.5" fill="#E7E70D" filter="url(#yellowGlow)" /></g>
+                <g id="accent-crosshair"><path d="M 0 -4 L 0 4 M -4 0 L 4 0" stroke="#E7E70D" stroke-width="1" filter="url(#yellowGlow)"/></g>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#dotGrid)" />
+            <g stroke="#ffffff" stroke-width="0.5" opacity="0.15" fill="none">
+                <path d="M 0 60 L 140 60 L 160 80 L 300 80 L 320 60 L 760 60" />
+                <path d="M 0 340 L 200 340 L 220 320 L 480 320 L 500 340 L 760 340" />
+                <line x1="140" y1="0" x2="140" y2="400" stroke-dasharray="2 4" />
+                <line x1="380" y1="0" x2="380" y2="400" stroke-dasharray="1 6" />
+                <line x1="620" y1="0" x2="620" y2="400" stroke-dasharray="2 4" />
+            </g>
+            <g stroke="#ffffff" stroke-width="1" opacity="0.4" fill="none" stroke-linejoin="round">
+                <path d="M 80 200 L 280 200" />
+                <path d="M 480 200 L 680 200" />
+                <path d="M 80 140 L 160 140 L 180 160 L 180 280 L 200 300 L 280 300" />
+                <path d="M 120 200 L 120 160 L 140 140" />
+                <path d="M 220 200 L 220 280 L 240 300" />
+                <path d="M 280 120 L 340 120 L 360 140 L 360 260 L 380 280 L 440 280" />
+                <path d="M 320 200 L 320 160 L 340 140" />
+                <path d="M 360 200 L 400 200" />
+                <path d="M 380 160 L 380 240" />
+                <path d="M 440 120 L 520 120 L 540 140 L 540 220 L 560 200 L 680 200" />
+                <path d="M 500 200 L 500 260 L 520 280 L 640 280" />
+                <path d="M 580 160 L 640 160 L 660 140 L 720 140" />
+            </g>
+            <g stroke="#ffffff" stroke-width="1.5" opacity="0.8" fill="none" stroke-linejoin="miter">
+                <path d="M -20 240 L 100 240 L 120 220 L 260 220 L 280 200 L 340 200" />
+                <path d="M 340 200 L 360 180 L 400 180 L 420 200 L 480 200" />
+                <path d="M 480 240 L 560 240 L 580 260 L 700 260 L 720 280 L 800 280" />
+                <line x1="260" y1="180" x2="260" y2="240" stroke-width="2" />
+                <line x1="500" y1="160" x2="500" y2="240" stroke-width="2" />
+            </g>
+            <use href="#node-diamond-hollow" x="80" y="140" />
+            <use href="#node-circle-solid" x="80" y="200" />
+            <use href="#node-square-solid" x="100" y="240" />
+            <use href="#node-diamond-solid" x="120" y="220" />
+            <use href="#node-square-hollow" x="160" y="140" />
+            <use href="#node-circle-solid" x="200" y="300" />
+            <use href="#node-square-solid" x="260" y="180" />
+            <use href="#node-diamond-hollow" x="280" y="200" />
+            <use href="#node-circle-solid" x="280" y="300" />
+            <use href="#node-square-hollow" x="280" y="120" />
+            <use href="#node-circle-solid" x="320" y="160" />
+            <use href="#node-diamond-hollow" x="340" y="200" />
+            <use href="#node-circle-main" x="380" y="160" />
+            <use href="#node-square-solid" x="380" y="240" />
+            <use href="#node-square-solid" x="360" y="200" />
+            <use href="#node-circle-main" x="400" y="200" />
+            <use href="#node-diamond-solid" x="440" y="280" />
+            <use href="#node-circle-solid" x="440" y="120" />
+            <use href="#node-square-solid" x="480" y="200" />
+            <use href="#node-circle-solid" x="480" y="240" />
+            <use href="#node-square-hollow" x="520" y="120" />
+            <use href="#node-diamond-hollow" x="580" y="160" />
+            <use href="#node-circle-solid" x="560" y="240" />
+            <use href="#node-square-solid" x="640" y="280" />
+            <use href="#node-diamond-solid" x="660" y="140" />
+            <use href="#node-circle-main" x="680" y="200" />
+            <use href="#node-square-hollow" x="700" y="260" />
+            <use href="#accent-junction" x="120" y="200" />
+            <use href="#accent-crosshair" x="180" y="160" />
+            <use href="#accent-junction" x="260" y="220" />
+            <use href="#accent-junction" x="260" y="240" />
+            <use href="#accent-junction" x="340" y="120" />
+            <use href="#accent-junction" x="360" y="180" />
+            <use href="#accent-junction" x="400" y="180" />
+            <use href="#accent-crosshair" x="420" y="200" />
+            <use href="#accent-junction" x="380" y="280" />
+            <use href="#accent-junction" x="500" y="160" />
+            <use href="#accent-junction" x="540" y="140" />
+            <use href="#accent-crosshair" x="540" y="220" />
+            <use href="#accent-junction" x="580" y="260" />
+            <use href="#accent-junction" x="640" y="160" />
+            <use href="#accent-junction" x="720" y="280" />
+            <g stroke="#E7E70D" stroke-width="1" opacity="0.6">
+                <line x1="0" y1="240" x2="8" y2="240" />
+                <line x1="12" y1="240" x2="16" y2="240" />
+                <line x1="744" y1="280" x2="748" y2="280" />
+                <line x1="752" y1="280" x2="760" y2="280" />
+            </g>
+            <g stroke="#ffffff" stroke-width="1.5" opacity="0.3">
+                <line x1="210" y1="218" x2="210" y2="222" />
+                <line x1="220" y1="218" x2="220" y2="222" />
+                <line x1="230" y1="218" x2="230" y2="222" />
+                <line x1="600" y1="258" x2="600" y2="262" />
+                <line x1="610" y1="258" x2="610" y2="262" />
+                <line x1="620" y1="258" x2="620" y2="262" />
+            </g>
+        </svg>
+        <div style="position:absolute;top:0;left:0;width:16px;height:16px;border-top:1px solid rgba(255,255,255,0.2);border-left:1px solid rgba(255,255,255,0.2);"></div>
+        <div style="position:absolute;top:0;right:0;width:16px;height:16px;border-top:1px solid rgba(255,255,255,0.2);border-right:1px solid rgba(255,255,255,0.2);"></div>
+        <div style="position:absolute;bottom:0;left:0;width:16px;height:16px;border-bottom:1px solid rgba(255,255,255,0.2);border-left:1px solid rgba(255,255,255,0.2);"></div>
+        <div style="position:absolute;bottom:0;right:0;width:16px;height:16px;border-bottom:1px solid rgba(255,255,255,0.2);border-right:1px solid rgba(255,255,255,0.2);"></div>
+    </div>
+</body>
+</html>

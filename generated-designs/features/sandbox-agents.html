@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sandbox Agents</title>
+    <style>
+        body { background: black; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+        @keyframes flow-data { 0% { stroke-dashoffset: 100; } 100% { stroke-dashoffset: 0; } }
+        @keyframes pulse-glow { 0%, 100% { filter: drop-shadow(0 0 3px rgba(231, 231, 13, 0.4)); transform: scale(1); } 50% { filter: drop-shadow(0 0 8px rgba(231, 231, 13, 1)); transform: scale(1.1); } }
+        @keyframes breathe-border { 0%, 100% { stroke-opacity: 0.3; } 50% { stroke-opacity: 0.8; } }
+        @keyframes scanline { 0% { transform: translateY(-100%); } 100% { transform: translateY(400px); } }
+        .data-stream { stroke-dasharray: 4 12; animation: flow-data 3s linear infinite; }
+        .data-stream-reverse { stroke-dasharray: 4 12; animation: flow-data 3s linear infinite reverse; }
+        .anim-pulse { animation: pulse-glow 3s cubic-bezier(0.4, 0, 0.2, 1) infinite; transform-origin: center; }
+        .anim-border-breathe { animation: breathe-border 4s ease-in-out infinite; }
+    </style>
+</head>
+<body>
+    <div style="position:relative;width:760px;height:400px;background:#2D2D2D;border-radius:12px;overflow:hidden;box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.05);">
+        <div style="position:absolute;inset:0;pointer-events:none;mix-blend-mode:overlay;opacity:0.1;"><div style="width:100%;height:10px;background:white;opacity:0.5;animation:scanline 8s linear infinite;"></div></div>
+        <svg style="position:absolute;inset:0;width:100%;height:100%;" xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision">
+            <defs>
+                <pattern id="tech-grid" width="20" height="20" patternUnits="userSpaceOnUse"><line x1="20" y1="0" x2="20" y2="20" fill="none" stroke="#FFFFFF" stroke-width="0.5" opacity="0.04"/><line x1="0" y1="20" x2="20" y2="20" fill="none" stroke="#FFFFFF" stroke-width="0.5" opacity="0.04"/><circle cx="20" cy="20" r="1" fill="#FFFFFF" opacity="0.08"/></pattern>
+                <filter id="yellow-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur1" /><feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur2" /><feMerge><feMergeNode in="blur2" /><feMergeNode in="blur1" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
+                <g id="node-square"><rect x="-6" y="-6" width="12" height="12" fill="#2D2D2D" stroke="currentColor" stroke-width="1.5" rx="1"/><rect x="-2" y="-2" width="4" height="4" fill="currentColor"/></g>
+                <g id="node-diamond"><polygon points="0,-7 7,0 0,7 -7,0" fill="#2D2D2D" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="0" cy="0" r="2" fill="currentColor"/></g>
+                <g id="node-hexagon"><polygon points="0,-8 7,-4 7,4 0,8 -7,4 -7,-4" fill="#2D2D2D" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="0" cy="0" r="2" fill="currentColor"/></g>
+                <g id="node-circle"><circle cx="0" cy="0" r="6" fill="#2D2D2D" stroke="currentColor" stroke-width="1.5"/><circle cx="0" cy="0" r="2.5" fill="currentColor"/></g>
+                <g id="node-dormant"><circle cx="0" cy="0" r="4" fill="#2D2D2D" stroke="#777777" stroke-width="1"/></g>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#tech-grid)" />
+            <!-- System buses -->
+            <line x1="0" y1="20" x2="760" y2="20" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-dasharray="2 6" opacity="0.1"/>
+            <line x1="0" y1="380" x2="760" y2="380" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-dasharray="2 6" opacity="0.1"/>
+            <path d="M 140 20 V 40 M 380 20 V 40 M 620 20 V 40" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.2"/>
+            <path d="M 140 380 V 360 M 380 380 V 360 M 620 380 V 360" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.2"/>
+            <!-- Sandbox 1: Left (Dormant) -->
+            <rect x="40" y="40" width="200" height="320" rx="6" fill="#1A1A1A" opacity="0.3" stroke="#555555" stroke-width="1" stroke-dasharray="5 5"/>
+            <path d="M 50 40 H 40 V 50 M 230 40 H 240 V 50 M 40 350 V 360 H 50 M 240 350 V 360 H 230" fill="none" stroke="#777777" stroke-width="2" opacity="0.5"/>
+            <path d="M 140 120 V 170 L 90 220 V 270" fill="none" stroke="#555555" stroke-width="1.5" stroke-linejoin="round"/>
+            <path d="M 140 120 V 170 L 190 220 V 270" fill="none" stroke="#555555" stroke-width="1.5" stroke-linejoin="round"/>
+            <path d="M 90 270 L 140 320 L 190 270" fill="none" stroke="#555555" stroke-width="1.5" stroke-linejoin="round"/>
+            <line x1="90" y1="220" x2="190" y2="220" fill="none" stroke="#555555" stroke-width="1" stroke-dasharray="2 4"/>
+            <use href="#node-square" x="140" y="120" color="#777777"/><use href="#node-circle" x="90" y="270" color="#777777"/><use href="#node-diamond" x="190" y="270" color="#777777"/>
+            <use href="#node-dormant" x="140" y="170"/><use href="#node-dormant" x="90" y="220"/><use href="#node-dormant" x="190" y="220"/><use href="#node-dormant" x="140" y="320"/>
+            <!-- Sandbox 3: Right (Dormant) -->
+            <rect x="520" y="40" width="200" height="320" rx="6" fill="#1A1A1A" opacity="0.3" stroke="#555555" stroke-width="1" stroke-dasharray="5 5"/>
+            <path d="M 530 40 H 520 V 50 M 710 40 H 720 V 50 M 520 350 V 360 H 530 M 720 350 V 360 H 710" fill="none" stroke="#777777" stroke-width="2" opacity="0.5"/>
+            <path d="M 620 100 V 160 L 580 200 V 280" fill="none" stroke="#555555" stroke-width="1.5" stroke-linejoin="round"/>
+            <path d="M 620 100 V 160 L 660 200 V 260 H 600 L 580 280" fill="none" stroke="#555555" stroke-width="1.5" stroke-linejoin="round"/>
+            <use href="#node-hexagon" x="620" y="100" color="#777777"/><use href="#node-square" x="580" y="280" color="#777777"/>
+            <use href="#node-dormant" x="620" y="160"/><use href="#node-dormant" x="580" y="200"/><use href="#node-dormant" x="660" y="200"/><use href="#node-dormant" x="660" y="260"/><use href="#node-dormant" x="600" y="260"/>
+            <!-- Sandbox 2: Center (Active/Highlighted) -->
+            <rect x="280" y="40" width="200" height="320" rx="6" fill="#E7E70D" opacity="0.03"/>
+            <rect x="280" y="40" width="200" height="320" rx="6" fill="none" stroke="#E7E70D" stroke-width="1.5" stroke-dasharray="10 8" class="anim-border-breathe"/>
+            <path d="M 295 38 H 278 V 55 M 465 38 H 482 V 55 M 278 345 V 362 H 295 M 482 345 V 362 H 465" fill="none" stroke="#FFFFFF" stroke-width="2.5" opacity="0.9"/>
+            <path d="M 380 90 L 380 200" fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity="0.9"/>
+            <path d="M 310 160 H 340 L 380 200" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-linejoin="round" opacity="0.9"/>
+            <path d="M 450 160 H 420 L 380 200" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-linejoin="round" opacity="0.9"/>
+            <path d="M 320 280 V 260 L 380 200" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-linejoin="round" opacity="0.9"/>
+            <path d="M 440 280 V 260 L 380 200" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-linejoin="round" opacity="0.9"/>
+            <path d="M 320 280 H 440" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-dasharray="2 4" opacity="0.4"/>
+            <!-- Animated data streams -->
+            <path d="M 380 90 L 380 200" fill="none" stroke="#E7E70D" stroke-width="2" class="data-stream"/>
+            <path d="M 310 160 H 340 L 380 200" fill="none" stroke="#E7E70D" stroke-width="2" class="data-stream" stroke-linejoin="round"/>
+            <path d="M 450 160 H 420 L 380 200" fill="none" stroke="#E7E70D" stroke-width="2" class="data-stream-reverse" stroke-linejoin="round"/>
+            <path d="M 380 200 L 380 310" fill="none" stroke="#E7E70D" stroke-width="1" opacity="0.5" stroke-dasharray="4 2"/>
+            <!-- Active nodes -->
+            <use href="#node-hexagon" x="380" y="90" color="#FFFFFF"/><use href="#node-diamond" x="310" y="160" color="#FFFFFF"/>
+            <use href="#node-square" x="450" y="160" color="#FFFFFF"/><use href="#node-circle" x="320" y="280" color="#FFFFFF"/><use href="#node-circle" x="440" y="280" color="#FFFFFF"/>
+            <!-- Yellow junctions -->
+            <g class="anim-pulse" style="transform-box: fill-box; transform-origin: center;"><circle cx="380" cy="200" r="4.5" fill="#E7E70D" stroke="#2D2D2D" stroke-width="1"/><circle cx="380" cy="200" r="1.5" fill="#FFFFFF"/></g>
+            <circle cx="340" cy="160" r="3" fill="#E7E70D" filter="url(#yellow-glow)"/>
+            <circle cx="420" cy="160" r="3" fill="#E7E70D" filter="url(#yellow-glow)"/>
+            <circle cx="320" cy="260" r="3" fill="#E7E70D" filter="url(#yellow-glow)"/>
+            <circle cx="440" cy="260" r="3" fill="#E7E70D" filter="url(#yellow-glow)"/>
+            <circle cx="380" cy="280" r="2.5" fill="#E7E70D"/>
+            <rect x="375" y="310" width="10" height="2" fill="#E7E70D" opacity="0.8"/>
+        </svg>
+    </div>
+</body>
+</html>

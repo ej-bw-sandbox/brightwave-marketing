@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post-Closing Integration Architecture</title>
+    <style>
+        body { margin: 0; background-color: #1a1a1a; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .integration-card { width: 760px; height: 400px; background-color: #2D2D2D; position: relative; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+    </style>
+</head>
+<body>
+    <div class="integration-card">
+        <svg viewBox="0 0 760 400" width="760" height="400" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <pattern id="dotGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <circle cx="10" cy="10" r="0.75" fill="rgba(255,255,255,0.06)" />
+                </pattern>
+                <rect id="node-square" x="-4.5" y="-4.5" width="9" height="9" fill="#FFFFFF" />
+                <circle id="node-circle" cx="0" cy="0" r="5" fill="#FFFFFF" />
+                <polygon id="node-diamond" points="0,-6.5 6.5,0 0,6.5 -6.5,0" fill="#FFFFFF" />
+                <polygon id="node-hex" points="0,-6 5.2,-3 5.2,3 0,6 -5.2,3 -5.2,-3" fill="#FFFFFF" />
+                <circle id="accent-primary" cx="0" cy="0" r="4.5" fill="#E7E70D" />
+                <circle id="accent-small" cx="0" cy="0" r="2.5" fill="#E7E70D" />
+                <g id="crosshair">
+                    <path d="M 0 -4 V 4 M -4 0 H 4" stroke="rgba(255,255,255,0.15)" stroke-width="1" />
+                </g>
+                <g id="focus-bracket">
+                    <path d="M -8 -4 L -8 -8 L -4 -8 M 8 -4 L 8 -8 L 4 -8 M -8 4 L -8 8 L -4 8 M 8 4 L 8 8 L 4 8" stroke="#E7E70D" stroke-width="1.5" fill="none" opacity="0.8"/>
+                </g>
+            </defs>
+            <rect width="760" height="400" fill="url(#dotGrid)" />
+            <use href="#crosshair" x="40" y="40" />
+            <use href="#crosshair" x="720" y="40" />
+            <use href="#crosshair" x="40" y="360" />
+            <use href="#crosshair" x="720" y="360" />
+            <path d="M 140 0 V 400 M 620 0 V 400" stroke="rgba(255,255,255,0.03)" stroke-width="2" />
+            <path d="M 0 200 H 760" stroke="rgba(255,255,255,0.03)" stroke-width="4" />
+            <g stroke="rgba(255,255,255,0.25)" stroke-width="1.5" fill="none">
+                <path d="M 60 100 H 140 V 160 H 100" />
+                <path d="M 140 280 V 340 H 220" />
+                <path d="M 220 160 V 80 H 180" />
+            </g>
+            <g stroke="rgba(255,255,255,0.85)" stroke-width="1.5" fill="none">
+                <path d="M -10 120 H 140 V 100 H 280" />
+                <path d="M 140 120 V 160 H 280" />
+                <path d="M 80 200 H 220 V 240 H 280" />
+                <path d="M 40 280 H 140 V 240 H 200" />
+                <path d="M 140 280 H 280" />
+                <path d="M 220 280 V 320 H 280" />
+            </g>
+            <g stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-dasharray="4 4" fill="none">
+                <path d="M 100 200 V 280 H 140" />
+                <path d="M 220 100 V 160" />
+            </g>
+            <g stroke="rgba(255,255,255,0.25)" stroke-width="1.5" fill="none">
+                <path d="M 700 80 H 660 L 620 120 V 180" />
+                <path d="M 660 320 L 620 280 V 220" />
+                <path d="M 540 160 L 580 120 H 620" />
+            </g>
+            <g stroke="rgba(255,255,255,0.85)" stroke-width="1.5" fill="none">
+                <path d="M 770 140 H 660 L 620 100 H 480" />
+                <path d="M 640 140 H 560 L 520 100" />
+                <path d="M 560 140 L 520 180 H 480" />
+                <path d="M 720 220 H 600 L 560 260 H 480" />
+                <path d="M 680 280 H 620 L 580 320 H 480" />
+                <path d="M 600 220 L 560 180" />
+                <path d="M 620 280 H 540 L 520 260 H 480" />
+            </g>
+            <g stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-dasharray="4 4" fill="none">
+                <path d="M 620 120 L 580 160 V 220 L 540 260" />
+            </g>
+            <g fill="none">
+                <path d="M 280 100 C 350 100, 390 100, 480 100" stroke="rgba(255,255,255,0.85)" stroke-width="1.5" />
+                <path d="M 280 160 C 340 160, 420 100, 480 100" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-dasharray="2 3" />
+                <path d="M 280 120 C 340 120, 430 180, 480 180" stroke="rgba(255,255,255,0.85)" stroke-width="1.5" />
+                <path d="M 280 160 C 350 160, 410 180, 480 180" stroke="rgba(255,255,255,0.85)" stroke-width="1.5" />
+                <path d="M 280 240 C 330 240, 340 200, 380 200" stroke="rgba(255,255,255,0.85)" stroke-width="1.5" />
+                <path d="M 380 200 C 420 200, 430 140, 480 140" stroke="rgba(255,255,255,0.85)" stroke-width="1.5" />
+                <path d="M 380 200 C 420 200, 430 260, 480 260" stroke="#E7E70D" stroke-width="1.5" opacity="0.6" stroke-dasharray="3 3"/>
+                <path d="M 280 280 C 350 280, 410 260, 480 260" stroke="rgba(255,255,255,0.85)" stroke-width="1.5" />
+                <path d="M 280 320 C 340 320, 370 260, 480 260" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-dasharray="4 4" />
+                <path d="M 280 280 C 360 280, 400 320, 480 320" stroke="rgba(255,255,255,0.85)" stroke-width="1.5" />
+            </g>
+            <use href="#node-square" x="80" y="200" />
+            <use href="#node-square" x="140" y="100" />
+            <use href="#node-square" x="140" y="160" />
+            <use href="#node-square" x="140" y="280" />
+            <use href="#node-square" x="220" y="100" />
+            <use href="#node-square" x="220" y="240" />
+            <use href="#node-square" x="280" y="100" />
+            <use href="#node-square" x="280" y="160" />
+            <use href="#node-square" x="280" y="240" />
+            <use href="#node-square" x="280" y="280" />
+            <use href="#node-square" x="280" y="320" />
+            <use href="#node-hex" x="620" y="100" />
+            <use href="#node-circle" x="660" y="140" />
+            <use href="#node-hex" x="520" y="100" />
+            <use href="#node-circle" x="560" y="140" />
+            <use href="#node-hex" x="520" y="180" />
+            <use href="#node-circle" x="600" y="220" />
+            <use href="#node-hex" x="560" y="260" />
+            <use href="#node-circle" x="620" y="280" />
+            <use href="#node-hex" x="580" y="320" />
+            <use href="#node-hex" x="480" y="100" />
+            <use href="#node-circle" x="480" y="140" />
+            <use href="#node-hex" x="480" y="180" />
+            <use href="#node-hex" x="480" y="260" />
+            <use href="#node-circle" x="480" y="320" />
+            <g transform="translate(380, 200)">
+                <circle cx="0" cy="0" r="24" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1" />
+                <circle cx="0" cy="0" r="16" fill="none" stroke="#E7E70D" stroke-width="1.5" stroke-dasharray="4 2" />
+                <polygon points="0,-12 10.4,-6 10.4,6 0,12 -10.4,6 -10.4,-6" fill="#2D2D2D" stroke="#FFFFFF" stroke-width="2" />
+                <rect x="-4.5" y="-4.5" width="9" height="9" fill="none" stroke="#FFFFFF" stroke-width="1.5" />
+                <use href="#accent-primary" x="0" y="0" />
+                <use href="#focus-bracket" x="0" y="0" />
+            </g>
+            <g>
+                <use href="#node-diamond" x="380" y="100" />
+                <use href="#accent-small" x="380" y="100" />
+                <use href="#node-diamond" x="380" y="280" />
+                <use href="#accent-primary" x="350" y="130" />
+                <use href="#accent-small" x="420" y="172" />
+                <use href="#accent-primary" x="430" y="235" />
+                <use href="#accent-small" x="330" y="274" />
+                <use href="#focus-bracket" x="430" y="235" />
+                <use href="#focus-bracket" x="350" y="130" />
+            </g>
+            <use href="#accent-primary" x="140" y="120" />
+            <use href="#accent-small" x="140" y="240" />
+            <use href="#accent-small" x="220" y="320" />
+            <use href="#accent-primary" x="620" y="280" />
+            <use href="#accent-small" x="520" y="180" />
+            <use href="#accent-primary" x="560" y="140" />
+        </svg>
+    </div>
+</body>
+</html>

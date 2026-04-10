@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artifact Generation</title>
+    <style>
+        body { margin: 0; background: #1a1a1a; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+        .flow-line { stroke-dasharray: 4 6; animation: flow 40s linear infinite; }
+        .flow-line-reverse { stroke-dasharray: 4 6; animation: flowReverse 40s linear infinite; }
+        .pulse-path { stroke-dasharray: 10 150; animation: pulse 3s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+        .pulse-path-delayed { stroke-dasharray: 10 150; animation: pulse 3.5s cubic-bezier(0.4, 0, 0.2, 1) infinite; animation-delay: 1.5s; }
+        @keyframes flow { from { stroke-dashoffset: 1000; } to { stroke-dashoffset: 0; } }
+        @keyframes flowReverse { from { stroke-dashoffset: 0; } to { stroke-dashoffset: 1000; } }
+        @keyframes pulse { 0% { stroke-dashoffset: 160; opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { stroke-dashoffset: 0; opacity: 0; } }
+        .node-float-1 { animation: float 6s ease-in-out infinite; }
+        .node-float-2 { animation: float 8s ease-in-out infinite alternate-reverse; }
+        .node-float-3 { animation: float 7s ease-in-out infinite 1s; }
+        @keyframes float { 0% { transform: translateY(0px) translateX(0px); } 50% { transform: translateY(-4px) translateX(2px); } 100% { transform: translateY(0px) translateX(0px); } }
+    </style>
+</head>
+<body>
+    <div style="position:relative;width:760px;height:400px;background:#2D2D2D;overflow:hidden;border-radius:12px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);">
+        <svg width="100%" height="100%" viewBox="0 0 760 400" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur" /><feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
+                <filter id="doc-shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#000000" flood-opacity="0.5" /></filter>
+                <radialGradient id="bg-glow" cx="50%" cy="50%" r="50%" fx="50%" fy="50%"><stop offset="0%" stop-color="#ffffff" stop-opacity="0.04" /><stop offset="100%" stop-color="#ffffff" stop-opacity="0" /></radialGradient>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#bg-glow)" />
+            <circle cx="380" cy="200" r="180" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1" stroke-dasharray="2 10"/>
+            <circle cx="380" cy="200" r="120" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+            <path d="M 380,0 L 760,380 M 380,400 L 760,20" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
+            <g id="pathways" fill="none" stroke-linejoin="round" stroke-linecap="round">
+                <path d="M 0,105 H 760" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+                <path d="M 0,210 H 760" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+                <path d="M 0,315 H 760" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+                <path d="M 40,80 H 140 L 220,130 H 300 L 380,180 H 460 L 520,105 H 600" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" />
+                <path d="M 70,150 H 140 L 220,130" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" />
+                <path d="M 30,220 H 120 L 220,220 H 300 L 380,180" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" />
+                <path d="M 100,280 H 160 L 220,220" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" />
+                <path d="M 50,330 H 140 L 220,280 H 300 L 380,240 H 460 L 520,210 H 630" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" />
+                <path d="M 90,370 H 140 L 220,280" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" />
+                <path d="M 380,240 H 460 L 520,320 H 590" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" />
+                <path d="M 220,130 V 280" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" />
+                <path d="M 380,180 V 240" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" />
+                <path d="M 460,105 V 320" stroke="rgba(255,255,255,0.1)" stroke-width="1" />
+                <path d="M 40,80 H 140 L 220,130 H 300 L 380,180 H 460 L 520,105 H 600" class="flow-line" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" />
+                <path d="M 50,330 H 140 L 220,280 H 300 L 380,240 H 460 L 520,210 H 630" class="flow-line-reverse" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" />
+                <path d="M 380,240 H 460 L 520,320 H 590" class="flow-line" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" />
+                <path d="M 220,130 V 280" class="flow-line" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" />
+                <path d="M 40,80 H 140 L 220,130 H 300 L 380,180" class="pulse-path" stroke="#E7E70D" stroke-width="2" />
+                <path d="M 380,240 H 460 L 520,320 H 590" class="pulse-path-delayed" stroke="#E7E70D" stroke-width="2" />
+            </g>
+            <g id="processor-core">
+                <path d="M 270,90 V 310" stroke="rgba(255,255,255,0.2)" stroke-dasharray="2 4" stroke-width="1" />
+                <path d="M 490,70 V 330" stroke="rgba(255,255,255,0.2)" stroke-dasharray="2 4" stroke-width="1" />
+                <polyline points="290,160 280,160 280,220 290,220" fill="none" stroke="rgba(231,231,13,0.4)" stroke-width="1.5" />
+                <polyline points="470,180 480,180 480,260 470,260" fill="none" stroke="rgba(231,231,13,0.4)" stroke-width="1.5" />
+                <rect x="360" y="170" width="40" height="80" rx="2" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+            </g>
+            <g fill="#FFFFFF" class="node-float-1">
+                <circle cx="40" cy="80" r="4" />
+                <rect x="27" y="217" width="6" height="6" />
+                <polygon points="90,366 94,370 90,374 86,370" />
+            </g>
+            <g fill="#FFFFFF" class="node-float-2">
+                <rect x="67" y="147" width="6" height="6" />
+                <circle cx="100" cy="280" r="3" />
+                <polygon points="120,56 124,60 120,64 116,60" opacity="0.5" />
+            </g>
+            <g fill="#FFFFFF" class="node-float-3">
+                <circle cx="50" cy="330" r="4" />
+                <circle cx="20" cy="180" r="2" opacity="0.4" />
+                <rect x="147" y="307" width="4" height="4" opacity="0.6" />
+            </g>
+            <g id="artifacts" filter="url(#doc-shadow)">
+                <g transform="translate(600, 50)">
+                    <rect x="0" y="0" width="70" height="96" rx="4" fill="#2D2D2D" stroke="#FFFFFF" stroke-width="2" />
+                    <line x1="12" y1="20" x2="58" y2="20" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" />
+                    <line x1="12" y1="36" x2="48" y2="36" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" />
+                    <line x1="12" y1="52" x2="58" y2="52" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" />
+                    <line x1="12" y1="68" x2="38" y2="68" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" />
+                    <circle cx="54" cy="80" r="3" fill="#E7E70D" />
+                </g>
+                <g transform="translate(630, 180)">
+                    <rect x="0" y="0" width="100" height="64" rx="4" fill="#2D2D2D" stroke="#FFFFFF" stroke-width="2" />
+                    <rect x="10" y="10" width="36" height="34" rx="2" fill="none" stroke="#FFFFFF" stroke-width="2" />
+                    <line x1="56" y1="16" x2="88" y2="16" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" />
+                    <line x1="56" y1="28" x2="78" y2="28" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" />
+                    <circle cx="82" cy="46" r="4" fill="#FFFFFF" />
+                    <path d="M 56,46 L 70,38 L 82,46" fill="none" stroke="#FFFFFF" stroke-width="1.5" />
+                </g>
+                <g transform="translate(590, 280)">
+                    <rect x="0" y="0" width="84" height="84" rx="4" fill="#2D2D2D" stroke="#FFFFFF" stroke-width="2" />
+                    <line x1="0" y1="36" x2="84" y2="36" stroke="#FFFFFF" stroke-width="1.5" />
+                    <line x1="42" y1="36" x2="42" y2="84" stroke="#FFFFFF" stroke-width="1.5" />
+                    <circle cx="21" cy="18" r="6" fill="#FFFFFF" />
+                    <rect x="11" y="52" width="20" height="18" fill="none" stroke="#FFFFFF" stroke-width="2" rx="1" />
+                    <path d="M 56,70 L 62,60 L 72,66" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </g>
+            </g>
+            <g fill="#E7E70D" filter="url(#glow)">
+                <circle cx="220" cy="130" r="3.5" />
+                <circle cx="220" cy="220" r="3" />
+                <circle cx="220" cy="280" r="3.5" />
+                <circle cx="380" cy="180" r="4" />
+                <circle cx="380" cy="240" r="4" />
+                <circle cx="460" cy="105" r="3" />
+                <circle cx="520" cy="210" r="3" />
+                <circle cx="460" cy="320" r="3" />
+                <circle cx="600" cy="105" r="4" />
+                <circle cx="630" cy="210" r="4" />
+                <circle cx="590" cy="320" r="4" />
+            </g>
+        </svg>
+    </div>
+</body>
+</html>

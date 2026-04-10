@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Model Intelligence</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes flow { 0% { stroke-dashoffset: 400; opacity: 0; } 10% { opacity: 1; } 80% { opacity: 1; } 100% { stroke-dashoffset: -400; opacity: 0; } }
+        @keyframes pulse-dot { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.5); opacity: 1; } }
+        @keyframes pulse-shape { 0%, 100% { stroke-width: 2px; } 50% { stroke-width: 3px; stroke: #E7E70D; filter: drop-shadow(0 0 8px rgba(231,231,13,0.8)); } }
+        @keyframes spin-slow { 100% { transform: rotate(360deg); } }
+        .animate-flow-1 { animation: flow 4s cubic-bezier(0.4,0,0.2,1) infinite; }
+        .animate-flow-2 { animation: flow 4s cubic-bezier(0.4,0,0.2,1) infinite 1s; }
+        .pulse-yellow { animation: pulse-dot 2s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+        .pulse-active-shape { animation: pulse-shape 4s ease-in-out infinite 2s; }
+        .spin-dashed { animation: spin-slow 12s linear infinite; transform-origin: center; transform-box: fill-box; }
+    </style>
+</head>
+<body class="bg-neutral-950 flex items-center justify-center min-h-screen antialiased overflow-hidden">
+    <div class="w-[760px] h-[400px] bg-[#2D2D2D] rounded-xl overflow-hidden relative shadow-2xl border border-white/5 ring-1 ring-white/10 group">
+        <svg viewBox="0 0 760 400" class="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="white" stroke-width="0.5" opacity="0.04" />
+                </pattern>
+                <radialGradient id="bg-glow" cx="50%" cy="50%" r="50%" fx="30%" fy="50%">
+                    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.03" />
+                    <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+                </radialGradient>
+                <filter id="yellow-glow" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />
+                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                </filter>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#bg-glow)" />
+            <rect width="100%" height="100%" fill="url(#grid)" />
+            <g stroke="white" fill="none" class="opacity-20">
+                <path d="M 60 100 L 160 200" stroke-width="1.5" />
+                <path d="M 40 140 L 100 200 L 160 200" stroke-width="1.5" />
+                <path d="M 60 300 L 160 200" stroke-width="1.5" />
+                <path d="M 40 260 L 100 200 L 160 200" stroke-width="1.5" />
+            </g>
+            <path d="M 20 200 L 160 200" stroke="white" stroke-width="2" fill="none" opacity="0.5" />
+            <circle cx="100" cy="200" r="2" fill="white" class="opacity-40" />
+            <g stroke="white" stroke-width="1.5" fill="none" stroke-linejoin="round" class="opacity-50">
+                <path d="M 160 200 L 340 200" stroke-width="3" />
+                <path d="M 340 200 L 420 120 L 460 120" />
+                <path d="M 340 200 L 420 280 L 460 280" />
+                <path d="M 460 120 L 500 80 L 610 80" />
+                <path d="M 460 120 L 500 160 L 610 160" />
+                <path d="M 460 280 L 500 240 L 610 240" />
+                <path d="M 460 280 L 500 320 L 610 320" />
+            </g>
+            <path d="M 20 200 L 160 200 L 340 200 L 420 120 L 460 120 L 500 160 L 610 160" stroke="#E7E70D" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-dasharray="100 800" stroke-dashoffset="400" class="animate-flow-1" filter="url(#yellow-glow)" />
+            <path d="M 160 200 L 340 200 L 420 280 L 460 280 L 500 320 L 610 320" stroke="white" stroke-width="2" fill="none" stroke-linejoin="round" stroke-dasharray="40 800" stroke-dashoffset="400" class="animate-flow-2 opacity-50" />
+            <circle cx="160" cy="200" r="14" fill="#E7E70D" class="opacity-10" />
+            <circle cx="340" cy="200" r="10" fill="#E7E70D" class="opacity-10" />
+            <circle cx="460" cy="120" r="10" fill="#E7E70D" class="opacity-10" />
+            <circle cx="160" cy="200" r="4.5" fill="#E7E70D" filter="url(#yellow-glow)" class="pulse-yellow" />
+            <circle cx="340" cy="200" r="3.5" fill="#E7E70D" filter="url(#yellow-glow)" class="pulse-yellow" style="animation-delay:0.5s" />
+            <circle cx="460" cy="120" r="3.5" fill="#E7E70D" filter="url(#yellow-glow)" class="pulse-yellow" style="animation-delay:1s" />
+            <circle cx="460" cy="280" r="3" fill="white" class="opacity-70" />
+            <g style="transform-origin: 160px 200px;">
+                <rect x="145" y="185" width="30" height="30" rx="6" stroke="white" stroke-width="1.5" fill="#2D2D2D" class="opacity-80" />
+                <rect x="140" y="180" width="40" height="40" rx="8" stroke="white" stroke-width="1" fill="none" stroke-dasharray="4 4" class="spin-dashed opacity-50" />
+            </g>
+            <g stroke="white" stroke-width="2" fill="#2D2D2D" stroke-linejoin="round">
+                <polygon points="630,62 648,80 630,98 612,80" />
+                <polygon points="630,142 645.5,151 645.5,169 630,178 614.5,169 614.5,151" class="pulse-active-shape" />
+                <circle cx="630" cy="240" r="16" />
+                <polygon points="630,302 646.5,314.5 640.2,333.5 619.8,333.5 613.5,314.5" />
+            </g>
+            <g stroke="white" stroke-width="1" class="opacity-40" stroke-linecap="round">
+                <path d="M 630 70 L 630 90 M 620 80 L 640 80" />
+                <circle cx="630" cy="160" r="2.5" fill="white" />
+                <circle cx="630" cy="240" r="8" fill="none" />
+                <path d="M 630 310 L 630 326" />
+            </g>
+        </svg>
+        <div class="absolute -top-32 -left-32 w-64 h-64 bg-white opacity-5 rounded-full blur-[80px] pointer-events-none"></div>
+        <div class="absolute -bottom-32 -right-32 w-96 h-96 bg-[#E7E70D] opacity-5 rounded-full blur-[100px] pointer-events-none"></div>
+    </div>
+</body>
+</html>

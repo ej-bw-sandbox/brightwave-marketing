@@ -28,7 +28,7 @@ export default async function Page() {
       <section className="c-section cc-template">
         <div className="c-container">
           <div className="bp40-underline">
-            <h1 className="c-title-1">Knowledge Center</h1>
+            <h1 className="c-title-1">Archive</h1>
           </div>
           <div className="w-dyn-list">
             {featured ? (

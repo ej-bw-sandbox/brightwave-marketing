@@ -132,7 +132,7 @@ export default async function VsDetailPage({ params }: Props) {
                   <div className="c-box-hero_bottom-right"></div>
                   <div className="c-comparison-hero_icon-combo">
                     <div className="c-comparison-hero_icon">
-                      <div className="c-comparison-hero_image-wrapper">
+                      <div className="c-comparison-hero_image-wrapper" style={{ backgroundColor: '#fff', width: '12.0625rem', height: '12.0625rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         {doc.competitorIcon?.asset ? (
                           <Image
                             src={urlFor(doc.competitorIcon).width(193).url()}
@@ -140,7 +140,7 @@ export default async function VsDetailPage({ params }: Props) {
                             width={193}
                             height={193}
                             loading="lazy"
-                            className="c-comparison-hero_image"
+                            style={{ objectFit: 'contain', padding: '1.5rem', width: '100%', height: '100%' }}
                           />
                         ) : doc.competitorLogo?.asset ? (
                           <Image
@@ -149,7 +149,7 @@ export default async function VsDetailPage({ params }: Props) {
                             width={193}
                             height={193}
                             loading="lazy"
-                            className="c-comparison-hero_image"
+                            style={{ objectFit: 'contain', padding: '1.5rem', width: '100%', height: '100%' }}
                           />
                         ) : (
                           <img src="/webflow-images/substack-frame.png" loading="lazy" width={193} alt="" className="c-comparison-hero_image" />
@@ -163,7 +163,7 @@ export default async function VsDetailPage({ params }: Props) {
                       <div className="c-comparison-hero_line"></div>
                     </div>
                     <div className="c-comparison-hero_icon">
-                      <div className="c-comparison-hero_image-wrapper">
+                      <div className="c-comparison-hero_image-wrapper" style={{ backgroundColor: '#fff', width: '12.0625rem', height: '12.0625rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <img
                           src="/webflow-images/brightwave_tile.png"
                           loading="lazy"

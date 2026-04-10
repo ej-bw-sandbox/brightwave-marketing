@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel & Spreadsheets</title>
+    <style>
+        body { background-color: #1a1a1a; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; overflow: hidden; }
+        @keyframes pulse-yellow { 0%, 100% { filter: drop-shadow(0 0 4px rgba(231, 231, 13, 0.4)); transform: scale(1); } 50% { filter: drop-shadow(0 0 12px rgba(231, 231, 13, 0.8)); transform: scale(1.1); } }
+        .node-active { animation: pulse-yellow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite; transform-origin: center; }
+        @keyframes dash-flow { to { stroke-dashoffset: -40; } }
+        .path-flow { stroke-dasharray: 4 6; animation: dash-flow 2s linear infinite; }
+    </style>
+</head>
+<body>
+    <div style="width:760px;height:400px;background:#2D2D2D;box-shadow:0 25px 50px -12px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.05);position:relative;border-radius:2px;">
+        <svg viewBox="0 0 760 400" width="760" height="400" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <pattern id="macro-grid" width="40" height="40" patternUnits="userSpaceOnUse"><line x1="40" y1="0" x2="40" y2="40" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.03" /><line x1="0" y1="40" x2="40" y2="40" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.03" /></pattern>
+                <pattern id="cell-grid" width="20" height="20" patternUnits="userSpaceOnUse"><line x1="20" y1="0" x2="20" y2="20" stroke="#FFFFFF" stroke-width="0.5" stroke-opacity="0.08" /><line x1="0" y1="20" x2="20" y2="20" stroke="#FFFFFF" stroke-width="0.5" stroke-opacity="0.08" /></pattern>
+                <g id="crosshair"><line x1="-3" y1="0" x2="3" y2="0" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.2" /><line x1="0" y1="-3" x2="0" y2="3" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.2" /></g>
+                <polygon id="node-diamond" points="0,-6 6,0 0,6 -6,0" fill="#FFFFFF" />
+                <polygon id="node-diamond-large" points="0,-10 10,0 0,10 -10,0" fill="#2D2D2D" stroke="#FFFFFF" stroke-width="2" />
+                <rect id="node-square" x="-4" y="-4" width="8" height="8" fill="#FFFFFF" />
+            </defs>
+            <rect width="760" height="400" fill="#2D2D2D" />
+            <rect width="760" height="400" fill="url(#macro-grid)" />
+            <g transform="translate(40, 60)">
+                <rect width="180" height="280" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.15" />
+                <rect width="180" height="280" fill="url(#cell-grid)" />
+                <line x1="0" y1="20" x2="180" y2="20" stroke="#FFFFFF" stroke-width="1.5" stroke-opacity="0.3" />
+                <line x1="0" y1="40" x2="180" y2="40" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.2" />
+                <line x1="20" y1="0" x2="20" y2="280" stroke="#FFFFFF" stroke-width="1.5" stroke-opacity="0.3" />
+                <rect x="40" y="60" width="80" height="60" fill="#FFFFFF" fill-opacity="0.05" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.4" />
+                <rect x="60" y="80" width="20" height="20" fill="none" stroke="#E7E70D" stroke-width="1.5" />
+                <rect x="100" y="160" width="60" height="100" fill="#FFFFFF" fill-opacity="0.03" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.2" stroke-dasharray="2 2" />
+                <rect x="44" y="66" width="12" height="2" fill="#FFFFFF" fill-opacity="0.5" />
+                <rect x="44" y="86" width="8" height="2" fill="#FFFFFF" fill-opacity="0.5" />
+                <rect x="44" y="106" width="12" height="2" fill="#FFFFFF" fill-opacity="0.5" />
+                <rect x="64" y="66" width="10" height="2" fill="#FFFFFF" fill-opacity="0.5" />
+                <rect x="84" y="66" width="14" height="2" fill="#FFFFFF" fill-opacity="0.3" />
+                <rect x="104" y="66" width="6" height="2" fill="#FFFFFF" fill-opacity="0.3" />
+                <rect x="104" y="166" width="12" height="2" fill="#FFFFFF" fill-opacity="0.3" />
+                <rect x="104" y="186" width="8" height="2" fill="#FFFFFF" fill-opacity="0.3" />
+                <rect x="104" y="206" width="10" height="2" fill="#FFFFFF" fill-opacity="0.3" />
+                <rect x="104" y="226" width="14" height="2" fill="#FFFFFF" fill-opacity="0.3" />
+            </g>
+            <path d="M 120 150 H 220 V 200 H 340" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-opacity="0.6" />
+            <path d="M 200 270 H 260 V 200 H 340" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-opacity="0.4" class="path-flow" />
+            <path d="M 80 340 V 360 H 420 V 280 H 480" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.3" />
+            <path d="M 160 100 H 280 V 60 H 480 V 120" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.3" stroke-dasharray="2 4" />
+            <g transform="translate(340, 200)">
+                <circle r="16" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.2" />
+                <circle r="24" fill="none" stroke="#FFFFFF" stroke-width="0.5" stroke-opacity="0.1" stroke-dasharray="1 3" />
+                <use href="#node-diamond-large" />
+                <circle r="3" fill="#E7E70D" class="node-active" />
+            </g>
+            <use href="#node-square" x="220" y="150" />
+            <use href="#node-square" x="260" y="270" />
+            <use href="#node-diamond" x="280" y="60" />
+            <use href="#node-diamond" x="420" y="360" />
+            <path d="M 350 200 H 460" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.9" />
+            <path d="M 405 200 V 280 H 480" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-opacity="0.5" />
+            <g transform="translate(480, 80)">
+                <line x1="0" y1="200" x2="220" y2="200" stroke="#FFFFFF" stroke-width="2" />
+                <line x1="0" y1="0" x2="0" y2="200" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.3" />
+                <line x1="0" y1="160" x2="220" y2="160" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.1" />
+                <line x1="0" y1="120" x2="220" y2="120" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.1" />
+                <line x1="0" y1="80" x2="220" y2="80" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.1" />
+                <line x1="0" y1="40" x2="220" y2="40" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.1" />
+                <rect x="20" y="140" width="28" height="60" fill="#FFFFFF" fill-opacity="0.05" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.6" />
+                <rect x="70" y="90" width="28" height="110" fill="#FFFFFF" fill-opacity="0.05" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.8" />
+                <rect x="120" y="50" width="28" height="150" fill="#FFFFFF" fill-opacity="0.1" stroke="#FFFFFF" stroke-width="1.5" />
+                <rect x="170" y="20" width="28" height="180" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-dasharray="4 4" stroke-opacity="0.5" />
+                <path d="M 0 160 L 34 110 L 84 100 L 134 30 L 184 10 L 220 5" fill="none" stroke="#E7E70D" stroke-width="2" stroke-linejoin="round" />
+                <circle cx="0" cy="160" r="3" fill="#FFFFFF" />
+                <circle cx="34" cy="110" r="3" fill="#FFFFFF" />
+                <circle cx="84" cy="100" r="3" fill="#FFFFFF" />
+                <circle cx="134" cy="30" r="4" fill="#E7E70D" class="node-active" />
+                <circle cx="184" cy="10" r="3" fill="#FFFFFF" />
+                <rect x="160" y="-10" width="60" height="20" rx="2" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.3" />
+            </g>
+            <use href="#crosshair" x="300" y="40" /><use href="#crosshair" x="380" y="40" /><use href="#crosshair" x="440" y="40" />
+            <use href="#crosshair" x="300" y="360" /><use href="#crosshair" x="540" y="360" /><use href="#crosshair" x="660" y="360" />
+            <circle cx="120" cy="150" r="3.5" fill="#E7E70D" /><circle cx="120" cy="150" r="8" fill="none" stroke="#E7E70D" stroke-width="1" stroke-opacity="0.4" />
+            <circle cx="220" cy="200" r="2.5" fill="#E7E70D" />
+            <circle cx="80" cy="340" r="2.5" fill="#E7E70D" />
+            <circle cx="480" cy="280" r="2.5" fill="#E7E70D" /><circle cx="480" cy="120" r="2.5" fill="#E7E70D" />
+            <line x1="20" y1="20" x2="60" y2="20" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.8" />
+            <line x1="20" y1="20" x2="20" y2="60" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.8" />
+            <line x1="740" y1="380" x2="700" y2="380" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.8" />
+            <line x1="740" y1="380" x2="740" y2="340" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.8" />
+        </svg>
+    </div>
+</body>
+</html>

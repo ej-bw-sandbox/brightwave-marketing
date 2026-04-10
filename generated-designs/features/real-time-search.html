@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Search</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes sweep { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes pulse-ring { 0% { transform: scale(0.95); opacity: 0.8; } 50% { transform: scale(1.02); opacity: 0.3; } 100% { transform: scale(0.95); opacity: 0.8; } }
+        @keyframes data-flow { 0% { stroke-dashoffset: 20; } 100% { stroke-dashoffset: 0; } }
+        @keyframes blink { 0%, 100% { opacity: 0.2; } 50% { opacity: 1; } }
+        .animate-sweep { transform-origin: 380px 200px; animation: sweep 8s linear infinite; }
+        .animate-pulse-ring { transform-origin: center; animation: pulse-ring 4s ease-in-out infinite; }
+        .animate-data-flow { stroke-dasharray: 4 4; animation: data-flow 1s linear infinite; }
+        .animate-blink-fast { animation: blink 1.5s ease-in-out infinite; }
+        .animate-blink-slow { animation: blink 3s ease-in-out infinite; }
+        svg { shape-rendering: geometricPrecision; }
+    </style>
+</head>
+<body class="bg-[#1a1a1a] min-h-screen flex items-center justify-center p-8 antialiased">
+    <div class="relative w-[760px] h-[400px] bg-[#2D2D2D] rounded-xl overflow-hidden shadow-2xl border border-white/5 ring-1 ring-white/10 shrink-0">
+        <svg viewBox="0 0 760 400" class="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <filter id="glow-heavy" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur stdDeviation="4" result="blur" />
+                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                </filter>
+                <filter id="glow-light" x="-30%" y="-30%" width="160%" height="160%">
+                    <feGaussianBlur stdDeviation="2" result="blur" />
+                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                </filter>
+                <linearGradient id="sweep-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#ffffff" stop-opacity="0" />
+                    <stop offset="90%" stop-color="#ffffff" stop-opacity="0.03" />
+                    <stop offset="100%" stop-color="#ffffff" stop-opacity="0.15" />
+                </linearGradient>
+                <radialGradient id="bg-vignette" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#2D2D2D" stop-opacity="0" />
+                    <stop offset="100%" stop-color="#1f1f1f" stop-opacity="0.4" />
+                </radialGradient>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#bg-vignette)" />
+            <g class="animate-sweep">
+                <path d="M 380 200 L 380 -150 A 350 350 0 0 1 730 200 Z" fill="url(#sweep-gradient)" />
+                <line x1="380" y1="200" x2="380" y2="-150" stroke="#ffffff" stroke-width="1" stroke-opacity="0.3" />
+            </g>
+            <g fill="none" stroke="#ffffff" transform-origin="380 200">
+                <circle cx="380" cy="200" r="20" stroke-width="1" stroke-opacity="0.4" />
+                <circle cx="380" cy="200" r="55" stroke-width="1" stroke-opacity="0.2" class="animate-pulse-ring" />
+                <circle cx="380" cy="200" r="110" stroke-width="1" stroke-opacity="0.1" />
+                <circle cx="380" cy="200" r="180" stroke-width="1" stroke-opacity="0.08" stroke-dasharray="4 6" />
+                <circle cx="380" cy="200" r="260" stroke-width="1" stroke-opacity="0.04" />
+                <circle cx="380" cy="200" r="350" stroke-width="1" stroke-opacity="0.02" />
+            </g>
+            <g stroke="#ffffff" stroke-width="1">
+                <line x1="380" y1="200" x2="210" y2="90" stroke-opacity="0.15" class="animate-data-flow" />
+                <line x1="380" y1="200" x2="520" y2="70" stroke-opacity="0.2" />
+                <line x1="380" y1="200" x2="640" y2="280" stroke-opacity="0.1" />
+                <line x1="380" y1="200" x2="140" y2="290" stroke-opacity="0.25" class="animate-data-flow" />
+                <line x1="520" y1="70" x2="680" y2="120" stroke-opacity="0.15" />
+                <line x1="210" y1="90" x2="90" y2="150" stroke-opacity="0.1" />
+                <line x1="140" y1="290" x2="250" y2="340" stroke-opacity="0.15" />
+                <line x1="640" y1="280" x2="490" y2="330" stroke-opacity="0.1" />
+                <line x1="640" y1="280" x2="590" y2="180" stroke-opacity="0.12" />
+                <line x1="380" y1="0" x2="380" y2="400" stroke-opacity="0.03" stroke-dasharray="2 4" />
+                <line x1="0" y1="200" x2="760" y2="200" stroke-opacity="0.03" stroke-dasharray="2 4" />
+            </g>
+            <g fill="#ffffff" stroke="none">
+                <circle cx="380" cy="200" r="4" filter="url(#glow-heavy)" />
+                <circle cx="380" cy="200" r="1.5" fill="#2D2D2D" />
+                <rect x="517" y="67" width="6" height="6" fill-opacity="0.7" />
+                <circle cx="480" cy="160" r="2.5" fill-opacity="0.4" />
+                <circle cx="590" cy="180" r="2" fill-opacity="0.3" class="animate-blink-slow" />
+                <polygon points="680,116 684,120 680,124 676,120" fill="none" stroke="#ffffff" stroke-opacity="0.5" stroke-width="1" />
+                <circle cx="210" cy="90" r="3" fill-opacity="0.8" />
+                <rect x="87" y="147" width="6" height="6" transform="rotate(45 90 150)" fill-opacity="0.5" />
+                <rect x="180" y="40" width="3" height="3" fill-opacity="0.2" class="animate-blink-fast" />
+                <rect x="137" y="287" width="6" height="6" fill-opacity="0.9" />
+                <circle cx="250" cy="340" r="2.5" fill-opacity="0.4" />
+                <circle cx="80" cy="220" r="2" fill-opacity="0.6" />
+                <circle cx="640" cy="280" r="3.5" fill-opacity="0.7" />
+                <rect x="487" y="327" width="6" height="6" fill-opacity="0.4" />
+            </g>
+            <g fill="#E7E70D">
+                <g transform="translate(680, 120)">
+                    <circle cx="0" cy="0" r="4" filter="url(#glow-heavy)" />
+                    <circle cx="0" cy="0" r="2" fill="#ffffff" />
+                    <circle cx="0" cy="0" r="12" fill="none" stroke="#E7E70D" stroke-width="1" opacity="0.4" />
+                </g>
+                <g transform="translate(250, 340)">
+                    <circle cx="0" cy="0" r="3" filter="url(#glow-light)" />
+                </g>
+                <g transform="translate(160, 110)">
+                    <line x1="0" y1="0" x2="-20" y2="15" stroke="#E7E70D" stroke-width="1" stroke-opacity="0.3" stroke-dasharray="2 2" />
+                    <circle cx="0" cy="0" r="3.5" filter="url(#glow-light)" />
+                    <path d="M -6 -4 L -8 -6 L -4 -8 M 6 -4 L 8 -6 L 4 -8 M -6 4 L -8 6 L -4 8 M 6 4 L 8 6 L 4 8" fill="none" stroke="#E7E70D" stroke-opacity="0.5" stroke-width="1" />
+                </g>
+                <circle cx="490" cy="330" r="2" class="animate-blink-slow" filter="url(#glow-light)" />
+            </g>
+        </svg>
+    </div>
+</body>
+</html>
