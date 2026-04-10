@@ -185,54 +185,38 @@ export default async function UseCaseDetailPage({ params }: Props) {
       {/* ============================================================ */}
       {/* 1. HERO — 2/3 copy + 1/3 stat sidebar (dark, cc-hero)       */}
       {/* ============================================================ */}
-      <section className="c-section cc-hero" style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-        <div className="c-container" style={{ flexDirection: 'row', flexWrap: 'wrap', gap: '4rem', alignItems: 'flex-start' }}>
-          {/* Left: copy + CTAs */}
-          <div style={{ flex: '2 1 24rem' }}>
-            {doc.eyebrow && (
-              <div className="eyebrow cc-no-bp" style={{ marginBottom: '2rem' }}>
-                <div className="block cc-primary" />
-                <span className="c-title-5">{stripHtml(doc.eyebrow)}</span>
-              </div>
-            )}
-
-            <h1 className="c-title-1" style={{
-              paddingBottom: '2rem', borderBottom: '1px solid rgba(255,255,255,0.2)',
-              marginBottom: '2rem', width: '100%',
-            }}>
-              {doc.h1 || doc.title}
-            </h1>
-
-            {(doc.heroSubtitle || doc.h2Hero) && (
-              <p className="c-text-3" style={{ color: 'rgba(255,255,255,0.5)', marginBottom: '2.5rem', maxWidth: '40rem' }}>
-                {stripHtml(doc.heroSubtitle || doc.h2Hero)}
-              </p>
-            )}
-
-            {doc.heroBody && (
-              <div style={{ marginBottom: '2.5rem', maxWidth: '40rem' }}>
-                <RichText value={doc.heroBody} className="c-text-4" />
-              </div>
-            )}
-
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-              <CtaButton label="Start Free Trial" href="https://app.brightwave.io/register" variant="primary" />
-              <CtaButton label="Get a Demo" href="/contact" variant="outline" />
+      <section className="c-section cc-hero">
+        <div className="c-container">
+          {doc.eyebrow && (
+            <div className="eyebrow cc-no-bp" style={{ marginBottom: '2rem' }}>
+              <div className="block cc-primary" />
+              <span className="c-title-5">{stripHtml(doc.eyebrow)}</span>
             </div>
+          )}
 
-            {doc.heroImage?.asset && (
-              <div style={{ marginTop: '3rem', borderRadius: '0.75rem', overflow: 'hidden', aspectRatio: '16/9', position: 'relative', width: '100%' }}>
-                <Image
-                  src={urlFor(doc.heroImage).width(1400).quality(85).url()}
-                  alt={doc.title || ''} fill style={{ objectFit: 'cover' }} priority
-                />
-              </div>
-            )}
+          <h1 className="c-title-1" style={{ paddingBottom: '2rem', borderBottom: '1px solid rgba(255,255,255,0.2)', marginBottom: '2rem' }}>
+            {doc.h1 || doc.title}
+          </h1>
+
+          {(doc.heroSubtitle || doc.h2Hero) && (
+            <p className="c-text-3" style={{ color: 'rgba(255,255,255,0.5)', marginBottom: '2.5rem' }}>
+              {stripHtml(doc.heroSubtitle || doc.h2Hero)}
+            </p>
+          )}
+
+          {doc.heroBody && (
+            <div style={{ marginBottom: '2.5rem' }}>
+              <RichText value={doc.heroBody} className="c-text-4" />
+            </div>
+          )}
+
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: statPills.length > 0 || doc.heroImage?.asset ? '3rem' : '0' }}>
+            <CtaButton label="Start Free Trial" href="https://app.brightwave.io/register" variant="primary" />
+            <CtaButton label="Get a Demo" href="/contact" variant="outline" />
           </div>
 
-          {/* Right: stat sidebar cards */}
           {statPills.length > 0 && (
-            <div style={{ flex: '1 1 16rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(12rem, 1fr))', gap: '1rem', marginBottom: doc.heroImage?.asset ? '3rem' : '0' }}>
               {statPills.map((pill: any, i: number) => (
                 <div key={i} style={{
                   background: 'rgba(255,255,255,0.03)',
@@ -247,6 +231,15 @@ export default async function UseCaseDetailPage({ params }: Props) {
                   <span className="c-title-3" style={{ color: '#fff' }}>{pill.value}</span>
                 </div>
               ))}
+            </div>
+          )}
+
+          {doc.heroImage?.asset && (
+            <div style={{ borderRadius: '0.75rem', overflow: 'hidden', aspectRatio: '16/9', position: 'relative', width: '100%' }}>
+              <Image
+                src={urlFor(doc.heroImage).width(1400).quality(85).url()}
+                alt={doc.title || ''} fill style={{ objectFit: 'cover' }} priority
+              />
             </div>
           )}
         </div>
