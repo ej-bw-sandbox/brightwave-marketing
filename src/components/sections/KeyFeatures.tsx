@@ -9,13 +9,13 @@ const features = [
     image: '/webflow-images/illustration_01.avif',
   },
   {
-    title: 'Reports, Charts, Tables, Grids, Slides & More',
+    title: 'Reports, Charts, Spreadsheets, Grids, Slides & More',
     description: 'From deep research reports and slide decks to grids that extract data from hundreds of documents simultaneously, Brightwave outputs go way beyond chat.',
     image: '/webflow-images/illustration_01-1.avif',
   },
   {
     title: '10,000+ Document Data Rooms',
-    description: 'Brightwave speaks your language. Work with PDFs, Word, Excel, SEC filings, earnings calls, cloud storage and more.',
+    description: 'Brightwave speaks your language. Work with PDFs, Word, Excel, PowerPoint, SEC filings, earnings calls, cloud storage and more.',
     image: '/webflow-images/illustration_01-2.avif',
   },
 ]
