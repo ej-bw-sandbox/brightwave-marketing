@@ -21,7 +21,7 @@ function PopupOverlay({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
         <div className="div-block-40">
           <img src="/webflow-images/private-markets.png" loading="lazy" alt="brightwave private markets logo" className="image-5" />
           <div className="div-block-38"><h1 className="heading-10">Start Your 7-Day Free Trial to Continue Exploring</h1></div>
-          <div><div className="text-block-17">The professional-grade research partner built to the requirements of Private Markets professionals.<br /></div></div>
+          <div><div className="text-block-17">The research platform built for Private Markets professionals.<br /></div></div>
           <div className="div-block-45">
             <a id="paywall-cta-btn" stagger-cta="" href="https://app.brightwave.io/register?type=individual" className="paywall-cta w-inline-block">
               <div><div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">Start My Free Trial</div></div>
