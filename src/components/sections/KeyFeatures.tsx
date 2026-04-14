@@ -14,7 +14,7 @@ const features = [
     image: '/webflow-images/illustration_01-1.avif',
   },
   {
-    title: '2000+ Document Data Rooms',
+    title: '10,000+ Document Data Rooms',
     description: 'Brightwave speaks your language. Work with PDFs, Word, Excel, SEC filings, earnings calls, cloud storage and more.',
     image: '/webflow-images/illustration_01-2.avif',
   },

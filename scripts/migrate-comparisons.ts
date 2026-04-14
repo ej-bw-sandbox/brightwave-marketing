@@ -146,7 +146,7 @@ const comparisons: Record<string, ComparisonData> = {
     heroDescription: "Brightwave's agentic research delivers finished investment products while Boosted AI automates operational workflows.",
     contentBlocks: [
       { _key: 'cb1', title: 'Autonomous Research Agents vs Process Automation Tools', text: "Brightwave's AI agents understand complex private markets problems and deliver finished investment products on-demand with multi-step synthesis across documents." },
-      { _key: 'cb2', title: '2000+ Document Synthesis with 25x Speed', text: 'Brightwave processes thousands of documents simultaneously in minutes, delivering exhaustive coverage that reads every page, every time.' },
+      { _key: 'cb2', title: '10,000+ Document Synthesis with 25x Speed', text: 'Brightwave processes thousands of documents simultaneously in minutes, delivering exhaustive coverage that reads every page, every time.' },
       { _key: 'cb3', title: 'Finished Investment Deliverables vs Workflow Notifications', text: 'Generate complete IC-ready memos with sentence-level attribution — finished products, not operational alerts or process updates.' },
       { _key: 'cb4', title: 'Agentic Research for Complex Problems', text: 'Brightwave tackles sophisticated private markets analysis using more computing power at inference time for accurate multi-document reasoning.' },
     ],
@@ -169,7 +169,7 @@ const comparisons: Record<string, ComparisonData> = {
     competitorName: 'Daloopa AI',
     heroDescription: "Brightwave's agentic research creates finished investment products while Daloopa extracts financial data into spreadsheets.",
     contentBlocks: [
-      { _key: 'cb1', title: '2000+ Document Synthesis vs Limited Financial Extraction', text: 'Brightwave processes thousands of documents simultaneously with 25x speed improvement, weaving together comprehensive investment narratives from all deal materials.' },
+      { _key: 'cb1', title: '10,000+ Document Synthesis vs Limited Financial Extraction', text: 'Brightwave processes thousands of documents simultaneously with 25x speed improvement, weaving together comprehensive investment narratives from all deal materials.' },
       { _key: 'cb2', title: 'Autonomous Research Agents vs Manual Data Entry Assistance', text: "Brightwave's AI agents understand complex private markets problems and deliver finished products on-demand with multi-step synthesis across documents." },
       { _key: 'cb3', title: 'Complete Investment Narratives vs Excel Model Updates', text: 'Generate IC-ready investment memos with exhaustive coverage and sentence-level attribution — finished deliverables, not just updated spreadsheets.' },
       { _key: 'cb4', title: 'Agentic Research for Complex Problems', text: 'Brightwave tackles sophisticated private markets analysis using more computing power at inference time, ensuring accurate multi-document reasoning.' },
