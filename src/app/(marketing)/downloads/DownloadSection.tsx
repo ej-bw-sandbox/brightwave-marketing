@@ -170,6 +170,82 @@ function PluginIcon({ className }: { className?: string }) {
   )
 }
 
+function GooglePlayIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M3 1.713a1 1 0 0 1 1.56-.826l14.5 9.287a1 1 0 0 1 0 1.652L4.56 21.113A1 1 0 0 1 3 20.287V1.713z" />
+    </svg>
+  )
+}
+
+/* ── Mobile App Badge (minimal outline) ── */
+
+interface MobileAppBadgeProps {
+  icon: React.ReactNode
+  eyebrow: string
+  storeName: string
+  href?: string
+  theme: typeof darkColors
+  size?: 'md' | 'lg'
+}
+
+function MobileAppBadge({ icon, eyebrow, storeName, href, theme, size = 'md' }: MobileAppBadgeProps) {
+  const isLg = size === 'lg'
+  const style: React.CSSProperties = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: isLg ? '0.875rem' : '0.75rem',
+    padding: isLg ? '0.75rem 1.5rem' : '0.625rem 1.25rem',
+    borderRadius: '0.75rem',
+    border: `1px solid ${theme.border}`,
+    backgroundColor: theme.surface,
+    color: theme.text,
+    textDecoration: 'none',
+    minWidth: isLg ? 220 : 180,
+    minHeight: isLg ? 64 : 56,
+    opacity: href ? 1 : 0.6,
+    cursor: href ? 'pointer' : 'default',
+    transition: 'border-color 0.2s',
+  }
+  const inner = (
+    <>
+      <span style={{ display: 'inline-flex', color: theme.text }}>{icon}</span>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', lineHeight: 1.15 }}>
+        <span
+          style={{
+            fontSize: isLg ? '0.75rem' : '0.6875rem',
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase',
+            color: theme.textMuted,
+            fontWeight: 500,
+          }}
+        >
+          {eyebrow}
+        </span>
+        <span
+          style={{
+            fontSize: isLg ? '1.125rem' : '1.0625rem',
+            fontWeight: 600,
+            color: theme.text,
+            marginTop: 2,
+          }}
+        >
+          {storeName}
+        </span>
+      </div>
+    </>
+  )
+  return href ? (
+    <a href={href} style={style} target="_blank" rel="noopener noreferrer">{inner}</a>
+  ) : (
+    <div style={style} aria-label={`${storeName} — coming soon`}>{inner}</div>
+  )
+}
+
+/* Store URLs — swap in real links when available */
+const APP_STORE_URL: string | undefined = undefined
+const PLAY_STORE_URL: string | undefined = undefined
+
 /* ── Platform display config ── */
 
 const platformDisplayName: Record<string, string> = {
@@ -306,16 +382,19 @@ export function DownloadSection({
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
 
-      {/* Mobile / unsupported OS notice */}
+      {/* Mobile primary CTA — surface the matching store badge when iOS/Android detected */}
       {(detectedOS === 'ios' || detectedOS === 'android') && (
-        <div
-          style={{ backgroundColor: c.surface, border: `1px solid ${c.border}`, borderRadius: '1rem', padding: '1.5rem 2rem', marginBottom: '2.5rem', textAlign: 'center' }}
-        >
-          <p style={{ fontSize: '1rem', fontWeight: 600, color: c.text, margin: 0 }}>
-            Brightwave is available for desktop platforms.
-          </p>
-          <p style={{ fontSize: '0.875rem', color: c.textMuted, marginTop: '0.25rem' }}>
-            Download for macOS, Windows, or Linux below.
+        <div style={{ marginBottom: '3rem', textAlign: 'center' }}>
+          <MobileAppBadge
+            size="lg"
+            theme={c}
+            icon={detectedOS === 'ios' ? <AppleIcon className="w-7 h-7" /> : <GooglePlayIcon className="w-7 h-7" />}
+            eyebrow={detectedOS === 'ios' ? 'Download on the' : 'Get it on'}
+            storeName={detectedOS === 'ios' ? 'App Store' : 'Google Play'}
+            href={detectedOS === 'ios' ? APP_STORE_URL : PLAY_STORE_URL}
+          />
+          <p style={{ fontSize: '0.8125rem', color: c.textSubtle, marginTop: '0.75rem' }}>
+            Desktop builds for macOS, Windows, and Linux are also available below.
           </p>
         </div>
       )}
@@ -496,6 +575,37 @@ export function DownloadSection({
             )}
           </div>
         </div>
+      </div>
+
+      {/* Mobile Apps section */}
+      <div style={{ marginTop: '4rem', textAlign: 'center' }}>
+        <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: c.text, margin: '0 0 0.375rem' }}>
+          Mobile Apps
+        </h3>
+        <p style={{ fontSize: '0.875rem', color: c.textMuted, margin: '0 0 1.5rem' }}>
+          Brightwave on the go — native apps for iOS and Android.
+        </p>
+        <div style={{ display: 'inline-flex', gap: '0.75rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+          <MobileAppBadge
+            theme={c}
+            icon={<AppleIcon className="w-6 h-6" />}
+            eyebrow="Download on the"
+            storeName="App Store"
+            href={APP_STORE_URL}
+          />
+          <MobileAppBadge
+            theme={c}
+            icon={<GooglePlayIcon className="w-6 h-6" />}
+            eyebrow="Get it on"
+            storeName="Google Play"
+            href={PLAY_STORE_URL}
+          />
+        </div>
+        {(!APP_STORE_URL || !PLAY_STORE_URL) && (
+          <p style={{ fontSize: '0.75rem', color: c.textSubtle, marginTop: '0.875rem' }}>
+            Coming soon to the App Store and Google Play.
+          </p>
+        )}
       </div>
     </div>
   )
