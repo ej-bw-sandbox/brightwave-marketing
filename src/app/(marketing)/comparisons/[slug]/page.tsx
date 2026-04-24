@@ -245,7 +245,16 @@ export default async function VsDetailPage({ params }: Props) {
               <div id="w-node-af1e9581-2d3a-c742-e00b-8739923f9982-43706a8a" className="c-comparison-content_main-wrapper w-dyn-list">
                 {contentBlocks.length > 0 ? (
                   <div role="list" className="c-comparison-content_list w-dyn-items">
-                    {contentBlocks.map((block: any, idx: number) => (
+                    {contentBlocks.map((block: any, idx: number) => {
+                      // Shared Webflow-export fallbacks — identical across every comparison page
+                      const webflowFallbackImages = [
+                        '/webflow-images/Frame-1321317355_1.avif',
+                        '/webflow-images/Frame-1321317355-1_1.avif',
+                        '/webflow-images/Frame-1321317355-2_1.avif',
+                      ]
+                      const imageFallback = webflowFallbackImages[idx % webflowFallbackImages.length]
+                      const iconFallback = '/webflow-images/illustration_04.svg'
+                      return (
                       <div key={block._key || idx} role="listitem" className="c-comparison-content_item w-dyn-item">
                         <div className="c-comparison-content_card-wrapper">
                           <div className="c-comparison-content_image-wrapper">
@@ -259,7 +268,7 @@ export default async function VsDetailPage({ params }: Props) {
                                 className="c-comparison-content_image"
                               />
                             ) : (
-                              <img src="https://d3e54v103j8qbb.cloudfront.net/plugins/Basic/assets/placeholder.60f9b1840c.svg" loading="lazy" alt="" className="c-comparison-content_image" />
+                              <img src={imageFallback} loading="lazy" alt="" className="c-comparison-content_image" />
                             )}
                             <div className="c-box-hero_bottom-right"></div>
                             <div className="c-box-hero_bottom-left"></div>
@@ -277,7 +286,7 @@ export default async function VsDetailPage({ params }: Props) {
                                     className="c-comparison-content_icon"
                                   />
                                 ) : (
-                                  <img src="https://d3e54v103j8qbb.cloudfront.net/plugins/Basic/assets/placeholder.60f9b1840c.svg" loading="lazy" alt="" className="c-comparison-content_icon" />
+                                  <img src={iconFallback} loading="lazy" alt="" className="c-comparison-content_icon" />
                                 )}
                                 <div className="c-comparison-content_icon-dash"></div>
                               </div>
@@ -304,7 +313,8 @@ export default async function VsDetailPage({ params }: Props) {
                           </div>
                         </div>
                       </div>
-                    ))}
+                      )
+                    })}
                   </div>
                 ) : (
                   <div className="w-dyn-empty">

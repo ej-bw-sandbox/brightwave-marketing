@@ -125,35 +125,120 @@ const pressLogos = [
   { src: '/webflow-images/TIme.avif', alt: 'Time', width: 191 },
 ]
 
-/** Placeholder mock UI for solution rows that lack a Sanity image */
-function SolutionMockUI({ index }: { index: number }) {
+/** Themed mock UI — cycles through surfaces matched to common solution narratives */
+function SolutionMockUI({ index, title }: { index: number; title?: string }) {
+  const variants = [
+    // 0 — Ingestion / data room
+    {
+      label: 'Ingestion_Pipeline.sys',
+      render: () => (
+        <div style={{ flex: 1, display: 'flex', gap: '1rem' }}>
+          <div style={{ width: '38%', borderRight: '1px solid #e5e7eb', paddingRight: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            {['Data Room', '10K_Filing.pdf', 'Board_Deck.pptx', 'Model_Q3.xlsx'].map((t, i) => (
+              <div key={i} style={{
+                height: '1.5rem', padding: '0 0.5rem',
+                display: 'flex', alignItems: 'center', fontSize: '0.625rem',
+                color: i === 0 ? '#111' : '#6b7280', fontWeight: i === 0 ? 600 : 400,
+                background: i === 2 ? 'rgba(231,231,13,0.15)' : 'transparent',
+                border: i === 2 ? '1px solid rgba(231,231,13,0.35)' : '1px solid transparent',
+                borderRadius: '0.25rem',
+              }}>
+                {i === 2 && <span style={{ color: '#ca8a04', marginRight: '0.25rem' }}>●</span>}
+                {t}
+              </div>
+            ))}
+          </div>
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+            <div style={{ height: '0.5rem', width: '55%', background: '#111', borderRadius: '2px' }} />
+            <div style={{ height: '0.5rem', width: '100%', background: '#e5e7eb', borderRadius: '2px' }} />
+            <div style={{ height: '0.5rem', width: '90%', background: '#e5e7eb', borderRadius: '2px' }} />
+            <div style={{ marginTop: '0.5rem', padding: '0.5rem', border: '1px solid #e7e70d', background: 'rgba(231,231,13,0.15)' }}>
+              <div style={{ height: '0.5rem', width: '70%', background: 'rgba(17,17,17,0.7)', borderRadius: '2px', marginBottom: '0.4rem' }} />
+              <div style={{ height: '0.5rem', width: '85%', background: 'rgba(17,17,17,0.7)', borderRadius: '2px' }} />
+            </div>
+          </div>
+        </div>
+      ),
+    },
+    // 1 — Extraction / highlights
+    {
+      label: 'AI_Extraction.doc',
+      render: () => (
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+          {[
+            { title: 'EBITDA Adjustment', confidence: '99%', page: '42' },
+            { title: 'Revenue Recognition', confidence: '96%', page: '18' },
+            { title: 'Customer Concentration', confidence: '94%', page: '73' },
+          ].map((row, i) => (
+            <div key={i} style={{
+              border: '1px solid #e5e7eb', borderLeft: '3px solid #e7e70d',
+              background: '#fff', padding: '0.625rem 0.75rem', borderRadius: '0.25rem',
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+            }}>
+              <div>
+                <div style={{ fontSize: '0.7rem', fontWeight: 600, color: '#111' }}>{row.title}</div>
+                <div style={{ fontSize: '0.55rem', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.1em', marginTop: '0.2rem' }}>
+                  p. {row.page} · conf {row.confidence}
+                </div>
+              </div>
+              <div style={{ fontSize: '0.55rem', color: '#ca8a04', fontWeight: 700 }}>{row.confidence}</div>
+            </div>
+          ))}
+        </div>
+      ),
+    },
+    // 2 — Report / output surface
+    {
+      label: 'Board_Memo.doc',
+      render: () => (
+        <div style={{ flex: 1, display: 'flex', gap: '0.75rem' }}>
+          <div style={{ flex: 1, background: '#fff', border: '1px solid #e5e7eb', borderRadius: '0.25rem', padding: '0.875rem' }}>
+            <div style={{ height: '0.625rem', width: '60%', background: '#111', borderRadius: '2px', marginBottom: '0.625rem' }} />
+            <div style={{ height: '0.4rem', width: '100%', background: '#e5e7eb', borderRadius: '2px', marginBottom: '0.35rem' }} />
+            <div style={{ height: '0.4rem', width: '95%', background: '#e5e7eb', borderRadius: '2px', marginBottom: '0.35rem' }} />
+            <div style={{ height: '0.4rem', width: '85%', background: '#e5e7eb', borderRadius: '2px', marginBottom: '0.75rem' }} />
+            <div style={{ height: '0.5rem', width: '45%', background: '#111', borderRadius: '2px', marginBottom: '0.5rem' }} />
+            <div style={{ height: '0.4rem', width: '100%', background: '#e5e7eb', borderRadius: '2px', marginBottom: '0.35rem' }} />
+            <div style={{ height: '0.4rem', width: '80%', background: '#e5e7eb', borderRadius: '2px' }} />
+          </div>
+          <div style={{ width: '42%', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <div style={{ padding: '0.625rem', background: 'rgba(231,231,13,0.12)', border: '1px solid rgba(231,231,13,0.35)', borderRadius: '0.25rem' }}>
+              <div style={{ fontSize: '0.55rem', fontWeight: 700, color: '#ca8a04', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.3rem' }}>
+                Key Risk
+              </div>
+              <div style={{ height: '0.375rem', width: '100%', background: 'rgba(17,17,17,0.6)', borderRadius: '2px', marginBottom: '0.25rem' }} />
+              <div style={{ height: '0.375rem', width: '72%', background: 'rgba(17,17,17,0.6)', borderRadius: '2px' }} />
+            </div>
+            <div style={{ padding: '0.625rem', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '0.25rem' }}>
+              <div style={{ fontSize: '0.55rem', fontWeight: 700, color: '#111', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.3rem' }}>
+                Source
+              </div>
+              <div style={{ height: '0.375rem', width: '88%', background: '#e5e7eb', borderRadius: '2px' }} />
+            </div>
+          </div>
+        </div>
+      ),
+    },
+  ]
+
+  const variant = variants[index % variants.length]
+
   return (
     <div style={{
       background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '0.5rem',
-      padding: '1.5rem', aspectRatio: '16/9', display: 'flex', flexDirection: 'column',
+      padding: '1.25rem', aspectRatio: '16/9', display: 'flex', flexDirection: 'column',
     }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #e5e7eb', paddingBottom: '0.75rem', marginBottom: '1rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #e5e7eb', paddingBottom: '0.625rem', marginBottom: '0.875rem' }}>
         <div style={{ display: 'flex', gap: '0.375rem' }}>
-          <div style={{ width: '0.625rem', height: '0.625rem', borderRadius: '50%', background: '#f87171' }} />
-          <div style={{ width: '0.625rem', height: '0.625rem', borderRadius: '50%', background: '#fbbf24' }} />
-          <div style={{ width: '0.625rem', height: '0.625rem', borderRadius: '50%', background: '#34d399' }} />
+          <div style={{ width: '0.5rem', height: '0.5rem', borderRadius: '50%', background: '#f87171' }} />
+          <div style={{ width: '0.5rem', height: '0.5rem', borderRadius: '50%', background: '#fbbf24' }} />
+          <div style={{ width: '0.5rem', height: '0.5rem', borderRadius: '50%', background: '#34d399' }} />
         </div>
-        <span style={{ fontSize: '0.625rem', fontFamily: 'monospace', color: '#9ca3af', textTransform: 'uppercase' }}>
-          {index === 0 ? 'Ingestion_Pipeline.sys' : 'Generated_Output.doc'}
+        <span style={{ fontSize: '0.6rem', fontFamily: 'monospace', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          {title ? `${title.slice(0, 24).replace(/\s+/g, '_')}.doc` : variant.label}
         </span>
       </div>
-      <div style={{ flex: 1, display: 'flex', gap: '1rem' }}>
-        <div style={{ width: '33%', borderRight: '1px solid #e5e7eb', paddingRight: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-          <div style={{ height: '1.5rem', background: '#e5e7eb', borderRadius: '0.25rem' }} />
-          <div style={{ height: '1.5rem', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '0.25rem' }} />
-          <div style={{ height: '1.5rem', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '0.25rem' }} />
-        </div>
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-          <div style={{ width: '100%', height: '0.75rem', background: '#e5e7eb', borderRadius: '0.25rem' }} />
-          <div style={{ width: '80%', height: '0.75rem', background: '#e5e7eb', borderRadius: '0.25rem' }} />
-          <div style={{ width: '90%', height: '0.75rem', background: '#e5e7eb', borderRadius: '0.25rem' }} />
-        </div>
-      </div>
+      {variant.render()}
     </div>
   )
 }
@@ -183,40 +268,65 @@ export default async function UseCaseDetailPage({ params }: Props) {
   return (
     <>
       {/* ============================================================ */}
-      {/* 1. HERO — 2/3 copy + 1/3 stat sidebar (dark, cc-hero)       */}
+      {/* 1. HERO — split: content left, image/stats right (above fold)*/}
       {/* ============================================================ */}
       <section className="c-section cc-template">
         <div className="c-container">
-          {doc.eyebrow && (
-            <div className="eyebrow-flex" style={{ marginBottom: '2rem' }}>
-              <div className="block"></div>
-              <div className="c-title-5">{stripHtml(doc.eyebrow)}</div>
-            </div>
-          )}
+          <div className="uc-hero-grid">
+            {/* LEFT: content */}
+            <div className="uc-hero-content">
+              {doc.eyebrow && (
+                <div className="eyebrow-flex">
+                  <div className="block"></div>
+                  <div className="c-title-5">{stripHtml(doc.eyebrow)}</div>
+                </div>
+              )}
 
-          <div className="bp40-underline">
-            <h1 className="c-title-1">{doc.h1 || doc.title}</h1>
+              <div className="bp40-underline">
+                <h1 className="c-title-1">{doc.h1 || doc.title}</h1>
+              </div>
+
+              {(doc.heroSubtitle || doc.h2Hero) && (
+                <p className="c-text-3" style={{ marginTop: '0.5rem' }}>
+                  {stripHtml(doc.heroSubtitle || doc.h2Hero)}
+                </p>
+              )}
+
+              {doc.heroBody && (
+                <RichText value={doc.heroBody} className="c-text-4" />
+              )}
+
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+                <CtaButton label="Start Free Trial" href="https://app.brightwave.io/register" variant="primary" />
+                <CtaButton label="Get a Demo" href="/contact" variant="outline" />
+              </div>
+            </div>
+
+            {/* RIGHT: media (above the fold) */}
+            <div className="uc-hero-media">
+              {doc.heroImage?.asset ? (
+                <div style={{ borderRadius: '0.75rem', overflow: 'hidden', aspectRatio: '16/9', position: 'relative', width: '100%' }}>
+                  <Image
+                    src={urlFor(doc.heroImage).width(1400).quality(85).url()}
+                    alt={doc.title || ''} fill style={{ objectFit: 'cover' }} priority
+                  />
+                </div>
+              ) : (
+                <div
+                  style={{
+                    aspectRatio: '16/9',
+                    borderRadius: '0.75rem',
+                    background: 'linear-gradient(135deg, var(--colorprimitives--gray-75, #f5f5f5) 0%, #ebebeb 100%)',
+                    border: '1px solid var(--lightmode--onsurface-border, #e5e5e5)',
+                  }}
+                />
+              )}
+            </div>
           </div>
 
-          {(doc.heroSubtitle || doc.h2Hero) && (
-            <p className="c-text-3" style={{ marginTop: '2rem', marginBottom: '2.5rem' }}>
-              {stripHtml(doc.heroSubtitle || doc.h2Hero)}
-            </p>
-          )}
-
-          {doc.heroBody && (
-            <div style={{ marginBottom: '2.5rem' }}>
-              <RichText value={doc.heroBody} className="c-text-4" />
-            </div>
-          )}
-
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: statPills.length > 0 || doc.heroImage?.asset ? '3rem' : '0' }}>
-            <CtaButton label="Start Free Trial" href="https://app.brightwave.io/register" variant="primary" />
-            <CtaButton label="Get a Demo" href="/contact" variant="outline" />
-          </div>
-
+          {/* Stat pills span full width below hero split */}
           {statPills.length > 0 && (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(12rem, 1fr))', gap: '1rem', marginBottom: doc.heroImage?.asset ? '3rem' : '0' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(12rem, 1fr))', gap: '1rem', marginTop: '3rem' }}>
               {statPills.map((pill: any, i: number) => (
                 <div key={i} style={{
                   background: 'var(--colorprimitives--gray-75, #f5f5f5)',
@@ -233,29 +343,32 @@ export default async function UseCaseDetailPage({ params }: Props) {
               ))}
             </div>
           )}
-
-          {doc.heroImage?.asset && (
-            <div style={{ borderRadius: '0.75rem', overflow: 'hidden', aspectRatio: '16/9', position: 'relative', width: '100%' }}>
-              <Image
-                src={urlFor(doc.heroImage).width(1400).quality(85).url()}
-                alt={doc.title || ''} fill style={{ objectFit: 'cover' }} priority
-              />
-            </div>
-          )}
         </div>
+
+        <style dangerouslySetInnerHTML={{ __html: `
+          .uc-hero-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 3.5rem;
+            align-items: center;
+          }
+          .uc-hero-content { display: flex; flex-direction: column; gap: 1.25rem; }
+          .uc-hero-media { width: 100%; }
+          @media (max-width: 991px) {
+            .uc-hero-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+          }
+        ` }} />
       </section>
 
       {/* ============================================================ */}
-      {/* 2. LOGO MARQUEE                                              */}
+      {/* 2. LOGO MARQUEE — full-bleed width                           */}
       {/* ============================================================ */}
       <section className="c-section cc-logos">
-        <div className="c-container">
-          <div className="grid">
+        <div style={{ width: '100%' }}>
+          <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
             <div className="c-title-5 u-balance">As featured in</div>
-            <div>
-              <LogoMarquee speed={40} pauseOnHover logos={pressLogos} />
-            </div>
           </div>
+          <LogoMarquee speed={40} pauseOnHover logos={pressLogos} />
         </div>
       </section>
 
@@ -339,7 +452,7 @@ export default async function UseCaseDetailPage({ params }: Props) {
                           />
                         </div>
                       ) : (
-                        <SolutionMockUI index={i} />
+                        <SolutionMockUI index={i} title={s.title ? stripHtml(s.title) : undefined} />
                       )}
                     </div>
 
@@ -369,16 +482,30 @@ export default async function UseCaseDetailPage({ params }: Props) {
       )}
 
       {/* ============================================================ */}
-      {/* 5. BEFORE / AFTER TIMELINE (dark — icp-workflow)             */}
+      {/* 5. BEFORE / AFTER TIMELINE — rethought: header w/ intro +    */}
+      {/*    symmetric card footers (total time centered, same label)  */}
       {/* ============================================================ */}
       {(beforeSteps.length > 0 || afterSteps.length > 0) && (
         <section className="c-section icp-workflow" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
           <div className="c-container cc-10cols">
-            {doc.timelineH2 && (
-              <div style={{ marginBottom: '4rem' }}>
-                <h2 className="c-title-2" style={{ color: '#fff' }}>{stripHtml(doc.timelineH2)}</h2>
+            {/* Section header — eyebrow + H2 + intro copy */}
+            <div style={{ textAlign: 'center', maxWidth: '48rem', margin: '0 auto 4rem' }}>
+              <div
+                className="eyebrow cc-no-bp"
+                style={{ display: 'inline-flex', justifyContent: 'center', marginBottom: '1rem' }}
+              >
+                <div className="block cc-primary" />
+                <span className="c-title-5">Workflow Comparison</span>
               </div>
-            )}
+              <h2 className="c-title-2" style={{ color: '#fff', marginBottom: '1rem' }}>
+                {doc.timelineH2 ? stripHtml(doc.timelineH2) : 'Hours of manual work, compressed into minutes.'}
+              </h2>
+              <p className="c-text-4" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                {doc.timelineIntro
+                  ? stripHtml(doc.timelineIntro)
+                  : 'Side-by-side comparison of the traditional analyst workflow versus the same work run through Brightwave.'}
+              </p>
+            </div>
 
             <div style={{
               display: 'grid',
@@ -396,7 +523,7 @@ export default async function UseCaseDetailPage({ params }: Props) {
                   <div style={{ padding: '2rem 2rem 0' }}>
                     <h3 className="c-title-5" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '2rem' }}>
                       <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#f87171' }} />
-                      Before
+                      Status Quo
                     </h3>
                   </div>
                   <div style={{ flex: 1, padding: '0 2rem' }}>
@@ -413,14 +540,14 @@ export default async function UseCaseDetailPage({ params }: Props) {
                   </div>
                   {doc.beforeTotal && (
                     <div style={{
-                      marginTop: 'auto', padding: '2rem',
-                      background: 'rgba(248,113,113,0.05)', borderTop: '1px solid rgba(248,113,113,0.1)',
-                      display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end',
+                      marginTop: 'auto', padding: '1.5rem 2rem',
+                      background: 'rgba(248,113,113,0.05)', borderTop: '1px solid rgba(248,113,113,0.12)',
+                      textAlign: 'center',
                     }}>
-                      <span style={{ fontSize: '0.7rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(248,113,113,0.6)' }}>
-                        Total Analyst Time
-                      </span>
-                      <span className="c-title-3" style={{ color: '#fff' }}>{stripHtml(doc.beforeTotal)}</span>
+                      <div style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: 'rgba(248,113,113,0.7)', marginBottom: '0.5rem' }}>
+                        Total Time
+                      </div>
+                      <div className="c-title-3" style={{ color: '#fff' }}>{stripHtml(doc.beforeTotal)}</div>
                     </div>
                   )}
                 </div>
@@ -454,14 +581,14 @@ export default async function UseCaseDetailPage({ params }: Props) {
                   </div>
                   {doc.afterTotal && (
                     <div style={{
-                      marginTop: 'auto', padding: '2rem',
+                      marginTop: 'auto', padding: '1.5rem 2rem',
                       background: 'var(--lightmode--primary, #e7e70d)', color: '#000',
-                      display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end',
+                      textAlign: 'center',
                     }}>
-                      <span style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(0,0,0,0.6)' }}>
-                        Total Analyst Time
-                      </span>
-                      <span className="c-title-3" style={{ color: '#000', fontWeight: 800 }}>{stripHtml(doc.afterTotal)}</span>
+                      <div style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: 'rgba(0,0,0,0.7)', marginBottom: '0.5rem' }}>
+                        Total Time
+                      </div>
+                      <div className="c-title-3" style={{ color: '#000', fontWeight: 800 }}>{stripHtml(doc.afterTotal)}</div>
                     </div>
                   )}
                 </div>
@@ -579,17 +706,21 @@ export default async function UseCaseDetailPage({ params }: Props) {
       {(doc.testimonialQuote || doc.technologyBullets || doc.competitiveEdgeBullets) && (
         <section className="c-section iam-value">
           <div className="c-container cc-10cols">
-            {/* Testimonial — slider-wrap */}
+            {/* Testimonial — standard slider-wrap pattern */}
             {doc.testimonialQuote && (
               <div className="slider-wrap" style={{ marginBottom: (doc.technologyBullets || doc.competitiveEdgeBullets) ? '3rem' : '0' }}>
                 <img width="294.5" loading="lazy" alt="" src="/webflow-images/testimonial.svg" className="slider_img" />
                 <LottiePlayer src="/webflow-documents/Testimonial-BG-25.json" className="slider_lottie" />
                 <TestimonialSlider
+                  label="Featured Quote"
                   testimonials={[{
                     quote: stripHtml(doc.testimonialQuote),
                     eyebrow: doc.testimonialAttribution ? stripHtml(doc.testimonialAttribution) : undefined,
                   }]}
                 />
+                <div className="slider_test">
+                  <div className="c-title-5"><span className="hide-tablet">Featured </span>Quote</div>
+                </div>
               </div>
             )}
 

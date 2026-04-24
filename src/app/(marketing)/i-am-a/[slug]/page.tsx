@@ -263,66 +263,95 @@ export default async function RoleDetailPage({ params }: Props) {
   return (
     <>
       {/* ============================================================ */}
-      {/* 1. HERO (dark — cc-hero)                                     */}
+      {/* 1. HERO (dark — cc-hero) — split: content left, image right  */}
       {/* ============================================================ */}
       <section className="c-section cc-hero">
         <div className="c-container">
-          <div className="eyebrow cc-no-bp">
-            <div className="block cc-primary" />
-            <span className="c-title-5">{doc.title}</span>
+          <div className="icp-hero-grid">
+            {/* LEFT: content */}
+            <div className="icp-hero-content">
+              <div className="eyebrow cc-no-bp">
+                <div className="block cc-primary" />
+                <span className="c-title-5">{doc.title}</span>
+              </div>
+
+              <div className="bp40-underline">
+                <h1 className="c-title-1">{doc.h1 || doc.title}</h1>
+              </div>
+
+              {doc.heroTagline && (
+                <div className="hero_text cc-top">
+                  <p className="c-text-3 u-balance">{stripHtml(doc.heroTagline)}</p>
+                </div>
+              )}
+
+              {doc.heroBody && (
+                <div className="hero_text cc-top">
+                  <RichText value={doc.heroBody} className="c-text-4" />
+                </div>
+              )}
+
+              <div className="h-20 cc-hero" style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginTop: '0.5rem' }}>
+                <CtaButton label="Book a Demo" href="/contact" variant="primary" />
+                <CtaButton label="Learn More" href="/private-markets-platform" variant="outline" />
+              </div>
+            </div>
+
+            {/* RIGHT: media (pulled up, above the fold) */}
+            <div className="icp-hero-media">
+              {doc.heroImage?.asset ? (
+                <div
+                  className="aspect-16-9 u-overflow-hidden"
+                  style={{ borderRadius: '0.75rem' }}
+                >
+                  <Image
+                    src={urlFor(doc.heroImage).width(1400).quality(90).url()}
+                    alt={doc.h1 || doc.title || ''}
+                    width={1400}
+                    height={788}
+                    className="img-cover"
+                    priority
+                  />
+                </div>
+              ) : (
+                <ProductMockUI />
+              )}
+            </div>
           </div>
-
-          <div className="bp40-underline">
-            <h1 className="c-title-1">{doc.h1 || doc.title}</h1>
-          </div>
-
-          {doc.heroTagline && (
-            <div className="hero_text cc-top">
-              <p className="c-text-3 u-balance">{stripHtml(doc.heroTagline)}</p>
-            </div>
-          )}
-
-          {doc.heroBody && (
-            <div className="hero_text cc-top" style={{ maxWidth: '48rem' }}>
-              <RichText value={doc.heroBody} className="c-text-4" />
-            </div>
-          )}
-
-          <div className="hero_text cc-buttons">
-            <div className="h-20 cc-hero">
-              <CtaButton label="Start Free Trial" href="https://app.brightwave.io/register" variant="primary" />
-              <CtaButton label="Get a Demo" href="/contact" variant="outline" />
-            </div>
-          </div>
-
-          {doc.heroImage?.asset ? (
-            <div className="aspect-16-9 u-overflow-hidden" style={{ marginTop: '3rem', borderRadius: '0.75rem' }}>
-              <Image
-                src={urlFor(doc.heroImage).width(1400).quality(90).url()}
-                alt={doc.h1 || doc.title || ''}
-                width={1400}
-                height={788}
-                className="img-cover"
-                priority
-              />
-            </div>
-          ) : (
-            <ProductMockUI />
-          )}
         </div>
+
+        {/* Responsive split override */}
+        <style dangerouslySetInnerHTML={{ __html: `
+          .icp-hero-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 3.5rem;
+            align-items: center;
+          }
+          .icp-hero-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+          }
+          .icp-hero-media { width: 100%; }
+          @media (max-width: 991px) {
+            .icp-hero-grid {
+              grid-template-columns: 1fr;
+              gap: 2.5rem;
+            }
+          }
+        ` }} />
       </section>
 
       {/* ============================================================ */}
-      {/* 2. LOGO MARQUEE (light)                                      */}
+      {/* 2. LOGO MARQUEE (light) — full-bleed width                   */}
       {/* ============================================================ */}
       <section className="c-section cc-logos">
-        <div className="c-container">
-          <div className="grid">
+        <div style={{ width: '100%' }}>
+          <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
             <div className="c-title-5 u-balance">As featured in</div>
-            <div>
-              <LogoMarquee speed={40} pauseOnHover logos={pressLogos} />
-            </div>
           </div>
+          <LogoMarquee speed={40} pauseOnHover logos={pressLogos} />
         </div>
       </section>
 
@@ -527,21 +556,57 @@ export default async function RoleDetailPage({ params }: Props) {
       )}
 
       {/* ============================================================ */}
-      {/* 6. SUCCESS METRICS (light)                                   */}
+      {/* 6. SUCCESS METRICS (light) — card-framed w/ accent rule      */}
       {/* ============================================================ */}
       {(doc.metricsH2 || doc.metricsContent) && (
         <section className="c-section">
-          <div className="c-container cc-10cols">
-            {doc.metricsH2 && (
-              <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-                <h2 className="c-title-4">{stripHtml(doc.metricsH2)}</h2>
-              </div>
-            )}
-            {doc.metricsContent && (
-              <div className="prose-brand" style={{ maxWidth: '48rem', margin: '0 auto' }}>
-                <RichText value={doc.metricsContent} />
-              </div>
-            )}
+          <div className="c-container">
+            <div
+              style={{
+                maxWidth: '64rem',
+                margin: '0 auto',
+                background: 'var(--lightmode--surface-1, #eff1f5)',
+                border: '1px solid var(--lightmode--onsurface-border, #d7d8db)',
+                borderRadius: '1rem',
+                padding: '3rem',
+                position: 'relative',
+                overflow: 'hidden',
+              }}
+            >
+              {/* Accent rule */}
+              <div
+                aria-hidden
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: '3px',
+                  background: 'var(--lightmode--primary, #e7e70d)',
+                }}
+              />
+
+              {doc.metricsH2 && (
+                <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+                  <div
+                    className="eyebrow cc-no-bp"
+                    style={{ display: 'inline-flex', justifyContent: 'center', marginBottom: '1rem' }}
+                  >
+                    <div className="block cc-primary" />
+                    <span className="c-title-5">Outcomes</span>
+                  </div>
+                  <h2 className="c-title-4">{stripHtml(doc.metricsH2)}</h2>
+                </div>
+              )}
+              {doc.metricsContent && (
+                <div
+                  className="prose-brand"
+                  style={{ maxWidth: '48rem', margin: '0 auto', fontSize: '1.0625rem', lineHeight: 1.75 }}
+                >
+                  <RichText value={doc.metricsContent} />
+                </div>
+              )}
+            </div>
           </div>
         </section>
       )}
@@ -550,17 +615,21 @@ export default async function RoleDetailPage({ params }: Props) {
       {/* 7. TESTIMONIAL (slider-wrap pattern)                         */}
       {/* ============================================================ */}
       {doc.testimonialQuote && (
-        <section className="c-section">
+        <section no-fade="" className="c-section">
           <div className="c-container">
             <div className="slider-wrap">
               <img width="294.5" loading="lazy" alt="" src="/webflow-images/testimonial.svg" className="slider_img" />
               <LottiePlayer src="/webflow-documents/Testimonial-BG-25.json" className="slider_lottie" />
               <TestimonialSlider
+                label="Featured Quote"
                 testimonials={[{
                   quote: stripHtml(doc.testimonialQuote),
                   eyebrow: doc.testimonialAttribution ? stripHtml(doc.testimonialAttribution) : undefined,
                 }]}
               />
+              <div className="slider_test">
+                <div className="c-title-5"><span className="hide-tablet">Featured </span>Quote</div>
+              </div>
             </div>
           </div>
         </section>
@@ -619,51 +688,109 @@ export default async function RoleDetailPage({ params }: Props) {
       )}
 
       {/* ============================================================ */}
-      {/* 9. SOCIAL PROOF + PRICING (light)                            */}
+      {/* 9. SOCIAL PROOF + PRICING (light) — eyebrow + labeled cards  */}
       {/* ============================================================ */}
       {(doc.socialH2 || doc.socialContent || doc.pricingContent || doc.purposeBuiltContent) && (
         <section className="c-section">
-          <div className="c-container cc-10cols">
-            {doc.socialH2 && (
-              <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-                <h2 className="c-title-4">{stripHtml(doc.socialH2)}</h2>
-              </div>
-            )}
-
-            {doc.socialContent && (
-              <div style={{ textAlign: 'center', maxWidth: '48rem', marginLeft: 'auto', marginRight: 'auto', marginBottom: '2rem' }}>
-                <RichText value={doc.socialContent} className="prose-brand" />
-              </div>
-            )}
-
-            {(doc.pricingContent || doc.purposeBuiltContent) && (
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 20rem), 1fr))',
-                gap: '1.5rem',
-              }}>
-                {doc.pricingContent && (
-                  <div style={{
-                    background: '#ffffff',
-                    border: '1px solid var(--lightmode--onsurface-border, #d7d8db)',
-                    borderRadius: '0.5rem',
-                    padding: '2rem',
-                  }}>
-                    <RichText value={doc.pricingContent} className="prose-brand" />
+          <div className="c-container">
+            <div style={{ maxWidth: '68rem', margin: '0 auto' }}>
+              {(doc.socialH2 || doc.socialContent) && (
+                <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+                  <div
+                    className="eyebrow cc-no-bp"
+                    style={{ display: 'inline-flex', justifyContent: 'center', marginBottom: '1rem' }}
+                  >
+                    <div className="block cc-primary" />
+                    <span className="c-title-5">Why Brightwave</span>
                   </div>
-                )}
-                {doc.purposeBuiltContent && (
-                  <div style={{
-                    background: '#ffffff',
-                    border: '1px solid var(--lightmode--onsurface-border, #d7d8db)',
-                    borderRadius: '0.5rem',
-                    padding: '2rem',
-                  }}>
-                    <RichText value={doc.purposeBuiltContent} className="prose-brand" />
-                  </div>
-                )}
-              </div>
-            )}
+                  {doc.socialH2 && (
+                    <h2 className="c-title-4" style={{ marginBottom: '1rem' }}>
+                      {stripHtml(doc.socialH2)}
+                    </h2>
+                  )}
+                  {doc.socialContent && (
+                    <div
+                      style={{
+                        maxWidth: '48rem',
+                        marginLeft: 'auto',
+                        marginRight: 'auto',
+                      }}
+                    >
+                      <RichText value={doc.socialContent} className="prose-brand c-text-4" />
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {(doc.pricingContent || doc.purposeBuiltContent) && (
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 20rem), 1fr))',
+                    gap: '1.5rem',
+                  }}
+                >
+                  {doc.pricingContent && (
+                    <div
+                      style={{
+                        background: '#ffffff',
+                        border: '1px solid var(--lightmode--onsurface-border, #d7d8db)',
+                        borderRadius: '0.75rem',
+                        padding: '2.5rem',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '1rem',
+                        position: 'relative',
+                      }}
+                    >
+                      <div
+                        className="c-title-6"
+                        style={{
+                          color: 'var(--lightmode--onsurface-weak, #5a5b5c)',
+                          fontSize: '0.75rem',
+                          fontWeight: 700,
+                          letterSpacing: '0.1em',
+                          textTransform: 'uppercase',
+                        }}
+                      >
+                        Pricing
+                      </div>
+                      <div className="c-line" style={{ background: 'var(--lightmode--primary, #e7e70d)', height: '2px', width: '2.5rem' }} />
+                      <RichText value={doc.pricingContent} className="prose-brand" />
+                    </div>
+                  )}
+                  {doc.purposeBuiltContent && (
+                    <div
+                      style={{
+                        background: '#ffffff',
+                        border: '1px solid var(--lightmode--onsurface-border, #d7d8db)',
+                        borderRadius: '0.75rem',
+                        padding: '2.5rem',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '1rem',
+                        position: 'relative',
+                      }}
+                    >
+                      <div
+                        className="c-title-6"
+                        style={{
+                          color: 'var(--lightmode--onsurface-weak, #5a5b5c)',
+                          fontSize: '0.75rem',
+                          fontWeight: 700,
+                          letterSpacing: '0.1em',
+                          textTransform: 'uppercase',
+                        }}
+                      >
+                        Purpose-Built
+                      </div>
+                      <div className="c-line" style={{ background: 'var(--lightmode--primary, #e7e70d)', height: '2px', width: '2.5rem' }} />
+                      <RichText value={doc.purposeBuiltContent} className="prose-brand" />
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </section>
       )}
@@ -712,36 +839,42 @@ export default async function RoleDetailPage({ params }: Props) {
       )}
 
       {/* ============================================================ */}
-      {/* 11. FINAL CTA (light, yellow top border)                     */}
+      {/* 11. FINAL CTA (matches use-cases page closing CTA pattern)   */}
       {/* ============================================================ */}
-      <section className="c-section" style={{ borderTop: '3px solid var(--lightmode--primary, #e7e70d)' }}>
+      <section className="c-section" style={{ borderTop: '4px solid var(--lightmode--primary, #e7e70d)' }}>
         <div className="c-container cc-8cols" style={{ alignItems: 'center', textAlign: 'center' }}>
-          <h2 className="c-title-3" style={{ marginBottom: '0.75rem' }}>
+          <h2 className="c-title-2" style={{ marginBottom: '1rem' }}>
             {doc.ctaH2 ? stripHtml(doc.ctaH2) : 'Ready to get started?'}
           </h2>
-          {doc.ctaSubheadline && (
-            <p className="c-text-3" style={{ marginBottom: '1rem', color: 'var(--lightmode--onsurface-weak)' }}>
-              {stripHtml(doc.ctaSubheadline)}
+          {(doc.ctaSubheadline || doc.ctaBody) && (
+            <p className="c-text-3" style={{ marginBottom: '3rem', color: 'var(--lightmode--onsurface-weak)' }}>
+              {doc.ctaSubheadline ? stripHtml(doc.ctaSubheadline) : (typeof doc.ctaBody === 'string' ? stripHtml(doc.ctaBody) : '')}
             </p>
           )}
-          {doc.ctaBody && (
-            <div className="c-text-4" style={{ marginBottom: '2rem', color: 'var(--lightmode--onsurface-weak)' }}>
-              <RichText value={doc.ctaBody} />
-            </div>
-          )}
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.25rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '3rem' }}>
             <CtaButton
               label={doc.ctaButtonLabel ? stripHtml(doc.ctaButtonLabel) : 'Start Free Trial'}
               href="https://app.brightwave.io/register"
               variant="primary"
-              size="big"
             />
+            <CtaButton label="Get a Demo" href="/contact" variant="outline" />
           </div>
-          {doc.ctaTagline && (
-            <p className="c-text-5" style={{ color: 'var(--lightmode--onsurface-weak)' }}>
-              {stripHtml(doc.ctaTagline)}
-            </p>
-          )}
+
+          {/* Trust badges (matches /use-cases closing CTA) */}
+          <div style={{
+            borderTop: '1px solid var(--lightmode--onsurface-border, #d7d8db)',
+            paddingTop: '2.5rem',
+            display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '2.5rem',
+          }}>
+            {trustBadges.map((badge, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--lightmode--onsurface-weak, #5a5b5c)' }}>
+                {badge.icon}
+                <span style={{ fontSize: '0.7rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                  {badge.label}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
     </>

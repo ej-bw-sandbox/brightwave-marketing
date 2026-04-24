@@ -105,6 +105,14 @@ function DownloadIcon({ className }: { className?: string }) {
   )
 }
 
+function ExcelIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Zm-1 7V3.5L18.5 9H13Zm-2.6 8.2L8.8 14l1.6-3.2h1.8l-2.2 4 2.4 4.4H10.6l-1.8-3.4-1.8 3.4H5.4l2.4-4.4-2.2-4h1.8l1.6 3.2Z" />
+    </svg>
+  )
+}
+
 /* ── Platform display config ── */
 
 const platformDisplayName: Record<string, string> = {
@@ -129,7 +137,25 @@ const iconComponents: Record<string, { component: React.FC<{ className?: string 
   apple: { component: AppleIcon, sizeClass: 'w-5 h-5', offsetY: -1 },
   windows: { component: WindowsIcon, sizeClass: 'w-5 h-5', offsetY: 0 },
   linux: { component: LinuxIcon, sizeClass: 'w-[18px] h-5', offsetY: 0 },
+  excel: { component: ExcelIcon, sizeClass: 'w-5 h-5', offsetY: 0 },
 }
+
+/* ── Plugins (non-manifest, hardcoded) ── */
+
+interface PluginItem {
+  label: string
+  description: string
+  href?: string
+  status: 'available' | 'coming-soon'
+}
+
+const pluginItems: PluginItem[] = [
+  {
+    label: 'Excel Add-in',
+    description: 'Bring Brightwave into the spreadsheet — cell-aware research, grounded formulas, no copy-paste.',
+    status: 'coming-soon',
+  },
+]
 
 /** Map detected OS to a specific artifact */
 function findPrimaryArtifact(artifacts: ManifestArtifact[], os: DetectedOS): ManifestArtifact | null {
@@ -202,8 +228,8 @@ export function DownloadSection({ manifest }: { manifest: DownloadManifest | nul
     return (
       <div style={{ width: '100%' }} className="animate-pulse">
         <div className="rounded-xl" style={{ width: 288, height: 56, margin: '0 auto 4rem', backgroundColor: c.surface }} />
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', width: '100%' }}>
-          {[0, 1, 2].map((i) => (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: '1rem', width: '100%' }}>
+          {[0, 1, 2, 3].map((i) => (
             <div key={i} className="rounded-2xl" style={{ height: 160, backgroundColor: c.surface }} />
           ))}
         </div>
@@ -264,7 +290,7 @@ export function DownloadSection({ manifest }: { manifest: DownloadManifest | nul
       )}
 
       {/* Platform sections */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', width: '100%' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: '1rem', width: '100%' }}>
         {platformGroups.map((group) => {
           const { component: Icon, sizeClass: iconSize, offsetY } = iconComponents[group.iconKey]
           return (

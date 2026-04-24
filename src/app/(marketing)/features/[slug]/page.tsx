@@ -81,47 +81,57 @@ export default async function FeaturesDetailPage({ params }: Props) {
       {/* ============================================================ */}
       <section className="c-section cc-hero">
         <div className="c-container">
-          {/* Eyebrow */}
-          <div className="eyebrow cc-no-bp">
-            <div className="block cc-primary" />
-            <div className="c-title-5">Platform</div>
-          </div>
+          <div className="feature-hero-grid">
+            {/* LEFT: Content */}
+            <div className="feature-hero-content">
+              {/* Eyebrow */}
+              <div className="eyebrow cc-no-bp">
+                <div className="block cc-primary" />
+                <div className="c-title-5">Platform</div>
+              </div>
 
-          {/* Hero headline */}
-          <div className="bp40-underline">
-            <h1 className="c-title-3">{doc.title}</h1>
-          </div>
+              {/* Hero headline */}
+              <div className="bp40-underline">
+                <h1 className="c-title-3">{doc.title}</h1>
+              </div>
 
-          {/* Subtitle + CTAs - use text-cta pattern for full width */}
-          <div className="text-cta" style={{ marginTop: '2.5rem', marginBottom: '2.5rem' }}>
-            {doc.heroH1 && (
-              <div className="c-text-3 u-balance">{stripHtml(doc.heroH1)}</div>
+              {/* Subtitle + CTAs */}
+              <div className="text-cta" style={{ marginTop: '2rem' }}>
+                {doc.heroH1 && (
+                  <div className="c-text-3 u-balance">{stripHtml(doc.heroH1)}</div>
+                )}
+                <RichText value={doc.heroBody} className="c-text-4" />
+                <div className="h-20 cc-hero" style={{ marginTop: '1.5rem' }}>
+                  <CtaButton label="Start Free Trial" href="https://app.brightwave.io/register" variant="primary" />
+                  <CtaButton label="Get a Demo" href="/contact" variant="outline" />
+                </div>
+              </div>
+            </div>
+
+            {/* RIGHT: Hero image (above the fold) */}
+            {doc.heroImage?.asset && (
+              <div className="feature-hero-media">
+                <div
+                  className="aspect-16-9"
+                  style={{ borderRadius: '0.75rem', overflow: 'hidden' }}
+                >
+                  <Image
+                    src={urlFor(doc.heroImage).width(1400).quality(85).url()}
+                    alt={doc.title || ''}
+                    width={1400}
+                    height={doc.heroImage.asset.metadata?.dimensions?.height
+                      ? Math.round(1400 * doc.heroImage.asset.metadata.dimensions.height / doc.heroImage.asset.metadata.dimensions.width)
+                      : 788}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', position: 'absolute', top: 0, left: 0 }}
+                    priority
+                    {...(doc.heroImage.asset.metadata?.lqip ? { placeholder: 'blur', blurDataURL: doc.heroImage.asset.metadata.lqip } : {})}
+                  />
+                </div>
+              </div>
             )}
-            <RichText value={doc.heroBody} className="c-text-4" />
-            <div className="h-20 cc-hero" style={{ marginTop: '1.5rem' }}>
-              <CtaButton label="Start Free Trial" href="https://app.brightwave.io/register" variant="primary" />
-              <CtaButton label="Get a Demo" href="/contact" variant="outline" />
-            </div>
           </div>
 
-          {/* Hero image */}
-          {doc.heroImage?.asset && (
-            <div className="aspect-16-9" style={{ borderRadius: '0.75rem', overflow: 'hidden' }}>
-              <Image
-                src={urlFor(doc.heroImage).width(1400).quality(85).url()}
-                alt={doc.title || ''}
-                width={1400}
-                height={doc.heroImage.asset.metadata?.dimensions?.height
-                  ? Math.round(1400 * doc.heroImage.asset.metadata.dimensions.height / doc.heroImage.asset.metadata.dimensions.width)
-                  : 788}
-                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', position: 'absolute', top: 0, left: 0 }}
-                priority
-                {...(doc.heroImage.asset.metadata?.lqip ? { placeholder: 'blur', blurDataURL: doc.heroImage.asset.metadata.lqip } : {})}
-              />
-            </div>
-          )}
-
-          {/* Stat badges */}
+          {/* Stat badges (full-width below split) */}
           {statBadges.length > 0 && (
             <div className="v-20" style={{ marginTop: '3rem' }}>
               <div className="partner-proof_points col-3">
@@ -184,7 +194,7 @@ export default async function FeaturesDetailPage({ params }: Props) {
                   >
                     {/* Numbered header with separator */}
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '1.25rem', borderBottom: '1px solid var(--lightmode--onsurface-border, rgba(255,255,255,0.08))' }}>
-                      <span style={{ color: 'var(--lightmode--primary, #ffff25)', fontFamily: 'monospace', fontWeight: 500, fontSize: '0.875rem', letterSpacing: '0.1em' }}>
+                      <span style={{ color: '#000', fontFamily: 'monospace', fontWeight: 500, fontSize: '0.875rem', letterSpacing: '0.1em' }}>
                         {String(i + 1).padStart(2, '0')}
                       </span>
                     </div>
@@ -625,9 +635,27 @@ export default async function FeaturesDetailPage({ params }: Props) {
         </div>
       </section>
 
-      {/* Responsive override for deep dive sticky layout */}
+      {/* Responsive override for deep dive sticky layout + hero split */}
       <style dangerouslySetInnerHTML={{ __html: `
+        .feature-hero-grid {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+          gap: 3.5rem;
+          align-items: center;
+        }
+        .feature-hero-content {
+          display: flex;
+          flex-direction: column;
+          gap: 1.5rem;
+        }
+        .feature-hero-media {
+          width: 100%;
+        }
         @media (max-width: 991px) {
+          .feature-hero-grid {
+            grid-template-columns: 1fr;
+            gap: 2.5rem;
+          }
           .deep-dive-layout {
             flex-direction: column !important;
           }

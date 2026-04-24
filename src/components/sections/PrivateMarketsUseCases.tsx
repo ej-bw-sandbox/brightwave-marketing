@@ -70,7 +70,7 @@ export function PrivateMarketsUseCases({ eyebrow, useCases }: { eyebrow?: string
               />
             ) : (
               <img
-                src={`/webflow-images/illustration_01${activeIndex > 0 ? `-${activeIndex}` : ''}.avif`}
+                src={`/webflow-images/Frame-1321317355${activeIndex > 0 ? `-${activeIndex}` : ''}_1.avif`}
                 alt={active.title}
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 onError={(e) => { (e.target as HTMLImageElement).src = 'https://d3e54v103j8qbb.cloudfront.net/plugins/Basic/assets/placeholder.60f9b1840c.svg'; (e.target as HTMLImageElement).style.objectFit = 'contain'; (e.target as HTMLImageElement).style.padding = '4rem'; (e.target as HTMLImageElement).style.opacity = '0.3'; }}
