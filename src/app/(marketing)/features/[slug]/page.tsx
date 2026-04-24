@@ -35,7 +35,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   })
 }
 
-function stripHtml(str: string): string {
+function stripHtml(str: unknown): string {
+  if (typeof str !== 'string') return ''
   return str.replace(/<[^>]*>/g, '').trim()
 }
 
@@ -608,9 +609,8 @@ export default async function FeaturesDetailPage({ params }: Props) {
               <h2 className="c-title-4">
                 {ctaHeadline ? stripHtml(ctaHeadline) : 'Ready to get started?'}
               </h2>
-              {doc.ctaBody && (
-                <p className="c-text-4">{stripHtml(doc.ctaBody)}</p>
-              )}
+              <RichText value={doc.ctaBody} className="c-text-4" />
+
             </div>
             <div className="h-20" style={{ justifyContent: 'center', flexWrap: 'wrap' }}>
               <CtaButton
