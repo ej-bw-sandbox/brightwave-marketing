@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import type { DownloadManifest, ManifestArtifact } from '@/lib/downloads/manifest'
 import { getDownloadUrl, formatBytes } from '@/lib/downloads/manifest'
-import type { DownloadsPagePlugin } from '@/lib/sanity/queries/downloads'
+import type { DownloadsPagePlatform } from '@/lib/sanity/queries/downloads'
 
 /* ── OS Detection ── */
 
@@ -266,7 +266,7 @@ export function DownloadSection({
   plugins = [],
 }: {
   manifest: DownloadManifest | null
-  plugins?: DownloadsPagePlugin[]
+  plugins?: DownloadsPagePlatform[]
 }) {
   const [detectedOS, setDetectedOS] = useState<DetectedOS>(null)
   const [ready, setReady] = useState(false)
@@ -462,11 +462,11 @@ export function DownloadSection({
                       </span>
                       <div style={{ minWidth: 0 }}>
                         <span style={{ fontSize: '0.875rem', fontWeight: 500, display: 'block', color: isComingSoon ? c.textMuted : c.text }}>
-                          {p.name}
+                          {p.displayName}
                         </span>
-                        {(p.meta || isComingSoon) && (
+                        {(p.description || isComingSoon) && (
                           <span style={{ fontSize: '0.75rem', color: c.textSubtle }}>
-                            {isComingSoon ? 'Coming soon' : p.meta}
+                            {isComingSoon ? 'Coming soon' : p.description}
                           </span>
                         )}
                       </div>
@@ -480,10 +480,10 @@ export function DownloadSection({
                 )
 
                 return isComingSoon ? (
-                  <div key={p._key ?? `${p.name}-${i}`} style={rowStyle}>{content}</div>
+                  <div key={p._key ?? `${p.displayName}-${i}`} style={rowStyle}>{content}</div>
                 ) : (
                   <a
-                    key={p._key ?? `${p.name}-${i}`}
+                    key={p._key ?? `${p.displayName}-${i}`}
                     href={p.downloadUrl}
                     target="_blank"
                     rel="noopener noreferrer"

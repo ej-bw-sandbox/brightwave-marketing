@@ -44,6 +44,7 @@ export const downloadsPage = defineType({
                   { title: 'macOS (Apple Silicon)', value: 'macos-silicon' },
                   { title: 'iOS', value: 'ios' },
                   { title: 'Android', value: 'android' },
+                  { title: 'Plugins', value: 'plugins' },
                 ],
               },
               validation: (r) => r.required(),
@@ -53,6 +54,25 @@ export const downloadsPage = defineType({
               title: 'Display Name',
               type: 'string',
               validation: (r) => r.required(),
+            }),
+            defineField({
+              name: 'iconKey',
+              title: 'Plugin Icon',
+              type: 'string',
+              description: 'Only used when Platform is "Plugins"',
+              options: {
+                list: [
+                  { title: 'Excel', value: 'excel' },
+                  { title: 'Word', value: 'word' },
+                  { title: 'PowerPoint', value: 'powerpoint' },
+                  { title: 'Chrome', value: 'chrome' },
+                  { title: 'Safari', value: 'safari' },
+                  { title: 'Firefox', value: 'firefox' },
+                  { title: 'Edge', value: 'edge' },
+                  { title: 'Generic Plugin', value: 'plugin' },
+                ],
+              },
+              hidden: ({ parent }) => parent?.platform !== 'plugins',
             }),
             defineField({
               name: 'description',
@@ -92,73 +112,6 @@ export const downloadsPage = defineType({
           ],
           preview: {
             select: { title: 'displayName', subtitle: 'platform' },
-          },
-        },
-      ],
-    }),
-    defineField({
-      name: 'plugins',
-      title: 'Plugins',
-      description: 'Add-ins and extensions (Microsoft Office add-ins, browser extensions, etc.)',
-      type: 'array',
-      of: [
-        {
-          type: 'object',
-          name: 'downloadPlugin',
-          fields: [
-            defineField({
-              name: 'name',
-              title: 'Name',
-              type: 'string',
-              description: 'e.g. "Excel Add-in", "Chrome Extension"',
-              validation: (r) => r.required(),
-            }),
-            defineField({
-              name: 'description',
-              title: 'Description',
-              type: 'text',
-              rows: 2,
-            }),
-            defineField({
-              name: 'iconKey',
-              title: 'Icon',
-              type: 'string',
-              options: {
-                list: [
-                  { title: 'Excel', value: 'excel' },
-                  { title: 'Word', value: 'word' },
-                  { title: 'PowerPoint', value: 'powerpoint' },
-                  { title: 'Chrome', value: 'chrome' },
-                  { title: 'Safari', value: 'safari' },
-                  { title: 'Firefox', value: 'firefox' },
-                  { title: 'Edge', value: 'edge' },
-                  { title: 'Generic Plugin', value: 'plugin' },
-                ],
-              },
-              initialValue: 'plugin',
-            }),
-            defineField({
-              name: 'downloadUrl',
-              title: 'Download / Install URL',
-              type: 'url',
-              description: 'Leave empty for coming-soon plugins',
-              validation: (r) => r.uri({ scheme: ['https', 'http'] }),
-            }),
-            defineField({
-              name: 'meta',
-              title: 'Meta',
-              type: 'string',
-              description: 'Short line shown under the name (e.g. "Microsoft AppSource")',
-            }),
-            defineField({
-              name: 'comingSoon',
-              title: 'Coming Soon',
-              type: 'boolean',
-              initialValue: false,
-            }),
-          ],
-          preview: {
-            select: { title: 'name', subtitle: 'iconKey' },
           },
         },
       ],

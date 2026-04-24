@@ -8,31 +8,35 @@ export const downloadsQuery = `
       platform,
       displayName,
       description,
+      iconKey,
       downloadUrl,
       version,
       fileSize,
       systemRequirements,
       comingSoon
     },
-    plugins[]{
-      _key,
-      name,
-      description,
-      iconKey,
-      downloadUrl,
-      meta,
-      comingSoon
-    },
     seo
   }
 `
 
-export interface DownloadsPagePlugin {
+export type DownloadsPagePlatformValue =
+  | 'windows'
+  | 'linux'
+  | 'macos-intel'
+  | 'macos-silicon'
+  | 'ios'
+  | 'android'
+  | 'plugins'
+
+export interface DownloadsPagePlatform {
   _key?: string
-  name: string
+  platform: DownloadsPagePlatformValue
+  displayName: string
   description?: string
   iconKey?: 'excel' | 'word' | 'powerpoint' | 'chrome' | 'safari' | 'firefox' | 'edge' | 'plugin'
   downloadUrl?: string
-  meta?: string
+  version?: string
+  fileSize?: string
+  systemRequirements?: string
   comingSoon?: boolean
 }

@@ -38,7 +38,10 @@ export default async function Page() {
             )}
           </div>
           <div className="pb-16 md:pb-24">
-            <DownloadSection manifest={manifest} plugins={doc.plugins ?? []} />
+            <DownloadSection
+              manifest={manifest}
+              plugins={(doc.platforms ?? []).filter((p: { platform?: string }) => p.platform === 'plugins')}
+            />
           </div>
         </div>
       </section>
