@@ -14,6 +14,25 @@ export const downloadsQuery = `
       systemRequirements,
       comingSoon
     },
+    plugins[]{
+      _key,
+      name,
+      description,
+      iconKey,
+      downloadUrl,
+      meta,
+      comingSoon
+    },
     seo
   }
 `
+
+export interface DownloadsPagePlugin {
+  _key?: string
+  name: string
+  description?: string
+  iconKey?: 'excel' | 'word' | 'powerpoint' | 'chrome' | 'safari' | 'firefox' | 'edge' | 'plugin'
+  downloadUrl?: string
+  meta?: string
+  comingSoon?: boolean
+}

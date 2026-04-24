@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import type { DownloadManifest, ManifestArtifact } from '@/lib/downloads/manifest'
 import { getDownloadUrl, formatBytes } from '@/lib/downloads/manifest'
+import type { DownloadsPagePlugin } from '@/lib/sanity/queries/downloads'
 
 /* ── OS Detection ── */
 
@@ -113,6 +114,62 @@ function ExcelIcon({ className }: { className?: string }) {
   )
 }
 
+function WordIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Zm-1 7V3.5L18.5 9H13Zm3.2 3.6-1.5 6.9h-1.7l-1-4.5-1 4.5h-1.7l-1.5-6.9h1.7l.85 4.4.95-4.4h1.5l.95 4.4.85-4.4h1.6Z" />
+    </svg>
+  )
+}
+
+function PowerPointIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Zm-1 7V3.5L18.5 9H13ZM8.5 12.2h2.9c1.55 0 2.5.95 2.5 2.35s-.95 2.35-2.5 2.35H10v2.4H8.5v-7.1Zm1.5 1.35v2h1.25c.7 0 1.1-.35 1.1-1s-.4-1-1.1-1H10Z" />
+    </svg>
+  )
+}
+
+function ChromeIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 2a10 10 0 0 1 8.66 5H12a5 5 0 0 0-4.54 2.92L4.18 4.26A10 10 0 0 1 12 2Zm-9.34 5.78 4.46 7.72A5 5 0 0 0 12 17h.28l-3.2 5.54A10 10 0 0 1 2.66 7.78ZM12 22a10 10 0 0 1-.6-.02l4.46-7.72A5 5 0 0 0 16.99 12c0-1.07-.34-2.06-.92-2.87l5.86-.01A10 10 0 0 1 12 22Zm0-13a3 3 0 1 1 0 6 3 3 0 0 1 0-6Z" />
+    </svg>
+  )
+}
+
+function SafariIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18.2a8.2 8.2 0 1 1 0-16.4 8.2 8.2 0 0 1 0 16.4ZM13.5 6.5l-2.3 5.7-5.7 2.3 2.3-5.7 5.7-2.3Zm-1.5 4.2a1.3 1.3 0 1 0 0 2.6 1.3 1.3 0 0 0 0-2.6Z" />
+    </svg>
+  )
+}
+
+function FirefoxIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M21.2 8.5a9.5 9.5 0 0 0-2.1-3.2c.4 1.5.2 2.9-.5 3.4-.9-2.1-2.4-3-3.8-3.1-2.5-.3-4.5 1-5.3 2.9-2.1-.4-3.7.7-4.4 2 .6-.2 1.6-.3 2.4.2-1.8.6-2.9 2.4-2.8 4.4.3 4.5 4.1 8.1 8.7 8 4.9 0 8.9-3.8 9-8.7.1-2.1-.5-4-1.2-5.9Zm-9.3 11.2a5.6 5.6 0 0 1-5.7-5.4c0-1.4.6-2.6 1.6-3.4-.2 1.1.1 2.2.9 3 1.2 1 3 1.1 4.3.2 1.1-.8 1.6-2 1.3-3.3-.2-1.1-1-1.8-1.9-2 .8-.5 1.9-.4 2.7.2 1.8 1.2 2.3 3.7 1.2 5.5-1 1.7-2.8 2.5-4.4 2.1.9.5 2.3.7 3.3.1-.9 1.2-2.3 2-3.3 2Z" />
+    </svg>
+  )
+}
+
+function EdgeIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 2a10 10 0 0 0-8.6 4.9c1.7-1.5 4-2.4 6.6-2.3 4.4.2 7.2 3.1 7.2 6.1 0 .9-.6 1.4-1.4 1.4H6.3c-.3 2.7 1.5 5.4 4.6 6.2 2.1.6 4.3.1 5.8-1.2a8.4 8.4 0 0 1-4.3 5c-5 1.4-9.2-2.1-9.2-6.6 0-.4 0-.7.1-1.1A10 10 0 0 1 12 2Zm9.5 13.8c-1 2-3 3.5-5.5 4 2.9-.3 5.3-2 5.5-4Z" />
+    </svg>
+  )
+}
+
+function PluginIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M20 12h-1.5V8a2 2 0 0 0-2-2H13V4a2 2 0 1 0-4 0v2H7.5a2 2 0 0 0-2 2v3.5H4a2 2 0 1 0 0 4h1.5V19a2 2 0 0 0 2 2H11v-1.5a2 2 0 1 1 4 0V21h1.5a2 2 0 0 0 2-2v-3h1.5a2 2 0 1 0 0-4Z" />
+    </svg>
+  )
+}
+
 /* ── Platform display config ── */
 
 const platformDisplayName: Record<string, string> = {
@@ -137,25 +194,24 @@ const iconComponents: Record<string, { component: React.FC<{ className?: string 
   apple: { component: AppleIcon, sizeClass: 'w-5 h-5', offsetY: -1 },
   windows: { component: WindowsIcon, sizeClass: 'w-5 h-5', offsetY: 0 },
   linux: { component: LinuxIcon, sizeClass: 'w-[18px] h-5', offsetY: 0 },
+  plugin: { component: PluginIcon, sizeClass: 'w-5 h-5', offsetY: 0 },
   excel: { component: ExcelIcon, sizeClass: 'w-5 h-5', offsetY: 0 },
+  word: { component: WordIcon, sizeClass: 'w-5 h-5', offsetY: 0 },
+  powerpoint: { component: PowerPointIcon, sizeClass: 'w-5 h-5', offsetY: 0 },
+  chrome: { component: ChromeIcon, sizeClass: 'w-5 h-5', offsetY: 0 },
+  safari: { component: SafariIcon, sizeClass: 'w-5 h-5', offsetY: 0 },
+  firefox: { component: FirefoxIcon, sizeClass: 'w-5 h-5', offsetY: 0 },
+  edge: { component: EdgeIcon, sizeClass: 'w-5 h-5', offsetY: 0 },
 }
 
-/* ── Plugins (non-manifest, hardcoded) ── */
+type PluginIconKey = 'excel' | 'word' | 'powerpoint' | 'chrome' | 'safari' | 'firefox' | 'edge' | 'plugin'
 
-interface PluginItem {
-  label: string
-  description: string
-  href?: string
-  status: 'available' | 'coming-soon'
+function pluginIconKey(key: string | undefined): PluginIconKey {
+  if (key && key in iconComponents && key !== 'apple' && key !== 'windows' && key !== 'linux') {
+    return key as PluginIconKey
+  }
+  return 'plugin'
 }
-
-const pluginItems: PluginItem[] = [
-  {
-    label: 'Excel Add-in',
-    description: 'Bring Brightwave into the spreadsheet — cell-aware research, grounded formulas, no copy-paste.',
-    status: 'coming-soon',
-  },
-]
 
 /** Map detected OS to a specific artifact */
 function findPrimaryArtifact(artifacts: ManifestArtifact[], os: DetectedOS): ManifestArtifact | null {
@@ -205,7 +261,13 @@ function groupByPlatform(artifacts: ManifestArtifact[]) {
 
 /* ── Main Section ── */
 
-export function DownloadSection({ manifest }: { manifest: DownloadManifest | null }) {
+export function DownloadSection({
+  manifest,
+  plugins = [],
+}: {
+  manifest: DownloadManifest | null
+  plugins?: DownloadsPagePlugin[]
+}) {
   const [detectedOS, setDetectedOS] = useState<DetectedOS>(null)
   const [ready, setReady] = useState(false)
   const isDark = useTheme()
@@ -345,6 +407,95 @@ export function DownloadSection({ manifest }: { manifest: DownloadManifest | nul
             </div>
           )
         })}
+
+        {/* Plugins column */}
+        <div
+          style={{
+            backgroundColor: c.surface,
+            border: `1px solid ${c.border}`,
+            borderRadius: '1rem',
+            overflow: 'hidden',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', padding: '1rem 1rem 0.75rem' }}>
+            <div style={{ width: 20, height: 20, flexShrink: 0, color: c.text, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <PluginIcon className="w-5 h-5" />
+            </div>
+            <h3 style={{ fontSize: '1rem', fontWeight: 600, color: c.text, margin: 0 }}>
+              Plugins
+            </h3>
+          </div>
+
+          <div style={{ padding: '0 1rem 0.5rem' }}>
+            {plugins.length === 0 ? (
+              <div
+                style={{
+                  padding: '0.625rem 0',
+                  borderTop: `1px solid ${c.border}`,
+                  fontSize: '0.75rem',
+                  color: c.textSubtle,
+                }}
+              >
+                Coming soon
+              </div>
+            ) : (
+              plugins.map((p, i) => {
+                const iconKey = pluginIconKey(p.iconKey)
+                const { component: PIcon, sizeClass: pSize } = iconComponents[iconKey]
+                const isComingSoon = p.comingSoon || !p.downloadUrl
+                const rowStyle: React.CSSProperties = {
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: '0.5rem',
+                  padding: '0.625rem 0',
+                  borderTop: `1px solid ${c.border}`,
+                  color: c.text,
+                  textDecoration: 'none',
+                }
+
+                const content = (
+                  <>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', minWidth: 0 }}>
+                      <span style={{ flexShrink: 0, color: c.text, opacity: isComingSoon ? 0.5 : 1, display: 'inline-flex' }}>
+                        <PIcon className={pSize} />
+                      </span>
+                      <div style={{ minWidth: 0 }}>
+                        <span style={{ fontSize: '0.875rem', fontWeight: 500, display: 'block', color: isComingSoon ? c.textMuted : c.text }}>
+                          {p.name}
+                        </span>
+                        {(p.meta || isComingSoon) && (
+                          <span style={{ fontSize: '0.75rem', color: c.textSubtle }}>
+                            {isComingSoon ? 'Coming soon' : p.meta}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    {!isComingSoon && (
+                      <span style={{ flexShrink: 0, color: c.yellow, opacity: 0.7 }}>
+                        <DownloadIcon className="w-5 h-5" />
+                      </span>
+                    )}
+                  </>
+                )
+
+                return isComingSoon ? (
+                  <div key={p._key ?? `${p.name}-${i}`} style={rowStyle}>{content}</div>
+                ) : (
+                  <a
+                    key={p._key ?? `${p.name}-${i}`}
+                    href={p.downloadUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={rowStyle}
+                  >
+                    {content}
+                  </a>
+                )
+              })
+            )}
+          </div>
+        </div>
       </div>
     </div>
   )

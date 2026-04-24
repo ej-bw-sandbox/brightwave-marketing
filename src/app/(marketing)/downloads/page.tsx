@@ -38,7 +38,7 @@ export default async function Page() {
             )}
           </div>
           <div className="pb-16 md:pb-24">
-            <DownloadSection manifest={manifest} />
+            <DownloadSection manifest={manifest} plugins={doc.plugins ?? []} />
           </div>
         </div>
       </section>
