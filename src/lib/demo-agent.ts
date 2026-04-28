@@ -19,6 +19,10 @@ import type {
 import { getModel } from '@mariozechner/pi-ai';
 import type { Message, Model } from '@mariozechner/pi-ai';
 import { Type } from '@mariozechner/pi-ai';
+import {
+  createCheckAvailabilityTool,
+  createBookAppointmentTool,
+} from './calendly-tools';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -164,11 +168,18 @@ export function createDemoAgent(config: DemoAgentConfig): Agent {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const model = getModel('anthropic', modelId as any);
 
+  // Merge caller-provided tools with the built-in Calendly scheduling tools.
+  const allTools: AgentTool[] = [
+    ...tools,
+    createCheckAvailabilityTool(),
+    createBookAppointmentTool(),
+  ];
+
   const agent = new Agent({
     initialState: {
       systemPrompt,
       model: model as Model<'anthropic-messages'>,
-      tools,
+      tools: allTools,
       messages: [],
     },
     /**
