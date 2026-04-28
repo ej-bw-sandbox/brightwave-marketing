@@ -268,6 +268,9 @@ export function useAnamSession() {
       const responseMsgId = nextId();
       let fullResponse = '';
 
+      /** Map toolCallId to toolName from tool_execution_start events. */
+      const toolCallNames = new Map<string, string>();
+
       const unsubscribe = agent.subscribe(async (event: AgentEvent) => {
         if (event.type === 'message_update') {
           // Accumulate text deltas for the streaming UI update
@@ -277,11 +280,22 @@ export function useAnamSession() {
           }
         }
 
-        // Detect book_appointment tool completion and extract booking URL
-        if (event.type === 'tool_execution_end' && event.toolName === 'book_appointment' && !event.isError) {
-          const details = event.result?.details as BookAppointmentDetails | undefined;
-          if (details?.booking_url) {
-            setBookingUrl(details.booking_url);
+        // Track tool names from tool_execution_start so we can look them up
+        // on tool_execution_end even if toolName is absent at runtime.
+        if (event.type === 'tool_execution_start') {
+          toolCallNames.set(event.toolCallId, event.toolName);
+        }
+
+        // Detect book_appointment tool completion and extract booking URL.
+        // Use the toolCallId map as a fallback in case toolName is not
+        // present on the tool_execution_end event at runtime.
+        if (event.type === 'tool_execution_end' && !event.isError) {
+          const resolvedName = event.toolName || toolCallNames.get(event.toolCallId);
+          if (resolvedName === 'book_appointment') {
+            const details = (event.result as Record<string, unknown>)?.details as BookAppointmentDetails | undefined;
+            if (details?.booking_url) {
+              setBookingUrl(details.booking_url);
+            }
           }
         }
 
