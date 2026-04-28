@@ -87,15 +87,16 @@ export function createFireEventTool(
     }),
     execute: async (
       _toolCallId: string,
-      params: FireEventParams,
+      params: unknown,
     ): Promise<AgentToolResult<{ status: number }>> => {
+      const { eventType, payload } = params as FireEventParams;
       const res = await fetch('/api/demo/events', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           sessionId,
-          eventType: params.eventType,
-          payload: params.payload,
+          eventType,
+          payload,
           prospect,
           timestamp: new Date().toISOString(),
         }),
@@ -106,8 +107,8 @@ export function createFireEventTool(
           {
             type: 'text' as const,
             text: res.ok
-              ? `Event "${params.eventType}" recorded.`
-              : `Event "${params.eventType}" failed (${res.status}).`,
+              ? `Event "${eventType}" recorded.`
+              : `Event "${eventType}" failed (${res.status}).`,
           },
         ],
         details: { status: res.status },
@@ -243,4 +244,5 @@ export function getMessageText(message: AgentMessage): string {
 }
 
 // Re-export types for convenience
+export { Agent };
 export type { AgentEvent, AgentMessage, AgentTool };
