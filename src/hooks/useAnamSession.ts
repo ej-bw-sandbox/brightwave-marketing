@@ -10,6 +10,7 @@
  *   - Microphone access and level monitoring
  *   - Analytics event pipeline (`/api/demo/events`)
  *   - UI state (messages, status, mute, reactions)
+ *   - Booking URL overlay state (from `book_appointment` tool results)
  *
  * Pipeline:
  *   Client mic -> Anam built-in STT -> Pi Agent (via streamProxy) -> anamClient.talk()
@@ -29,6 +30,7 @@ import {
   getMessageText,
 } from '@/lib/demo-agent';
 import type { Agent, AgentEvent } from '@/lib/demo-agent';
+import type { BookAppointmentDetails } from '@/lib/calendly-tools';
 
 // ---------------------------------------------------------------------------
 // Public types
@@ -65,6 +67,10 @@ type AnamClientType = any;
  * stream for real-time text updates, and pipes completed responses to the
  * Anam avatar's text-to-speech engine.
  *
+ * When the `book_appointment` tool completes with a booking URL, this hook
+ * captures it via the `tool_execution_end` event and exposes it as
+ * `bookingUrl` state for the UI overlay.
+ *
  * @returns Session state and control functions.
  */
 export function useAnamSession() {
@@ -75,6 +81,7 @@ export function useAnamSession() {
   const [error, setError] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [micLevel, setMicLevel] = useState(0);
+  const [bookingUrl, setBookingUrl] = useState<string | null>(null);
 
   // -- Refs ------------------------------------------------------------------
   const anamClientRef = useRef<AnamClientType>(null);
@@ -89,6 +96,17 @@ export function useAnamSession() {
 
   /** Monotonically increasing message ID counter. */
   const msgCounter = useRef(0);
+
+  // ---------------------------------------------------------------------------
+  // Booking URL controls
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Clear the booking URL, dismissing the overlay.
+   *
+   * Exposed to the UI so the dismiss button can hide the booking CTA.
+   */
+  const clearBookingUrl = useCallback(() => setBookingUrl(null), []);
 
   // ---------------------------------------------------------------------------
   // Helpers
@@ -259,6 +277,14 @@ export function useAnamSession() {
           }
         }
 
+        // Detect book_appointment tool completion and extract booking URL
+        if (event.type === 'tool_execution_end' && event.toolName === 'book_appointment' && !event.isError) {
+          const details = event.result?.details as BookAppointmentDetails | undefined;
+          if (details?.booking_url) {
+            setBookingUrl(details.booking_url);
+          }
+        }
+
         if (event.type === 'agent_end') {
           unsubscribe();
 
@@ -325,6 +351,7 @@ export function useAnamSession() {
       setMessages([]);
       setError(null);
       setIsMicMuted(false);
+      setBookingUrl(null);
       configRef.current = config;
 
       try {
@@ -529,6 +556,7 @@ export function useAnamSession() {
 
     setStatus('ended');
     setMicLevel(0);
+    setBookingUrl(null);
 
     // Fire session_end event with conversation transcript as fallback data
     fireEvent('session_end', { conversationHistory });
@@ -639,6 +667,8 @@ export function useAnamSession() {
     error,
     sessionId,
     micLevel,
+    bookingUrl,
+    clearBookingUrl,
     startSession,
     endSession,
     toggleMic,

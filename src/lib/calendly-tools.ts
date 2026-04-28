@@ -58,6 +58,17 @@ interface CalendlyErrorResponse {
 }
 
 // ---------------------------------------------------------------------------
+// Details types
+// ---------------------------------------------------------------------------
+
+/** Structured details returned by the book_appointment tool on success. */
+export interface BookAppointmentDetails {
+  booking_url: string | undefined;
+  invitee_name: string;
+  start_time: string;
+}
+
+// ---------------------------------------------------------------------------
 // Fallback URL
 // ---------------------------------------------------------------------------
 
@@ -207,6 +218,11 @@ export function createCheckAvailabilityTool(): AgentTool {
  * not support fully server-side booking, so the generated link allows the
  * prospect to complete the booking with one click.
  *
+ * The booking URL is returned exclusively via the `details.booking_url`
+ * field so the UI layer can surface it as a floating CTA overlay. The
+ * `content` text intentionally omits the raw URL to prevent the avatar
+ * from reading it aloud.
+ *
  * @returns A fully-typed {@link AgentTool} for booking appointments.
  *
  * @example
@@ -240,7 +256,7 @@ export function createBookAppointmentTool(): AgentTool {
     execute: async (
       _toolCallId: string,
       params: unknown,
-    ): Promise<AgentToolResult<{ confirmation_url?: string }>> => {
+    ): Promise<AgentToolResult<BookAppointmentDetails>> => {
       const { start_time, invitee_name, invitee_email } =
         params as BookAppointmentParams;
 
@@ -268,7 +284,11 @@ export function createBookAppointmentTool(): AgentTool {
                   `(Error: ${errorData.error})`,
               },
             ],
-            details: { confirmation_url: undefined },
+            details: {
+              booking_url: undefined,
+              invitee_name,
+              start_time,
+            },
           };
         }
 
@@ -280,12 +300,16 @@ export function createBookAppointmentTool(): AgentTool {
               type: 'text' as const,
               text:
                 `Booking link created successfully for ${invitee_name} (${invitee_email}). ` +
-                `The confirmation URL is: ${data.confirmation_url} . ` +
+                'The booking link is ready and will be displayed on screen for the prospect. ' +
                 'Let the prospect know they will receive a calendar invite shortly ' +
-                'and can use the confirmation link to finalize the booking details.',
+                'and can use the on-screen button to finalize the booking details.',
             },
           ],
-          details: { confirmation_url: data.confirmation_url },
+          details: {
+            booking_url: data.confirmation_url,
+            invitee_name,
+            start_time,
+          },
         };
       } catch (err) {
         return {
@@ -298,7 +322,11 @@ export function createBookAppointmentTool(): AgentTool {
                 `(Error: ${err instanceof Error ? err.message : 'Unknown error'})`,
             },
           ],
-          details: { confirmation_url: undefined },
+          details: {
+            booking_url: undefined,
+            invitee_name,
+            start_time,
+          },
         };
       }
     },

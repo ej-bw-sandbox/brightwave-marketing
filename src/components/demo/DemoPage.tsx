@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { getProspectContext } from '@/lib/demo-utils';
 import type { ProspectContext, DemoPersonaConfig } from '@/lib/demo-utils';
@@ -27,6 +27,8 @@ export default function DemoPage({ persona }: DemoPageProps) {
     error,
     sessionId,
     micLevel,
+    bookingUrl,
+    clearBookingUrl,
     startSession,
     endSession,
     toggleMic,
@@ -99,6 +101,8 @@ export default function DemoPage({ persona }: DemoPageProps) {
       onEndCall={handleEndCall}
       onReaction={handleReaction}
       calendarLink={persona.calendarLink}
+      bookingUrl={bookingUrl}
+      onClearBookingUrl={clearBookingUrl}
     />
   );
 }
