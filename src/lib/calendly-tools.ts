@@ -300,9 +300,10 @@ export function createBookAppointmentTool(): AgentTool {
               type: 'text' as const,
               text:
                 `Booking link created successfully for ${invitee_name} (${invitee_email}). ` +
-                'The booking link is ready and will be displayed on screen for the prospect. ' +
-                'Let the prospect know they will receive a calendar invite shortly ' +
-                'and can use the on-screen button to finalize the booking details.',
+                'The booking link is now displayed on screen as a button for the prospect. ' +
+                'Tell the prospect to click the Confirm Your Booking button on screen to lock in their time. ' +
+                'Do NOT say they will receive a calendar invite or that anything was sent to their email. ' +
+                'The booking is only confirmed once they click the on-screen button.',
             },
           ],
           details: {
