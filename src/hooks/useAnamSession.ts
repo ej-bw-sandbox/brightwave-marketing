@@ -1,10 +1,43 @@
 'use client';
 
+/**
+ * Custom hook managing the Anam.ai avatar session lifecycle.
+ *
+ * Refactored to use the Pi harness framework (`@mariozechner/pi-agent-core`)
+ * for all LLM interactions. The Pi {@link Agent} handles streaming, message
+ * state, and abort semantics while this hook manages:
+ *   - Anam SDK session lifecycle (connect, stream, disconnect)
+ *   - Microphone access and level monitoring
+ *   - Analytics event pipeline (`/api/demo/events`)
+ *   - UI state (messages, status, mute, reactions)
+ *
+ * Pipeline:
+ *   Client mic -> Anam built-in STT -> Pi Agent (via streamProxy) -> anamClient.talk()
+ *
+ * Communicates with:
+ *   POST /api/demo/session       - get Anam session token
+ *   POST /api/stream             - Pi streamProxy backend (LLM streaming)
+ *   POST /api/demo/events        - fire analytics events
+ *   GET  /api/demo/qualification - poll qualification result
+ */
+
 import { useEffect, useRef, useState, useCallback } from 'react';
 import type { ProspectContext, DemoPersonaConfig } from '@/lib/demo-utils';
+import {
+  createDemoAgent,
+  createFireEventTool,
+  getMessageText,
+} from '@/lib/demo-agent';
+import type { Agent, AgentEvent } from '@/lib/demo-agent';
 
+// ---------------------------------------------------------------------------
+// Public types
+// ---------------------------------------------------------------------------
+
+/** Possible states of the Anam session. */
 export type SessionStatus = 'idle' | 'connecting' | 'connected' | 'ended' | 'error';
 
+/** A single message displayed in the chat transcript UI. */
 export interface Message {
   id: string;
   role: 'user' | 'persona' | 'system';
@@ -12,6 +45,7 @@ export interface Message {
   timestamp: number;
 }
 
+/** Configuration passed to {@link startSession}. */
 export interface SessionStartConfig {
   prospect: ProspectContext;
   persona: DemoPersonaConfig;
@@ -20,19 +54,21 @@ export interface SessionStartConfig {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnamClientType = any;
 
+// ---------------------------------------------------------------------------
+// Hook
+// ---------------------------------------------------------------------------
+
 /**
- * Custom hook managing the Anam.ai avatar session lifecycle.
+ * React hook that orchestrates the Brightwave demo avatar session.
  *
- * Pipeline:
- *   Client mic -> Anam built-in STT -> LLM (server-side) -> anamClient.talk()
+ * It creates a Pi {@link Agent} on session start, subscribes to its event
+ * stream for real-time text updates, and pipes completed responses to the
+ * Anam avatar's text-to-speech engine.
  *
- * Communicates with:
- *   POST /api/demo/session  - get session token (Agent B)
- *   POST /api/demo/chat     - stream LLM responses (chat route)
- *   POST /api/demo/events   - fire analytics events (Agent C)
- *   GET  /api/demo/qualification - poll qualification result (Agent C)
+ * @returns Session state and control functions.
  */
 export function useAnamSession() {
+  // -- React state -----------------------------------------------------------
   const [status, setStatus] = useState<SessionStatus>('idle');
   const [messages, setMessages] = useState<Message[]>([]);
   const [isMicMuted, setIsMicMuted] = useState(false);
@@ -40,21 +76,41 @@ export function useAnamSession() {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [micLevel, setMicLevel] = useState(0);
 
+  // -- Refs ------------------------------------------------------------------
   const anamClientRef = useRef<AnamClientType>(null);
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const animationFrameRef = useRef<number | null>(null);
   const configRef = useRef<SessionStartConfig | null>(null);
   const isSpeakingRef = useRef(false);
-  const abortControllerRef = useRef<AbortController | null>(null);
-  const conversationRef = useRef<{ role: 'user' | 'assistant'; content: string }[]>([]);
 
+  /** Pi Agent instance -- created per-session. */
+  const agentRef = useRef<Agent | null>(null);
+
+  /** Monotonically increasing message ID counter. */
   const msgCounter = useRef(0);
-  function nextId() {
+
+  // ---------------------------------------------------------------------------
+  // Helpers
+  // ---------------------------------------------------------------------------
+
+  /** Generate a unique message ID for the transcript. */
+  function nextId(): string {
     msgCounter.current++;
     return `msg-${Date.now()}-${msgCounter.current}`;
   }
 
+  /**
+   * Append or update a message in the transcript.
+   *
+   * If a message with the given `id` already exists it is updated in place
+   * (used for streaming assistant responses). Otherwise a new entry is added.
+   *
+   * @param role    - Who authored the message.
+   * @param content - The message text.
+   * @param id      - Optional explicit ID; a new one is generated if omitted.
+   * @returns The message ID.
+   */
   const appendMessage = useCallback(
     (role: 'user' | 'persona' | 'system', content: string, id?: string): string => {
       const msgId = id || nextId();
@@ -72,7 +128,16 @@ export function useAnamSession() {
     [],
   );
 
-  // -- Fire analytics events to the events endpoint ----------------------
+  // ---------------------------------------------------------------------------
+  // Analytics events
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Fire an analytics event to the `/api/demo/events` endpoint.
+   *
+   * @param eventType - Event type identifier.
+   * @param payload   - Arbitrary payload data.
+   */
   const fireEvent = useCallback(
     async (eventType: string, payload: Record<string, unknown> = {}) => {
       if (!sessionId) return;
@@ -108,7 +173,18 @@ export function useAnamSession() {
     [sessionId],
   );
 
-  // -- Mic level monitoring for visual indicator -------------------------
+  // ---------------------------------------------------------------------------
+  // Mic level monitoring
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Start monitoring the microphone input level via Web Audio API.
+   *
+   * Updates the `micLevel` state (0..1) at animation-frame rate for the
+   * visual volume indicator in the UI.
+   *
+   * @param stream - The user's microphone MediaStream.
+   */
   const startMicMonitor = useCallback((stream: MediaStream) => {
     try {
       const audioCtx = new AudioContext();
@@ -131,12 +207,24 @@ export function useAnamSession() {
     }
   }, []);
 
-  // -- Chat: handle user speech, stream Claude response, avatar speaks ---
+  // ---------------------------------------------------------------------------
+  // LLM chat via Pi Agent
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Handle user speech: send the transcript to the Pi Agent, stream the
+   * response into the UI, and pipe the final text to the Anam avatar.
+   *
+   * Replaces the old manual `fetch` + SSE parsing with `agent.prompt()`.
+   *
+   * @param transcript - The user's spoken (or typed) text.
+   */
   const handleUserSpeech = useCallback(
     async (transcript: string) => {
       if (!transcript.trim()) return;
       const anamClient = anamClientRef.current;
-      if (!anamClient) return;
+      const agent = agentRef.current;
+      if (!anamClient || !agent) return;
 
       // Interrupt avatar if currently speaking
       if (isSpeakingRef.current) {
@@ -148,68 +236,38 @@ export function useAnamSession() {
         isSpeakingRef.current = false;
       }
 
-      // Cancel any in-flight chat request
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-      abortControllerRef.current = new AbortController();
+      // Abort any in-flight agent run
+      agent.abort();
 
-      // Add user message
+      // Add user message to the UI transcript
       appendMessage('user', transcript);
-      conversationRef.current.push({ role: 'user', content: transcript });
 
-      // Fire message event
+      // Fire user message analytics event
       fireEvent('message', { speaker: 'user', text: transcript });
 
-      try {
-        const chatRes = await fetch('/api/demo/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            sessionId,
-            messages: conversationRef.current,
-            prospect: configRef.current?.prospect,
-            persona: configRef.current?.persona,
-          }),
-          signal: abortControllerRef.current.signal,
-        });
+      // -- Set up event subscription for THIS prompt -----------------------
+      // We track the streaming response via a closure-scoped message ID.
+      const responseMsgId = nextId();
+      let fullResponse = '';
 
-        if (!chatRes.ok || !chatRes.body) throw new Error('Chat request failed');
-
-        const reader = chatRes.body.getReader();
-        const decoder = new TextDecoder();
-        let fullResponse = '';
-        const responseMsgId = nextId();
-
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-
-          const chunk = decoder.decode(value, { stream: true });
-          const lines = chunk.split('\n');
-
-          for (const line of lines) {
-            if (!line.startsWith('data: ')) continue;
-            const data = line.slice(6);
-            if (data === '[DONE]') break;
-            try {
-              const parsed = JSON.parse(data);
-              if (parsed.text) {
-                fullResponse += parsed.text;
-                appendMessage('persona', fullResponse, responseMsgId);
-              }
-            } catch {
-              // Partial JSON line -- ignore
-            }
+      const unsubscribe = agent.subscribe(async (event: AgentEvent) => {
+        if (event.type === 'message_update') {
+          // Accumulate text deltas for the streaming UI update
+          if (event.assistantMessageEvent.type === 'text_delta') {
+            fullResponse += event.assistantMessageEvent.delta;
+            appendMessage('persona', fullResponse, responseMsgId);
           }
         }
 
-        if (fullResponse) {
-          conversationRef.current.push({ role: 'assistant', content: fullResponse });
+        if (event.type === 'agent_end') {
+          unsubscribe();
 
-          // Fire agent message event
+          if (!fullResponse) return;
+
+          // Fire agent message analytics event
           fireEvent('message', { speaker: 'agent', text: fullResponse });
 
+          // Pipe the full response to the Anam avatar's TTS
           isSpeakingRef.current = true;
           try {
             await anamClient.talk(fullResponse);
@@ -217,16 +275,36 @@ export function useAnamSession() {
             isSpeakingRef.current = false;
           }
         }
+      });
+
+      // -- Send the prompt to the Pi Agent --------------------------------
+      try {
+        await agent.prompt(transcript);
       } catch (err) {
         if ((err as Error).name === 'AbortError') return;
-        console.error('[useAnamSession] Chat error:', err);
+        console.error('[useAnamSession] Agent prompt error:', err);
         isSpeakingRef.current = false;
+        unsubscribe();
       }
     },
-    [appendMessage, fireEvent, sessionId],
+    [appendMessage, fireEvent],
   );
 
-  // -- Main session lifecycle --------------------------------------------
+  // ---------------------------------------------------------------------------
+  // Session lifecycle
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Start a new demo session.
+   *
+   * 1. Requests an Anam session token from the backend.
+   * 2. Creates and configures the Pi Agent.
+   * 3. Initializes the Anam SDK and starts video/audio streaming.
+   * 4. Requests microphone access for level monitoring.
+   * 5. Sends the opening greeting to the avatar.
+   *
+   * @param config - Session configuration with prospect and persona data.
+   */
   const startSession = useCallback(
     async (config: SessionStartConfig) => {
       // Tear down previous session if any
@@ -237,6 +315,10 @@ export function useAnamSession() {
           /* ignore */
         }
         anamClientRef.current = null;
+      }
+      if (agentRef.current) {
+        agentRef.current.abort();
+        agentRef.current = null;
       }
 
       setStatus('connecting');
@@ -266,8 +348,9 @@ export function useAnamSession() {
           throw new Error('No session token returned from API');
         }
 
-        // Use returned sessionId, or generate a client-side one as fallback
-        const resolvedSessionId = sid || `demo-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+        // Use returned sessionId, or generate a client-side fallback
+        const resolvedSessionId =
+          sid || `demo-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
         setSessionId(resolvedSessionId);
 
         // Apply persona config overrides from the server
@@ -278,7 +361,27 @@ export function useAnamSession() {
           config.persona.calendarLink = personaConfig.calendarLink;
         }
 
-        // 2. Dynamic-import the Anam SDK (browser-only, avoid SSR)
+        // 2. Create the Pi Agent with demo configuration
+        const prospect = config.prospect;
+        const agent = createDemoAgent({
+          systemPrompt:
+            config.persona.knowledgeBase ||
+            (await import('@/lib/kb/brightwave')).buildDefaultSystemPrompt(prospect),
+          modelId: config.persona.llmModel,
+          sessionId: resolvedSessionId,
+          tools: [
+            createFireEventTool(resolvedSessionId, {
+              name: prospect.name || '',
+              email: prospect.email || '',
+              company: prospect.company || '',
+              role: prospect.role || '',
+              firmType: prospect.firmType || '',
+            }),
+          ],
+        });
+        agentRef.current = agent;
+
+        // 3. Dynamic-import the Anam SDK (browser-only, avoid SSR)
         const anamSdk = await import('@anam-ai/js-sdk');
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const mod = anamSdk as any;
@@ -291,11 +394,11 @@ export function useAnamSession() {
           );
         }
 
-        // Create client with session token
+        // Create Anam client with session token
         const anamClient = createAnamClient(sessionToken);
         anamClientRef.current = anamClient;
 
-        // Wire up connection events
+        // Wire up Anam connection events
         if (AnamEvent?.CONNECTION_ESTABLISHED) {
           anamClient.addListener(AnamEvent.CONNECTION_ESTABLISHED, () => {
             console.log('[Anam] Connection established');
@@ -323,10 +426,10 @@ export function useAnamSession() {
           );
         }
 
-        // 3. Start the Anam session -- stream video and audio
+        // 4. Start the Anam session -- stream video and audio
         await anamClient.streamToVideoElement('anam-avatar-video');
 
-        // 4. Get mic access for level monitoring
+        // 5. Get mic access for level monitoring
         try {
           const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
           mediaStreamRef.current = stream;
@@ -336,7 +439,7 @@ export function useAnamSession() {
           console.warn('[useAnamSession] Mic access denied');
         }
 
-        // 5. Send opening greeting
+        // 6. Send opening greeting
         const firstName = config.prospect.name
           ? config.prospect.name.split(' ')[0]
           : 'there';
@@ -344,7 +447,20 @@ export function useAnamSession() {
           config.persona.greeting ||
           `Hey ${firstName}! I'm your Brightwave guide. What kind of investment work does your team focus on?`;
 
-        conversationRef.current = [{ role: 'assistant', content: greeting }];
+        // Seed the Pi Agent's message history with the greeting
+        agent.state.messages = [
+          {
+            role: 'assistant' as const,
+            content: [{ type: 'text' as const, text: greeting }],
+            api: 'anthropic-messages',
+            provider: 'anthropic',
+            model: config.persona.llmModel || 'claude-sonnet-4-5-20250929',
+            usage: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, totalTokens: 0, cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0 } },
+            stopReason: 'stop' as const,
+            timestamp: Date.now(),
+          },
+        ];
+
         appendMessage('persona', greeting);
         isSpeakingRef.current = true;
         anamClient.talk(greeting).finally(() => {
@@ -365,6 +481,13 @@ export function useAnamSession() {
     [appendMessage, handleUserSpeech, startMicMonitor, fireEvent],
   );
 
+  /**
+   * End the current session.
+   *
+   * Tears down the microphone monitor, Anam client, and Pi Agent, then
+   * fires a `session_end` analytics event with the full conversation
+   * transcript as fallback data.
+   */
   const endSession = useCallback(() => {
     // Stop mic level monitoring
     if (animationFrameRef.current) {
@@ -386,17 +509,37 @@ export function useAnamSession() {
       anamClientRef.current = null;
     }
 
+    // Build conversation history from Pi Agent's message state
+    const agent = agentRef.current;
+    const conversationHistory: { role: string; content: string }[] = [];
+    if (agent) {
+      for (const msg of agent.state.messages) {
+        if ('role' in msg) {
+          if (msg.role === 'user' || msg.role === 'assistant') {
+            conversationHistory.push({
+              role: msg.role,
+              content: getMessageText(msg),
+            });
+          }
+        }
+      }
+      agent.abort();
+      agentRef.current = null;
+    }
+
     setStatus('ended');
     setMicLevel(0);
 
     // Fire session_end event with conversation transcript as fallback data
-    // so the server has the full conversation even if earlier message events
-    // were lost (e.g. due to validation failures or network issues).
-    fireEvent('session_end', {
-      conversationHistory: conversationRef.current,
-    });
+    fireEvent('session_end', { conversationHistory });
   }, [fireEvent]);
 
+  /**
+   * Toggle the microphone mute state.
+   *
+   * Mutes/unmutes both the Anam client's input audio and the local
+   * MediaStream tracks.
+   */
   const toggleMic = useCallback(() => {
     const anamClient = anamClientRef.current;
     if (!anamClient) return;
@@ -428,6 +571,11 @@ export function useAnamSession() {
     }
   }, [isMicMuted]);
 
+  /**
+   * Send a text message (fallback for text-based input when mic is unavailable).
+   *
+   * @param text - The text to send to the agent.
+   */
   const sendText = useCallback(
     (text: string) => {
       if (!text.trim()) return;
@@ -436,10 +584,18 @@ export function useAnamSession() {
     [handleUserSpeech],
   );
 
+  /**
+   * Fire a "raise hand" analytics event.
+   */
   const raiseHand = useCallback(() => {
     fireEvent('raise_hand');
   }, [fireEvent]);
 
+  /**
+   * Fire a reaction analytics event.
+   *
+   * @param emoji - The emoji string for the reaction.
+   */
   const sendReaction = useCallback(
     (emoji: string) => {
       fireEvent('reaction', { emoji });
@@ -447,7 +603,10 @@ export function useAnamSession() {
     [fireEvent],
   );
 
+  // ---------------------------------------------------------------------------
   // Cleanup on unmount
+  // ---------------------------------------------------------------------------
+
   useEffect(() => {
     return () => {
       if (animationFrameRef.current) {
@@ -463,8 +622,15 @@ export function useAnamSession() {
           /* ignore */
         }
       }
+      if (agentRef.current) {
+        agentRef.current.abort();
+      }
     };
   }, []);
+
+  // ---------------------------------------------------------------------------
+  // Public API
+  // ---------------------------------------------------------------------------
 
   return {
     status,
