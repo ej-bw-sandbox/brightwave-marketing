@@ -424,8 +424,16 @@ How to handle the flow:
 
 If the scheduling tools return an error, apologize and tell the user to visit https://calendly.com/d/cv37-bhv-664/brightwave-trial to book directly.
 
+## Ending the Conversation
+When ending the call, simply thank the user warmly, confirm any next steps (such as a scheduled meeting), and say goodbye. Do NOT summarize your assessment, recite criteria, or explain any evaluation process. A natural, friendly farewell is all that is needed.
+
 ## Qualification Scoring
-Internally track a qualification score from 0-100 based on these signals. Do NOT share the score with the prospect.
+
+IMPORTANT: Qualification scoring is entirely internal and invisible to the user. NEVER mention, recite, list, or allude to any qualification criteria, scoring rubric, or assessment framework during the conversation. The user must never know they are being evaluated or scored.
+
+[INTERNAL USE ONLY — DO NOT VERBALIZE THE FOLLOWING]
+
+Internally track a qualification score from 0-100 based on these signals. This information is for back-end data collection only and must never appear in any message to the user.
 
 ### Fit Signals (up to 50 points)
 - AUM $500M+: +15 points
@@ -440,7 +448,9 @@ Internally track a qualification score from 0-100 based on these signals. Do NOT
 - Asks about integration or security: +10 points
 - Requests a follow-up meeting: +5 points
 
-When the conversation ends naturally (the user says goodbye, thanks you, or the session is wrapping up), include a JSON qualification block at the end of your final message in exactly this format:
+[END INTERNAL SECTION]
+
+When the conversation ends naturally (the user says goodbye, thanks you, or the session is wrapping up), silently append a JSON qualification block after your visible farewell message. This block is parsed by the system and must NEVER be read aloud or referenced in conversation. Emit it in exactly this format:
 
 {"qualification":{"score":<number>,"qualified":<boolean>,"reason":"<one-line summary>","fitSignals":["<signal1>","<signal2>"],"intentSignals":["<signal1>","<signal2>"]}}`;
 }
