@@ -39,7 +39,6 @@ export default async function VsDetailPage({ params }: Props) {
   if (!doc) notFound()
 
   const contentBlocks = doc.contentBlocks ?? []
-  const featureHighlights = doc.featureHighlights ?? []
   const useCaseFitItems = doc.useCaseFitItems ?? []
   const tableRows = doc.comparisonTable ?? []
   const faqs = doc.faqs ?? []
@@ -200,8 +199,12 @@ export default async function VsDetailPage({ params }: Props) {
                     </div>
                     <div className="c-comparison-template_desc-wrapper">
                       <div className="c-comparison-template_rich-list w-richtext">
-                        {doc.heroDescriptionList && Array.isArray(doc.heroDescriptionList) && doc.heroDescriptionList.length > 0 ? (
-                          <PortableText value={doc.heroDescriptionList} components={ptComponents} />
+                        {Array.isArray(doc.heroDescriptionList) && doc.heroDescriptionList.length > 0 ? (
+                          <ul>
+                            {doc.heroDescriptionList.map((item: string, idx: number) => (
+                              <li key={idx}>{item}</li>
+                            ))}
+                          </ul>
                         ) : null}
                       </div>
                     </div>
@@ -332,109 +335,6 @@ export default async function VsDetailPage({ params }: Props) {
           </div>
         </section>
       </div>
-
-      {/* ===== FEATURE HIGHLIGHTS (side-by-side illustrations) ===== */}
-      {featureHighlights.length > 0 && (
-        <section className="c-section cc-comparison-feature-highlights">
-          <div className="c-container">
-            <div className="c-comparison-feature-highlights_main-wrapper">
-              {featureHighlights.map((highlight: any, idx: number) => (
-                <div key={highlight._key || idx} className="c-comparison-feature-highlight_item">
-                  <div className="c-comparison-feature-highlight_header">
-                    <div className="c-comaprison-stat-box_tag-wrapper">
-                      <div className="c-comparison-tag_box"></div>
-                      <div className="c-title-5 cc-weight-500">{highlight.title}</div>
-                    </div>
-                    {highlight.description && (
-                      <p className="c-text-4" style={{ marginTop: '0.75rem' }}>{highlight.description}</p>
-                    )}
-                    {!highlight.description && highlight.body && Array.isArray(highlight.body) && (
-                      <div className="c-text-4" style={{ marginTop: '0.75rem' }}>
-                        <PortableText value={highlight.body} components={ptComponents} />
-                      </div>
-                    )}
-                  </div>
-                  <div className="c-comparison-feature-highlight_images">
-                    <div className="c-comparison-feature-highlight_image-col">
-                      {highlight.competitorImage?.asset ? (
-                        <div className="c-comparison-feature-highlight_image-wrapper">
-                          <Image
-                            src={urlFor(highlight.competitorImage).width(600).url()}
-                            alt={highlight.competitorCaption || doc.competitorName || ''}
-                            width={600}
-                            height={400}
-                            loading="lazy"
-                            className="c-comparison-feature-highlight_image"
-                          />
-                          <div className="c-box-hero_top-left"></div>
-                          <div className="c-box-hero_top-right"></div>
-                          <div className="c-box-hero_bottom-left"></div>
-                          <div className="c-box-hero_bottom-right"></div>
-                        </div>
-                      ) : (
-                        <div className="c-comparison-feature-highlight_image-wrapper cc-placeholder">
-                          <div className="c-comparison-feature-highlight_placeholder">
-                            {doc.competitorIcon?.asset ? (
-                              <Image
-                                src={urlFor(doc.competitorIcon).width(80).url()}
-                                alt={doc.competitorName || ''}
-                                width={80}
-                                height={80}
-                                loading="lazy"
-                                className="c-comparison-feature-highlight_placeholder-icon"
-                              />
-                            ) : null}
-                          </div>
-                        </div>
-                      )}
-                      {highlight.competitorCaption && (
-                        <div className="c-text-6" style={{ marginTop: '0.5rem', opacity: 0.6 }}>{highlight.competitorCaption}</div>
-                      )}
-                    </div>
-                    <div className="c-comparison-feature-highlight_image-col">
-                      {highlight.brightwaveImage?.asset ? (
-                        <div className="c-comparison-feature-highlight_image-wrapper">
-                          <Image
-                            src={urlFor(highlight.brightwaveImage).width(600).url()}
-                            alt={highlight.brightwaveCaption || 'Brightwave'}
-                            width={600}
-                            height={400}
-                            loading="lazy"
-                            className="c-comparison-feature-highlight_image"
-                          />
-                          <div className="c-box-hero_top-left"></div>
-                          <div className="c-box-hero_top-right"></div>
-                          <div className="c-box-hero_bottom-left"></div>
-                          <div className="c-box-hero_bottom-right"></div>
-                        </div>
-                      ) : (
-                        <div className="c-comparison-feature-highlight_image-wrapper cc-placeholder">
-                          <div className="c-comparison-feature-highlight_placeholder">
-                            <img
-                              src="/webflow-images/brightwave_tile.png"
-                              alt="Brightwave"
-                              width={80}
-                              height={80}
-                              loading="lazy"
-                              className="c-comparison-feature-highlight_placeholder-icon"
-                            />
-                          </div>
-                        </div>
-                      )}
-                      {highlight.brightwaveCaption && (
-                        <div className="c-text-6" style={{ marginTop: '0.5rem', opacity: 0.6 }}>{highlight.brightwaveCaption}</div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-              <div className="c-comparison-feature-highlight_cta-wrapper">
-                <CtaButton label="Make the Switch" href="https://app.brightwave.io/register" variant="primary" />
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* ===== USE CASE FIT ===== */}
       <section className="c-section cc-usecase-fit">
