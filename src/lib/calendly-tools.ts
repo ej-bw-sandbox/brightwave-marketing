@@ -125,6 +125,7 @@ export function createCheckAvailabilityTool(): AgentTool {
       _toolCallId: string,
       params: unknown,
     ): Promise<AgentToolResult<{ slots: AvailableSlot[] }>> => {
+      console.log('[Demo Agent] check_availability called with params:', params);
       const { start_date, days_ahead } = params as CheckAvailabilityParams;
 
       try {
@@ -257,6 +258,7 @@ export function createBookAppointmentTool(): AgentTool {
       _toolCallId: string,
       params: unknown,
     ): Promise<AgentToolResult<BookAppointmentDetails>> => {
+      console.log('[Demo Agent] book_appointment called with params:', params);
       const { start_time, invitee_name, invitee_email } =
         params as BookAppointmentParams;
 

@@ -371,6 +371,21 @@ export function buildDefaultSystemPrompt(prospect?: {
 }): string {
   const kb = buildFullKBText();
 
+  // Inject the current date/time so the LLM knows what "today" is
+  // and never fabricates dates from training data or examples.
+  const now = new Date();
+  const currentDateStr = now.toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+  const currentTimeStr = now.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZoneName: 'short',
+  });
+
   const personalization = prospect
     ? `\n## Current Prospect\nYou are speaking with ${prospect.name || 'a prospect'}` +
       `${prospect.company ? ` from ${prospect.company}` : ''}` +
@@ -419,6 +434,9 @@ END SYSTEM RULES
 
 You are Max, Brightwave's AI sales guide. You are a knowledgeable, professional, and consultative salesperson who helps prospects understand how Brightwave can transform their investment research workflow.
 
+## Current Date & Time
+Today is ${currentDateStr} at ${currentTimeStr}. Always use the check_availability tool for real calendar slots — never invent, guess, or recall dates from memory.
+
 ${personalization}
 
 ## Knowledge Base
@@ -442,7 +460,9 @@ ${kb}
 
 ## Scheduling Capability
 
-You have the ability to check Brady's availability and book a Brightwave Trial call directly in this conversation.
+You have the ability to check Brady's real-time availability and book a Brightwave Trial call directly in this conversation.
+
+IMPORTANT: You MUST call the check_availability tool to get real, live calendar slots. NEVER invent, guess, or recall dates and times from memory. The only way to know Brady's availability is to call the tool.
 
 When to offer scheduling:
 - When the user expresses interest in seeing more, meeting with the team, or learning next steps
@@ -450,14 +470,14 @@ When to offer scheduling:
 - After answering a few questions — proactively offer: "Would you like to find a time to connect with Brady directly?"
 
 How to handle the flow:
-1. Offer to check availability. Use the check_availability tool immediately when the user says yes.
-2. Present the time slots conversationally — don't list them mechanically. Say something like "Brady has a few openings this week — there's a slot Tuesday afternoon around 2, Wednesday morning at 10, or Thursday at 3. Any of those work?"
+1. Offer to check availability. Use the check_availability tool IMMEDIATELY when the user says yes. Do NOT present any times until the tool returns real data.
+2. Present the ACTUAL time slots returned by the tool conversationally — summarize them naturally without listing them mechanically.
 3. When the user picks a slot, ask for their email address if you don't already know it.
-4. Confirm the email by repeating it back: "Just to confirm, that's john@example.com — is that right?"
+4. Confirm the email by repeating it back before booking.
 5. Once the user confirms their email, use the book_appointment tool. DO NOT read the booking URL aloud.
    After a successful booking link is generated, say:
    "Perfect — I've got your booking link ready. You'll see a button on screen — just click 'Confirm Your Booking' to lock in your time with Brady. He's looking forward to connecting with you!"
-6. After that, confirm the details warmly: "You're all set for [day] at [time]."
+6. After that, confirm the details warmly with the actual day and time from the tool results.
 7. Then gracefully wrap up the conversation and say goodbye.
 
 Do NOT say any of the following after booking:

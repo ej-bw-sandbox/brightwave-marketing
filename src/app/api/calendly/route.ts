@@ -168,7 +168,8 @@ async function handleCheckAvailability(
   startDate?: string,
   daysAhead?: number,
 ): Promise<{ slots: AvailableSlot[] } | { error: string }> {
-  const days = daysAhead ?? 5;
+  // Default to 7 days ahead for a wider availability window
+  const days = daysAhead ?? 7;
   const start = startDate ? new Date(startDate) : new Date();
   // Ensure start is not in the past
   if (start.getTime() < Date.now()) {
@@ -181,10 +182,15 @@ async function handleCheckAvailability(
   const end = new Date(start);
   end.setDate(end.getDate() + days);
 
+  const startTime = start.toISOString();
+  const endTime = end.toISOString();
+
+  console.log('[Calendly API] check_availability called, start_time:', startTime, 'end_time:', endTime);
+
   const params = new URLSearchParams({
     event_type: EVENT_TYPE_URI,
-    start_time: start.toISOString(),
-    end_time: end.toISOString(),
+    start_time: startTime,
+    end_time: endTime,
   });
 
   const res = await calendlyFetch(
@@ -194,11 +200,12 @@ async function handleCheckAvailability(
 
   if (!res.ok) {
     const body = await res.text();
-    console.error('[calendly] check_availability failed:', res.status, body);
+    console.error('[Calendly API] check_availability failed:', res.status, body);
     return { error: `Calendly API returned ${res.status}: ${body}` };
   }
 
   const data = (await res.json()) as { collection: CalendlyAvailableTime[] };
+  console.log('[Calendly API] raw Calendly response:', JSON.stringify(data).slice(0, 500));
   const availableSlots = data.collection.filter((s) => s.status === 'available');
 
   // Pick up to 3 slots spread across different days for variety
@@ -257,6 +264,8 @@ async function handleBookAppointment(
   | { success: boolean; confirmation_url: string; message: string }
   | { error: string }
 > {
+  console.log('[Calendly API] book_appointment called for:', inviteeName, inviteeEmail, 'at', _startTime);
+
   // Create a single-use scheduling link for this event type
   const res = await calendlyFetch('/scheduling_links', apiKey, {
     method: 'POST',

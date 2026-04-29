@@ -111,6 +111,13 @@ export function useAnamSession() {
   const configRef = useRef<SessionStartConfig | null>(null);
   const isSpeakingRef = useRef(false);
 
+  /**
+   * Tracks whether the session is still active.
+   * Set to `false` during teardown to prevent `anamClient.talk()` calls
+   * after the WebRTC peer connection has been closed.
+   */
+  const isSessionActiveRef = useRef(false);
+
   /** Pi Agent instance -- created per-session. */
   const agentRef = useRef<Agent | null>(null);
 
@@ -260,6 +267,7 @@ export function useAnamSession() {
   const handleUserSpeech = useCallback(
     async (transcript: string) => {
       if (!transcript.trim()) return;
+      if (!isSessionActiveRef.current) return;
       const anamClient = anamClientRef.current;
       const agent = agentRef.current;
       if (!anamClient || !agent) return;
@@ -334,10 +342,17 @@ export function useAnamSession() {
           // Fire agent message analytics event (use stripped text)
           fireEvent('message', { speaker: 'agent', text: spokenText });
 
-          // Pipe the stripped response to the Anam avatar's TTS
+          // Pipe the stripped response to the Anam avatar's TTS.
+          // Guard: skip if session was torn down while the agent was streaming.
+          if (!isSessionActiveRef.current) return;
           isSpeakingRef.current = true;
           try {
             await anamClient.talk(spokenText);
+          } catch (talkErr) {
+            console.warn(
+              '[Demo Agent] anamClient.talk() failed — peer connection may be closed:',
+              talkErr,
+            );
           } finally {
             isSpeakingRef.current = false;
           }
@@ -393,6 +408,7 @@ export function useAnamSession() {
       setError(null);
       setIsMicMuted(false);
       setBookingUrl(null);
+      isSessionActiveRef.current = true;
       configRef.current = config;
 
       try {
@@ -531,15 +547,25 @@ export function useAnamSession() {
 
         appendMessage('persona', greeting);
         isSpeakingRef.current = true;
-        anamClient.talk(greeting).finally(() => {
+        // Wrap greeting TTS in try/catch — the peer connection may not be
+        // fully established yet if the SDK races the connection handshake.
+        try {
+          await anamClient.talk(greeting);
+        } catch (talkErr) {
+          console.warn(
+            '[Demo Agent] anamClient.talk() failed during greeting — peer connection may be closed:',
+            talkErr,
+          );
+        } finally {
           isSpeakingRef.current = false;
-        });
+        }
 
         setStatus('connected');
 
         // Fire session_start event
         fireEvent('session_start');
       } catch (err) {
+        isSessionActiveRef.current = false;
         const message = err instanceof Error ? err.message : 'Failed to start session';
         console.error('[useAnamSession] Error:', message, err);
         setError(message);
@@ -557,6 +583,10 @@ export function useAnamSession() {
    * transcript as fallback data.
    */
   const endSession = useCallback(() => {
+    // Mark session as inactive to prevent any in-flight anamClient.talk() calls
+    // from racing the teardown and hitting a null peer connection.
+    isSessionActiveRef.current = false;
+
     // Stop mic level monitoring
     if (animationFrameRef.current) {
       cancelAnimationFrame(animationFrameRef.current);
@@ -678,6 +708,9 @@ export function useAnamSession() {
 
   useEffect(() => {
     return () => {
+      // Mark inactive so any in-flight talk() calls bail out safely
+      isSessionActiveRef.current = false;
+
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }
