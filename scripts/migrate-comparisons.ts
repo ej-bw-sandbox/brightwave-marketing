@@ -103,15 +103,15 @@ const competitorAssets: Record<string, { logoUrl?: string; iconUrl?: string }> =
 }
 
 /** Strip Adobe Illustrator junk that breaks Sanity's SVG processor. */
-function sanitizeSvg(buffer: Buffer): Buffer {
-  let svg = buffer.toString('utf8')
+function sanitizeSvg(svgInput: string): string {
+  let svg = svgInput
   // Remove xmlns(:prefix)? = "ns_xxx;" namespace declarations (illegal URI form, Adobe AI export).
   svg = svg.replace(/\s+xmlns(:[a-zA-Z0-9_-]+)?\s*=\s*"ns_[^"]*"/g, '')
   // Remove Adobe metadata blocks (<metadata>...</metadata>) that contain other ns_sfw refs.
   svg = svg.replace(/<metadata\b[\s\S]*?<\/metadata>/gi, '')
   // Remove DOCTYPE that occasionally trips parsers.
   svg = svg.replace(/<!DOCTYPE[\s\S]*?>/g, '')
-  return Buffer.from(svg, 'utf8')
+  return svg
 }
 
 /** Download a Webflow CDN asset and upload it as a Sanity image asset. Returns the asset _id. */
@@ -119,8 +119,10 @@ async function uploadFromUrl(url: string): Promise<string> {
   const filename = decodeURIComponent(url.split('/').pop() || 'image').replace(/^[a-f0-9]+_/, '')
   const res = await fetch(url)
   if (!res.ok) throw new Error(`Fetch failed (${res.status}) for ${url}`)
-  let buffer = Buffer.from(await res.arrayBuffer())
-  if (filename.toLowerCase().endsWith('.svg')) buffer = sanitizeSvg(buffer)
+  const isSvg = filename.toLowerCase().endsWith('.svg')
+  const buffer = isSvg
+    ? Buffer.from(sanitizeSvg(await res.text()), 'utf8')
+    : Buffer.from(await res.arrayBuffer())
   const asset = await client.assets.upload('image', buffer, { filename })
   return asset._id
 }
