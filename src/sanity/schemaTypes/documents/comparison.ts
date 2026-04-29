@@ -48,14 +48,18 @@ export const comparison = defineType({
       type: 'array',
       of: [{
         type: 'object',
+        name: 'comparisonContentBlock',
         fields: [
-          { name: 'headline', title: 'Headline', type: 'string' },
-          { name: 'body', title: 'Body', type: 'blockContent' },
-          { name: 'text', title: 'Plain Text Body', type: 'text', rows: 4, description: 'Alternative plain text body' },
+          { name: 'title', title: 'Title', type: 'string', validation: (r) => r.required() },
+          { name: 'text', title: 'Body (plain text)', type: 'text', rows: 4 },
+          { name: 'body', title: 'Body (rich text)', type: 'blockContent', description: 'Use this OR plain text body — rich text takes priority if both are set' },
           { name: 'image', title: 'Image', type: 'image', options: { hotspot: true } },
           { name: 'icon', title: 'Icon', type: 'image', description: 'Small icon overlaid on the image' },
           { name: 'iconLabel', title: 'Icon Label', type: 'string', description: 'Short label displayed near icon overlay' },
         ],
+        preview: {
+          select: { title: 'title' },
+        },
       }],
     }),
     defineField({

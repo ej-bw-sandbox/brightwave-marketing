@@ -69,6 +69,60 @@ interface ComparisonData {
     competitorText?: string
     note?: string
   }[]
+  /** Webflow CDN URL of the large logo (hero dual-icon block). */
+  logoUrl?: string
+  /** Webflow CDN URL of the small icon (comparison table brand header). */
+  iconUrl?: string
+}
+
+/* ── Webflow CDN URLs for competitor logos (sourced from brightwave.webflow.io) ── */
+/* Only competitors with non-null entries here had logos in Webflow CMS. */
+const competitorAssets: Record<string, { logoUrl?: string; iconUrl?: string }> = {
+  'comparison-brightwave-vs-alphasense': {
+    logoUrl: 'https://cdn.prod.website-files.com/6703d388a4ee8baaaceb02e1/690e4c906350b7d27116f3e3_alphasense.png',
+    iconUrl: 'https://cdn.prod.website-files.com/6703d388a4ee8baaaceb02e1/690e4c984394690d06ac5894_AlphaSense%20Logo.svg',
+  },
+  'comparison-brightwave-vs-blueflame-ai': {
+    logoUrl: 'https://cdn.prod.website-files.com/6703d388a4ee8baaaceb02e1/69176ebb0fe61b4f49689a6a_bluefflame.svg',
+    iconUrl: 'https://cdn.prod.website-files.com/6703d388a4ee8baaaceb02e1/6917710c92c293b1d7e7f412_bluefflame-icon.svg',
+  },
+  'comparison-brightwave-vs-hebbia': {
+    logoUrl: 'https://cdn.prod.website-files.com/6703d388a4ee8baaaceb02e1/69121a9951a71e91118b5ba1_hebbia.png',
+    iconUrl: 'https://cdn.prod.website-files.com/6703d388a4ee8baaaceb02e1/69121a9fff104fa0f96d13a0_Hebbia_Symbol_7.png',
+  },
+  'comparison-brightwave-vs-rogo-ai': {
+    logoUrl: 'https://cdn.prod.website-files.com/6703d388a4ee8baaaceb02e1/691765ec636421ef8188bdb0_rogo.svg',
+    iconUrl: 'https://cdn.prod.website-files.com/6703d388a4ee8baaaceb02e1/691764583f448976b935f178_Rogo%20Logo%20Assets.jpeg',
+  },
+  // Webflow CMS has no logo for these competitors; nothing to import.
+  'comparison-brightwave-vs-claude': {},
+  'comparison-brightwave-vs-perplexity': {},
+  'comparison-brightwave-vs-chatgpt': {},
+  'comparison-brightwave-vs-boosted-ai': {},
+  'comparison-brightwave-vs-daloopa-ai': {},
+}
+
+/** Strip Adobe Illustrator junk that breaks Sanity's SVG processor. */
+function sanitizeSvg(buffer: Buffer): Buffer {
+  let svg = buffer.toString('utf8')
+  // Remove xmlns(:prefix)? = "ns_xxx;" namespace declarations (illegal URI form, Adobe AI export).
+  svg = svg.replace(/\s+xmlns(:[a-zA-Z0-9_-]+)?\s*=\s*"ns_[^"]*"/g, '')
+  // Remove Adobe metadata blocks (<metadata>...</metadata>) that contain other ns_sfw refs.
+  svg = svg.replace(/<metadata\b[\s\S]*?<\/metadata>/gi, '')
+  // Remove DOCTYPE that occasionally trips parsers.
+  svg = svg.replace(/<!DOCTYPE[\s\S]*?>/g, '')
+  return Buffer.from(svg, 'utf8')
+}
+
+/** Download a Webflow CDN asset and upload it as a Sanity image asset. Returns the asset _id. */
+async function uploadFromUrl(url: string): Promise<string> {
+  const filename = decodeURIComponent(url.split('/').pop() || 'image').replace(/^[a-f0-9]+_/, '')
+  const res = await fetch(url)
+  if (!res.ok) throw new Error(`Fetch failed (${res.status}) for ${url}`)
+  let buffer = Buffer.from(await res.arrayBuffer())
+  if (filename.toLowerCase().endsWith('.svg')) buffer = sanitizeSvg(buffer)
+  const asset = await client.assets.upload('image', buffer, { filename })
+  return asset._id
 }
 
 const comparisons: Record<string, ComparisonData> = {
@@ -265,31 +319,93 @@ const comparisons: Record<string, ComparisonData> = {
 /* ── Run migration ── */
 
 async function migrate() {
-  const existingTestimonialId = '670a2b9c-a5a8-4d4d-937e-d7df4556e354' // shared testimonial already in Sanity
+  // Upload competitor logos from Webflow CDN first; build asset-id map keyed by docId.
+  const logoAssets: Record<string, { logoAssetId?: string; iconAssetId?: string }> = {}
+  for (const [docId, urls] of Object.entries(competitorAssets)) {
+    logoAssets[docId] = {}
+    if (urls.logoUrl) {
+      console.log(`Uploading logo for ${docId}...`)
+      logoAssets[docId].logoAssetId = await uploadFromUrl(urls.logoUrl)
+    }
+    if (urls.iconUrl) {
+      console.log(`Uploading icon for ${docId}...`)
+      logoAssets[docId].iconAssetId = await uploadFromUrl(urls.iconUrl)
+    }
+  }
+
+  // Resolve real document IDs (some docs only exist as drafts: drafts.<id>).
+  // Patch the version that actually exists so we don't trigger create-permission errors.
+  const docIdMap: Record<string, string | null> = {}
+  for (const docId of Object.keys(comparisons)) {
+    const exists = await client.fetch<{ _id: string } | null>(
+      `*[_id == $pub || _id == $draft][0]{ _id }`,
+      { pub: docId, draft: `drafts.${docId}` }
+    )
+    docIdMap[docId] = exists?._id ?? null
+    if (!exists) console.warn(`  skipping ${docId} — neither published nor draft exists`)
+  }
+
+  // Resolve doc ids for assets-only entries (e.g. AlphaSense isn't in the text map but has logos to link).
+  for (const docId of Object.keys(competitorAssets)) {
+    if (docId in docIdMap) continue
+    const exists = await client.fetch<{ _id: string } | null>(
+      `*[_id == $pub || _id == $draft][0]{ _id }`,
+      { pub: docId, draft: `drafts.${docId}` }
+    )
+    docIdMap[docId] = exists?._id ?? null
+  }
 
   let tx = client.transaction()
+  let patchCount = 0
 
   for (const [docId, data] of Object.entries(comparisons)) {
-    console.log(`Patching ${docId} (${data.competitorName})...`)
+    const targetId = docIdMap[docId]
+    if (!targetId) continue
 
-    tx = tx.patch(docId, (p) =>
-      p.set({
-        competitorName: data.competitorName,
-        heroDescription: data.heroDescription,
-        contentBlocks: data.contentBlocks,
-        comparisonTable: data.comparisonTable,
-        useCaseFitItems: sharedUseCaseFitItems,
-        faqs: sharedFaqs,
-        stats: sharedStats,
-        publishedAt: new Date().toISOString(),
-      })
-    )
+    console.log(`Patching ${targetId} (${data.competitorName})...`)
+
+    const fields: Record<string, unknown> = {
+      competitorName: data.competitorName,
+      heroDescription: data.heroDescription,
+      contentBlocks: data.contentBlocks,
+      comparisonTable: data.comparisonTable,
+      useCaseFitItems: sharedUseCaseFitItems,
+      faqs: sharedFaqs,
+      stats: sharedStats,
+      publishedAt: new Date().toISOString(),
+    }
+
+    const { logoAssetId, iconAssetId } = logoAssets[docId] ?? {}
+    if (logoAssetId) {
+      fields.competitorLogo = { _type: 'image', asset: { _type: 'reference', _ref: logoAssetId } }
+    }
+    if (iconAssetId) {
+      fields.competitorIcon = { _type: 'image', asset: { _type: 'reference', _ref: iconAssetId } }
+    }
+
+    tx = tx.patch(targetId, (p) => p.set(fields))
+    patchCount++
+  }
+
+  // Logo-only patches for competitors that have asset URLs but no entry in `comparisons` text data.
+  for (const docId of Object.keys(competitorAssets)) {
+    if (docId in comparisons) continue
+    const targetId = docIdMap[docId]
+    if (!targetId) continue
+    const { logoAssetId, iconAssetId } = logoAssets[docId] ?? {}
+    if (!logoAssetId && !iconAssetId) continue
+    const fields: Record<string, unknown> = {}
+    if (logoAssetId) fields.competitorLogo = { _type: 'image', asset: { _type: 'reference', _ref: logoAssetId } }
+    if (iconAssetId) fields.competitorIcon = { _type: 'image', asset: { _type: 'reference', _ref: iconAssetId } }
+    console.log(`Patching ${targetId} (logos only)...`)
+    tx = tx.patch(targetId, (p) => p.set(fields))
+    patchCount++
   }
 
   console.log('\nCommitting transaction...')
   const result = await tx.commit()
   console.log(`Done! Transaction ID: ${result.transactionId}`)
-  console.log(`Updated ${Object.keys(comparisons).length} comparison documents.`)
+  console.log(`Patched ${patchCount} comparison documents.`)
 }
 
 migrate().catch((err) => {
