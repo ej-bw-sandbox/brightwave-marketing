@@ -57,6 +57,26 @@ export interface SessionStartConfig {
 type AnamClientType = any;
 
 // ---------------------------------------------------------------------------
+// Utility: strip qualification JSON from LLM responses
+// ---------------------------------------------------------------------------
+
+/**
+ * Strips any qualification JSON block appended by the LLM
+ * before passing the response to the Anam avatar for TTS.
+ *
+ * The LLM is instructed to emit a trailing JSON object containing
+ * qualification scores at the end of its final response. Despite prompt
+ * instructions to keep it silent, the block occasionally leaks into the
+ * response text. This regex removes it defensively so it is never spoken
+ * aloud or displayed in the chat transcript.
+ *
+ * Pattern: optional whitespace + { ... } at end of string (greedy, dotAll).
+ */
+function stripQualificationBlock(text: string): string {
+  return text.replace(/\s*\{[\s\S]*\}\s*$/, '').trim();
+}
+
+// ---------------------------------------------------------------------------
 // Hook
 // ---------------------------------------------------------------------------
 
@@ -276,24 +296,28 @@ export function useAnamSession() {
           // Accumulate text deltas for the streaming UI update
           if (event.assistantMessageEvent.type === 'text_delta') {
             fullResponse += event.assistantMessageEvent.delta;
-            appendMessage('persona', fullResponse, responseMsgId);
+            appendMessage('persona', stripQualificationBlock(fullResponse), responseMsgId);
           }
         }
 
         // Track tool names from tool_execution_start so we can look them up
         // on tool_execution_end even if toolName is absent at runtime.
         if (event.type === 'tool_execution_start') {
+          console.log('[Demo Agent] tool_execution_start:', event.toolName, event.toolCallId);
           toolCallNames.set(event.toolCallId, event.toolName);
         }
 
         // Detect book_appointment tool completion and extract booking URL.
         // Use the toolCallId map as a fallback in case toolName is not
         // present on the tool_execution_end event at runtime.
-        if (event.type === 'tool_execution_end' && !event.isError) {
+        if (event.type === 'tool_execution_end') {
           const resolvedName = event.toolName || toolCallNames.get(event.toolCallId);
-          if (resolvedName === 'book_appointment') {
+          console.log('[Demo Agent] tool_execution_end:', event.toolCallId, 'tool:', resolvedName, 'isError:', event.isError, 'result:', event.result);
+          if (!event.isError && resolvedName === 'book_appointment') {
             const details = (event.result as Record<string, unknown>)?.details as BookAppointmentDetails | undefined;
+            console.log('[Demo Agent] book_appointment details:', details);
             if (details?.booking_url) {
+              console.log('[Demo Agent] Setting bookingUrl:', details.booking_url);
               setBookingUrl(details.booking_url);
             }
           }
@@ -304,13 +328,16 @@ export function useAnamSession() {
 
           if (!fullResponse) return;
 
-          // Fire agent message analytics event
-          fireEvent('message', { speaker: 'agent', text: fullResponse });
+          // Strip qualification JSON before speaking or logging
+          const spokenText = stripQualificationBlock(fullResponse);
 
-          // Pipe the full response to the Anam avatar's TTS
+          // Fire agent message analytics event (use stripped text)
+          fireEvent('message', { speaker: 'agent', text: spokenText });
+
+          // Pipe the stripped response to the Anam avatar's TTS
           isSpeakingRef.current = true;
           try {
-            await anamClient.talk(fullResponse);
+            await anamClient.talk(spokenText);
           } finally {
             isSpeakingRef.current = false;
           }
