@@ -10,6 +10,7 @@
  *   - Microphone access and level monitoring
  *   - Analytics event pipeline (`/api/demo/events`)
  *   - UI state (messages, status, mute, reactions)
+ *   - Booking URL overlay state (from `book_appointment` tool results)
  *
  * Pipeline:
  *   Client mic -> Anam built-in STT -> Pi Agent (via streamProxy) -> anamClient.talk()
@@ -29,6 +30,7 @@ import {
   getMessageText,
 } from '@/lib/demo-agent';
 import type { Agent, AgentEvent } from '@/lib/demo-agent';
+import type { BookAppointmentDetails } from '@/lib/calendly-tools';
 
 // ---------------------------------------------------------------------------
 // Public types
@@ -55,6 +57,26 @@ export interface SessionStartConfig {
 type AnamClientType = any;
 
 // ---------------------------------------------------------------------------
+// Utility: strip qualification JSON from LLM responses
+// ---------------------------------------------------------------------------
+
+/**
+ * Strips any qualification JSON block appended by the LLM
+ * before passing the response to the Anam avatar for TTS.
+ *
+ * The LLM is instructed to emit a trailing JSON object containing
+ * qualification scores at the end of its final response. Despite prompt
+ * instructions to keep it silent, the block occasionally leaks into the
+ * response text. This regex removes it defensively so it is never spoken
+ * aloud or displayed in the chat transcript.
+ *
+ * Pattern: optional whitespace + { ... } at end of string (greedy, dotAll).
+ */
+function stripQualificationBlock(text: string): string {
+  return text.replace(/\s*\{[\s\S]*\}\s*$/, '').trim();
+}
+
+// ---------------------------------------------------------------------------
 // Hook
 // ---------------------------------------------------------------------------
 
@@ -64,6 +86,10 @@ type AnamClientType = any;
  * It creates a Pi {@link Agent} on session start, subscribes to its event
  * stream for real-time text updates, and pipes completed responses to the
  * Anam avatar's text-to-speech engine.
+ *
+ * When the `book_appointment` tool completes with a booking URL, this hook
+ * captures it via the `tool_execution_end` event and exposes it as
+ * `bookingUrl` state for the UI overlay.
  *
  * @returns Session state and control functions.
  */
@@ -75,6 +101,7 @@ export function useAnamSession() {
   const [error, setError] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [micLevel, setMicLevel] = useState(0);
+  const [bookingUrl, setBookingUrl] = useState<string | null>(null);
 
   // -- Refs ------------------------------------------------------------------
   const anamClientRef = useRef<AnamClientType>(null);
@@ -89,6 +116,17 @@ export function useAnamSession() {
 
   /** Monotonically increasing message ID counter. */
   const msgCounter = useRef(0);
+
+  // ---------------------------------------------------------------------------
+  // Booking URL controls
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Clear the booking URL, dismissing the overlay.
+   *
+   * Exposed to the UI so the dismiss button can hide the booking CTA.
+   */
+  const clearBookingUrl = useCallback(() => setBookingUrl(null), []);
 
   // ---------------------------------------------------------------------------
   // Helpers
@@ -250,12 +288,38 @@ export function useAnamSession() {
       const responseMsgId = nextId();
       let fullResponse = '';
 
+      /** Map toolCallId to toolName from tool_execution_start events. */
+      const toolCallNames = new Map<string, string>();
+
       const unsubscribe = agent.subscribe(async (event: AgentEvent) => {
         if (event.type === 'message_update') {
           // Accumulate text deltas for the streaming UI update
           if (event.assistantMessageEvent.type === 'text_delta') {
             fullResponse += event.assistantMessageEvent.delta;
-            appendMessage('persona', fullResponse, responseMsgId);
+            appendMessage('persona', stripQualificationBlock(fullResponse), responseMsgId);
+          }
+        }
+
+        // Track tool names from tool_execution_start so we can look them up
+        // on tool_execution_end even if toolName is absent at runtime.
+        if (event.type === 'tool_execution_start') {
+          console.log('[Demo Agent] tool_execution_start:', event.toolName, event.toolCallId);
+          toolCallNames.set(event.toolCallId, event.toolName);
+        }
+
+        // Detect book_appointment tool completion and extract booking URL.
+        // Use the toolCallId map as a fallback in case toolName is not
+        // present on the tool_execution_end event at runtime.
+        if (event.type === 'tool_execution_end') {
+          const resolvedName = event.toolName || toolCallNames.get(event.toolCallId);
+          console.log('[Demo Agent] tool_execution_end:', event.toolCallId, 'tool:', resolvedName, 'isError:', event.isError, 'result:', event.result);
+          if (!event.isError && resolvedName === 'book_appointment') {
+            const details = (event.result as Record<string, unknown>)?.details as BookAppointmentDetails | undefined;
+            console.log('[Demo Agent] book_appointment details:', details);
+            if (details?.booking_url) {
+              console.log('[Demo Agent] Setting bookingUrl:', details.booking_url);
+              setBookingUrl(details.booking_url);
+            }
           }
         }
 
@@ -264,13 +328,16 @@ export function useAnamSession() {
 
           if (!fullResponse) return;
 
-          // Fire agent message analytics event
-          fireEvent('message', { speaker: 'agent', text: fullResponse });
+          // Strip qualification JSON before speaking or logging
+          const spokenText = stripQualificationBlock(fullResponse);
 
-          // Pipe the full response to the Anam avatar's TTS
+          // Fire agent message analytics event (use stripped text)
+          fireEvent('message', { speaker: 'agent', text: spokenText });
+
+          // Pipe the stripped response to the Anam avatar's TTS
           isSpeakingRef.current = true;
           try {
-            await anamClient.talk(fullResponse);
+            await anamClient.talk(spokenText);
           } finally {
             isSpeakingRef.current = false;
           }
@@ -325,6 +392,7 @@ export function useAnamSession() {
       setMessages([]);
       setError(null);
       setIsMicMuted(false);
+      setBookingUrl(null);
       configRef.current = config;
 
       try {
@@ -529,6 +597,7 @@ export function useAnamSession() {
 
     setStatus('ended');
     setMicLevel(0);
+    setBookingUrl(null);
 
     // Fire session_end event with conversation transcript as fallback data
     fireEvent('session_end', { conversationHistory });
@@ -639,6 +708,8 @@ export function useAnamSession() {
     error,
     sessionId,
     micLevel,
+    bookingUrl,
+    clearBookingUrl,
     startSession,
     endSession,
     toggleMic,

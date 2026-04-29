@@ -20,6 +20,10 @@ interface VideoCallViewProps {
   onEndCall: () => void;
   onReaction: (emoji: string) => void;
   calendarLink?: string;
+  /** Booking URL from the book_appointment tool — triggers the floating overlay when non-null. */
+  bookingUrl: string | null;
+  /** Dismiss the booking overlay. */
+  onClearBookingUrl: () => void;
 }
 
 /* ────────────────────────────────────────────────────────────────────────────
@@ -199,6 +203,84 @@ function StatusIndicators({ status }: { status: SessionStatus }) {
 }
 
 /* ────────────────────────────────────────────────────────────────────────────
+ * BookingOverlay — floating CTA displayed when booking URL is available
+ *
+ * Positioned at bottom-center above the toolbar. Shows a prominent
+ * "Confirm Your Booking" button that opens the URL in a new tab,
+ * plus a dismiss/close button.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+/**
+ * Floating overlay CTA that appears when the `book_appointment` tool
+ * produces a booking URL. Opens the URL in a new tab on click.
+ *
+ * @param bookingUrl  - The Calendly single-use scheduling URL.
+ * @param onDismiss   - Callback to clear the URL and hide the overlay.
+ */
+function BookingOverlay({
+  bookingUrl,
+  onDismiss,
+}: {
+  bookingUrl: string;
+  onDismiss: () => void;
+}) {
+  return (
+    <div
+      className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 animate-[fadeSlideUp_0.4s_ease-out_both]"
+    >
+      <div className="relative flex items-center gap-3 bg-bw-gray-700/95 backdrop-blur-lg border border-white/[0.12] rounded-2xl shadow-2xl px-5 py-4">
+        {/* Calendar icon */}
+        <div className="w-10 h-10 rounded-xl bg-bw-yellow-550/20 flex items-center justify-center flex-shrink-0">
+          <svg
+            className="w-5 h-5 text-bw-yellow-550"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={1.5}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z"
+            />
+          </svg>
+        </div>
+
+        {/* CTA button */}
+        <a
+          href={bookingUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={cn(
+            'inline-flex items-center gap-2 px-5 py-2.5 rounded-xl',
+            'bg-bw-yellow-550 hover:bg-bw-yellow-550/90',
+            'text-sm font-semibold text-black',
+            'transition-all duration-200',
+            'focus:outline-none focus:ring-2 focus:ring-bw-yellow-550/50 focus:ring-offset-2 focus:ring-offset-bw-gray-700',
+          )}
+        >
+          Confirm Your Booking
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+          </svg>
+        </a>
+
+        {/* Dismiss button */}
+        <button
+          onClick={onDismiss}
+          className="ml-1 w-8 h-8 flex items-center justify-center rounded-lg text-white/40 hover:text-white/80 hover:bg-white/[0.06] transition-colors"
+          aria-label="Dismiss booking overlay"
+        >
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ────────────────────────────────────────────────────────────────────────────
  * EndCallModal — confirmation overlay
  * Matches sales-avatar/EndCallModal.tsx: options layout with
  * "Talk to a live person" (schedule) and "End call" buttons + cancel.
@@ -279,6 +361,7 @@ function EndCallModal({
  *   - StatusIndicators top-left
  *   - Brand mark top-right
  *   - SelfViewPip, BottomToolbar, ReactionsOverlay, ChatSidePanel, EndCallModal
+ *   - BookingOverlay when bookingUrl is non-null
  * ──────────────────────────────────────────────────────────────────────── */
 export default function VideoCallView({
   status,
@@ -291,6 +374,8 @@ export default function VideoCallView({
   onEndCall,
   onReaction,
   calendarLink,
+  bookingUrl,
+  onClearBookingUrl,
 }: VideoCallViewProps) {
   const [cameraOn, setCameraOn] = useState(true);
   const [chatOpen, setChatOpen] = useState(false);
@@ -400,6 +485,11 @@ export default function VideoCallView({
 
       {/* ── Self-view PiP ────────────────────────────────────────────── */}
       <SelfViewPip visible={cameraOn} />
+
+      {/* ── Booking Overlay ──────────────────────────────────────────── */}
+      {bookingUrl && (
+        <BookingOverlay bookingUrl={bookingUrl} onDismiss={onClearBookingUrl} />
+      )}
 
       {/* ── Bottom Toolbar ───────────────────────────────────────────── */}
       <BottomToolbar
