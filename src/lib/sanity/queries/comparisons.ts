@@ -24,11 +24,6 @@ export const comparisonQuery = `
       image{ asset->{ _id, url } },
       icon{ asset->{ _id, url } }
     },
-    featureHighlights[]{
-      ...,
-      competitorImage{ asset->{ _id, url } },
-      brightwaveImage{ asset->{ _id, url } }
-    },
     useCaseFitItems,
     comparisonTable,
     faqs,

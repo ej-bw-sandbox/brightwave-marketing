@@ -19,8 +19,13 @@ export const comparison = defineType({
     defineField({ name: 'competitorLogo', title: 'Competitor Logo', type: 'image' }),
     defineField({ name: 'competitorIcon', title: 'Competitor Small Icon', type: 'image' }),
     defineField({ name: 'heroDescription', title: 'Hero Description', type: 'text', rows: 3 }),
-    defineField({ name: 'heroDescriptionList', title: 'Hero Description List (Rich Text)', type: 'blockContent', description: 'Bullet list shown below the hero description' }),
-    defineField({ name: 'keyPoints', title: 'Key Points (Hero)', type: 'blockContent' }),
+    defineField({
+      name: 'heroDescriptionList',
+      title: 'Hero Description List',
+      type: 'array',
+      of: [{ type: 'string' }],
+      description: 'Bullet list shown below the hero description',
+    }),
     defineField({ name: 'comparisonCategory', title: 'Category', type: 'reference', to: [{ type: 'comparisonCategory' }] }),
     defineField({ name: 'stats', title: 'Comparison Statistics', type: 'array', of: [{ type: 'stat' }], validation: (r) => r.max(3) }),
     defineField({
@@ -48,36 +53,13 @@ export const comparison = defineType({
       type: 'array',
       of: [{
         type: 'object',
-        name: 'comparisonContentBlock',
+        name: 'contentBlock',
         fields: [
           { name: 'title', title: 'Title', type: 'string', validation: (r) => r.required() },
           { name: 'text', title: 'Body (plain text)', type: 'text', rows: 4 },
-          { name: 'body', title: 'Body (rich text)', type: 'blockContent', description: 'Use this OR plain text body — rich text takes priority if both are set' },
           { name: 'image', title: 'Image', type: 'image', options: { hotspot: true } },
           { name: 'icon', title: 'Icon', type: 'image', description: 'Small icon overlaid on the image' },
           { name: 'iconLabel', title: 'Icon Label', type: 'string', description: 'Short label displayed near icon overlay' },
-        ],
-        preview: {
-          select: { title: 'title' },
-        },
-      }],
-    }),
-    defineField({
-      name: 'featureHighlights',
-      title: 'Feature Highlights',
-      type: 'array',
-      description: 'Side-by-side feature comparison cards with illustrations (e.g. "Autonomous AI Agents")',
-      of: [{
-        type: 'object',
-        name: 'featureHighlight',
-        fields: [
-          { name: 'title', title: 'Title', type: 'string', validation: (r) => r.required() },
-          { name: 'description', title: 'Description', type: 'text', rows: 4 },
-          { name: 'body', title: 'Rich Text Body', type: 'blockContent', description: 'Alternative rich text body' },
-          { name: 'competitorImage', title: 'Competitor Illustration', type: 'image', options: { hotspot: true }, description: 'Screenshot or illustration showing the competitor approach' },
-          { name: 'brightwaveImage', title: 'Brightwave Illustration', type: 'image', options: { hotspot: true }, description: 'Screenshot or illustration showing the Brightwave approach' },
-          { name: 'competitorCaption', title: 'Competitor Caption', type: 'string' },
-          { name: 'brightwaveCaption', title: 'Brightwave Caption', type: 'string' },
         ],
         preview: {
           select: { title: 'title' },
@@ -106,16 +88,11 @@ export const comparison = defineType({
         type: 'object',
         fields: [
           { name: 'question', title: 'Question', type: 'string', validation: (r) => r.required() },
-          { name: 'answer', title: 'Answer', type: 'blockContent' },
+          { name: 'answer', title: 'Answer', type: 'text', rows: 5 },
         ],
       }],
     }),
     defineField({ name: 'testimonial', title: 'Testimonial', type: 'testimonialRef' }),
-    defineField({ name: 'differentiators', title: 'Key Differentiators', type: 'array', of: [{ type: 'string' }], description: 'Used in structured data and meta descriptions' }),
-    defineField({ name: 'bottomCta', title: 'Bottom CTA', type: 'object', fields: [
-      { name: 'headline', title: 'Headline', type: 'string' },
-      { name: 'ctas', title: 'CTAs', type: 'array', of: [{ type: 'cta' }] },
-    ] }),
     defineField({ name: 'seo', title: 'SEO', type: 'seo' }),
   ],
   preview: {
