@@ -513,7 +513,7 @@ export default async function VsDetailPage({ params }: Props) {
                 <div className="c-comaprison-stat-box_wrapper">
                   <div className="c-comaprison-stat-box_tag-wrapper">
                     <div className="c-comparison-tag_box"></div>
-                    <div className="c-title-5 cc-weight-500">By the Numbers</div>
+                    <div className="c-title-5 cc-weight-500">The Difference is Unmatched</div>
                   </div>
                   <div className="c-comparison-stat-box_flex">
                     {stats.map((s: any, idx: number) => (

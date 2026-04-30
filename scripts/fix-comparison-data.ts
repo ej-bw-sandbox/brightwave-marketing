@@ -1,13 +1,19 @@
 /**
- * One-off cleanup script that aligns existing comparison documents in Sanity
- * with the cleaned-up comparison schema (validation errors → 0).
+ * Idempotent cleanup script for the `comparison` document type. Aligns Sanity
+ * data with the cleaned schema and pulls in the per-page content that was
+ * previously left empty.
  *
- *  - Adds `_type: 'comparisonRow'` to every comparisonTable item.
- *  - Adds `_type: 'contentBlock'` to every contentBlocks item.
- *  - Links every comparison to the `Private Markets` category.
- *  - Populates `heroDescriptionList` (string array) from Webflow.
- *  - Populates `seo.metaTitle` and `seo.metaDescription` from Webflow.
- *  - Backfills `stats` on docs that are missing them.
+ *  Per doc this script:
+ *    - Adds `_type: 'comparisonRow'` to every comparisonTable item.
+ *    - Adds `_type: 'contentBlock'` to every contentBlocks item.
+ *    - Coerces boolean comparisonTable values to 'yes'/'no' strings (the
+ *      schema only allows the string forms).
+ *    - Links the document to the `Private Markets` category.
+ *    - Populates `heroDescriptionList` (3 bullets / page) from Webflow.
+ *    - Populates `seo.metaTitle` + `seo.metaDescription` from Webflow.
+ *    - Sets `stats` to ['25x — Faster Research Times', '2,000+ — Page
+ *      Processing Volume'] (matches Webflow exactly).
+ *    - References the shared testimonial doc.
  *
  * Usage: npx tsx scripts/fix-comparison-data.ts
  */
@@ -25,10 +31,11 @@ if (!projectId || !dataset || !token) {
 const client = createClient({ projectId, dataset, apiVersion: '2024-01-01', useCdn: false, token })
 
 const COMPARISON_CATEGORY_ID = 'comp-cat-private-markets'
+const SHARED_TESTIMONIAL_ID = '670a2b9c-a5a8-4d4d-937e-d7df4556e354'
 
 const sharedStats = [
   { _key: 'st1', _type: 'stat', value: '25x', label: 'Faster Research Times' },
-  { _key: 'st2', _type: 'stat', value: '10,000+', label: 'Page Processing Volume' },
+  { _key: 'st2', _type: 'stat', value: '2,000+', label: 'Page Processing Volume' },
 ]
 
 /* Hero bullet lists, scraped from brightwave.webflow.io live pages. */
@@ -80,7 +87,7 @@ const heroBullets: Record<string, string[]> = {
   ],
 }
 
-/* SEO meta from Webflow live pages. */
+/* SEO meta scraped from Webflow live pages. */
 const seoData: Record<string, { metaTitle: string; metaDescription: string }> = {
   'brightwave-vs-alphasense': {
     metaTitle: 'Brightwave vs AlphaSense',
@@ -129,6 +136,16 @@ interface ComparisonDoc {
   stats?: Array<Record<string, unknown>>
 }
 
+function normalizeTableRow(row: Record<string, unknown>): Record<string, unknown> {
+  const out: Record<string, unknown> = { ...row, _type: 'comparisonRow' }
+  for (const field of ['brightwaveValue', 'competitorValue'] as const) {
+    const v = out[field]
+    if (v === true) out[field] = 'yes'
+    else if (v === false) out[field] = 'no'
+  }
+  return out
+}
+
 async function run() {
   const docs = await client.fetch<ComparisonDoc[]>(
     `*[_type == "comparison"]{ _id, _type, slug, comparisonTable, contentBlocks, stats }`
@@ -143,23 +160,18 @@ async function run() {
 
     const fields: Record<string, unknown> = {
       comparisonCategory: { _type: 'reference', _ref: COMPARISON_CATEGORY_ID },
+      testimonial: { _type: 'reference', _ref: SHARED_TESTIMONIAL_ID },
+      stats: sharedStats,
     }
 
     if (Array.isArray(doc.comparisonTable)) {
-      fields.comparisonTable = doc.comparisonTable.map((row) => ({ ...row, _type: 'comparisonRow' }))
+      fields.comparisonTable = doc.comparisonTable.map(normalizeTableRow)
     }
     if (Array.isArray(doc.contentBlocks)) {
       fields.contentBlocks = doc.contentBlocks.map((b) => ({ ...b, _type: 'contentBlock' }))
     }
-    if (heroBullets[slug]) {
-      fields.heroDescriptionList = heroBullets[slug]
-    }
-    if (seoData[slug]) {
-      fields.seo = { ...seoData[slug] }
-    }
-    if (!Array.isArray(doc.stats) || doc.stats.length === 0) {
-      fields.stats = sharedStats
-    }
+    if (heroBullets[slug]) fields.heroDescriptionList = heroBullets[slug]
+    if (seoData[slug]) fields.seo = { ...seoData[slug] }
 
     console.log(`Patching ${doc._id}: ${Object.keys(fields).join(', ')}`)
     tx = tx.patch(doc._id, (p) => p.set(fields))
