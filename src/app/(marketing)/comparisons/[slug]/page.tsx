@@ -43,7 +43,6 @@ export default async function VsDetailPage({ params }: Props) {
   const tableRows = doc.comparisonTable ?? []
   const faqs = doc.faqs ?? []
   const stats = doc.stats ?? []
-  const testimonial = doc.testimonial ?? null
 
   /** Render a comparison table cell value (checkmark, dash, partial indicator, or custom text) */
   function renderCellValue(textValue: string | undefined, statusValue: string | boolean | undefined) {
@@ -504,7 +503,7 @@ export default async function VsDetailPage({ params }: Props) {
         </div>
       </section>
 
-      {/* ===== STATISTICS BLOCK ===== */}
+      {/* ===== STATISTICS BLOCK (composed: stats card + framed logo/testimonial cards) ===== */}
       {stats.length > 0 && (
         <section className="c-section cc-comparison-template_statistic">
           <div className="c-container">
@@ -524,75 +523,54 @@ export default async function VsDetailPage({ params }: Props) {
                     ))}
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ===== TESTIMONIAL ===== */}
-      {testimonial?.quote && (
-        <section className="c-section cc-comparison-template_quote-only">
-          <div className="c-container">
-            <div className="c-comparison-quote-only_main-wrapper">
-              <div className="c-comparison-quote-only_text-stack">
-                <div className="c-title-5">Featured Quote</div>
-                <div className="c-comparison-quote-only_text-wrapper">
-                  {(testimonial.authorTitle || testimonial.company || testimonial.attribution) && (
-                    <div className="c-comaprison-stat-box_tag-wrapper">
-                      <div className="c-comparison-tag_box"></div>
-                      <div className="c-title-5 cc-weight-500">{testimonial.authorTitle && testimonial.company ? `${testimonial.authorTitle}, ${testimonial.company}` : testimonial.attribution || ''}</div>
-                    </div>
-                  )}
-                  <p className="c-text-2">{testimonial.quote}</p>
+                <div className="c-comparison-stat-box_logo-list">
+                  <div className="c-comparison-stat-box_logo-wrapper">
+                    <img src="/webflow-images/Frame-1321317964.png" loading="lazy" alt="" className="c-comparison-stat-box_logo" />
+                  </div>
+                  <div className="c-comparison-stat-box_logo-wrapper">
+                    <img src="/webflow-images/Frame-1321317971.png" loading="lazy" alt="" className="c-comparison-stat-box_logo-lottie-list" />
+                  </div>
+                  <div className="cc-mobile-hide"></div>
                 </div>
-              </div>
-              <div className="c-comparison-quote-only_image-wrapper">
-                {testimonial.authorImage?.asset ? (
-                  <Image
-                    src={urlFor(testimonial.authorImage).width(400).url()}
-                    alt={testimonial.authorName || ''}
-                    width={400}
-                    height={400}
-                    loading="lazy"
-                    className="c-comparison-quote-only_image"
-                  />
-                ) : (
+                <div className="c-comparison-stat-box_logo-lottie-list">
+                  <div className="c-comparison-stat-box_logo-wrapper">
+                    <img src="/webflow-images/Frame-1321317970.png" loading="lazy" alt="" className="c-comparison-stat-box_logo" />
+                  </div>
+                  <img src="/webflow-images/Frame-1321317973.png" loading="lazy" alt="" className="c-comparison-stat-box_image" />
+                </div>
+                <div className="c-comparison-stat-box_lottie-list">
                   <img
-                    src="/webflow-images/testimonial-graphic.png"
+                    src="/webflow-images/Frame-1321317985.png"
                     loading="lazy"
                     sizes="100vw"
-                    srcSet="/webflow-images/testimonial-graphic-p-500.png 500w, /webflow-images/testimonial-graphic-p-800.png 800w, /webflow-images/testimonial-graphic.png 1119w"
+                    srcSet="/webflow-images/Frame-1321317985-p-500.png 500w, /webflow-images/Frame-1321317985-p-800.png 800w, /webflow-images/Frame-1321317985.png 1381w"
                     alt=""
-                    className="c-comparison-quote-only_image"
+                    className="c-comparison-stat-box_image"
                   />
-                )}
+                </div>
+              </div>
+              <div className="c-comparison-stats_right-block">
+                <div className="c-comparison-stats_image-block">
+                  <div className="c-comparison-template_image-dk">
+                    <img src="/webflow-images/Frame-1321317981.png" loading="lazy" alt="" className="c-comparison-stat-box_image" />
+                  </div>
+                  <div className="c-comparison-template_image-dk">
+                    <img
+                      src="/webflow-images/Frame-1321317976.png"
+                      loading="lazy"
+                      width={386}
+                      sizes="(max-width: 479px) 100vw, 386px"
+                      srcSet="/webflow-images/Frame-1321317976-p-500.png 500w, /webflow-images/Frame-1321317976.png 772w"
+                      alt=""
+                      className="c-comparison-stat-box_image"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </section>
       )}
-
-      {/* ===== LOGO WALL ===== */}
-      <section className="c-section cc-comparison-template_quote-only">
-        <div className="c-container">
-          <div className="c-comparison-template_logo-wall-main-wrapper">
-            <div className="c-comparison-template_logo-wall_header-wrapper">
-              <div className="c-title-5">Trusted by leading financial institutions and featured in top publications.</div>
-            </div>
-            <div className="c-comparison-template_logo-wall-wrapper">
-              <div className="c-comparison-template_logo-wall-item"><img src="/webflow-images/fortune.png" loading="lazy" alt="Fortune" className="c-comparison-template_logo-item" /></div>
-              <div className="c-comparison-template_logo-wall-item"><img src="/webflow-images/wsjpro.png" loading="lazy" alt="WSJ Pro" className="c-comparison-template_logo-item" /></div>
-              <div className="c-comparison-template_logo-wall-item"><img src="/webflow-images/axios.png" loading="lazy" alt="Axios" className="c-comparison-template_logo-item" /></div>
-              <div className="c-comparison-template_logo-wall-item"><img src="/webflow-images/latent-space_1.png" loading="lazy" alt="Latent Space" className="c-comparison-template_logo-item" /></div>
-              <div className="c-comparison-template_logo-wall-item"><img src="/webflow-images/fox-business.png" loading="lazy" alt="Fox Business" className="c-comparison-template_logo-item" /></div>
-              <div className="c-comparison-template_logo-wall-item"><img src="/webflow-images/cerebral-valley.png" loading="lazy" alt="Cerebral Valley" className="c-comparison-template_logo-item" /></div>
-              <div className="c-comparison-template_logo-wall-item"><img src="/webflow-images/tech-crunch.png" loading="lazy" alt="TechCrunch" className="c-comparison-template_logo-item" /></div>
-              <div className="c-comparison-template_logo-wall-item"><img src="/webflow-images/time.png" loading="lazy" alt="Time" className="c-comparison-template_logo-item" /></div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* ===== FAQs ===== */}
       <section className="c-section cc-comaprison-faq">
