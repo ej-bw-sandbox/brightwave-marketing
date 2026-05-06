@@ -41,6 +41,7 @@ export default async function Page() {
             <DownloadSection
               manifest={manifest}
               plugins={(doc.platforms ?? []).filter((p: { platform?: string }) => p.platform === 'plugins')}
+              mobileApps={(doc.platforms ?? []).filter((p: { platform?: string }) => p.platform === 'ios' || p.platform === 'android')}
             />
           </div>
         </div>

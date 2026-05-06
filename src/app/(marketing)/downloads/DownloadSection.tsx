@@ -242,10 +242,6 @@ function MobileAppBadge({ icon, eyebrow, storeName, href, theme, size = 'md' }: 
   )
 }
 
-/* Store URLs — swap in real links when available */
-const APP_STORE_URL: string | undefined = undefined
-const PLAY_STORE_URL: string | undefined = undefined
-
 /* ── Platform display config ── */
 
 const platformDisplayName: Record<string, string> = {
@@ -340,14 +336,21 @@ function groupByPlatform(artifacts: ManifestArtifact[]) {
 export function DownloadSection({
   manifest,
   plugins = [],
+  mobileApps = [],
 }: {
   manifest: DownloadManifest | null
   plugins?: DownloadsPagePlatform[]
+  mobileApps?: DownloadsPagePlatform[]
 }) {
   const [detectedOS, setDetectedOS] = useState<DetectedOS>(null)
   const [ready, setReady] = useState(false)
   const isDark = useTheme()
   const c = isDark ? darkColors : lightColors
+
+  const iosApp = mobileApps.find((p) => p.platform === 'ios')
+  const androidApp = mobileApps.find((p) => p.platform === 'android')
+  const APP_STORE_URL = iosApp && !iosApp.comingSoon ? iosApp.downloadUrl : undefined
+  const PLAY_STORE_URL = androidApp && !androidApp.comingSoon ? androidApp.downloadUrl : undefined
 
   useEffect(() => {
     setDetectedOS(detectOS())
@@ -366,7 +369,7 @@ export function DownloadSection({
     return (
       <div style={{ width: '100%' }} className="animate-pulse">
         <div className="rounded-xl" style={{ width: 288, height: 56, margin: '0 auto 4rem', backgroundColor: c.surface }} />
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: '1rem', width: '100%' }}>
+        <div className="downloads-grid" style={{ gap: '1rem', width: '100%' }}>
           {[0, 1, 2, 3].map((i) => (
             <div key={i} className="rounded-2xl" style={{ height: 160, backgroundColor: c.surface }} />
           ))}
@@ -431,7 +434,16 @@ export function DownloadSection({
       )}
 
       {/* Platform sections */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: '1rem', width: '100%' }}>
+      <style>{`
+        .downloads-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; width: 100%; }
+        @media (min-width: 640px) { .downloads-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+        @media (min-width: 1024px) { .downloads-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+        @media (max-width: 639px) {
+          .downloads-platforms { order: 2; }
+          .downloads-mobile-apps { order: 1; margin-top: 0 !important; margin-bottom: 3rem; }
+        }
+      `}</style>
+      <div className="downloads-platforms downloads-grid" style={{ gap: '1rem', width: '100%' }}>
         {platformGroups.map((group) => {
           const { component: Icon, sizeClass: iconSize, offsetY } = iconComponents[group.iconKey]
           return (
@@ -578,7 +590,7 @@ export function DownloadSection({
       </div>
 
       {/* Mobile Apps section */}
-      <div style={{ marginTop: '4rem', textAlign: 'center' }}>
+      <div className="downloads-mobile-apps" style={{ marginTop: '4rem', textAlign: 'center' }}>
         <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: c.text, margin: '0 0 0.375rem' }}>
           Mobile Apps
         </h3>
