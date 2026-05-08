@@ -27,17 +27,26 @@ export default async function Page() {
 
   return (
     <>
-      <section className="c-section relative overflow-hidden">
+      <section className="downloads-shell relative isolate overflow-hidden">
+        <div className="downloads-grid-bg pointer-events-none absolute inset-0 bg-[size:48px_48px] opacity-80" />
+        <div className="dl-border pointer-events-none absolute inset-x-0 top-0 h-px border-t" />
         <div className="c-container relative z-10">
-          <div className="flex flex-col items-center text-center pt-16 md:pt-24 pb-8">
+          <div className="mx-auto flex max-w-5xl flex-col items-center px-0 pb-10 pt-20 text-center md:pb-14 md:pt-28">
+            <div className="dl-border dl-panel-soft dl-muted mb-5 inline-flex items-center rounded-[8px] border px-3 py-2 text-xs font-medium uppercase tracking-[0.14em]">
+              Downloads
+            </div>
             {doc.headline && (
-              <h1 className="c-title-1">{doc.headline}</h1>
+              <h1 className="dl-text m-0 text-balance text-5xl font-semibold leading-[0.95] tracking-normal sm:text-6xl md:text-7xl">
+                {doc.headline}
+              </h1>
             )}
             {doc.subheadline && (
-              <p className="c-text-2 max-w-3xl mt-4 mb-0 text-bw-gray-300">{doc.subheadline}</p>
+              <p className="dl-muted m-0 mt-6 max-w-3xl text-lg leading-relaxed md:text-xl">
+                {doc.subheadline}
+              </p>
             )}
           </div>
-          <div className="pb-16 md:pb-24">
+          <div className="pb-20 md:pb-28">
             <DownloadSection
               manifest={manifest}
               plugins={(doc.platforms ?? []).filter((p: { platform?: string }) => p.platform === 'plugins')}

@@ -1,13 +1,37 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import type { ReactNode } from 'react'
+import {
+  ArrowUpRight,
+  Check,
+  Download,
+  ExternalLink,
+  FileSpreadsheet,
+  MonitorDown,
+  Plug,
+  Smartphone,
+  Sparkles,
+  X,
+} from 'lucide-react'
+import { QRCodeSVG } from 'qrcode.react'
 import type { DownloadManifest, ManifestArtifact } from '@/lib/downloads/manifest'
-import { getDownloadUrl, formatBytes } from '@/lib/downloads/manifest'
+import { formatBytes, getDownloadUrl } from '@/lib/downloads/manifest'
 import type { DownloadsPagePlatform } from '@/lib/sanity/queries/downloads'
 
-/* ── OS Detection ── */
-
 type DetectedOS = 'windows' | 'linux' | 'macos-intel' | 'macos-silicon' | 'ios' | 'android' | null
+type PlatformIconKey = 'apple' | 'windows' | 'linux'
+type PluginIconKey = 'excel' | 'word' | 'powerpoint' | 'chrome' | 'safari' | 'firefox' | 'edge' | 'plugin'
+
+const IOS_APP_STORE_URL = 'https://apps.apple.com/us/app/brightwave/id6762927069'
+const ANDROID_PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=io.brightwave.app'
+
+interface MobileDownload {
+  title: string
+  buttonLabel: string
+  url: string
+  icon: ReactNode
+}
 
 function detectOS(): DetectedOS {
   const ua = navigator.userAgent
@@ -32,51 +56,9 @@ function detectOS(): DetectedOS {
   return null
 }
 
-/* ── Colors ── */
-const darkColors = {
-  text: '#ffffff',
-  textMuted: '#a5a6a8',
-  textSubtle: '#5a5b5c',
-  surface: '#1a1a1b',
-  border: 'rgba(255,255,255,0.08)',
-  yellow: '#e7e70d',
-  sectionBg: '#0f0f0f',
-  sectionText: '#ffffff',
-  subtitleColor: '#a5a6a8',
-}
-
-const lightColors = {
-  text: '#0f0f0f',
-  textMuted: '#414142',
-  textSubtle: '#5a5b5c',
-  surface: '#f5f5f5',
-  border: 'rgba(0,0,0,0.12)',
-  yellow: '#1a1a1a',
-  sectionBg: '#ffffff',
-  sectionText: '#0f0f0f',
-  subtitleColor: '#5a5b5c',
-}
-
-function useTheme() {
-  const [isDark, setIsDark] = useState(true)
-  useEffect(() => {
-    const check = () => {
-      const html = document.documentElement
-      setIsDark(html.getAttribute('theme') === 'dark' || html.classList.contains('u-dark-mode'))
-    }
-    check()
-    const observer = new MutationObserver(check)
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['theme', 'class'] })
-    return () => observer.disconnect()
-  }, [])
-  return isDark
-}
-
-/* ── Platform Icons ── */
-
 function WindowsIcon({ className }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
       <path d="M0 3.5l9.8-1.35v9.55H0zm10.8-1.5L24 0v11.7H10.8zM0 12.8h9.8v9.55L0 21zm10.8 0H24V24l-13.2-2.3z" />
     </svg>
   )
@@ -84,48 +66,24 @@ function WindowsIcon({ className }: { className?: string }) {
 
 function LinuxIcon({ className }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 448 512" fill="currentColor">
-      <path d="M220.8 123.3c1 .5 1.8 1.7 3 1.7 1.1 0 2.8-.4 2.9-1.5.2-1.4-1.9-2.3-3.2-2.9-1.7-.7-3.9-1-5.5-.1-.4.2-.8.7-.6 1.1.3 1.3 2.3 1.1 3.4 1.7zm-21.9 1.7c1.2 0 2-1.2 3-1.7 1.1-.6 3.1-.4 3.5-1.6.2-.4-.2-.9-.6-1.1-1.6-.9-3.8-.6-5.5.1-1.3.6-3.4 1.5-3.2 2.9.1 1 1.8 1.5 2.8 1.4zM420 403.8c-3.6-4-5.3-11.6-7.2-19.7-1.8-8.1-3.9-16.8-10.5-22.4-1.3-1.1-2.6-2.1-4-2.9-1.3-.8-2.7-1.5-4.1-2 9.2-27.3 5.6-54.5-3.7-79.1-11.4-30.1-31.3-56.4-46.5-74.4-17.1-21.5-33.7-41.9-33.4-72C311.1 85.4 315.7.1 234.8 0 132.4-.2 158 103.4 156.9 135.2c-1.7 23.4-6.4 41.8-22.5 64.7-18.9 22.5-45.5 58.8-58.1 96.7-6 17.9-8.8 36.1-6.2 53.3-6.5 5.8-11.4 14.7-16.6 20.2-4.2 4.3-10.3 5.9-17 8.3s-14 6-18.5 14.5c-2.1 3.9-2.8 8.1-2.8 12.4 0 3.9.6 7.9 1.2 11.8 1.2 8.1 2.5 15.7.8 20.8-5.2 14.4-5.9 24.4-2.2 31.7 3.8 7.3 11.4 10.5 20.1 12.3 17.3 3.6 40.8 2.7 59.3 12.5 19.8 10.4 39.9 14.1 55.9 10.4 11.6-2.6 21.1-9.6 25.9-20.2 12.5-.1 26.3-5.4 48.3-6.6 14.9-1.2 33.6 5.3 55.1 4.1.6 2.3 1.4 4.6 2.5 6.7v.1c8.3 16.7 23.8 24.3 40.3 23 16.6-1.3 34.1-11 48.3-27.9 13.6-16.4 36-23.2 50.9-32.2 7.4-4.5 13.4-10.1 13.9-18.3.4-8.2-4.4-17.3-15.5-29.7zM223.7 87.3c9.8-22.2 34.2-21.8 44-.4 6.5 14.2 3.6 30.9-4.3 40.4-1.6-.8-5.9-2.6-12.6-4.9 1.1-1.2 3.1-2.7 3.9-4.6 4.8-11.8-.2-27-9.1-27.3-7.3-.5-13.9 10.8-11.8 23-4.1-2-9.4-3.5-13-4.4-1-6.9-.3-14.6 2.9-21.8zM183 75.8c10.1 0 20.8 14.2 19.1 33.5-3.5 1-7.1 2.5-10.2 4.6 1.2-8.9-3.3-20.1-9.6-19.6-8.4.7-9.8 21.2-1.8 28.1 1 .8 1.9-.2-5.9 5.5-15.6-14.6-10.5-52.1 8.4-52.1zm-13.6 60.7c6.2-4.6 13.6-10 14.1-10.5 4.7-4.4 13.5-14.2 27.9-14.2 7.1 0 15.6 2.3 25.9 8.9 6.3 4.1 11.3 4.4 22.6 9.3 8.4 3.5 13.7 9.7 10.5 18.2-2.6 7.1-11 14.4-22.7 18.1-11.1 3.6-19.8 16-38.2 14.9-3.9-.2-7-1-9.6-2.1-8-3.5-12.2-10.4-20-15-8.6-4.8-13.2-10.4-14.7-15.3-1.4-4.9 0-9 4.2-12.3zm3.3 334c-2.7 35.1-43.9 34.4-75.3 18-29.9-15.8-68.6-6.5-76.5-21.9-2.4-4.7-2.4-12.7 2.6-26.4v-.2c2.4-7.6.6-16-.6-23.9-1.2-7.8-1.8-15 .9-20 3.5-6.7 8.5-9.1 14.8-11.3 10.3-3.7 11.8-3.4 19.6-9.9 5.5-5.7 9.5-12.9 14.3-18 5.1-5.5 10-8.1 17.7-6.9 8.1 1.2 15.1 6.8 21.9 16l19.6 35.6c9.5 19.9 43.1 48.4 41 68.9zm-1.4-25.9c-4.1-6.6-9.6-13.6-14.4-19.6 7.1 0 14.2-2.2 16.7-8.9 2.3-6.2 0-14.9-7.4-24.9-13.5-18.2-38.3-32.5-38.3-32.5-13.5-8.4-21.1-18.7-24.6-29.9s-3-23.3-.3-35.2c5.2-22.9 18.6-45.2 27.2-59.2 2.3-1.7.8 3.2-8.7 20.8-8.5 16.1-24.4 53.3-2.6 82.4.6-20.7 5.5-41.8 13.8-61.5 12-27.4 37.3-74.9 39.3-112.7 1.1.8 4.6 3.2 6.2 4.1 4.6 2.7 8.1 6.7 12.6 10.3 12.4 10 28.5 9.2 42.4 1.2 6.2-3.5 11.2-7.5 15.9-9 9.9-3.1 17.8-8.6 22.3-15 7.7 30.4 25.7 74.3 37.2 95.7 6.1 11.4 18.3 35.5 23.6 64.6 3.3-.1 7 .4 10.9 1.4 13.8-35.7-11.7-74.2-23.3-84.9-4.7-4.6-4.9-6.6-2.6-6.5 12.6 11.2 29.2 33.7 35.2 59 2.8 11.6 3.3 23.7.4 35.7 16.4 6.8 35.9 17.9 30.7 34.8-2.2-.1-3.2 0-4.2 0 3.2-10.1-3.9-17.6-22.8-26.1-19.6-8.6-36-8.6-38.3 12.5-12.1 4.2-18.3 14.7-21.4 27.3-2.8 11.2-3.6 24.7-4.4 39.9-.5 7.7-3.6 18-6.8 29-32.1 22.9-76.7 32.9-114.3 7.2zm257.4-11.5c-.9 16.8-41.2 19.9-63.2 46.5-13.2 15.7-29.4 24.4-43.6 25.5s-26.5-4.8-33.7-19.3c-4.7-11.1-2.4-23.1 1.1-36.3 3.7-14.2 9.2-28.8 9.9-40.6.8-15.2 1.7-28.5 4.2-38.7 2.6-10.3 6.6-17.2 13.7-21.1.3-.2.7-.3 1-.5.8 13.2 7.3 26.6 18.8 29.5 12.6 3.3 30.7-7.5 38.4-16.3 9-.3 15.7-.9 22.6 5.1 9.9 8.5 7.1 30.3 17.1 41.6 10.6 11.6 14 19.5 13.7 24.6zM173.3 148.7c2 1.9 4.7 4.5 8 7.1 6.6 5.2 15.8 10.6 27.3 10.6 11.6 0 22.5-5.9 31.8-10.8 4.9-2.6 10.9-7 14.8-10.4s5.9-6.3 3.1-6.6-2.6 2.6-6 5.1c-4.4 3.2-9.7 7.4-13.9 9.8-7.4 4.2-19.5 10.2-29.9 10.2s-18.7-4.8-24.9-9.7c-3.1-2.5-5.7-5-7.7-6.9-1.5-1.4-1.9-4.6-4.3-4.9-1.4-.1-1.8 3.7 1.7 6.5z" />
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12.504 0c-.155 0-.315.008-.48.021-4.226.333-3.105 4.807-3.17 6.298-.076 1.092-.3 1.953-1.05 3.02-.885 1.051-2.127 2.75-2.716 4.521-.278.832-.41 1.684-.287 2.489a.424.424 0 0 0-.11.135c-.26.268-.45.6-.663.839-.199.199-.485.267-.797.4-.313.136-.658.269-.864.68-.09.189-.136.394-.132.602 0 .199.027.4.055.536.058.399.116.728.04.97-.249.68-.28 1.145-.106 1.484.174.334.535.47.94.601.81.2 1.91.135 2.774.6.926.466 1.866.67 2.616.47.526-.116.97-.464 1.208-.946.587-.003 1.23-.269 2.26-.334.699-.058 1.574.267 2.577.2.025.134.063.198.114.333l.003.003c.391.778 1.113 1.132 1.884 1.071.771-.06 1.592-.536 2.257-1.306.631-.765 1.683-1.084 2.378-1.503.348-.199.629-.469.649-.853.023-.4-.2-.811-.714-1.376v-.097l-.003-.003c-.17-.2-.25-.535-.338-.926-.085-.401-.182-.786-.492-1.046h-.003c-.059-.054-.123-.067-.188-.135a.357.357 0 0 0-.19-.064c.431-1.278.264-2.55-.173-3.694-.533-1.41-1.465-2.638-2.175-3.483-.796-1.005-1.576-1.957-1.56-3.368.026-2.152.236-6.133-3.544-6.139zm.529 3.405h.013c.213 0 .396.062.584.198.19.135.33.332.438.533.105.259.158.459.166.724v.105a.086.086 0 0 1-.004-.021l-.004-.024a1.807 1.807 0 0 1-.15.706.953.953 0 0 1-.213.335.71.71 0 0 0-.088-.042c-.104-.045-.198-.064-.284-.133a1.312 1.312 0 0 0-.22-.066c.05-.06.146-.133.183-.198.053-.128.082-.264.088-.402v-.02a1.21 1.21 0 0 0-.061-.4c-.045-.134-.101-.2-.183-.333-.084-.066-.167-.132-.267-.132h-.016c-.093 0-.176.03-.262.132a.8.8 0 0 0-.205.334 1.18 1.18 0 0 0-.09.4v.019c.002.089.008.179.02.267-.193-.067-.438-.135-.607-.202a1.635 1.635 0 0 1-.018-.2v-.02a1.772 1.772 0 0 1 .15-.768 1.08 1.08 0 0 1 .43-.533.985.985 0 0 1 .594-.2zm-2.962.059h.036c.142 0 .27.048.399.135.146.129.264.288.344.465.09.199.14.4.153.667v.004c.007.134.006.2-.002.266v.08c-.03.007-.056.018-.083.024-.152.055-.274.135-.393.2.012-.09.013-.18.003-.267v-.015c-.012-.133-.04-.2-.082-.333a.613.613 0 0 0-.166-.267.248.248 0 0 0-.183-.064h-.021c-.071.006-.13.04-.186.132a.552.552 0 0 0-.12.27.944.944 0 0 0-.023.33v.015c.012.135.037.2.08.334.046.134.098.2.166.268.01.009.02.018.034.024-.07.057-.117.07-.176.136a.304.304 0 0 1-.131.068 2.62 2.62 0 0 1-.275-.402 1.772 1.772 0 0 1-.155-.667 1.759 1.759 0 0 1 .08-.668 1.43 1.43 0 0 1 .283-.535c.128-.133.26-.2.418-.2z" />
     </svg>
   )
 }
 
 function AppleIcon({ className }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
       <path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701" />
     </svg>
   )
 }
 
-function DownloadIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-    </svg>
-  )
-}
-
-function ExcelIcon({ className }: { className?: string }) {
+function AndroidIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Zm-1 7V3.5L18.5 9H13Zm-2.6 8.2L8.8 14l1.6-3.2h1.8l-2.2 4 2.4 4.4H10.6l-1.8-3.4-1.8 3.4H5.4l2.4-4.4-2.2-4h1.8l1.6 3.2Z" />
-    </svg>
-  )
-}
-
-function WordIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Zm-1 7V3.5L18.5 9H13Zm3.2 3.6-1.5 6.9h-1.7l-1-4.5-1 4.5h-1.7l-1.5-6.9h1.7l.85 4.4.95-4.4h1.5l.95 4.4.85-4.4h1.6Z" />
-    </svg>
-  )
-}
-
-function PowerPointIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Zm-1 7V3.5L18.5 9H13ZM8.5 12.2h2.9c1.55 0 2.5.95 2.5 2.35s-.95 2.35-2.5 2.35H10v2.4H8.5v-7.1Zm1.5 1.35v2h1.25c.7 0 1.1-.35 1.1-1s-.4-1-1.1-1H10Z" />
+      <path d="M17.6 8.1 19.2 5.3a.7.7 0 0 0-.25-.96.7.7 0 0 0-.96.25l-1.67 2.9a10.3 10.3 0 0 0-8.64 0L6.01 4.59a.7.7 0 0 0-.96-.25.7.7 0 0 0-.25.96l1.6 2.8A9.24 9.24 0 0 0 2 15.8h20a9.24 9.24 0 0 0-4.4-7.7ZM7.5 12.7a1.1 1.1 0 1 1 0-2.2 1.1 1.1 0 0 1 0 2.2Zm9 0a1.1 1.1 0 1 1 0-2.2 1.1 1.1 0 0 1 0 2.2ZM4 17h2v3.5a1.5 1.5 0 0 0 3 0V17h6v3.5a1.5 1.5 0 0 0 3 0V17h2v-1H4v1Z" />
     </svg>
   )
 }
@@ -146,108 +104,6 @@ function SafariIcon({ className }: { className?: string }) {
   )
 }
 
-function FirefoxIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M21.2 8.5a9.5 9.5 0 0 0-2.1-3.2c.4 1.5.2 2.9-.5 3.4-.9-2.1-2.4-3-3.8-3.1-2.5-.3-4.5 1-5.3 2.9-2.1-.4-3.7.7-4.4 2 .6-.2 1.6-.3 2.4.2-1.8.6-2.9 2.4-2.8 4.4.3 4.5 4.1 8.1 8.7 8 4.9 0 8.9-3.8 9-8.7.1-2.1-.5-4-1.2-5.9Zm-9.3 11.2a5.6 5.6 0 0 1-5.7-5.4c0-1.4.6-2.6 1.6-3.4-.2 1.1.1 2.2.9 3 1.2 1 3 1.1 4.3.2 1.1-.8 1.6-2 1.3-3.3-.2-1.1-1-1.8-1.9-2 .8-.5 1.9-.4 2.7.2 1.8 1.2 2.3 3.7 1.2 5.5-1 1.7-2.8 2.5-4.4 2.1.9.5 2.3.7 3.3.1-.9 1.2-2.3 2-3.3 2Z" />
-    </svg>
-  )
-}
-
-function EdgeIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M12 2a10 10 0 0 0-8.6 4.9c1.7-1.5 4-2.4 6.6-2.3 4.4.2 7.2 3.1 7.2 6.1 0 .9-.6 1.4-1.4 1.4H6.3c-.3 2.7 1.5 5.4 4.6 6.2 2.1.6 4.3.1 5.8-1.2a8.4 8.4 0 0 1-4.3 5c-5 1.4-9.2-2.1-9.2-6.6 0-.4 0-.7.1-1.1A10 10 0 0 1 12 2Zm9.5 13.8c-1 2-3 3.5-5.5 4 2.9-.3 5.3-2 5.5-4Z" />
-    </svg>
-  )
-}
-
-function PluginIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M20 12h-1.5V8a2 2 0 0 0-2-2H13V4a2 2 0 1 0-4 0v2H7.5a2 2 0 0 0-2 2v3.5H4a2 2 0 1 0 0 4h1.5V19a2 2 0 0 0 2 2H11v-1.5a2 2 0 1 1 4 0V21h1.5a2 2 0 0 0 2-2v-3h1.5a2 2 0 1 0 0-4Z" />
-    </svg>
-  )
-}
-
-function GooglePlayIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M3 1.713a1 1 0 0 1 1.56-.826l14.5 9.287a1 1 0 0 1 0 1.652L4.56 21.113A1 1 0 0 1 3 20.287V1.713z" />
-    </svg>
-  )
-}
-
-/* ── Mobile App Badge (minimal outline) ── */
-
-interface MobileAppBadgeProps {
-  icon: React.ReactNode
-  eyebrow: string
-  storeName: string
-  href?: string
-  theme: typeof darkColors
-  size?: 'md' | 'lg'
-}
-
-function MobileAppBadge({ icon, eyebrow, storeName, href, theme, size = 'md' }: MobileAppBadgeProps) {
-  const isLg = size === 'lg'
-  const style: React.CSSProperties = {
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: isLg ? '0.875rem' : '0.75rem',
-    padding: isLg ? '0.75rem 1.5rem' : '0.625rem 1.25rem',
-    borderRadius: '0.75rem',
-    border: `1px solid ${theme.border}`,
-    backgroundColor: theme.surface,
-    color: theme.text,
-    textDecoration: 'none',
-    minWidth: isLg ? 220 : 180,
-    minHeight: isLg ? 64 : 56,
-    opacity: href ? 1 : 0.6,
-    cursor: href ? 'pointer' : 'default',
-    transition: 'border-color 0.2s',
-  }
-  const inner = (
-    <>
-      <span style={{ display: 'inline-flex', color: theme.text }}>{icon}</span>
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', lineHeight: 1.15 }}>
-        <span
-          style={{
-            fontSize: isLg ? '0.75rem' : '0.6875rem',
-            letterSpacing: '0.08em',
-            textTransform: 'uppercase',
-            color: theme.textMuted,
-            fontWeight: 500,
-          }}
-        >
-          {eyebrow}
-        </span>
-        <span
-          style={{
-            fontSize: isLg ? '1.125rem' : '1.0625rem',
-            fontWeight: 600,
-            color: theme.text,
-            marginTop: 2,
-          }}
-        >
-          {storeName}
-        </span>
-      </div>
-    </>
-  )
-  return href ? (
-    <a href={href} style={style} target="_blank" rel="noopener noreferrer">{inner}</a>
-  ) : (
-    <div style={style} aria-label={`${storeName} — coming soon`}>{inner}</div>
-  )
-}
-
-/* Store URLs — swap in real links when available */
-const APP_STORE_URL: string | undefined = undefined
-const PLAY_STORE_URL: string | undefined = undefined
-
-/* ── Platform display config ── */
-
 const platformDisplayName: Record<string, string> = {
   mac: 'macOS',
   win: 'Windows',
@@ -255,41 +111,19 @@ const platformDisplayName: Record<string, string> = {
 }
 
 const platformDescription: Record<string, string> = {
-  mac: 'Native app for Apple Silicon and Intel Macs.',
-  win: 'Desktop app for Windows.',
-  linux: 'Available as AppImage and .deb packages.',
+  mac: 'Native desktop app for Apple Silicon and Intel Macs.',
+  win: 'Fast installer for Windows workstations.',
+  linux: 'AppImage and .deb builds for Linux desktops.',
 }
 
-const platformIconKey: Record<string, 'apple' | 'windows' | 'linux'> = {
+const platformIconKey: Record<string, PlatformIconKey> = {
   mac: 'apple',
   win: 'windows',
   linux: 'linux',
 }
 
-const iconComponents: Record<string, { component: React.FC<{ className?: string }>; sizeClass: string; offsetY: number }> = {
-  apple: { component: AppleIcon, sizeClass: 'w-5 h-5', offsetY: -1 },
-  windows: { component: WindowsIcon, sizeClass: 'w-5 h-5', offsetY: 0 },
-  linux: { component: LinuxIcon, sizeClass: 'w-[18px] h-5', offsetY: 0 },
-  plugin: { component: PluginIcon, sizeClass: 'w-5 h-5', offsetY: 0 },
-  excel: { component: ExcelIcon, sizeClass: 'w-5 h-5', offsetY: 0 },
-  word: { component: WordIcon, sizeClass: 'w-5 h-5', offsetY: 0 },
-  powerpoint: { component: PowerPointIcon, sizeClass: 'w-5 h-5', offsetY: 0 },
-  chrome: { component: ChromeIcon, sizeClass: 'w-5 h-5', offsetY: 0 },
-  safari: { component: SafariIcon, sizeClass: 'w-5 h-5', offsetY: 0 },
-  firefox: { component: FirefoxIcon, sizeClass: 'w-5 h-5', offsetY: 0 },
-  edge: { component: EdgeIcon, sizeClass: 'w-5 h-5', offsetY: 0 },
-}
+const platformOrder: Record<string, number> = { mac: 0, win: 1, linux: 2 }
 
-type PluginIconKey = 'excel' | 'word' | 'powerpoint' | 'chrome' | 'safari' | 'firefox' | 'edge' | 'plugin'
-
-function pluginIconKey(key: string | undefined): PluginIconKey {
-  if (key && key in iconComponents && key !== 'apple' && key !== 'windows' && key !== 'linux') {
-    return key as PluginIconKey
-  }
-  return 'plugin'
-}
-
-/** Map detected OS to a specific artifact */
 function findPrimaryArtifact(artifacts: ManifestArtifact[], os: DetectedOS): ManifestArtifact | null {
   switch (os) {
     case 'macos-silicon':
@@ -307,35 +141,328 @@ function findPrimaryArtifact(artifacts: ManifestArtifact[], os: DetectedOS): Man
 
 function findPrimaryLabel(os: DetectedOS): string {
   switch (os) {
-    case 'macos-silicon': return 'macOS (Apple Silicon)'
-    case 'macos-intel': return 'macOS (Intel)'
-    case 'windows': return 'Windows'
-    case 'linux': return 'Linux'
-    default: return 'your platform'
+    case 'macos-silicon':
+      return 'macOS Apple Silicon'
+    case 'macos-intel':
+      return 'macOS Intel'
+    case 'windows':
+      return 'Windows'
+    case 'linux':
+      return 'Linux'
+    default:
+      return 'macOS'
   }
 }
 
-/** Group artifacts by platform for the cards */
-const platformOrder: Record<string, number> = { mac: 0, win: 1, linux: 2 }
-
 function groupByPlatform(artifacts: ManifestArtifact[]) {
   const groups: Record<string, ManifestArtifact[]> = {}
-  for (const a of artifacts) {
-    ;(groups[a.platform] ??= []).push(a)
+  for (const artifact of artifacts) {
+    ;(groups[artifact.platform] ??= []).push(artifact)
   }
+
   return Object.entries(groups)
     .map(([platform, items]) => ({
       platform,
       label: platformDisplayName[platform] ?? platform,
       description: platformDescription[platform] ?? '',
-      iconKey: (platformIconKey[platform] ?? 'linux') as 'apple' | 'windows' | 'linux',
+      iconKey: platformIconKey[platform] ?? 'linux',
       order: platformOrder[platform] ?? 99,
-      items,
+      items: items.sort((a, b) => a.label.localeCompare(b.label)),
     }))
     .sort((a, b) => a.order - b.order)
 }
 
-/* ── Main Section ── */
+function PlatformIcon({ iconKey, className }: { iconKey: PlatformIconKey; className?: string }) {
+  if (iconKey === 'apple') return <AppleIcon className={className} />
+  if (iconKey === 'windows') return <WindowsIcon className={className} />
+  return <LinuxIcon className={className} />
+}
+
+function AssetIcon({ src, className }: { src: string; className?: string }) {
+  return <img src={src} alt="" aria-hidden="true" className={`dl-asset-icon ${className ?? ''}`} />
+}
+
+function PluginIcon({ iconKey, className }: { iconKey: PluginIconKey; className?: string }) {
+  if (iconKey === 'excel') return <AssetIcon src="/icons/microsoft/excel.svg" className={className} />
+  if (iconKey === 'word') return <AssetIcon src="/icons/microsoft/word.svg" className={className} />
+  if (iconKey === 'powerpoint') return <AssetIcon src="/icons/microsoft/powerpoint.svg" className={className} />
+  if (iconKey === 'chrome') return <ChromeIcon className={className} />
+  if (iconKey === 'safari') return <SafariIcon className={className} />
+  if (iconKey === 'firefox') return <ExternalLink className={className} />
+  if (iconKey === 'edge') return <ExternalLink className={className} />
+  return <Plug className={className} />
+}
+
+function pluginIconKey(key: DownloadsPagePlatform['iconKey']): PluginIconKey {
+  return key ?? 'plugin'
+}
+
+function DesktopMockup() {
+  const rows = [
+    ['NVEX', 'Novex Technologies', '+7.4%'],
+    ['SLRP', 'SolarPeak Energy', '+5.8%'],
+    ['MDVR', 'MedVera Health', '+4.1%'],
+    ['AQFN', 'AquaFin Capital', '+3.6%'],
+    ['VRTX', 'Vortex Logistics', '+2.9%'],
+  ]
+
+  return (
+    <div className="relative min-h-[360px] overflow-hidden rounded-[8px] border border-white/10 bg-[#10100f] p-4 sm:p-5 lg:min-h-[430px]">
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:32px_32px] opacity-40" />
+      <div className="relative ml-auto w-[92%] overflow-hidden rounded-[8px] border border-white/10 bg-[#1f201e] shadow-2xl shadow-black/30">
+        <div className="flex items-center gap-2 border-b border-white/10 bg-[#242522] px-4 py-3">
+          <span className="h-3 w-3 rounded-full bg-[#ff605c]" />
+          <span className="h-3 w-3 rounded-full bg-[#ffbd44]" />
+          <span className="h-3 w-3 rounded-full bg-[#00ca4e]" />
+          <div className="ml-4 h-6 flex-1 rounded bg-black/25" />
+        </div>
+        <div
+          className="border-b border-white/10 bg-[#313a58] px-4 py-2 text-[11px] font-medium text-white/80"
+          style={{ display: 'grid', gridTemplateColumns: '0.85fr 1.35fr 0.9fr' }}
+        >
+          <span>Ticker</span>
+          <span>Company</span>
+          <span>Move</span>
+        </div>
+        <div>
+          {rows.map((row, index) => (
+            <div
+              key={row[0]}
+              className="border-b border-white/5 px-4 py-2 text-[11px] text-white/75"
+              style={{
+                display: 'grid',
+                gridTemplateColumns: '0.85fr 1.35fr 0.9fr',
+                backgroundColor: index % 2 === 0 ? 'rgba(255,255,255,0.035)' : 'transparent',
+              }}
+            >
+              <span className="font-semibold text-white">{row[0]}</span>
+              <span>{row[1]}</span>
+              <span className="text-[#9ef0b5]">{row[2]}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="relative -mt-8 max-w-[340px] rounded-[8px] border border-white/15 bg-[#262622]/90 p-4 shadow-2xl shadow-black/40 backdrop-blur">
+        <p className="mb-3 text-lg leading-snug text-white">Which portfolio names moved today, and why?</p>
+        <div className="space-y-2 text-sm">
+          <div className="flex items-center gap-2 text-[#f2f218]">
+            <Sparkles className="h-4 w-4" />
+            <span>Searching research sources</span>
+          </div>
+          {['S&P Global', 'PitchBook', 'FactSet'].map((source) => (
+            <div key={source} className="flex items-center gap-2 text-white/75">
+              <Check className="h-4 w-4 text-[#84e19a]" />
+              <span>{source}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="relative mt-5 flex flex-wrap gap-2">
+        {['CIM review', 'Market map', 'IC memo'].map((label) => (
+          <span key={label} className="rounded-[8px] border border-white/10 bg-white/[0.06] px-3 py-2 text-xs text-white/70">
+            {label}
+          </span>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function PrimaryButton({ artifact, detectedOS }: { artifact: ManifestArtifact | null; detectedOS: DetectedOS }) {
+  const fallback = artifact
+  if (!fallback) return null
+
+  return (
+    <a
+      href={getDownloadUrl(fallback.filename)}
+      className="dl-primary-button inline-flex min-h-12 items-center justify-center gap-2 rounded-[8px] px-5 py-3 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-[#f2f218] focus:ring-offset-2 focus:ring-offset-[#1b1b18]"
+    >
+      <Download className="h-4 w-4" />
+      Download for {findPrimaryLabel(detectedOS)}
+    </a>
+  )
+}
+
+function ArtifactRow({ artifact }: { artifact: ManifestArtifact }) {
+  return (
+    <a
+      href={getDownloadUrl(artifact.filename)}
+      className="dl-border group flex items-center justify-between gap-4 border-t py-4 transition hover:opacity-80"
+    >
+      <div className="min-w-0">
+        <p className="dl-text m-0 text-base font-medium">{artifact.label}</p>
+        <p className="dl-subtle m-0 mt-1 text-sm">
+          .{artifact.format} / {formatBytes(artifact.size)}
+        </p>
+      </div>
+      <span className="dl-control-border dl-muted flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] border transition group-hover:border-[#f2f218]/60 group-hover:text-[#f2f218]">
+        <Download className="h-4 w-4" />
+      </span>
+    </a>
+  )
+}
+
+function PluginRow({ plugin }: { plugin: DownloadsPagePlatform }) {
+  const isComingSoon = plugin.comingSoon || !plugin.downloadUrl
+  const iconKey = pluginIconKey(plugin.iconKey)
+  const content = (
+    <>
+      <div className="flex min-w-0 items-center gap-3">
+        <span className="dl-icon-box flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] border">
+          <PluginIcon iconKey={iconKey} className="h-5 w-5" />
+        </span>
+        <div className="min-w-0">
+          <p className="dl-text m-0 text-base font-medium leading-snug">{plugin.displayName}</p>
+          <p className="dl-subtle m-0 mt-1 text-sm">{isComingSoon ? 'Coming soon' : plugin.description ?? 'Install add-in'}</p>
+        </div>
+      </div>
+      <span className="dl-secondary-button flex h-10 min-w-24 shrink-0 items-center justify-center rounded-[8px] border px-4 text-sm font-medium">
+        {isComingSoon ? 'Soon' : 'Install'}
+        {!isComingSoon && <ArrowUpRight className="ml-2 h-4 w-4" />}
+      </span>
+    </>
+  )
+
+  const className = "dl-border flex items-center justify-between gap-4 border-t py-4"
+
+  if (isComingSoon) {
+    return <div className={`${className} opacity-65`}>{content}</div>
+  }
+
+  return (
+    <a href={plugin.downloadUrl} target="_blank" rel="noopener noreferrer" className={`${className} group transition hover:border-white/20`}>
+      {content}
+    </a>
+  )
+}
+
+interface ComingSoonRowProps {
+  icon: React.ReactNode
+  label: string
+}
+
+function ComingSoonRow({ icon, label }: ComingSoonRowProps) {
+  return (
+    <div className="dl-border flex items-center justify-between gap-4 border-t py-4 opacity-65">
+      <div className="flex min-w-0 items-center gap-3">
+        <span className="dl-icon-box flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] border">
+          {icon}
+        </span>
+        <div className="min-w-0">
+          <p className="dl-text m-0 text-base font-medium leading-snug">{label}</p>
+          <p className="dl-subtle m-0 mt-1 text-sm">Coming soon</p>
+        </div>
+      </div>
+      <span className="dl-secondary-button flex h-10 min-w-24 shrink-0 items-center justify-center rounded-[8px] border px-4 text-sm font-medium">
+        Soon
+      </span>
+    </div>
+  )
+}
+
+const mobileDownloads: MobileDownload[] = [
+  {
+    title: 'iOS',
+    buttonLabel: 'Download iOS app',
+    url: IOS_APP_STORE_URL,
+    icon: <AppleIcon className="h-5 w-5" />,
+  },
+  {
+    title: 'Android',
+    buttonLabel: 'Download Android app',
+    url: ANDROID_PLAY_STORE_URL,
+    icon: <AndroidIcon className="h-5 w-5" />,
+  },
+]
+
+function MobileDownloadRow({ download, onOpen }: { download: MobileDownload; onOpen: (download: MobileDownload) => void }) {
+  return (
+    <div className="dl-border flex items-center justify-between gap-4 border-t py-5">
+      <div className="flex min-w-0 items-center gap-3">
+        <span className="dl-icon-box flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] border">
+          {download.icon}
+        </span>
+        <div className="min-w-0">
+          <p className="dl-text m-0 text-base font-medium leading-snug">{download.title}</p>
+        </div>
+      </div>
+      <button
+        type="button"
+        className="dl-secondary-button flex h-10 min-w-24 shrink-0 items-center justify-center rounded-[8px] border px-4 text-sm font-medium transition"
+        onClick={() => onOpen(download)}
+      >
+        Download
+      </button>
+    </div>
+  )
+}
+
+function MobileQrModal({ download, onClose }: { download: MobileDownload | null; onClose: () => void }) {
+  useEffect(() => {
+    if (!download) return
+
+    const previousOverflow = document.body.style.overflow
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose()
+    }
+
+    document.body.style.overflow = 'hidden'
+    window.addEventListener('keydown', onKeyDown)
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+      window.removeEventListener('keydown', onKeyDown)
+    }
+  }, [download, onClose])
+
+  if (!download) return null
+
+  return (
+    <div
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 px-4 py-8 backdrop-blur-sm"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="mobile-qr-title"
+      onClick={onClose}
+    >
+      <div
+        className="dl-qr-modal relative w-full max-w-[560px] rounded-[8px] border p-6 shadow-2xl sm:p-8 md:p-10"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <button
+          type="button"
+          className="dl-qr-close absolute right-5 top-5 flex h-11 w-11 items-center justify-center rounded-[8px] border"
+          aria-label="Close QR code"
+          onClick={onClose}
+        >
+          <X className="h-5 w-5" />
+        </button>
+
+        <h3 id="mobile-qr-title" className="m-0 pr-14 text-center text-3xl font-semibold leading-tight text-white sm:text-5xl">
+          Get Brightwave on your phone
+        </h3>
+
+        <div className="mt-8 rounded-[8px] border border-white/15 p-6 sm:p-8">
+          <div className="mx-auto flex w-fit rounded-[8px] bg-white p-4">
+            <QRCodeSVG value={download.url} size={220} level="M" className="dl-qr-code" />
+          </div>
+
+          <a
+            href={download.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="dl-qr-link mx-auto mt-8 flex min-h-12 w-fit items-center justify-center gap-3 rounded-[8px] border px-5 py-3 text-base font-semibold text-white transition"
+          >
+            {download.icon}
+            {download.buttonLabel}
+          </a>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export function DownloadSection({
   manifest,
@@ -346,267 +473,177 @@ export function DownloadSection({
 }) {
   const [detectedOS, setDetectedOS] = useState<DetectedOS>(null)
   const [ready, setReady] = useState(false)
-  const isDark = useTheme()
-  const c = isDark ? darkColors : lightColors
+  const [activeMobileDownload, setActiveMobileDownload] = useState<MobileDownload | null>(null)
 
   useEffect(() => {
     setDetectedOS(detectOS())
     setReady(true)
   }, [])
 
-  if (!manifest || manifest.artifacts.length === 0) {
+  const artifacts = manifest?.artifacts ?? []
+  const platformGroups = useMemo(() => groupByPlatform(artifacts), [artifacts])
+  const primary = useMemo(() => findPrimaryArtifact(artifacts, detectedOS) ?? artifacts.find((a) => a.platform === 'mac') ?? null, [artifacts, detectedOS])
+
+  if (!manifest || artifacts.length === 0) {
     return (
-      <p className="text-sm" style={{ color: c.textMuted }}>
+      <div className="dl-panel-raised dl-muted rounded-[8px] border p-8 text-center">
         Downloads are temporarily unavailable. Please check back shortly.
-      </p>
+      </div>
     )
   }
 
   if (!ready) {
     return (
-      <div style={{ width: '100%' }} className="animate-pulse">
-        <div className="rounded-xl" style={{ width: 288, height: 56, margin: '0 auto 4rem', backgroundColor: c.surface }} />
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: '1rem', width: '100%' }}>
-          {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="rounded-2xl" style={{ height: 160, backgroundColor: c.surface }} />
-          ))}
-        </div>
+      <div className="flex flex-col gap-4 lg:flex-row">
+        <div className="dl-panel-raised h-[420px] animate-pulse rounded-[8px]" />
+        <div className="dl-panel-raised h-[420px] animate-pulse rounded-[8px]" />
       </div>
     )
   }
 
-  const { artifacts } = manifest
-  const primary = findPrimaryArtifact(artifacts, detectedOS)
-  const platformGroups = groupByPlatform(artifacts)
+  const officePlugins = plugins.filter((plugin) => ['excel', 'powerpoint', 'word'].includes(plugin.iconKey ?? ''))
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-
-      {/* Mobile primary CTA — surface the matching store badge when iOS/Android detected */}
-      {(detectedOS === 'ios' || detectedOS === 'android') && (
-        <div style={{ marginBottom: '3rem', textAlign: 'center' }}>
-          <MobileAppBadge
-            size="lg"
-            theme={c}
-            icon={detectedOS === 'ios' ? <AppleIcon className="w-7 h-7" /> : <GooglePlayIcon className="w-7 h-7" />}
-            eyebrow={detectedOS === 'ios' ? 'Download on the' : 'Get it on'}
-            storeName={detectedOS === 'ios' ? 'App Store' : 'Google Play'}
-            href={detectedOS === 'ios' ? APP_STORE_URL : PLAY_STORE_URL}
-          />
-          <p style={{ fontSize: '0.8125rem', color: c.textSubtle, marginTop: '0.75rem' }}>
-            Desktop builds for macOS, Windows, and Linux are also available below.
-          </p>
-        </div>
-      )}
-
-      {/* Primary CTA */}
-      {primary && detectedOS !== 'ios' && detectedOS !== 'android' && (
-        <div style={{ marginBottom: '4rem', alignSelf: 'center' }}>
-          <a stagger-cta="" href={getDownloadUrl(primary.filename)} className="cta-p-sm w-inline-block">
-            <div>
-              <div stagger-cta-text="dark" className="c-text-link cc-stagger-cta">
-                Download for {findPrimaryLabel(detectedOS)}
-              </div>
+    <>
+    <div className="w-[calc(100vw-2rem)] max-w-full space-y-5 md:w-full">
+      <section className="dl-panel flex flex-col overflow-hidden rounded-[8px] border lg:flex-row">
+        <div className="flex flex-col justify-between gap-10 p-6 sm:p-8 lg:w-[44%] lg:flex-none lg:p-10">
+          <div>
+            <div className="mb-5 inline-flex items-center gap-2 rounded-[8px] border border-[#f2f218]/25 bg-[#f2f218]/10 px-3 py-2 text-xs font-medium uppercase tracking-[0.12em] text-[#f2f218]">
+              <Sparkles className="h-4 w-4" />
+              Recommended
             </div>
-            <div className="flip-small">
-              <div className="flip-bg"></div>
-            </div>
-            <div className="flip-big">
-              <div className="svg cta-sm-arrow w-embed">
-                <svg width={14} height={14} viewBox="0 0 14 14" fill="none">
-                  <g clipPath="url(#dl-clip)">
-                    <path d="M2.27832 1.625L12.3577 1.44906L12.5325 11.4643" stroke="white" strokeWidth="1.0876" strokeLinejoin="bevel" />
-                    <path d="M12.3563 1.44945L1.48389 12.6365" stroke="white" strokeWidth="1.0876" strokeLinejoin="bevel" />
-                  </g>
-                  <defs>
-                    <clipPath id="dl-clip">
-                      <rect width={12} height="11.9237" fill="white" transform="translate(0.896484 1.10547) rotate(-1)" />
-                    </clipPath>
-                  </defs>
-                </svg>
-              </div>
-            </div>
-          </a>
-        </div>
-      )}
-
-      {/* Platform sections */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: '1rem', width: '100%' }}>
-        {platformGroups.map((group) => {
-          const { component: Icon, sizeClass: iconSize, offsetY } = iconComponents[group.iconKey]
-          return (
-            <div
-              key={group.platform}
-              style={{
-                backgroundColor: c.surface,
-                border: `1px solid ${c.border}`,
-                borderRadius: '1rem',
-                overflow: 'hidden',
-              }}
-            >
-              {/* Platform header */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', padding: '1rem 1rem 0.75rem' }}>
-                <div style={{ width: 20, height: 20, flexShrink: 0, color: c.text, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', top: offsetY }}>
-                  <Icon className={iconSize} />
-                </div>
-                <h3 style={{ fontSize: '1rem', fontWeight: 600, color: c.text, margin: 0 }}>
-                  {group.label}
-                </h3>
-              </div>
-
-              {/* Download rows */}
-              <div style={{ padding: '0 1rem 0.5rem' }}>
-                {group.items.map((a) => (
-                  <a
-                    key={a.filename}
-                    href={getDownloadUrl(a.filename)}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      gap: '0.5rem',
-                      padding: '0.625rem 0',
-                      borderTop: `1px solid ${c.border}`,
-                      color: c.text,
-                      textDecoration: 'none',
-                    }}
-                  >
-                    <div style={{ minWidth: 0 }}>
-                      <span style={{ fontSize: '0.875rem', fontWeight: 500, display: 'block', color: c.text }}>{a.label}</span>
-                      <span style={{ fontSize: '0.75rem', color: c.textSubtle }}>
-                        .{a.format} &middot; {formatBytes(a.size)}
-                      </span>
-                    </div>
-                    <span style={{ flexShrink: 0, color: c.yellow, opacity: 0.7 }}>
-                      <DownloadIcon className="w-5 h-5" />
-                    </span>
-                  </a>
-                ))}
-              </div>
-            </div>
-          )
-        })}
-
-        {/* Plugins column */}
-        <div
-          style={{
-            backgroundColor: c.surface,
-            border: `1px solid ${c.border}`,
-            borderRadius: '1rem',
-            overflow: 'hidden',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', padding: '1rem 1rem 0.75rem' }}>
-            <div style={{ width: 20, height: 20, flexShrink: 0, color: c.text, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <PluginIcon className="w-5 h-5" />
-            </div>
-            <h3 style={{ fontSize: '1rem', fontWeight: 600, color: c.text, margin: 0 }}>
-              Plugins
-            </h3>
+            <h2 className="dl-text m-0 max-w-xl text-3xl font-semibold leading-tight md:text-5xl">
+              Brightwave for every research workflow.
+            </h2>
+            <p className="dl-muted mt-5 max-w-xl text-base leading-relaxed md:text-lg">
+              Install the desktop app, bring Brightwave into Office, or connect browser, workspace, and mobile apps when research moves between surfaces.
+            </p>
           </div>
 
-          <div style={{ padding: '0 1rem 0.5rem' }}>
-            {plugins.length === 0 ? (
-              <div
-                style={{
-                  padding: '0.625rem 0',
-                  borderTop: `1px solid ${c.border}`,
-                  fontSize: '0.75rem',
-                  color: c.textSubtle,
-                }}
+          <div className="space-y-5">
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <PrimaryButton artifact={primary} detectedOS={detectedOS} />
+              <a
+                href="#all-downloads"
+                className="dl-secondary-button inline-flex min-h-12 items-center justify-center rounded-[8px] border px-5 py-3 text-sm font-semibold transition"
               >
-                Coming soon
-              </div>
-            ) : (
-              plugins.map((p, i) => {
-                const iconKey = pluginIconKey(p.iconKey)
-                const { component: PIcon, sizeClass: pSize } = iconComponents[iconKey]
-                const isComingSoon = p.comingSoon || !p.downloadUrl
-                const rowStyle: React.CSSProperties = {
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  gap: '0.5rem',
-                  padding: '0.625rem 0',
-                  borderTop: `1px solid ${c.border}`,
-                  color: c.text,
-                  textDecoration: 'none',
-                }
-
-                const content = (
-                  <>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', minWidth: 0 }}>
-                      <span style={{ flexShrink: 0, color: c.text, opacity: isComingSoon ? 0.5 : 1, display: 'inline-flex' }}>
-                        <PIcon className={pSize} />
-                      </span>
-                      <div style={{ minWidth: 0 }}>
-                        <span style={{ fontSize: '0.875rem', fontWeight: 500, display: 'block', color: isComingSoon ? c.textMuted : c.text }}>
-                          {p.displayName}
-                        </span>
-                        {(p.description || isComingSoon) && (
-                          <span style={{ fontSize: '0.75rem', color: c.textSubtle }}>
-                            {isComingSoon ? 'Coming soon' : p.description}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    {!isComingSoon && (
-                      <span style={{ flexShrink: 0, color: c.yellow, opacity: 0.7 }}>
-                        <DownloadIcon className="w-5 h-5" />
-                      </span>
-                    )}
-                  </>
-                )
-
-                return isComingSoon ? (
-                  <div key={p._key ?? `${p.displayName}-${i}`} style={rowStyle}>{content}</div>
-                ) : (
-                  <a
-                    key={p._key ?? `${p.displayName}-${i}`}
-                    href={p.downloadUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={rowStyle}
-                  >
-                    {content}
-                  </a>
-                )
-              })
+                View all installers
+              </a>
+            </div>
+            {primary && (
+              <p className="dl-subtle m-0 text-sm">
+                Latest build {manifest.version} / {formatBytes(primary.size)} / SHA {manifest.sha.slice(0, 7)}
+              </p>
             )}
           </div>
         </div>
-      </div>
 
-      {/* Mobile Apps section */}
-      <div style={{ marginTop: '4rem', textAlign: 'center' }}>
-        <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: c.text, margin: '0 0 0.375rem' }}>
-          Mobile Apps
-        </h3>
-        <p style={{ fontSize: '0.875rem', color: c.textMuted, margin: '0 0 1.5rem' }}>
-          Brightwave on the go — native apps for iOS and Android.
-        </p>
-        <div style={{ display: 'inline-flex', gap: '0.75rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-          <MobileAppBadge
-            theme={c}
-            icon={<AppleIcon className="w-6 h-6" />}
-            eyebrow="Download on the"
-            storeName="App Store"
-            href={APP_STORE_URL}
-          />
-          <MobileAppBadge
-            theme={c}
-            icon={<GooglePlayIcon className="w-6 h-6" />}
-            eyebrow="Get it on"
-            storeName="Google Play"
-            href={PLAY_STORE_URL}
-          />
+        <div className="dl-border border-t p-3 sm:p-5 lg:flex-1 lg:border-l lg:border-t-0">
+          <DesktopMockup />
         </div>
-        {(!APP_STORE_URL || !PLAY_STORE_URL) && (
-          <p style={{ fontSize: '0.75rem', color: c.textSubtle, marginTop: '0.875rem' }}>
-            Coming soon to the App Store and Google Play.
-          </p>
-        )}
-      </div>
+      </section>
+
+      <section id="all-downloads" className="flex flex-col gap-5 xl:flex-row">
+        <div className="dl-panel-raised rounded-[8px] border p-6 sm:p-8 xl:w-[58%] xl:flex-none">
+          <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
+            <div>
+              <div className="dl-icon-box mb-4 flex h-11 w-11 items-center justify-center rounded-[8px] border text-[#f2f218]">
+                <MonitorDown className="h-5 w-5" />
+              </div>
+              <h3 className="dl-text m-0 text-2xl font-semibold">Desktop installers</h3>
+              <p className="dl-muted m-0 mt-2 max-w-2xl text-sm leading-relaxed">
+                Choose a native build for your operating system. macOS downloads include both Apple Silicon and Intel packages.
+              </p>
+            </div>
+            <span className="dl-control-border dl-subtle rounded-[8px] border px-3 py-2 text-xs font-medium uppercase tracking-[0.12em]">
+              v{manifest.version}
+            </span>
+          </div>
+
+          <div className="flex flex-col gap-5 lg:flex-row">
+            {platformGroups.map((group) => (
+              <div key={group.platform} className="dl-panel-soft dl-border rounded-[8px] border p-5 lg:flex-1">
+                <div className="mb-5 flex items-start gap-3">
+                  <span className="dl-icon-box flex h-11 w-11 shrink-0 items-center justify-center rounded-[8px] border">
+                    <PlatformIcon iconKey={group.iconKey} className="h-5 w-5" />
+                  </span>
+                  <div>
+                    <h4 className="dl-text m-0 text-xl font-semibold">{group.label}</h4>
+                    <p className="dl-subtle m-0 mt-1 text-sm leading-relaxed">{group.description}</p>
+                  </div>
+                </div>
+                <div>
+                  {group.items.map((artifact) => (
+                    <ArtifactRow key={artifact.filename} artifact={artifact} />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="dl-panel-raised rounded-[8px] border p-6 sm:p-8 xl:flex-1">
+          <div className="mb-8">
+            <div className="dl-icon-box mb-4 flex h-11 w-11 items-center justify-center rounded-[8px] border text-[#f2f218]">
+              <FileSpreadsheet className="h-5 w-5" />
+            </div>
+            <h3 className="dl-text m-0 text-2xl font-semibold">Microsoft Office</h3>
+            <p className="dl-muted m-0 mt-2 text-sm leading-relaxed">
+              Analyze data, build presentations, and draft documents with Brightwave next to your files.
+            </p>
+          </div>
+
+          <div>
+            {officePlugins.length === 0 ? (
+              <div className="dl-border dl-subtle border-t py-4 text-sm">Office add-ins are coming soon.</div>
+            ) : (
+              officePlugins.map((plugin) => <PluginRow key={plugin._key ?? plugin.displayName} plugin={plugin} />)
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section className="flex flex-col gap-5 lg:flex-row">
+        <div className="dl-panel-raised overflow-hidden rounded-[8px] border p-6 sm:p-8 lg:flex-1">
+          <div className="mb-8 flex items-start justify-between gap-6">
+            <div>
+              <div className="dl-icon-box mb-4 flex h-11 w-11 items-center justify-center rounded-[8px] border text-[#f2f218]">
+                <Smartphone className="h-5 w-5" />
+              </div>
+              <h3 className="dl-text m-0 text-2xl font-semibold">Mobile</h3>
+              <p className="dl-muted m-0 mt-2 max-w-xl text-sm leading-relaxed">
+                Get Brightwave on iOS and Android.
+              </p>
+            </div>
+          </div>
+          <div>
+            {mobileDownloads.map((download) => (
+              <MobileDownloadRow key={download.title} download={download} onOpen={setActiveMobileDownload} />
+            ))}
+          </div>
+        </div>
+
+        <div className="dl-panel-raised overflow-hidden rounded-[8px] border p-6 sm:p-8 lg:flex-1">
+          <div className="mb-8">
+            <div className="dl-icon-box mb-4 flex h-11 w-11 items-center justify-center rounded-[8px] border text-[#f2f218]">
+              <Plug className="h-5 w-5" />
+            </div>
+            <h3 className="dl-text m-0 text-2xl font-semibold">Browser and workspace apps</h3>
+            <p className="dl-muted m-0 mt-2 max-w-xl text-sm leading-relaxed">
+              Bring Brightwave into browser-based research and the Google files your team already uses.
+            </p>
+          </div>
+          <div className="mb-5">
+            <ComingSoonRow icon={<ChromeIcon className="h-5 w-5" />} label="Brightwave for Chrome" />
+            <ComingSoonRow icon={<AssetIcon src="/icons/google/sheets.svg" className="h-5 w-5" />} label="Brightwave for Google Sheets" />
+            <ComingSoonRow icon={<AssetIcon src="/icons/google/slides.svg" className="h-5 w-5" />} label="Brightwave for Google Slides" />
+            <ComingSoonRow icon={<AssetIcon src="/icons/google/docs.svg" className="h-5 w-5" />} label="Brightwave for Google Docs" />
+          </div>
+        </div>
+      </section>
     </div>
+    <MobileQrModal download={activeMobileDownload} onClose={() => setActiveMobileDownload(null)} />
+    </>
   )
 }
