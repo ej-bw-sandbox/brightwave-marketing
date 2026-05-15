@@ -16,14 +16,25 @@ const headerQuery = `{
 
 const fallbackMainNav = [
   { _key: 'platform', label: 'Platform', url: '/features' },
-  { _key: 'solutions', label: 'Solutions', url: '/use-cases' },
-  { _key: 'resources', label: 'Resources', url: '/blog', children: [
-    { _key: 'blog', label: 'Blog', url: '/blog' },
-    { _key: 'case-studies', label: 'Case Studies', url: '/case-studies' },
-    { _key: 'release-notes', label: 'Release Notes', url: '/release-notes' },
-    { _key: 'resources', label: 'Resources', url: '/resources' },
+  { _key: 'solutions', label: 'Solutions', url: '/solutions', children: [
+    { _key: 'private-markets', label: 'Private Markets', url: '/private-markets-platform' },
+    { _key: 'all-roles', label: 'All Roles', url: '/i-am-a' },
+    { _key: 'all-use-cases', label: 'All Use Cases', url: '/use-cases' },
+    { _key: 'all-firm-types', label: 'All Firm Types', url: '/firm-types' },
   ] },
-  { _key: 'about', label: 'About', url: '/about' },
+  { _key: 'resources', label: 'Resources', url: '/resources', children: [
+    { _key: 'about', label: 'About Us', url: '/about', description: 'Learn about Brightwave and our mission' },
+    { _key: 'blog', label: 'Blog', url: '/blog', description: 'Insights on AI and investment research' },
+    { _key: 'comparisons', label: 'Comparisons', url: '/comparisons', description: 'How Brightwave compares to alternatives' },
+    { _key: 'downloads', label: 'Downloads', url: '/downloads', description: 'Get Brightwave native apps for all of your devices.', icon: 'download' },
+    { _key: 'engineering-log', label: 'Engineering Log', url: '/engineering-log', description: 'Technical deep dives from our team' },
+    { _key: 'knowledge-base', label: 'Knowledge Base', url: 'https://docs.brightwave.io', description: 'In-depth guides and documentation' },
+    { _key: 'news', label: 'News', url: '/news', description: 'Latest updates and press coverage' },
+    { _key: 'partners', label: 'Partner Program', url: '/partners', description: 'Join our partner ecosystem' },
+    { _key: 'release-notes', label: 'Release Notes', url: '/release-notes', description: 'See our latest feature launches' },
+    { _key: 'support', label: 'Support', url: '/support', description: 'Get help from the Brightwave team' },
+  ] },
+  { _key: 'pricing', label: 'Pricing', url: '/enterprise' },
 ]
 
 const data = await safeFetch<any>(headerQuery, {}, {})

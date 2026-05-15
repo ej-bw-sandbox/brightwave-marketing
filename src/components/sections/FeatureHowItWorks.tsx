@@ -1,9 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import Image from 'next/image'
 import { PortableText } from '@portabletext/react'
-import { ptComponents } from '@/lib/sanity/portable-text-components'
 
 interface Step {
   number?: string
@@ -87,7 +85,7 @@ export function FeatureHowItWorks({ steps }: { steps: Step[] }) {
               )}
               {isActive && step.bullets && Array.isArray(step.bullets) && (
                 <div className="c-text-4" style={{ marginTop: '0.5rem' }}>
-                  <PortableText components={ptComponents} value={step.bullets} />
+                  <PortableText value={step.bullets} />
                 </div>
               )}
             </div>
@@ -117,13 +115,13 @@ export function FeatureHowItWorks({ steps }: { steps: Step[] }) {
                 transition: 'opacity 0.5s',
               }}
             >
-              <Image
+              <img
                 src={step.image.asset.url}
                 alt={step.title || ''}
                 width={step.image.asset.metadata?.dimensions?.width || 700}
                 height={step.image.asset.metadata?.dimensions?.height || 450}
                 style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                {...(i === 0 ? { priority: true } : { loading: 'lazy' })}
+                loading={i === 0 ? 'eager' : 'lazy'}
               />
             </div>
           )

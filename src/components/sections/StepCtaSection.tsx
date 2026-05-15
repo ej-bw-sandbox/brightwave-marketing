@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { LottiePlayer } from '@/components/ui/LottiePlayer'
 
 interface StepCtaSectionProps {
@@ -59,7 +58,7 @@ export function StepCtaSection({
             </div>
           )}
           <div className="cta-step">
-            <Link href={resolvedButtonUrl} className="cta-p-big w-inline-block">
+            <a href={resolvedButtonUrl} className="cta-p-big w-inline-block">
               <div className="cta-p-big_top">
                 <div className="c-text-link cc-stagger-cta">{resolvedButtonLabel}</div>
               </div>
@@ -88,7 +87,7 @@ export function StepCtaSection({
                   </clipPath>
                 </defs>
               </svg>
-            </Link>
+            </a>
           </div>
         </div>
       </div>

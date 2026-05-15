@@ -1,0 +1,64 @@
+---
+import MarketingLayout from '@/layouts/MarketingLayout.astro'
+import Cta from '@/components/astro/Cta.astro'
+import { safeFetch } from '@/lib/sanity/client'
+import { solutionsIndexQuery } from '@/lib/sanity/queries/solutions'
+import { useCaseIndexQuery } from '@/lib/sanity/queries/use-cases'
+import { icpIndexQuery } from '@/lib/sanity/queries/icps'
+import { assetUrl } from '@/lib/sanity/image'
+import { slugValue } from '@/lib/astro/text'
+
+const [firmTypes, useCases, roles] = await Promise.all([
+  safeFetch<any[]>(solutionsIndexQuery, {}, []),
+  safeFetch<any[]>(useCaseIndexQuery, {}, []),
+  safeFetch<any[]>(icpIndexQuery, {}, []),
+])
+const placeholder = 'https://d3e54v103j8qbb.cloudfront.net/plugins/Basic/assets/placeholder.60f9b1840c.svg'
+const card = (item:any, base:string) => ({
+  href: `${base}/${slugValue(item.slug)}`,
+  title: item.title,
+  eyebrow: item.eyebrow || item.menuLabel || (item.product === 'private-markets' ? 'Private Markets' : ''),
+  excerpt: item.excerpt || item.heroTagline || item.h1 || '',
+  image: assetUrl(item.heroImage, placeholder),
+})
+const solutionCards = firmTypes.map((item) => card(item, '/solutions'))
+const roleCards = roles.slice(0, 6).map((item) => card(item, '/i-am-a'))
+const useCaseCards = useCases.slice(0, 6).map((item) => card(item, '/use-cases'))
+---
+<MarketingLayout title="Solutions | Brightwave" description="AI-powered research solutions tailored for your firm type, role, and workflow." path="/solutions">
+  <section class="c-section cc-template">
+    <div class="c-container">
+      <div class="bp40-underline"><h1 class="c-title-1">Solutions</h1></div>
+      <div class="hero_text cc-top"><p class="c-text-3 u-balance">AI-powered research solutions tailored for your firm type, role, and workflow.</p></div>
+      <div class="h-20" style="margin-top: 2rem"><Cta href="/enterprise" label="Contact Sales" /><Cta href="/private-markets-platform" label="Private Markets" variant="outline" /></div>
+    </div>
+  </section>
+
+  <section class="c-section c-cs-main-list">
+    <div class="c-container">
+      <div class="c-cs-main-list_main-wrapper">
+        <div class="eyebrow cc-no-bp blue"><div class="block blue"></div><div class="c-title-5">Working at a...</div></div>
+        <h2 class="c-title-3">Firm Types</h2>
+        <div class="c-cs-main-list_wrapper w-dyn-list">
+          <div role="list" class="c-cs-main-list_list w-dyn-items">
+            {solutionCards.map((item) => <div role="listitem" class="w-dyn-item"><div class="c-cs-card_main-wrapper"><a href={item.href} class="c-link-helper w-inline-block"></a><img loading="lazy" src={item.image} alt={item.title} class="c-cs-card_image-wrapper" /><div class="c-cs-card_text-stack"><div class="c-cs-card_title-wrapper">{item.eyebrow && <div class="c-cs-card_tag-wrapper"><div class="c-cs-card_tag-square"></div><div class="c-text-5 cc-weight-500">{item.eyebrow}</div></div>}<h3 class="c-title-5">{item.title}</h3></div><div class="c-cs-card_text-wrapper"><p class="c-text-4-no-anim">{item.excerpt}</p></div></div></div></div>)}
+          </div>
+          {solutionCards.length === 0 && <div class="w-dyn-empty"><div>No firm types found.</div></div>}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="c-section" style="background: var(--lightmode--surface-1, #eff1f5)">
+    <div class="c-container">
+      <div class="v-40">
+        <div class="ent-price-head"><h2 class="c-title-3">Built for every role and workflow</h2></div>
+        <div class="ent-price-card-grid">
+          <div class="ent-price-dark-card"><div class="ent-price-dark-card_header"><div class="eyebrow-box"></div><div class="c-title-5">I am a...</div></div><div class="v-12">{roleCards.map((item) => <a href={item.href} class="c-text-5 cc-link">{item.title}</a>)}<a href="/i-am-a" class="c-text-link">View all roles →</a></div></div>
+          <div class="ent-price-dark-card"><div class="ent-price-dark-card_header"><div class="eyebrow-box"></div><div class="c-title-5">Working on...</div></div><div class="v-12">{useCaseCards.map((item) => <a href={item.href} class="c-text-5 cc-link">{item.title}</a>)}<a href="/use-cases" class="c-text-link">View all use cases →</a></div></div>
+          <div class="ent-price-dark-card"><div class="ent-price-dark-card_header"><div class="eyebrow-box"></div><div class="c-title-5">Private Markets</div></div><p class="c-text-5">Purpose-built research for PE, VC, and alternative investors.</p><a href="/private-markets-platform" class="c-text-link">Explore platform →</a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</MarketingLayout>

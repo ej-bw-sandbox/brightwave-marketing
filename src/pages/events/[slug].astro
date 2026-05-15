@@ -1,0 +1,17 @@
+---
+import MarketingLayout from '@/layouts/MarketingLayout.astro'
+import PortableText from '@/components/astro/PortableText.astro'
+import Cta from '@/components/astro/Cta.astro'
+import { safeFetch } from '@/lib/sanity/client'
+import { eventQuery, eventSlugsQuery } from '@/lib/sanity/queries/events'
+export async function getStaticPaths() {
+ const slugs = await safeFetch<any[]>(eventSlugsQuery, {}, [])
+ return slugs.map((item:any)=>({params:{slug:item.slug}}))
+}
+const slug = Astro.params.slug!
+const doc = await safeFetch<any>(eventQuery, { slug }, null)
+if (!doc) Astro.response.status = 404
+---
+<MarketingLayout title={doc?.title || 'Event'} description={doc?.seo?.metaDescription || doc?.excerpt || doc?.description || ''} seo={doc?.seo} path={`/events/${slug}`} type="article">
+  {doc ? <><section class="c-section cc-hero"><div class="c-container"><div class="bp40-underline"><h1 class="c-title-1">{doc.title}</h1></div>{(doc.excerpt || doc.description) && <div class="hero_text cc-top"><p class="c-text-3">{doc.excerpt || doc.description}</p></div>}{doc.startDate && <p class="c-text-5">{new Date(doc.startDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}{doc.city ? ` - ${doc.city}` : ''}</p>}{doc.registrationUrl && <div class="h-20" style="margin-top:1.5rem"><Cta href={doc.registrationUrl} label="Register" /></div>}</div></section>{doc.body && <section class="c-section"><div class="c-container"><PortableText value={doc.body} class="prose-brand" /></div></section>}</> : <section class="c-section"><div class="c-container"><h1 class="c-title-1">Not found</h1></div></section>}
+</MarketingLayout>

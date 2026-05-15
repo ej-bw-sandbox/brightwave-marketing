@@ -1,0 +1,13 @@
+---
+import MarketingLayout from '@/layouts/MarketingLayout.astro'
+import Cta from '@/components/astro/Cta.astro'
+import { safeFetch } from '@/lib/sanity/client'
+import { thankYouPageQuery, thankYouPageSlugsQuery } from '@/lib/sanity/queries/thank-you'
+export async function getStaticPaths(){ const slugs = await safeFetch<any[]>(thankYouPageSlugsQuery, {}, []); return slugs.map((s:any)=>({params:{slug:s.slug}})) }
+const slug = Astro.params.slug!
+const doc = await safeFetch<any>(thankYouPageQuery, { slug }, null)
+if (!doc) Astro.response.status = 404
+---
+<MarketingLayout title={doc?.heroHeading || 'Thank You | Brightwave'} description={doc?.heroBody || ''} seo={doc?.seo} path={`/thank-you/${slug}`}>
+  {doc ? <div class="main"><section class="c-section cc-thank-you_hero"><div class="c-container"><div class="c-thank-you_hero_main-wrapper"><div class="c-thank-you_hero_content-wrapper"><div class="c-thank-you_hero_content-text-stack"><h1 class="c-title-2">{doc.heroHeading}</h1><div class="c-thank-you_hero_content-divider"></div><p class="c-text-3">{doc.heroBody}</p></div><div class="c-thank-you_hero_button-wrapper"><Cta href={doc.ctaUrl || '/'} label={doc.ctaText || 'Continue'} /></div></div>{doc.heroImageUrl && <div class="c-thank-you_hero_image-wrapper"><img src={doc.heroImageUrl} loading="lazy" alt={doc.heroImageAlt || ''} class="c-thank-you_hero_image" /></div>}</div></div></section></div> : <section class="c-section"><div class="c-container"><h1 class="c-title-1">Not found</h1></div></section>}
+</MarketingLayout>

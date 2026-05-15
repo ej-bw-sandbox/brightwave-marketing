@@ -2,27 +2,62 @@
 import MarketingLayout from '@/layouts/MarketingLayout.astro'
 import Cta from '@/components/astro/Cta.astro'
 import PortableText from '@/components/astro/PortableText.astro'
+import { FeatureHowItWorks } from '@/components/sections/FeatureHowItWorks'
+import { FeatureOutputShowcase } from '@/components/sections/FeatureOutputShowcase'
 import { safeFetch } from '@/lib/sanity/client'
 import { assetUrl } from '@/lib/sanity/image'
-import { slugValue, textFromPortable, stripDraftLabels } from '@/lib/astro/text'
+import { textFromPortable, stripDraftLabels, stripHtml } from '@/lib/astro/text'
 import { featureQuery, featureSlugsQuery } from '@/lib/sanity/queries/features'
+
 export async function getStaticPaths() {
   const slugs = await safeFetch<any[]>(featureSlugsQuery, {}, [])
   return slugs.map((item:any) => ({ params: { slug: item.slug } }))
 }
 const slug = Astro.params.slug!
 const doc = await safeFetch<any>(featureQuery, { slug }, null)
-if (!doc) { Astro.response.status = 404 }
-const title = doc ? (doc.title || doc.heroH1 || 'Feature') : 'Not Found'
-const descriptionRaw = doc ? (doc.seo?.metaDescription || doc.tagline || doc.heroTagline || doc.excerpt || textFromPortable(doc.heroBody, '')) : ''
-const description = stripDraftLabels(descriptionRaw)
-const seoClean = doc?.seo ? { ...doc.seo, metaTitle: stripDraftLabels(doc.seo.metaTitle), metaDescription: stripDraftLabels(doc.seo.metaDescription) } : undefined
-const img = doc ? assetUrl(doc.heroImage || doc.coverImage || doc.thumbnail || doc.heroImage || doc.competitorLogo) : ''
+if (!doc) Astro.response.status = 404
+const title = doc ? (doc.title || 'Feature') : 'Not Found'
+const description = doc ? stripDraftLabels(doc.seo?.metaDescription || doc.heroH1 || doc.tagline || textFromPortable(doc.heroBody, '')) : ''
+const img = doc ? assetUrl(doc.heroImage) : ''
+const statBadges = doc?.statBadges ?? doc?.stats ?? []
+const capPillars = doc?.capabilityPillars ?? doc?.pillars ?? []
+const howSteps = doc?.howItWorksSteps ?? doc?.steps ?? []
+const deepDiveRows = doc?.deepDiveRows ?? []
+const outputs = doc?.outputs ?? []
+const techCaps = doc?.technicalCapabilities ?? doc?.techCapabilities
+const secComp = doc?.securityCompliance ?? doc?.securityItems
+const useCaseCards = doc?.useCaseCards ?? []
+const relatedFeatures = doc?.relatedFeatures ?? []
+const logos = doc?.socialProofLogos ?? []
+const ctaHeadline = doc?.ctaH2 ?? doc?.ctaHeadline
+function plain(v:any){ return stripHtml(typeof v === 'string' ? v : textFromPortable(v,'')) }
 ---
-<MarketingLayout title={title} description={description} seo={seoClean} path={`/features/${slug}`} type="article">
-  {doc ? <>
-    <section class="c-section cc-template"><div class="c-container"><div class="content"><div class="grid cc-template"><div class="template"><a href="/features" class="eyebrow-flex cc-mobile w-inline-block"><div class="block"></div><div class="c-title-5">Go back</div></a><h1 class="c-title-3 cc-template">{title}</h1>{description && <div class="c-text-4">{description}</div>}<div class="h-20" style="margin-top:1.5rem"><Cta href="/contact" label="Get a Demo" /></div></div><div class="u-overflow-hidden"><div class="aspect-16-9 cc-relative">{img ? <img src={img} alt={title} class="img-cover cc-abso" /> : <img src="https://d3e54v103j8qbb.cloudfront.net/plugins/Basic/assets/placeholder.60f9b1840c.svg" alt="" class="img-cover cc-abso w-dyn-bind-empty" />}</div></div></div></div></div></section>
-    <section class="c-section"><div class="c-container"><div class="rich-text w-richtext"><PortableText value={doc.body || doc.heroBody || doc.solutionBody || doc.securityContent || doc.socialContent || doc.ctaBody} /></div></div></section>
-    {(doc.capabilityPillars || doc.valuePillars || doc.challenges || doc.solutions || doc.featureHighlights || doc.capabilities || doc.contentBlocks || doc.faqs)?.length > 0 && <section class="c-section"><div class="c-container"><div class="grid cc-cards w-dyn-items">{(doc.capabilityPillars || doc.valuePillars || doc.challenges || doc.solutions || doc.featureHighlights || doc.capabilities || doc.contentBlocks || doc.faqs || []).slice(0,12).map((item:any)=><div class="partner-proof_point"><h3 class="c-title-5">{item.title || item.question || item.heading}</h3><div class="c-text-4">{item.description || item.body || item.answer || (Array.isArray(item.bullets) ? item.bullets.join(', ') : '')}</div></div>)}</div></div></section>}
-  </> : <section class="c-section"><div class="c-container"><h1 class="c-title-1">Not found</h1></div></section>}
+<MarketingLayout title={title} description={description} seo={doc?.seo} path={`/features/${slug}`} type="article">
+  {doc ? <div class="main">
+    <section class="c-section cc-hero">
+      <div class="c-container"><div class="feature-hero-grid"><div class="feature-hero-content"><div class="eyebrow cc-no-bp"><div class="block cc-primary"></div><div class="c-title-5">Platform</div></div><div class="bp40-underline"><h1 class="c-title-3">{title}</h1></div><div class="text-cta" style="margin-top:2rem">{doc.heroH1 && <div class="c-text-3 u-balance">{plain(doc.heroH1)}</div>}<PortableText value={doc.heroBody} class="c-text-4" /><div class="h-20 cc-hero" style="margin-top:1.5rem"><Cta href="https://app.brightwave.io/register" label="Start Free Trial" /><Cta href="/contact" label="Get a Demo" variant="outline" /></div></div></div>{img && <div class="feature-hero-media"><div class="aspect-16-9" style="border-radius:.75rem;overflow:hidden"><img src={img} alt={title} class="img-cover cc-abso" /></div></div>}</div>{statBadges.length > 0 && <div class="v-20" style="margin-top:3rem"><div class="partner-proof_points col-3">{statBadges.map((s:any)=><div class="partner-proof_point"><h3 class="c-title-4">{s.value}</h3><div class="c-text-4">{s.label}</div></div>)}</div></div>}</div>
+    </section>
+
+    {capPillars.length > 0 && <section class="c-section"><div class="c-container"><div class="v-40"><div class="v-20"><div class="eyebrow cc-no-bp blue"><div class="block blue"></div><div class="c-title-5">Capabilities</div></div>{doc.capabilitiesH2 && <h2 class="c-title-4">{plain(doc.capabilitiesH2)}</h2>}{(doc.capabilitiesSubtitle || doc.overviewSubtitle) && <p class="c-text-4" style="max-width:48rem">{plain(doc.capabilitiesSubtitle || doc.overviewSubtitle)}</p>}</div><div class="bw-card-grid">{capPillars.map((pillar:any, i:number)=><div class="bw-dark-card"><div class="bw-card-number">{String(i+1).padStart(2,'0')}</div><div class="v-12"><div class="c-title-5">{plain(pillar.title || pillar)}</div>{pillar.description && <div class="c-text-5" style="opacity:.7">{plain(pillar.description)}</div>}</div></div>)}</div></div></div></section>}
+
+    {howSteps.length > 0 && <section class="c-section"><div class="c-container"><div class="v-40"><div><div class="eyebrow cc-no-bp"><div class="block cc-primary"></div><div class="c-title-5">How It Works</div></div></div>{doc.howItWorksH2 && <h2 class="c-title-4">{plain(doc.howItWorksH2)}</h2>}<FeatureHowItWorks client:load steps={howSteps} /></div></div></section>}
+
+    {deepDiveRows.length > 0 && <section class="c-section"><div class="c-container"><div class="deep-dive-layout" style="display:flex;gap:4rem;align-items:flex-start"><div style="width:35%;flex-shrink:0;position:sticky;top:8rem"><div class="v-20"><div class="eyebrow cc-no-bp blue"><div class="block blue"></div><div class="c-title-5">Deep Dive</div></div>{doc.deepDiveH2 && <h2 class="c-title-4">{plain(doc.deepDiveH2)}</h2>}<div style="margin-top:1rem"><Cta href="/contact" label="See How It Works" /></div></div></div><div style="flex:1">{deepDiveRows.map((row:any, i:number)=><div class="deep-row" style={`border-top:${i>0?'1px solid var(--lightmode--onsurface-border, rgba(255,255,255,.12))':'none'};padding:${i>0?'3rem':'0'} 0 3rem`}>{assetUrl(row.image) && <div style="border-radius:.75rem;overflow:hidden;margin-bottom:1.5rem"><img src={assetUrl(row.image)} alt={row.title || ''} style="width:100%;height:auto;display:block" /></div>}{row.title && <h3 class="c-title-5" style="margin-bottom:1rem">{plain(row.title)}</h3>}<PortableText value={row.body} class="c-text-4" /></div>)}</div></div></div></section>}
+
+    {outputs.length > 0 && <section class="c-section"><div class="c-container"><div class="v-40"><div><div class="eyebrow cc-no-bp"><div class="block cc-primary"></div><div class="c-title-5">Sample Outputs</div></div></div>{doc.outputH2 && <h2 class="c-title-4">{plain(doc.outputH2)}</h2>}{doc.outputSubtitle && <p class="c-text-4" style="max-width:40rem">{plain(doc.outputSubtitle)}</p>}<FeatureOutputShowcase client:load outputs={outputs} /></div></div></section>}
+
+    {(techCaps || secComp || doc.techSpecsH2) && <section class="c-section"><div class="c-container"><div class="v-48">{doc.techSpecsH2 && <h2 class="c-title-4" style="text-align:center">{plain(doc.techSpecsH2)}</h2>}<div class="bw-card-grid two">{techCaps && <div class="bw-dark-card"><div class="c-title-5">Technical Capabilities</div><PortableText value={techCaps} class="c-text-4" /></div>}{secComp && <div class="bw-dark-card"><div class="c-title-5">Security & Compliance</div><PortableText value={secComp} class="c-text-4" /></div>}</div><div class="bw-trust-row">{['SOC 2 Type II','End-to-End Encryption','No Training on Your Data','Full Audit Trail'].map((label)=><div class="c-text-5">✓ {label}</div>)}</div></div></div></section>}
+
+    {useCaseCards.length > 0 && <section class="c-section"><div class="c-container"><div class="v-48">{doc.useCasesH2 && <div class="ent-price-head"><h2 class="c-title-4">{plain(doc.useCasesH2)}</h2></div>}<div class="ent-price-card-grid">{useCaseCards.map((uc:any)=><div class="ent-price-dark-card"><div class="ent-price-dark-card_header"><div class="eyebrow-box"></div><div class="c-title-5">{plain(uc.title)}</div></div>{uc.description && <p class="c-text-5">{plain(uc.description)}</p>}{uc.outcome && <div class="bw-pill">{plain(uc.outcome)}</div>}{uc.linkUrl && <a href={uc.linkUrl} class="c-text-link">Explore →</a>}</div>)}</div></div></div></section>}
+
+    {doc.testimonialQuote && <section no-fade class="c-section"><div class="c-container"><div class="slider-wrap"><img width="294.5" loading="lazy" alt="" src="/webflow-images/testimonial.svg" class="slider_img" /><div class="slider_item"><div class="slider_flex"><div class="c-title-4">{plain(doc.testimonialQuote)}</div>{doc.testimonialAttribution && <div class="eyebrow-flex"><div class="block cc-primary"></div><div class="c-title-5 cc-primary">{plain(doc.testimonialAttribution)}</div></div>}</div></div><div class="slider_test"><div class="c-title-5"><span class="hide-tablet">Featured </span>Quote</div></div></div></div></section>}
+    {logos.length > 0 && <section class="c-section cc-logos"><div class="c-container"><div class="bw-logo-row">{logos.map((logo:any)=> assetUrl(logo) && <img src={assetUrl(logo)} alt="" />)}</div></div></section>}
+
+    {relatedFeatures.length > 0 && <section class="c-section"><div class="c-container"><div class="v-40"><h2 class="c-title-4">Explore the Platform</h2><div class="c-line"></div><div class="h-flex-20">{relatedFeatures.map((f:any)=><a href={`/features/${f.slug?.current || f.slug}`} style="text-decoration:none;color:inherit;flex:1"><div class="explore-item" style="height:100%">{assetUrl(f.heroImage) && <div class="aspect-16-9"><div class="u-relative"><img src={assetUrl(f.heroImage)} alt={f.title || ''} class="img-cover cc-abso" /></div></div>}<div class="v-64 cc-fill" style="padding:1.5rem"><div class="v-20 cc-explore"><div class="c-text-3 cc-500">{f.title}</div>{(f.heroH1 || f.tagline) && <div class="c-text-5">{plain(f.heroH1 || f.tagline)}</div>}</div></div></div></a>)}</div></div></div></section>}
+
+    <section class="c-section"><div class="c-container"><div class="v-48" style="max-width:42rem;margin:0 auto;text-align:center;align-items:center"><div class="v-12" style="align-items:center"><h2 class="c-title-4">{ctaHeadline ? plain(ctaHeadline) : 'Ready to get started?'}</h2><PortableText value={doc.ctaBody} class="c-text-4" /></div><div class="h-20" style="justify-content:center;flex-wrap:wrap"><Cta href="https://app.brightwave.io/register" label={doc.ctaButtonLabel || 'Start Free Trial'} /><Cta href="/contact" label="Get a Demo" variant="outline" /></div><div class="bw-trust-row">{['SOC 2 Compliant','No Training on Your Data','End-to-End Encryption','Full Audit Trail'].map((label)=><div class="c-text-5">✓ {label}</div>)}</div></div></div></section>
+  </div> : <section class="c-section"><div class="c-container"><h1 class="c-title-1">Not found</h1></div></section>}
+  <style is:inline>
+    .feature-hero-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:3.5rem;align-items:center}.feature-hero-content{display:flex;flex-direction:column;gap:1.5rem}.bw-card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,18rem),1fr));gap:1.25rem}.bw-card-grid.two{grid-template-columns:repeat(auto-fit,minmax(min(100%,22rem),1fr))}.bw-dark-card{background:var(--lightmode--surface-1,#0f0f0f);border:1px solid var(--lightmode--onsurface-border,rgba(255,255,255,.08));border-radius:1rem;padding:2rem;display:flex;flex-direction:column;gap:1.5rem}.bw-card-number{padding-bottom:1.25rem;border-bottom:1px solid var(--lightmode--onsurface-border,rgba(255,255,255,.08));font-family:monospace;font-size:.875rem;letter-spacing:.1em}.bw-trust-row{display:flex;flex-wrap:wrap;gap:2rem;justify-content:center;margin-top:2rem;opacity:.65}.bw-pill{background:rgba(231,231,13,.1);color:var(--lightmode--primary);font-size:.75rem;font-weight:700;padding:.25rem .75rem;border-radius:.25rem;display:inline-block;align-self:flex-start}.bw-logo-row{display:flex;flex-wrap:wrap;gap:2.5rem;justify-content:center;align-items:center;opacity:.5}.bw-logo-row img{height:32px;width:auto;object-fit:contain}@media(max-width:991px){.feature-hero-grid{grid-template-columns:1fr;gap:2.5rem}.deep-dive-layout{flex-direction:column!important}.deep-dive-layout>div:first-child{width:100%!important;position:static!important}}
+  </style>
 </MarketingLayout>

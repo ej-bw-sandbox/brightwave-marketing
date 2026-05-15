@@ -17,14 +17,38 @@ const FALLBACK: SiteSettings = {
   copyrightText: '2026 Brightwave Inc. All rights reserved.',
   socialLinks: { linkedin: 'https://www.linkedin.com/company/brightwave-io/about/', twitter: 'https://x.com/brightwaveio' },
   footerColumns: [
-    { _key: 'col-solutions', title: 'Solutions', links: [{ _key: 'l-pm', label: 'Private Markets', url: '/private-markets-platform' }, { _key: 'features', label: 'Features', url: '/features' }, { _key: 'use-cases', label: 'Use Cases', url: '/use-cases' }] },
-    { _key: 'col-resources', title: 'Resources', links: [{ _key: 'l-blog', label: 'Blog', url: '/blog' }, { _key: 'l-rn', label: 'Release Notes', url: '/release-notes' }, { _key: 'l-cs', label: 'Case Studies', url: '/case-studies' }, { _key: 'l-support', label: 'Support', url: '/support' }]},
-    { _key: 'col-company', title: 'Company', links: [{ _key: 'l-about', label: 'About', url: '/about' }, { _key: 'l-news2', label: 'News', url: '/news' }, { _key: 'l-partners', label: 'Partners', url: '/partners' }]},
+    { _key: 'col-solutions', title: 'Solutions', links: [{ _key: 'l-pm', label: 'Private Markets', url: '/private-markets-platform' }] },
+    { _key: 'col-resources', title: 'Resources', links: [
+      { _key: 'l-blog', label: 'Blog', url: '/blog' },
+      { _key: 'l-eng-log', label: 'Engineering Log', url: '/engineering-log' },
+      { _key: 'l-events', label: 'Events', url: '/events' },
+      { _key: 'l-kb', label: 'Knowledge Base', url: 'https://docs.brightwave.io' },
+      { _key: 'l-partners', label: 'Partner Program', url: '/partners' },
+      { _key: 'l-rn', label: 'Release Notes', url: '/release-notes' },
+      { _key: 'l-support', label: 'Support', url: '/support' },
+      { _key: 'l-tools', label: 'Tools & Guides', url: '/tools-guides' },
+    ]},
+    { _key: 'col-company', title: 'Company', links: [
+      { _key: 'l-about', label: 'About', url: '/about' },
+      { _key: 'l-news2', label: 'News', url: '/news' },
+      { _key: 'l-careers', label: 'Careers', url: 'https://www.linkedin.com/company/brightwaveio/jobs/' },
+    ]},
+    { _key: 'col-comparisons', title: 'Comparisons', links: [
+      { _key: 'l-c1', label: 'vs. AlphaSense', url: '/comparisons/brightwave-vs-alphasense' },
+      { _key: 'l-c2', label: 'vs. Blueflame AI', url: '/comparisons/brightwave-vs-blueflame-ai' },
+      { _key: 'l-c3', label: 'vs. Boosted AI', url: '/comparisons/brightwave-vs-boosted-ai' },
+      { _key: 'l-c4', label: 'vs. ChatGPT', url: '/comparisons/brightwave-vs-chatgpt' },
+      { _key: 'l-c5', label: 'vs. Claude', url: '/comparisons/brightwave-vs-claude' },
+      { _key: 'l-c6', label: 'vs. Daloopa AI', url: '/comparisons/brightwave-vs-daloopa-ai' },
+      { _key: 'l-c7', label: 'vs. Hebbia', url: '/comparisons/brightwave-vs-hebbia' },
+      { _key: 'l-c8', label: 'vs. Perplexity', url: '/comparisons/brightwave-vs-perplexity' },
+      { _key: 'l-c9', label: 'vs. Rogo AI', url: '/comparisons/brightwave-vs-rogo-ai' },
+    ]},
   ],
   legalLinks: [
     { _key: 'll-security', label: 'Safety & Security', url: '/legal/safety-security' },
     { _key: 'll-privacy', label: 'Privacy Policy', url: '/legal/privacy-policy' },
-    { _key: 'll-terms', label: 'Terms of Use', url: '/legal/terms-of-use' },
+    { _key: 'll-terms', label: 'Terms of Service', url: '/legal/terms-of-use' },
   ],
 }
 const settings = await safeFetch<SiteSettings | null>(siteSettingsQuery, {}, null)

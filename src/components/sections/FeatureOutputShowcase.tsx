@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import Image from 'next/image'
 
 interface Output {
   tabLabel?: string
@@ -38,7 +37,7 @@ export function FeatureOutputShowcase({ outputs }: { outputs: Output[] }) {
       <div className="grid lg:grid-cols-2 gap-10 items-center">
         {current?.image?.asset?.url && (
           <div className="rounded-xl overflow-hidden border border-[var(--colorprimitives--gray-700,rgba(255,255,255,0.08))]">
-            <Image
+            <img
               src={current.image.asset.url}
               alt={current.tabLabel || ''}
               width={current.image.asset.metadata?.dimensions?.width || 700}

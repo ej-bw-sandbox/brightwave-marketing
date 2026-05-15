@@ -1,0 +1,13 @@
+---
+import MarketingLayout from '@/layouts/MarketingLayout.astro'
+import Cta from '@/components/astro/Cta.astro'
+import { safeFetch } from '@/lib/sanity/client'
+import { eventsIndexQuery } from '@/lib/sanity/queries/events'
+import { assetUrl } from '@/lib/sanity/image'
+const data = await safeFetch<any>(eventsIndexQuery, {}, { upcoming: [], past: [] })
+const allEvents = [...(data.upcoming || []), ...(data.past || [])]
+---
+<MarketingLayout title="Events | Brightwave" description="Upcoming events and conferences." path="/events">
+  <section class="c-section cc-event_hero"><div class="c-container"><div class="c-events-hero_main"><img src="/webflow-images/events-hero_1.avif" loading="lazy" alt="" class="c-image" /><div class="c-event-hero_title"><h2 class="c-event-title">EXPLORE</h2><div class="c-event-title_wrapper"><div class="c-event-title_span"><h2 class="c-event-title">THE</h2></div><h2 class="c-event-title">PLATFORM</h2></div></div></div></div></section>
+  <section class="c-section cc-event-list"><div class="c-container"><div class="c-event w-dyn-list">{allEvents.length > 0 ? <div role="list" class="c-event-list w-dyn-items">{allEvents.map((evt:any)=><div role="listitem" class="c-event-item w-dyn-item"><img src={assetUrl(evt.thumbnailImage, '/webflow-images/illustration_Investment-Intelligence-Engine_1.avif')} loading="lazy" alt={evt.title || ''} class="c-event-item_image" /><div class="c-event-item_box"><h2 class="c-title-3">{evt.title}</h2><p class="c-text-4">{evt.description || ''}</p>{evt.startDate && <p class="c-text-6">{new Date(evt.startDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}{evt.city ? ` - ${evt.city}` : ''}</p>}</div><Cta href={`/events/${evt.slug?.current || evt.slug || ''}`} label="Learn More" /></div>)}</div> : <div class="w-dyn-empty"><div>No items found.</div></div>}</div></div></section>
+</MarketingLayout>

@@ -1,5 +1,3 @@
-import Link from 'next/link'
-
 function CtaSmArrow() {
   return (
     <div className="svg cta-sm-arrow w-embed">
@@ -52,8 +50,8 @@ export function CtaButton({ label, href, variant = 'primary', size = 'default' }
   }
 
   return (
-    <Link href={href} className={baseClass}>
+    <a href={href} className={baseClass}>
       {inner}
-    </Link>
+    </a>
   )
 }

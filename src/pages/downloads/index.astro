@@ -1,0 +1,17 @@
+---
+import MarketingLayout from '@/layouts/MarketingLayout.astro'
+import Cta from '@/components/astro/Cta.astro'
+import { safeFetch } from '@/lib/sanity/client'
+import { downloadsQuery } from '@/lib/sanity/queries/downloads'
+const doc = await safeFetch<any>(downloadsQuery, {}, null)
+const title = doc?.headline || 'Downloads'
+const description = doc?.subheadline || 'Download Brightwave for your platform.'
+const platforms = doc?.platforms || []
+const pluginPlatforms = platforms.filter((p:any) => p.platform === 'plugins')
+const appPlatforms = platforms.filter((p:any) => p.platform !== 'plugins')
+function platformLabel(p:any){ return p.displayName || p.platform }
+---
+<MarketingLayout title={`${title} | Brightwave`} description={description} seo={doc?.seo} path="/downloads">
+  <section class="downloads-shell relative isolate overflow-hidden"><div class="downloads-grid-bg pointer-events-none absolute inset-0 bg-[size:48px_48px] opacity-80"></div><div class="c-container relative z-10"><div class="mx-auto flex max-w-5xl flex-col items-center px-0 pb-10 pt-20 text-center md:pb-14 md:pt-28"><div class="dl-border dl-panel-soft dl-muted mb-5 inline-flex items-center rounded-[8px] border px-3 py-2 text-xs font-medium uppercase tracking-[0.14em]">Downloads</div><h1 class="dl-text m-0 text-balance text-5xl font-semibold leading-[0.95] tracking-normal sm:text-6xl md:text-7xl">{title}</h1>{description && <p class="dl-muted m-0 mt-6 max-w-3xl text-lg leading-relaxed md:text-xl">{description}</p>}</div><div class="download-grid">{appPlatforms.map((p:any)=><div class="download-card"><div class="c-title-5">{platformLabel(p)}</div>{p.description && <div class="c-text-4">{p.description}</div>}{p.version && <div class="c-text-6">Version {p.version}</div>}{p.systemRequirements && <div class="c-text-6">{p.systemRequirements}</div>}{p.downloadUrl && !p.comingSoon ? <Cta href={p.downloadUrl} label="Download" /> : <span class="c-text-5">Coming soon</span>}</div>)}</div>{pluginPlatforms.length > 0 && <div class="v-40" style="margin-top:3rem"><h2 class="c-title-4">Plugins</h2><div class="download-grid">{pluginPlatforms.map((p:any)=><div class="download-card"><div class="c-title-5">{platformLabel(p)}</div><div class="c-text-4">{p.description}</div>{p.downloadUrl && <Cta href={p.downloadUrl} label="Download" />}</div>)}</div></div>}</div></section>
+  <style is:inline>.download-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));gap:1.5rem;padding-bottom:5rem}.download-card{border:1px solid var(--lightmode--onsurface-border,#d7d8db);border-radius:1rem;padding:2rem;background:rgba(255,255,255,.04);display:flex;flex-direction:column;gap:1rem}</style>
+</MarketingLayout>
