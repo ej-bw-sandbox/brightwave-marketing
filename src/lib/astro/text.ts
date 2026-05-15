@@ -29,3 +29,35 @@ export function formatDate(value?: string): string {
     return ''
   }
 }
+
+
+export function extractDraftField(value: unknown, label: string): string {
+  if (typeof value !== 'string') return ''
+  const lines = value.split(/\n/)
+  const lowerLabel = label.toLowerCase()
+  for (let i = 0; i < lines.length; i += 1) {
+    const line = lines[i].trim()
+    const normalized = line.replace(/\*\*/g, '').toLowerCase()
+    if (normalized.startsWith(lowerLabel) && normalized.includes(':')) {
+      const collected: string[] = []
+      const first = line.slice(line.indexOf(':') + 1).replace(/\*\*/g, '').trim()
+      if (first) collected.push(first)
+      for (let j = i + 1; j < lines.length; j += 1) {
+        const next = lines[j].trim()
+        const plain = next.replace(/\*\*/g, '')
+        if (/^[A-Z][^:]{1,80}:/.test(plain)) break
+        if (next) collected.push(next)
+      }
+      return collected.join(' ').trim()
+    }
+  }
+  return ''
+}
+
+export function stripDraftLabels(value: unknown): string {
+  if (typeof value !== 'string') return ''
+  return value
+    .replace(/\n\s*\n\s*\*\*[^\n:]{1,80}:\*\*[\s\S]*$/m, '')
+    .replace(/\n\s*\n\s*\*\*[^\n:]{1,80}:\*\*/g, '\n')
+    .trim()
+}

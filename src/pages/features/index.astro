@@ -1,13 +1,18 @@
 ---
 import MarketingLayout from '@/layouts/MarketingLayout.astro'
-import IndexHero from '@/components/astro/IndexHero.astro'
-import CardGrid from '@/components/astro/CardGrid.astro'
+import { FeaturesGrid } from '@/components/sections/FeaturesGrid'
 import { safeFetch } from '@/lib/sanity/client'
 import { featureIndexQuery } from '@/lib/sanity/queries/features'
-const data = await safeFetch<any>(featureIndexQuery, {}, [])
-const items = Array.isArray(data) ? data : (data.studies ?? data.posts ?? [])
+const features = await safeFetch<any[]>(featureIndexQuery, {}, [])
 ---
 <MarketingLayout title="Platform Features | Brightwave" description="Explore the AI-powered capabilities built for investment research and diligence." path="/features">
-  <IndexHero title="Platform Features" description="Explore the AI-powered capabilities built for investment research and diligence." />
-  <CardGrid items={items} base="/features" imageField="heroImage" />
+  <section class="c-section cc-cs-overview-hero">
+    <div class="c-container">
+      <div class="c-cs-overview-hero_main-wrapper">
+        <div class="c-cs-overview-hero_title-wrapper"><h1 class="c-title-1">Platform Features</h1></div>
+        <p class="c-text-3 u-balance" style="margin-top: 1rem">Explore the full suite of AI-powered features built for investment research and diligence.</p>
+      </div>
+    </div>
+  </section>
+  <section class="c-section c-cs-main-list"><div class="c-container"><FeaturesGrid client:load features={features} /></div></section>
 </MarketingLayout>

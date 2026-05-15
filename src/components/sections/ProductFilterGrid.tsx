@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import Link from 'next/link'
 
 const PRODUCT_OPTIONS = [
   { label: 'All', value: '' },
@@ -120,10 +119,10 @@ export function ProductFilterGrid({
                     className="w-dyn-item"
                   >
                     <div className="c-cs-card_main-wrapper">
-                      <Link
+                      <a
                         href={`${basePath}/${getSlug(item)}`}
                         className="c-link-helper w-inline-block"
-                      ></Link>
+                      ></a>
                       <img
                         loading="lazy"
                         src={item.heroImage?.asset?.url || placeholderImg}

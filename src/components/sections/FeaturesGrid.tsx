@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
-import Link from 'next/link'
 
 interface Feature {
   _id?: string
@@ -118,7 +117,7 @@ export function FeaturesGrid({ features }: { features: Feature[] }) {
                 className="c-cs-main-list-item w-dyn-item"
               >
                 <div className="c-cs-card_main-wrapper">
-                  <Link
+                  <a
                     href={`/features/${feature.slug?.current || ''}`}
                     className="c-link-helper w-inline-block"
                   />

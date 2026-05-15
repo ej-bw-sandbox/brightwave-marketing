@@ -2,6 +2,9 @@
 import MarketingLayout from '@/layouts/MarketingLayout.astro'
 import Cta from '@/components/astro/Cta.astro'
 import Lottie from '@/components/astro/Lottie.astro'
+import HeroPrompt from '@/components/sections/HeroPrompt'
+import KeyFeatures from '@/components/sections/KeyFeatures'
+import { LatestReleaseNotes, LatestBlogPosts } from '@/components/sections/LatestPosts'
 import { safeFetch } from '@/lib/sanity/client'
 import { homepageQuery } from '@/lib/sanity/queries/homepage'
 const doc = await safeFetch<any>(homepageQuery, {}, {})
@@ -13,9 +16,10 @@ const description = doc.heroSubheadline || 'AI-powered financial research platfo
     <div class="c-container">
       <div class="hero"><h1 class="c-title-1">{title}</h1></div>
       <div class="grid">
-        <div class="hero_text cc-top"><div class="c-text-3 u-balance">{description}</div></div>
-        <div class="hero_text cc-buttons"><div class="h-20 cc-hero">{(doc.heroCtas?.length ? doc.heroCtas : [{label:'Get a Demo',url:'/contact'}]).map((cta:any)=><Cta href={cta.url} label={cta.label} variant={cta.style} />)}</div></div>
+        <div id="w-node-a3cb6969-1e3a-7786-457c-fdbdb4350bc1-f86f60fa" class="hero_text cc-top"><div class="c-text-3 u-balance">{description}</div></div>
+        <div id="w-node-f2725423-f2dc-ef11-7810-6f4d54fb4c8e-f86f60fa" class="hero_text cc-buttons"><div class="h-20 cc-hero">{(doc.heroCtas?.length ? doc.heroCtas : [{label:'Get a Demo',url:'/contact'}]).map((cta:any)=><Cta href={cta.url} label={cta.label} variant={cta.style} />)}</div></div>
       </div>
+      <HeroPrompt client:load />
       <div lottie-bg class="lottie-reverse"><div class="learning-lottie"><div lottie-bg class="lottie-crop"><Lottie src="/webflow-documents/CTA-Lottie-25.json" class="lottie_cropped-desktop" /><Lottie src="/webflow-documents/Generative-Loop-Final-25.json" class="lottie_cropped-mobile" /></div></div></div>
       {doc.comparisonSection && <div class="v-20 cc-home">
         <div class="home-usp cc-left"><div class="eyebrow cc-no-bp"><div class="block cc-dm-light"></div><div class="c-title-5">{doc.comparisonSection.leftLabel}</div></div><div class="home-usp_inner">{(doc.comparisonSection.leftStats||[]).map((s:any)=><div class="v-24 cc-12-tablet"><div class="c-title-3">{s.value}</div><div class="c-text-4">{s.description}</div></div>)}</div></div>
@@ -23,6 +27,11 @@ const description = doc.heroSubheadline || 'AI-powered financial research platfo
       </div>}
     </div>
   </section>
-  <section class="c-section cc-logos"><div class="c-container"><div class="grid"><div class="c-title-5 u-balance">{doc.socialProofHeadline || 'Trusted by investment professionals'}</div><div class="marquee-horizontal"><div class="marquee"><div class="marquee__group">{['fortune.avif','axios.avif','american-banker.avif','latent.avif','fox-business.avif'].map((img)=><div class="marquee-logo"><img src={`/webflow-images/${img}`} loading="lazy" alt="" /></div>)}</div></div></div></div></div></section>
+  <section class="c-section cc-logos"><div class="c-container"><div class="grid"><div id="w-node-_9b9ddfcb-6d2a-87a1-d17c-e9f678accebf-f86f60fa" class="c-title-5 u-balance">{doc.socialProofHeadline || 'Trusted by investment professionals'}</div><div id="w-node-_14d87916-2524-3389-bb0c-e4ab4b8cf925-f86f60fa" class="marquee-horizontal"><div class="marquee"><div class="marquee__group">{['fortune.avif','wsjpro.png','axios.avif','american-banker.svg','fox-business.avif','latent-space.png','cerebral-valley.png','time.png'].map((img)=><div class="marquee-logo"><img src={`/webflow-images/${img}`} loading="lazy" alt="" /></div>)}</div></div></div></div></div></section>
+  <section class="c-section"><div class="c-container"><KeyFeatures client:load /></div></section>
   {doc.beforeAfter && <section class="c-section"><div class="c-container"><div class="usp-tables"><div class="usp-table"><div class="usp-table_top"><div class="c-title-4 cc-white-dynamic">{doc.beforeAfter.beforeTitle}</div></div><div class="usp-table_bottom">{(doc.beforeAfter.beforeItems||[]).map((item:string)=><div><div class="c-text-3">{item}</div><div class="c-line"></div></div>)}</div></div><div class="usp-table"><div class="usp-table_top cc-brigtwave"><div class="c-title-4 cc-dark">{doc.beforeAfter.afterTitle}</div></div><div class="usp-table_bottom">{(doc.beforeAfter.afterItems||[]).map((item:string)=><div><div class="c-text-3">{item}</div><div class="c-line"></div></div>)}</div></div></div></div></section>}
+  {doc.testimonials?.length > 0 && <section no-fade class="c-section"><div class="c-container"><div class="slider-wrap"><img width="294.5" loading="lazy" alt="" src="/webflow-images/testimonial.svg" class="slider_img" /><Lottie src="/webflow-documents/Testimonial-BG-25.json" class="slider_lottie" /><div class="slider w-dyn-list"><div role="list" class="slider_list w-dyn-items"><div role="listitem" class="slider_cms-item w-dyn-item"><div class="slider_item"><div class="slider_flex"><div class="c-title-4">{doc.testimonials[0].quote}</div><div class="eyebrow-flex"><div class="block cc-primary"></div><div class="c-title-5 cc-primary">{doc.testimonials[0].attribution || [doc.testimonials[0].authorTitle, doc.testimonials[0].company].filter(Boolean).join(', ')}</div></div></div></div></div></div></div><div class="slider_test"><div class="c-title-5"><span class="hide-tablet">Customer </span>{doc.testimonialsSectionLabel || 'Testimonials'}</div></div></div></div></section>}
+  {doc.exploreSectionTitleLines?.length > 0 && <section class="c-section"><div class="c-container"><div class="v-60"><div><div class="learning-lottie"><div lottie-bg class="lottie-crop"><Lottie src="/webflow-documents/CTA-Lottie-25.json" class="lottie_cropped-desktop" /><Lottie src="/webflow-documents/Generative-Loop-Final-25.json" class="lottie_cropped-mobile" /></div></div></div><div class="titles">{doc.exploreSectionTitleLines.map((line:any, li:number)=><div class={`title_flex${li > 0 ? ' cc-explore' : ''}`}>{(line.segments||[]).map((seg:any)=><div class={`c-title-cta${seg.style === 'muted' ? ' cc-new-grey' : ''}`}>{seg.text}</div>)}</div>)}</div>{doc.explorePlatformCards?.length > 0 && <div class="h-flex-20">{doc.explorePlatformCards.map((card:any)=><div class="explore-item"><div class="aspect-16-9"><div class="u-relative">{card.lightImage && <img src={card.lightImage} loading="lazy" width="70" light-asset alt="" class="image-abso" />}{card.darkImage && <img src={card.darkImage} loading="lazy" width="70" dark-asset alt="" class="image-abso" />}</div></div><div class="v-64 cc-fill"><div class="v-20 cc-explore"><div class="c-title-3">{card.title}</div><div class="c-text-4">{card.description}</div></div>{card.ctaUrl && <Cta href={card.ctaUrl} label={card.ctaLabel || 'Learn more'} />}</div></div>)}</div>}</div></div></section>}
+  <LatestReleaseNotes />
+  <LatestBlogPosts />
 </MarketingLayout>

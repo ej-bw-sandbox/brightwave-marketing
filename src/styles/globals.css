@@ -4,8 +4,7 @@
 /*  and components.css, so we disable Tailwind's preflight.            */
 /* ------------------------------------------------------------------ */
 
-@import "tailwindcss" layer(utilities);
-@import "../styles/animations.css";
+/* @import "../styles/animations.css"; intentionally not loaded in Astro layout. */
 
 /* ------------------------------------------------------------------ */
 /*  Tailwind v4 Theme Tokens                                           */

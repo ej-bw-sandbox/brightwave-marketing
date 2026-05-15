@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { client } from '@/lib/sanity/client'
 import { urlFor } from '@/lib/sanity/image'
 
@@ -31,7 +30,7 @@ function PostCard({ post, categoryPath }: { post: any; categoryPath: string }) {
 
   return (
     <div role="listitem" className="card_item w-dyn-item" id="w-node-c5123b81-e463-2eab-695f-359de2f2994d-4c4a8e00">
-      <Link href={`/${categoryPath}/${post.slug}`} className="card w-inline-block">
+      <a href={`/${categoryPath}/${post.slug}`} className="card w-inline-block">
         <div className="aspect-16-9">
           <img src={imgSrc} loading="lazy" alt={post.title || ''} className="img-cover" />
         </div>
@@ -39,7 +38,7 @@ function PostCard({ post, categoryPath }: { post: any; categoryPath: string }) {
           <div className="c-title-5">{post.title}</div>
           {post.publishedAt && <div className="c-text-6">{formatDate(post.publishedAt)}</div>}
         </div>
-      </Link>
+      </a>
     </div>
   )
 }
@@ -71,7 +70,7 @@ export async function LatestReleaseNotes() {
             )}
           </div>
           <div inject-tablet="founders" className="cta-founders">
-            <Link href="/release-notes" className="cta-p-sm cc-stroke w-inline-block">
+            <a href="/release-notes" className="cta-p-sm cc-stroke w-inline-block">
               <div className="c-text-link cc-stagger-cta">Read More</div>
               <div className="flip-small"><div className="flip-bg"></div></div>
               <div className="flip-big">
@@ -89,7 +88,7 @@ export async function LatestReleaseNotes() {
                   </svg>
                 </div>
               </div>
-            </Link>
+            </a>
           </div>
         </div>
       </div>
@@ -124,7 +123,7 @@ export async function LatestBlogPosts() {
             )}
           </div>
           <div inject-tablet="founders" className="cta-founders">
-            <Link href="/blog" className="cta-p-sm cc-stroke w-inline-block">
+            <a href="/blog" className="cta-p-sm cc-stroke w-inline-block">
               <div className="c-text-link cc-stagger-cta">Read More</div>
               <div className="flip-small"><div className="flip-bg"></div></div>
               <div className="flip-big">
@@ -142,7 +141,7 @@ export async function LatestBlogPosts() {
                   </svg>
                 </div>
               </div>
-            </Link>
+            </a>
           </div>
         </div>
       </div>

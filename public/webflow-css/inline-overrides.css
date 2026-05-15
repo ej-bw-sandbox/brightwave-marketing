@@ -1059,3 +1059,25 @@ select:-webkit-autofill {
   }
 }
 
+
+/* Astro detail pages reuse Webflow template classes, but dynamic titles can
+   be much longer than Webflow's original content. Keep the two-column hero
+   from collapsing to a 180px title rail on desktop. */
+.c-section.cc-template .grid.cc-template {
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.85fr);
+  grid-column-gap: 4rem;
+  align-items: start;
+}
+.c-section.cc-template .template {
+  min-width: 0;
+}
+.c-section.cc-template .c-title-3.cc-template {
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
+}
+@media screen and (max-width: 991px) {
+  .c-section.cc-template .grid.cc-template {
+    grid-template-columns: 1fr;
+  }
+}
