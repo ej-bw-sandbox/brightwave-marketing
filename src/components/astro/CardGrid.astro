@@ -1,0 +1,32 @@
+---
+import { assetUrl } from '@/lib/sanity/image'
+import { slugValue, textFromPortable } from '@/lib/astro/text'
+const { items = [], base = '/', label = 'Explore', imageField = 'heroImage' } = Astro.props
+---
+<section class="c-section c-cs-main-list">
+  <div class="c-container">
+    <div class="collection">
+      <div class="collection_list-wrap">
+        <div class="collection_list">
+          <div role="list" class="grid cc-collection w-dyn-items">
+            {items.map((item: any) => {
+              const slug = slugValue(item.slug)
+              const img = assetUrl(item[imageField] || item.thumbnail || item.coverImage)
+              const desc = item.excerpt || item.heroH1 || item.h1 || item.heroTagline || item.subtitle || textFromPortable(item.heroBody, '')
+              return <div role="listitem" class="collection_card w-dyn-item">
+                <a href={`${base}/${slug}`} class="card w-inline-block">
+                  <div class="aspect-4-3">{img ? <img alt={item.title || ''} loading="lazy" src={img} class="img-cover" /> : <img alt="" loading="lazy" src="https://d3e54v103j8qbb.cloudfront.net/plugins/Basic/assets/placeholder.60f9b1840c.svg" class="img-cover w-dyn-bind-empty" />}</div>
+                  <div class="card_flex">
+                    <div class="c-title-5">{item.title}</div>
+                    {desc && <div class="c-text-6">{desc}</div>}
+                  </div>
+                </a>
+              </div>
+            })}
+          </div>
+          {items.length === 0 && <div class="w-dyn-empty"><div>No items found.</div></div>}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

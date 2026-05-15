@@ -1,0 +1,17 @@
+---
+const { src, class: className = '', loop = true, autoplay = true } = Astro.props
+---
+<div class={className} data-lottie-src={src} data-lottie-loop={String(loop)} data-lottie-autoplay={String(autoplay)}></div>
+<script>
+  import lottie from 'lottie-web'
+  document.querySelectorAll<HTMLElement>('[data-lottie-src]:not([data-lottie-mounted])').forEach((el) => {
+    el.setAttribute('data-lottie-mounted', 'true')
+    lottie.loadAnimation({
+      container: el,
+      renderer: 'svg',
+      loop: el.dataset.lottieLoop !== 'false',
+      autoplay: el.dataset.lottieAutoplay !== 'false',
+      path: el.dataset.lottieSrc || '',
+    })
+  })
+</script>

@@ -1,0 +1,12 @@
+---
+import MarketingLayout from '@/layouts/MarketingLayout.astro'
+import ContactForm from '@/components/forms/ContactForm'
+import { safeFetch } from '@/lib/sanity/client'
+import { contactQuery } from '@/lib/sanity/queries/contact'
+const doc = await safeFetch<any>(contactQuery, {}, {})
+const title = doc.headline || 'Contact Brightwave'
+const description = doc.supportingText || 'Talk to our team about Brightwave.'
+---
+<MarketingLayout title={title} description={description} seo={doc.seo} path="/contact">
+  <section class="c-section cc-contact"><div class="c-container"><div class="bp40-underline"><h1 class="c-title-1">{title}</h1></div><div class="grid cc-contact"><div class="contact-flex"><div class="v-20"><div class="c-text-2"><strong>{description}</strong></div></div></div><div class="v-40"><ContactForm client:visible formConfig={doc.contactForm} /></div></div></div></section>
+</MarketingLayout>

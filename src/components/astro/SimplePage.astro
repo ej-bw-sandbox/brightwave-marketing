@@ -1,0 +1,14 @@
+---
+import Cta from './Cta.astro'
+import PortableText from './PortableText.astro'
+const { title, subtitle = '', body, ctaLabel = 'Get a Demo', ctaUrl = '/contact' } = Astro.props
+---
+<section class="c-section cc-hero">
+  <div class="c-container">
+    <div class="hero">
+      <h1 class="c-title-1">{title}</h1>
+    </div>
+    {subtitle && <div class="grid"><div class="hero_text cc-top"><div class="c-text-3 u-balance">{subtitle}</div></div><div class="hero_text cc-buttons"><div class="h-20 cc-hero"><Cta href={ctaUrl} label={ctaLabel} /></div></div></div>}
+  </div>
+</section>
+{body && <section class="c-section"><div class="c-container"><PortableText value={body} class="rich-text w-richtext" /></div></section>}

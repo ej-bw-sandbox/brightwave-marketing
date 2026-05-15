@@ -1,42 +1,48 @@
 {
+  "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "react-jsx",
-    "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
+    "baseUrl": ".",
     "paths": {
       "@/*": [
         "./src/*"
       ]
     },
-    "target": "ES2017",
-    "forceConsistentCasingInFileNames": true
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
+    "types": [
+      "astro/client",
+      "node"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "noEmit": true
   },
   "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts"
+    ".astro/types.d.ts",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.astro"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "dist",
+    ".vercel",
+    ".astro",
+    "src/app/**",
+    "src/sanity/**",
+    "src/components/demo/**",
+    "src/components/sections/**",
+    "src/components/ui/**",
+    "src/components/layout/footer.tsx",
+    "src/components/layout/header-wrapper.tsx",
+    "src/components/layout/logo.tsx",
+    "src/components/layout/nav.tsx",
+    "src/components/forms/contact-form.tsx",
+    "src/components/forms/demo-form.tsx",
+    "src/components/forms/resource-gate-form.tsx",
+    "src/components/forms/rsvp-form.tsx",
+    "src/lib/metadata.ts",
+    "src/lib/downloads/**",
+    "src/lib/sanity/portable-text-components.tsx"
   ]
 }

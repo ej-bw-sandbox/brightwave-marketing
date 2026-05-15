@@ -1,0 +1,9 @@
+---
+const { href = '/contact', label = 'Get a Demo', variant = 'primary', class: className = '' } = Astro.props
+const isSecondary = variant === 'secondary' || variant === 'outline'
+---
+<a stagger-cta href={href} class={`cta-p-sm${isSecondary ? ' cc-stroke' : ''} w-inline-block ${className}`}>
+  <div><div stagger-cta-text="dark" class="c-text-link cc-stagger-cta">{label}</div></div>
+  <div class="flip-small"><div class="flip-bg"></div></div>
+  <div class="flip-big"><div class="svg cta-sm-arrow w-embed"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.27832 1.625L12.3577 1.44906L12.5325 11.4643" stroke="white" stroke-width="1.0876" stroke-linejoin="bevel"></path><path d="M12.3563 1.44945L1.48389 12.6365" stroke="white" stroke-width="1.0876" stroke-linejoin="bevel"></path></svg></div></div>
+</a>

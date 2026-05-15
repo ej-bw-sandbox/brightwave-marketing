@@ -1,0 +1,20 @@
+---
+import MarketingLayout from '@/layouts/MarketingLayout.astro'
+import PortableText from '@/components/astro/PortableText.astro'
+import { safeFetch } from '@/lib/sanity/client'
+import { legalQuery, legalSlugsQuery } from '@/lib/sanity/queries/legal'
+export async function getStaticPaths() {
+  const slugs = await safeFetch<any[]>(legalSlugsQuery, {}, [])
+  return slugs.map((item:any) => ({ params: { slug: item.slug } }))
+}
+const slug = Astro.params.slug!
+const doc = await safeFetch<any>(legalQuery, { slug }, null)
+if (!doc) Astro.response.status = 404
+const title = doc?.title || 'Legal'
+const description = doc?.seo?.metaDescription || ''
+const titleWords = title.split(/\s+/)
+const date = doc?.effectiveDate ? new Date(doc.effectiveDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : ''
+---
+<MarketingLayout title={title} description={description} seo={doc?.seo} path={`/legal/${slug}`}>
+  <section class="c-section cc-legal"><div class="c-container"><div class="grid cc-8"><div class="legal_flex cc-gap-0" style="grid-area: 1 / 3 / 2 / 7"><div class="legal_titles">{titleWords.map((word:string,i:number)=><div class={`legal_title${i>0?' cc-right':''}`}><div class="c-title-2">{word.toUpperCase()}</div></div>)}{date && <div class="legal_date"><div class="block"></div><div class="c-title-5">{date}</div></div>}</div><div class="legal-rt w-richtext">{doc?.body ? <PortableText value={doc.body} /> : <p>Content coming soon.</p>}</div></div></div></div></section>
+</MarketingLayout>

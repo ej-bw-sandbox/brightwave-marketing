@@ -1,0 +1,46 @@
+---
+import '@/styles/globals.css'
+import { buildSeo, type SeoProps } from '@/lib/astro/seo'
+
+interface Props extends SeoProps {
+  bodyClass?: string
+}
+
+const seo = buildSeo(Astro.props)
+const gaId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID || import.meta.env.ASTRO_PUBLIC_GA_MEASUREMENT_ID || import.meta.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
+const posthogKey = import.meta.env.PUBLIC_POSTHOG_KEY || import.meta.env.ASTRO_PUBLIC_POSTHOG_KEY || import.meta.env.NEXT_PUBLIC_POSTHOG_KEY
+const posthogHost = import.meta.env.PUBLIC_POSTHOG_HOST || import.meta.env.ASTRO_PUBLIC_POSTHOG_HOST || import.meta.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://us.posthog.com'
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{seo.title}</title>
+    <meta name="description" content={seo.description} />
+    <link rel="canonical" href={seo.canonical} />
+    {seo.noIndex && <meta name="robots" content="noindex,nofollow" />}
+    <meta property="og:title" content={seo.title} />
+    <meta property="og:description" content={seo.description} />
+    <meta property="og:url" content={seo.canonical} />
+    <meta property="og:site_name" content="Brightwave" />
+    <meta property="og:type" content={seo.type} />
+    <meta property="og:image" content={seo.ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={seo.title} />
+    <meta name="twitter:description" content={seo.description} />
+    <meta name="twitter:image" content={seo.ogImage} />
+    <link rel="icon" href="/webflow-images/favicon.png" />
+    <link href="/webflow-css/normalize.css" rel="stylesheet" type="text/css" />
+    <link href="/webflow-css/components.css" rel="stylesheet" type="text/css" />
+    <link href="/webflow-css/brightwave.css" rel="stylesheet" type="text/css" />
+    <link href="/webflow-css/inline-overrides.css" rel="stylesheet" type="text/css" />
+    <script is:inline>(function(){try{var t=localStorage.getItem('theme');var d=t?t==='dark':window.matchMedia('(prefers-color-scheme:dark)').matches;if(d){document.documentElement.setAttribute('theme','dark');document.documentElement.classList.add('u-dark-mode')}}catch(e){}})()</script>
+    {gaId && <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}></script>}
+    {gaId && <script is:inline define:vars={{ gaId }}>{`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)};gtag('js',new Date());gtag('config',gaId,{page_path:window.location.pathname});`}</script>}
+    {posthogKey && <script is:inline define:vars={{ posthogKey, posthogHost }}>{`(function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split('.');2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement('script')).type='text/javascript',p.async=!0,p.src=s.api_host.replace('.i.posthog.com','-assets.i.posthog.com')+'/static/array.js',(r=t.getElementsByTagName('script')[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a='posthog',u.people=u.people||[],u.toString=function(t){var e='posthog';return'posthog'!==a&&(e+='.'+a),t||(e+=' (stub)'),e},u.people.toString=function(){return u.toString(1)+'.people (stub)'},o='capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags reloadFeatureFlags'.split(' '),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)})(document,window.posthog||[]);posthog.init(posthogKey,{api_host:posthogHost,capture_pageview:true});`}</script>}
+  </head>
+  <body class={Astro.props.bodyClass || 'bg-white text-bw-gray-800 antialiased'}>
+    <slot />
+  </body>
+</html>

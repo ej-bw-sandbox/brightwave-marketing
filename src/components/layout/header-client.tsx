@@ -1,6 +1,5 @@
 "use client"
 
-import Link from 'next/link'
 import { useState, useEffect, useCallback } from 'react'
 import type { LucideIcon } from 'lucide-react'
 import {
@@ -336,7 +335,7 @@ export function HeaderClient({
         <div className="announcement-bar" style={{ background: '#1a1a2e', color: '#fff', textAlign: 'center', padding: '10px 16px', fontSize: '14px' }}>
           <span>{announcementBar.text}</span>
           {announcementBar.link && announcementBar.linkText && (
-            <Link href={announcementBar.link} style={{ color: '#818cf8', marginLeft: '8px', textDecoration: 'underline' }}>{announcementBar.linkText}</Link>
+            <a href={announcementBar.link} style={{ color: '#818cf8', marginLeft: '8px', textDecoration: 'underline' }}>{announcementBar.linkText}</a>
           )}
         </div>
       )}
@@ -389,19 +388,19 @@ export function HeaderClient({
                                   <div style={{ display: 'grid', gridTemplateColumns: `repeat(${featureCategories.length}, 1fr)`, gap: 40 }}>
                                     {featureCategories.map((cat, ci) => (
                                       <div key={ci}>
-                                        <Link href={cat.href} style={{
+                                        <a href={cat.href} style={{
                                           display: 'flex', alignItems: 'center', gap: 8,
                                           fontSize: 14, fontWeight: 600, color: MEGA.text,
                                           textDecoration: 'none', marginBottom: 16,
                                         }} onClick={() => setOpenDropdown(null)}>
                                           {(() => { const CatIcon = CATEGORY_ICONS[cat.title]; return CatIcon ? <CatIcon size={16} style={{ opacity: 0.7 }} /> : null })()}
                                           {cat.title} <span style={{ fontSize: 16 }}>&rarr;</span>
-                                        </Link>
+                                        </a>
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                                           {cat.items.slice(0, 4).map((item, ii) => {
                                             const ItemIcon = getFeatureIcon(item.href, (item as any).menuIcon)
                                             return (
-                                            <Link key={ii} href={item.href} style={{
+                                            <a key={ii} href={item.href} style={{
                                               display: 'flex', alignItems: 'center', gap: 10,
                                               padding: '6px 0', color: MEGA.text,
                                               textDecoration: 'none', fontSize: 14, fontWeight: 400,
@@ -413,11 +412,11 @@ export function HeaderClient({
                                             >
                                               {ItemIcon && <ItemIcon size={15} style={{ opacity: 0.5, flexShrink: 0 }} />}
                                               <span>{item.title}</span>
-                                            </Link>
+                                            </a>
                                             )
                                           })}
                                           {cat.items.length > 4 && (
-                                            <Link href={cat.href} style={{
+                                            <a href={cat.href} style={{
                                               display: 'flex', alignItems: 'center', gap: 6,
                                               padding: '8px 0 2px', color: MEGA.accent,
                                               textDecoration: 'none', fontSize: 13, fontWeight: 600,
@@ -428,7 +427,7 @@ export function HeaderClient({
                                               onClick={() => setOpenDropdown(null)}
                                             >
                                               More &rarr;
-                                            </Link>
+                                            </a>
                                           )}
                                         </div>
                                       </div>
@@ -449,8 +448,8 @@ export function HeaderClient({
                                       AI-powered research and analysis for investment professionals
                                     </div>
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                                      <Link href={platformNav.url} style={{ color: MEGA.accent, fontSize: 14, fontWeight: 500, textDecoration: 'none' }} onClick={() => setOpenDropdown(null)}>View All Features &rarr;</Link>
-                                      <Link href="/enterprise-security-compliance" style={{ color: MEGA.accent, fontSize: 14, fontWeight: 500, textDecoration: 'none' }} onClick={() => setOpenDropdown(null)}>Enterprise Security &rarr;</Link>
+                                      <a href={platformNav.url} style={{ color: MEGA.accent, fontSize: 14, fontWeight: 500, textDecoration: 'none' }} onClick={() => setOpenDropdown(null)}>View All Features &rarr;</a>
+                                      <a href="/enterprise-security-compliance" style={{ color: MEGA.accent, fontSize: 14, fontWeight: 500, textDecoration: 'none' }} onClick={() => setOpenDropdown(null)}>Enterprise Security &rarr;</a>
                                     </div>
                                   </div>
                                 </div>
@@ -478,7 +477,7 @@ export function HeaderClient({
                                 <div style={{ display: 'flex', alignItems: 'stretch', gap: 0 }}>
                                   {/* Left: Private Markets card */}
                                   <div style={{ display: 'flex', alignItems: 'center', paddingRight: 40, flexShrink: 0 }}>
-                                    <Link
+                                    <a
                                       href="/private-markets-platform"
                                       onClick={() => setOpenDropdown(null)}
                                       style={{
@@ -495,7 +494,7 @@ export function HeaderClient({
                                       onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.background = MEGA.cardBg)}
                                     >
                                       Private Markets
-                                    </Link>
+                                    </a>
                                   </div>
 
                                   {/* Vertical divider */}
@@ -510,7 +509,7 @@ export function HeaderClient({
                                       </div>
                                       <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                                         {icpPages.length > 0 ? icpPages.map((icp, i) => (
-                                          <Link key={i} href={`/i-am-a/${icp.slug}`} style={{
+                                          <a key={i} href={`/i-am-a/${icp.slug}`} style={{
                                             display: 'flex', alignItems: 'center', gap: 8,
                                             padding: '6px 0', color: MEGA.text,
                                             textDecoration: 'none', fontSize: 14, fontWeight: 400,
@@ -522,15 +521,15 @@ export function HeaderClient({
                                           >
                                             <span style={{ width: 6, height: 6, borderRadius: 1, background: MEGA.textMuted, flexShrink: 0 }} />
                                             {icp.menuLabel || icp.title}
-                                          </Link>
+                                          </a>
                                         )) : (
                                           <div style={{ fontSize: 13, color: MEGA.textMuted }}>Coming soon</div>
                                         )}
-                                        <Link href="/i-am-a" style={{ fontSize: 13, color: MEGA.textMuted, textDecoration: 'none', marginTop: 8, transition: 'opacity 0.15s' }}
+                                        <a href="/i-am-a" style={{ fontSize: 13, color: MEGA.textMuted, textDecoration: 'none', marginTop: 8, transition: 'opacity 0.15s' }}
                                           onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '0.7')}
                                           onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '1')}
                                           onClick={() => setOpenDropdown(null)}
-                                        >More &rarr;</Link>
+                                        >More &rarr;</a>
                                       </div>
                                     </div>
 
@@ -541,7 +540,7 @@ export function HeaderClient({
                                       </div>
                                       <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                                         {useCases.length > 0 ? useCases.map((uc, i) => (
-                                          <Link key={i} href={`/use-cases/${uc.slug}`} style={{
+                                          <a key={i} href={`/use-cases/${uc.slug}`} style={{
                                             display: 'flex', alignItems: 'center', gap: 8,
                                             padding: '6px 0', color: MEGA.text,
                                             textDecoration: 'none', fontSize: 14, fontWeight: 400,
@@ -553,17 +552,17 @@ export function HeaderClient({
                                           >
                                             <span style={{ width: 6, height: 6, borderRadius: 1, background: MEGA.textMuted, flexShrink: 0 }} />
                                             {uc.menuLabel || uc.title}
-                                          </Link>
+                                          </a>
                                         )) : (
-                                          <Link href="/private-markets-platform" style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 0', color: MEGA.text, textDecoration: 'none', fontSize: 14 }} onClick={() => setOpenDropdown(null)}>
+                                          <a href="/private-markets-platform" style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 0', color: MEGA.text, textDecoration: 'none', fontSize: 14 }} onClick={() => setOpenDropdown(null)}>
                                             <span style={{ width: 6, height: 6, borderRadius: 1, background: MEGA.textMuted, flexShrink: 0 }} /> Private Markets
-                                          </Link>
+                                          </a>
                                         )}
-                                        <Link href="/use-cases" style={{ fontSize: 13, color: MEGA.textMuted, textDecoration: 'none', marginTop: 8, transition: 'opacity 0.15s' }}
+                                        <a href="/use-cases" style={{ fontSize: 13, color: MEGA.textMuted, textDecoration: 'none', marginTop: 8, transition: 'opacity 0.15s' }}
                                           onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '0.7')}
                                           onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '1')}
                                           onClick={() => setOpenDropdown(null)}
-                                        >More &rarr;</Link>
+                                        >More &rarr;</a>
                                       </div>
                                     </div>
 
@@ -574,7 +573,7 @@ export function HeaderClient({
                                       </div>
                                       <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                                         {firmTypes.length > 0 ? firmTypes.map((ft, i) => (
-                                          <Link key={i} href={`/firm-types/${ft.slug}`} style={{
+                                          <a key={i} href={`/firm-types/${ft.slug}`} style={{
                                             display: 'flex', alignItems: 'center', gap: 8,
                                             padding: '6px 0', color: MEGA.text,
                                             textDecoration: 'none', fontSize: 14, fontWeight: 400,
@@ -586,15 +585,15 @@ export function HeaderClient({
                                           >
                                             <span style={{ width: 6, height: 6, borderRadius: 1, background: MEGA.textMuted, flexShrink: 0 }} />
                                             {ft.menuLabel || ft.title}
-                                          </Link>
+                                          </a>
                                         )) : (
                                           <div style={{ fontSize: 13, color: MEGA.textMuted }}>Coming soon</div>
                                         )}
-                                        <Link href="/firm-types" style={{ fontSize: 13, color: MEGA.textMuted, textDecoration: 'none', marginTop: 8, transition: 'opacity 0.15s' }}
+                                        <a href="/firm-types" style={{ fontSize: 13, color: MEGA.textMuted, textDecoration: 'none', marginTop: 8, transition: 'opacity 0.15s' }}
                                           onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '0.7')}
                                           onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.opacity = '1')}
                                           onClick={() => setOpenDropdown(null)}
-                                        >More &rarr;</Link>
+                                        >More &rarr;</a>
                                       </div>
                                     </div>
                                   </div>
@@ -667,9 +666,9 @@ export function HeaderClient({
                                           {content}
                                         </a>
                                       ) : (
-                                        <Link key={child._key} href={child.url} {...linkProps}>
+                                        <a key={child._key} href={child.url} {...linkProps}>
                                           {content}
-                                        </Link>
+                                        </a>
                                       )
                                     })}
                                   </div>

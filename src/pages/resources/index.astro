@@ -1,0 +1,13 @@
+---
+import MarketingLayout from '@/layouts/MarketingLayout.astro'
+import IndexHero from '@/components/astro/IndexHero.astro'
+import CardGrid from '@/components/astro/CardGrid.astro'
+import { safeFetch } from '@/lib/sanity/client'
+import { resourceIndexQuery } from '@/lib/sanity/queries/resources'
+const data = await safeFetch<any>(resourceIndexQuery, {}, [])
+const items = Array.isArray(data) ? data : (data.studies ?? data.posts ?? [])
+---
+<MarketingLayout title="Resources | Brightwave" description="Guides, tools, and resources for investment professionals." path="/resources">
+  <IndexHero title="Resources" description="Guides, tools, and resources for investment professionals." />
+  <CardGrid items={items} base="/resources" imageField="thumbnail" />
+</MarketingLayout>

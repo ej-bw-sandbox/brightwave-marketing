@@ -1,0 +1,14 @@
+---
+const { title, description = '', eyebrow = '' } = Astro.props
+---
+<section class="c-section cc-cs-overview-hero">
+  <div class="c-container">
+    <div class="c-cs-overview-hero_main-wrapper">
+      <div class="c-cs-overview-hero_title-wrapper">
+        {eyebrow && <div class="eyebrow cc-no-bp"><div class="block"></div><div class="c-title-5">{eyebrow}</div></div>}
+        <h1 class="c-title-1">{title}</h1>
+        {description && <p class="c-text-3 u-balance" style="max-width: 56rem; margin-top: 1rem">{description}</p>}
+      </div>
+    </div>
+  </div>
+</section>

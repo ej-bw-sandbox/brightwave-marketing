@@ -1,0 +1,13 @@
+---
+import MarketingLayout from '@/layouts/MarketingLayout.astro'
+import IndexHero from '@/components/astro/IndexHero.astro'
+import CardGrid from '@/components/astro/CardGrid.astro'
+import { safeFetch } from '@/lib/sanity/client'
+import { contentPostIndexQuery } from '@/lib/sanity/queries/content-posts'
+const data = await safeFetch<any>(contentPostIndexQuery, { category: 'blog', offset: 0, limit: 100 }, { posts: [] })
+const items = data.posts ?? []
+---
+<MarketingLayout title="Blog | Brightwave" description="Insights from the Brightwave team." path="/blog">
+  <IndexHero title="Blog" description="Insights from the Brightwave team." />
+  <CardGrid items={items} base="/blog" imageField="coverImage" />
+</MarketingLayout>

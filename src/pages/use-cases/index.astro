@@ -1,0 +1,13 @@
+---
+import MarketingLayout from '@/layouts/MarketingLayout.astro'
+import IndexHero from '@/components/astro/IndexHero.astro'
+import CardGrid from '@/components/astro/CardGrid.astro'
+import { safeFetch } from '@/lib/sanity/client'
+import { useCaseIndexQuery } from '@/lib/sanity/queries/use-cases'
+const data = await safeFetch<any>(useCaseIndexQuery, {}, [])
+const items = Array.isArray(data) ? data : (data.studies ?? data.posts ?? [])
+---
+<MarketingLayout title="Use Cases | Brightwave" description="How private markets teams use Brightwave across diligence, memos, and portfolio work." path="/use-cases">
+  <IndexHero title="Use Cases" description="How private markets teams use Brightwave across diligence, memos, and portfolio work." />
+  <CardGrid items={items} base="/use-cases" imageField="heroImage" />
+</MarketingLayout>

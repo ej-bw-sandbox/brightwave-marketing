@@ -1,0 +1,12 @@
+---
+import MarketingLayout from '@/layouts/MarketingLayout.astro'
+import SimplePage from '@/components/astro/SimplePage.astro'
+import { safeFetch } from '@/lib/sanity/client'
+import { enterprise_security_complianceQuery } from '@/lib/sanity/queries/enterprise-security-compliance'
+const doc = await safeFetch<any>(enterprise_security_complianceQuery, {}, {})
+const title = doc.heroHeadline || doc.title || 'Enterprise Security & Compliance'
+const description = doc.heroSubtext || doc.description || ''
+---
+<MarketingLayout title={title} description={description} seo={doc.seo} path="/enterprise-security-compliance">
+  <SimplePage title={title} subtitle={description} body={null} ctaLabel={doc.heroPrimaryCta?.label || doc.ctaText || doc.heroCta || 'Get a Demo'} ctaUrl={doc.heroPrimaryCta?.url || doc.ctaUrl || '/contact'} />
+</MarketingLayout>

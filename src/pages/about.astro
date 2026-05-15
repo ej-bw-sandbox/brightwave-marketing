@@ -1,0 +1,12 @@
+---
+import MarketingLayout from '@/layouts/MarketingLayout.astro'
+import SimplePage from '@/components/astro/SimplePage.astro'
+import { safeFetch } from '@/lib/sanity/client'
+import { aboutQuery } from '@/lib/sanity/queries/about'
+const doc = await safeFetch<any>(aboutQuery, {}, {})
+const title = doc.headline || 'About Brightwave'
+const description = doc.mission || 'Meet the team building the future of financial research.'
+---
+<MarketingLayout title={title} description={description} seo={doc.seo} path="/about">
+  <SimplePage title={title} subtitle={description} body={doc.story || null} ctaLabel={doc.heroPrimaryCta?.label || doc.ctaText || doc.heroCta || 'Get a Demo'} ctaUrl={doc.heroPrimaryCta?.url || doc.ctaUrl || '/contact'} />
+</MarketingLayout>

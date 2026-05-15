@@ -1,0 +1,16 @@
+---
+import MarketingLayout from '@/layouts/MarketingLayout.astro'
+import Cta from '@/components/astro/Cta.astro'
+import Lottie from '@/components/astro/Lottie.astro'
+import { RoiCalculator } from '@/components/islands/RoiCalculator'
+import { safeFetch } from '@/lib/sanity/client'
+import { enterpriseQuery } from '@/lib/sanity/queries/enterprise'
+const doc = await safeFetch<any>(enterpriseQuery, {}, {})
+const title = doc.heroHeadline || 'Enterprise'
+const description = doc.heroSubheadline || 'Brightwave for enterprise teams.'
+---
+<MarketingLayout title={title} description={description} seo={doc.seo} path="/enterprise">
+  <section class="c-section ent-price-hero"><div class="c-container"><div class="ent-pricing_hero-content"><div class="c-ent-price_hero-wrapper"><h1 class="c-title-3">{title}</h1><div class="text-cta ent-price-hero"><div class="c-text-3">{description}</div><div class="h-20">{(doc.heroCtas?.length?doc.heroCtas:[{label:'Get a Demo',url:'/contact'}]).map((cta:any)=><Cta href={cta.url} label={cta.label} variant={cta.style} />)}</div></div></div><div class="c-ent-price_wizard-wrapper"><RoiCalculator client:visible title={doc.roiCalcTitle || 'Get Started'} ctaLabel={doc.roiCalcCtaLabel || 'Schedule a Demo'} ctaUrl={doc.roiCalcCtaUrl || 'https://calendly.com/d/cv37-bhv-664/brightwave-trial'} formConfig={doc.wizardForm} /></div></div></div></section>
+  <section class="c-section cc-program-lottie"><div class="c-container"><div lottie-bg class="lottie-crop cc-market"><Lottie src="/webflow-documents/Generative-Loop-Final-25.json" class="lottie_cropped-desktop cc-market" /><Lottie src="/webflow-documents/Generative-Loop-Final.json" class="lottie_cropped-mobile" /></div></div></section>
+  <section class="c-section"><div class="c-container"><div class="partner-proof_points col-3">{(doc.proofPoints||[]).map((p:any)=><div class="partner-proof_point"><h3 class="c-title-4">{p.value}</h3><div class="c-text-4">{p.description}</div></div>)}</div></div></section>
+</MarketingLayout>

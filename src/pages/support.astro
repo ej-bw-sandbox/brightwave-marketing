@@ -1,0 +1,11 @@
+---
+import MarketingLayout from '@/layouts/MarketingLayout.astro'
+import SimplePage from '@/components/astro/SimplePage.astro'
+import { safeFetch } from '@/lib/sanity/client'
+const doc = await safeFetch<any>(`*[_type == "supportPage"][0]{ title, headline, supportingText, seo }`, {}, {})
+const title = doc.headline || doc.title || 'Support'
+const description = doc.supportingText || 'Need help? Contact the Brightwave team.'
+---
+<MarketingLayout title={title} description={description} seo={doc.seo} path="/support">
+  <SimplePage title={title} subtitle={description} body={null} ctaLabel={doc.heroPrimaryCta?.label || doc.ctaText || doc.heroCta || 'Get a Demo'} ctaUrl={doc.heroPrimaryCta?.url || doc.ctaUrl || '/contact'} />
+</MarketingLayout>

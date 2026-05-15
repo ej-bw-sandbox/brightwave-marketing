@@ -1,0 +1,37 @@
+---
+import { imageUrl } from '@/lib/sanity/image'
+const { value, class: className = 'prose-brand' } = Astro.props
+function childrenText(block: any) { return (block?.children || []).map((c: any) => c.text || '').join('') }
+function hrefFor(mark: any) {
+  if (!mark) return '#'
+  if (mark.href) return mark.href
+  const ref = mark.reference
+  const slug = ref?.slug?.current || ref?.slug
+  const map: Record<string,string> = { contentPost: '/blog/', caseStudy: '/case-studies/', useCase: '/use-cases/', platformFeature: '/features/', firmType: '/firm-types/', icpPage: '/i-am-a/', comparison: '/comparisons/', resourceItem: '/resources/', virtualEvent: '/events/' }
+  return slug ? `${map[ref?._type] || '/'}${slug}` : '#'
+}
+function renderSpan(child: any, block: any) {
+  let text = child?.text || ''
+  return text
+}
+---
+{Array.isArray(value) && value.length > 0 && (
+  <div class={className}>
+    {value.map((block: any) => {
+      if (block._type === 'image' && block.asset) {
+        return <figure class="my-8"><img src={imageUrl(block, 960)} alt={block.alt || ''} loading="lazy" class="rounded-lg w-full" />{block.caption && <figcaption>{block.caption}</figcaption>}</figure>
+      }
+      if (block._type !== 'block') return null
+      const text = childrenText(block)
+      const style = block.style || 'normal'
+      if (!text) return null
+      if (style === 'h1') return <h1>{text}</h1>
+      if (style === 'h2') return <h2>{text}</h2>
+      if (style === 'h3') return <h3>{text}</h3>
+      if (style === 'h4') return <h4>{text}</h4>
+      if (style === 'blockquote') return <blockquote>{text}</blockquote>
+      if (block.listItem) return <li>{text}</li>
+      return <p>{text}</p>
+    })}
+  </div>
+)}

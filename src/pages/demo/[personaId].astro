@@ -1,0 +1,8 @@
+---
+import MarketingLayout from '@/layouts/MarketingLayout.astro'
+export const prerender = false
+Astro.response.status = 503
+---
+<MarketingLayout title="Demo deferred | Brightwave" description="The live avatar demo is deferred from the Astro marketing preview." path={Astro.url.pathname} seo={{ noIndex: true }}>
+  <section class="c-section"><div class="c-container"><h1 class="c-title-1">Demo temporarily deferred</h1><p class="c-text-3">The Anam/Anthropic live demo stack remains documented as a deferred app surface because it requires live session APIs and durable session storage.</p><a class="cta-p-sm w-inline-block" href="/contact"><div class="c-text-link cc-stagger-cta">Contact us</div></a></div></section>
+</MarketingLayout>

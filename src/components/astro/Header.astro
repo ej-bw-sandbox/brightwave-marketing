@@ -1,0 +1,47 @@
+---
+import { HeaderClient } from '@/components/layout/header-client'
+import { client, safeFetch } from '@/lib/sanity/client'
+
+const headerQuery = `{
+  "settings": *[_type == "siteSettings" && _id == "siteSettings"][0]{
+    headerCtas[] { _key, label, url, style, openInNewTab },
+    announcementBar,
+    mainNav[] { _key, label, url, children[] { _key, label, url, description, icon } }
+  },
+  "useCases": *[_type == "useCase" && defined(slug.current)] | order(menuLabel asc, title asc) [0..12] { title, "menuLabel": coalesce(menuLabel, title), "slug": slug.current },
+  "icpPages": *[_type == "icpPage" && defined(slug.current)] | order(menuLabel asc, title asc) [0..12] { title, "menuLabel": coalesce(menuLabel, title), "slug": slug.current },
+  "firmTypes": *[_type == "firmType" && defined(slug.current)] | order(menuLabel asc, title asc) [0..12] { title, "menuLabel": coalesce(menuLabel, title), "slug": slug.current },
+  "platformFeatures": *[_type == "platformFeature" && defined(slug.current)] | order(menuCategory asc, menuLabel asc, title asc) [0..30] { title, "menuLabel": coalesce(menuLabel, title), "slug": slug.current, "category": coalesce(menuCategory, "General"), menuIcon }
+}`
+
+const fallbackMainNav = [
+  { _key: 'platform', label: 'Platform', url: '/features' },
+  { _key: 'solutions', label: 'Solutions', url: '/use-cases' },
+  { _key: 'resources', label: 'Resources', url: '/blog', children: [
+    { _key: 'blog', label: 'Blog', url: '/blog' },
+    { _key: 'case-studies', label: 'Case Studies', url: '/case-studies' },
+    { _key: 'release-notes', label: 'Release Notes', url: '/release-notes' },
+    { _key: 'resources', label: 'Resources', url: '/resources' },
+  ] },
+  { _key: 'about', label: 'About', url: '/about' },
+]
+
+const data = await safeFetch<any>(headerQuery, {}, {})
+const settings = data.settings ?? {}
+const solutionsNavData = {
+  useCases: data.useCases ?? [],
+  icpPages: data.icpPages ?? [],
+  firmTypes: data.firmTypes ?? [],
+  platformFeatures: data.platformFeatures ?? [],
+}
+---
+<HeaderClient
+  client:load
+  solutionsNavData={solutionsNavData}
+  headerCtas={settings.headerCtas?.length ? settings.headerCtas : [
+    { _key: 'login', label: 'Login', url: 'https://app.brightwave.io/login', style: 'secondary' },
+    { _key: 'contact', label: 'Get a Demo', url: '/contact', style: 'primary' },
+  ]}
+  announcementBar={settings.announcementBar}
+  mainNav={settings.mainNav?.length ? settings.mainNav : fallbackMainNav}
+/>

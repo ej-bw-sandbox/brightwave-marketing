@@ -1,0 +1,83 @@
+---
+import { safeFetch } from '@/lib/sanity/client'
+import { siteSettingsQuery } from '@/lib/sanity/queries/site-settings'
+
+interface FooterLink { _key: string; label: string; url: string }
+interface FooterColumn { _key: string; title: string; links: FooterLink[] }
+interface SiteSettings {
+  footerTagline?: string
+  footerColumns?: FooterColumn[]
+  socialLinks?: { linkedin?: string; twitter?: string; github?: string; youtube?: string }
+  legalLinks?: FooterLink[]
+  copyrightText?: string
+}
+
+const FALLBACK: SiteSettings = {
+  footerTagline: "Professional-grade AI for the world's most complex challenges.",
+  copyrightText: '2026 Brightwave Inc. All rights reserved.',
+  socialLinks: { linkedin: 'https://www.linkedin.com/company/brightwave-io/about/', twitter: 'https://x.com/brightwaveio' },
+  footerColumns: [
+    { _key: 'col-solutions', title: 'Solutions', links: [{ _key: 'l-pm', label: 'Private Markets', url: '/private-markets-platform' }, { _key: 'features', label: 'Features', url: '/features' }, { _key: 'use-cases', label: 'Use Cases', url: '/use-cases' }] },
+    { _key: 'col-resources', title: 'Resources', links: [{ _key: 'l-blog', label: 'Blog', url: '/blog' }, { _key: 'l-rn', label: 'Release Notes', url: '/release-notes' }, { _key: 'l-cs', label: 'Case Studies', url: '/case-studies' }, { _key: 'l-support', label: 'Support', url: '/support' }]},
+    { _key: 'col-company', title: 'Company', links: [{ _key: 'l-about', label: 'About', url: '/about' }, { _key: 'l-news2', label: 'News', url: '/news' }, { _key: 'l-partners', label: 'Partners', url: '/partners' }]},
+  ],
+  legalLinks: [
+    { _key: 'll-security', label: 'Safety & Security', url: '/legal/safety-security' },
+    { _key: 'll-privacy', label: 'Privacy Policy', url: '/legal/privacy-policy' },
+    { _key: 'll-terms', label: 'Terms of Use', url: '/legal/terms-of-use' },
+  ],
+}
+const settings = await safeFetch<SiteSettings | null>(siteSettingsQuery, {}, null)
+const s = settings ?? FALLBACK
+const tagline = s.footerTagline ?? FALLBACK.footerTagline
+const columns = s.footerColumns?.length ? s.footerColumns : FALLBACK.footerColumns!
+const social = s.socialLinks ?? FALLBACK.socialLinks!
+const legal = s.legalLinks?.length ? s.legalLinks : FALLBACK.legalLinks!
+const copyright = s.copyrightText ?? FALLBACK.copyrightText
+const isExternal = (url: string) => url.startsWith('http://') || url.startsWith('https://')
+---
+<section no-fade class="c-section cc-footer">
+  <div class="c-container">
+    <div class="footer-wrap" style="max-height: none">
+      <div class="footer">
+        <div class="footer_content" style="flex-direction: column; align-items: stretch">
+          <div class="c-text-1" style="margin-bottom: 2.5rem">{tagline}</div>
+          <div class="footer_cols" style={`grid-template-columns: repeat(${columns.length + 1}, minmax(0, 1fr))`}>
+            <div class="footer_cat">
+              <div class="invert">
+                <div class="dark-mode-invert">
+                  <a stagger-cta href="/contact" class="cta-p-sm cc-stroke w-inline-block">
+                    <div stagger-cta-text="dark" class="c-text-link cc-stagger-cta">Contact us</div>
+                    <div class="flip-small"><div class="flip-bg"></div></div>
+                    <div class="flip-big"><div class="svg cta-sm-arrow w-embed"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.27832 1.625L12.3577 1.44906L12.5325 11.4643" stroke="white" stroke-width="1.0876" stroke-linejoin="bevel"></path><path d="M12.3563 1.44945L1.48389 12.6365" stroke="white" stroke-width="1.0876" stroke-linejoin="bevel"></path></svg></div></div>
+                  </a>
+                </div>
+              </div>
+              <div class="mobile-btns cc-footer" style="margin-top: 1.5rem">
+                {social.linkedin && <div class="nav-social"><a href={social.linkedin} target="_blank" rel="noopener noreferrer" class="c-linkedin w-inline-block">LinkedIn</a></div>}
+                {social.twitter && <div class="nav-social"><a href={social.twitter} target="_blank" rel="noopener noreferrer" class="c-x w-inline-block">X</a></div>}
+              </div>
+            </div>
+            {columns.map((col) => (
+              <div class="footer_cat">
+                <div class="c-text-link">{col.title}</div>
+                <div class="footer_cat_spacer">
+                  {col.links?.map((link) => (
+                    <a href={link.url} class="c-text-5 cc-link" target={isExternal(link.url) ? '_blank' : undefined} rel={isExternal(link.url) ? 'noopener noreferrer' : undefined}>{link.label}</a>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div class="footer_brightwave"><svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 1505 285" fill="none" class="brightwave"><path d="M111.199 101.955C142.002 105.651 162.332 128.138 162.332 159.249C162.332 194.672 135.534 218.083 95.1816 218.083H0V2.46094H87.4808C123.828 2.46094 146.931 22.483 146.931 54.2102C146.931 78.2366 133.377 96.4104 111.199 101.955Z" fill="currentColor"></path><text x="185" y="170" fill="currentColor" font-size="135" font-family="PST Mail Sans, sans-serif" font-weight="700">Brightwave</text></svg></div>
+      </div>
+      <div class="footer_bootom-wrap">
+        <div class="footer_links">
+          {legal.map((link) => <a href={link.url} class="footer_link w-inline-block"><div>{link.label}</div></a>)}
+        </div>
+        <div><div>{copyright}</div></div>
+      </div>
+    </div>
+  </div>
+</section>

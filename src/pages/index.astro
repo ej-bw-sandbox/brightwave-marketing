@@ -1,0 +1,28 @@
+---
+import MarketingLayout from '@/layouts/MarketingLayout.astro'
+import Cta from '@/components/astro/Cta.astro'
+import Lottie from '@/components/astro/Lottie.astro'
+import { safeFetch } from '@/lib/sanity/client'
+import { homepageQuery } from '@/lib/sanity/queries/homepage'
+const doc = await safeFetch<any>(homepageQuery, {}, {})
+const title = doc.heroHeadline || 'Brightwave'
+const description = doc.heroSubheadline || 'AI-powered financial research platform for investment professionals.'
+---
+<MarketingLayout title={title} description={description} seo={doc.seo} path="/">
+  <section class="c-section cc-hero">
+    <div class="c-container">
+      <div class="hero"><h1 class="c-title-1">{title}</h1></div>
+      <div class="grid">
+        <div class="hero_text cc-top"><div class="c-text-3 u-balance">{description}</div></div>
+        <div class="hero_text cc-buttons"><div class="h-20 cc-hero">{(doc.heroCtas?.length ? doc.heroCtas : [{label:'Get a Demo',url:'/contact'}]).map((cta:any)=><Cta href={cta.url} label={cta.label} variant={cta.style} />)}</div></div>
+      </div>
+      <div lottie-bg class="lottie-reverse"><div class="learning-lottie"><div lottie-bg class="lottie-crop"><Lottie src="/webflow-documents/CTA-Lottie-25.json" class="lottie_cropped-desktop" /><Lottie src="/webflow-documents/Generative-Loop-Final-25.json" class="lottie_cropped-mobile" /></div></div></div>
+      {doc.comparisonSection && <div class="v-20 cc-home">
+        <div class="home-usp cc-left"><div class="eyebrow cc-no-bp"><div class="block cc-dm-light"></div><div class="c-title-5">{doc.comparisonSection.leftLabel}</div></div><div class="home-usp_inner">{(doc.comparisonSection.leftStats||[]).map((s:any)=><div class="v-24 cc-12-tablet"><div class="c-title-3">{s.value}</div><div class="c-text-4">{s.description}</div></div>)}</div></div>
+        <div class="home-usp cc-right"><div class="eyebrow cc-no-bp"><div class="block cc-primary"></div><div class="c-title-5 cc-primary">{doc.comparisonSection.rightLabel}</div></div><div class="home-usp_inner">{(doc.comparisonSection.rightStats||[]).map((s:any)=><div class="v-24 cc-12-tablet"><div class="c-title-3">{s.value}</div><div class="c-text-4">{s.description}</div></div>)}</div></div>
+      </div>}
+    </div>
+  </section>
+  <section class="c-section cc-logos"><div class="c-container"><div class="grid"><div class="c-title-5 u-balance">{doc.socialProofHeadline || 'Trusted by investment professionals'}</div><div class="marquee-horizontal"><div class="marquee"><div class="marquee__group">{['fortune.avif','axios.avif','american-banker.avif','latent.avif','fox-business.avif'].map((img)=><div class="marquee-logo"><img src={`/webflow-images/${img}`} loading="lazy" alt="" /></div>)}</div></div></div></div></div></section>
+  {doc.beforeAfter && <section class="c-section"><div class="c-container"><div class="usp-tables"><div class="usp-table"><div class="usp-table_top"><div class="c-title-4 cc-white-dynamic">{doc.beforeAfter.beforeTitle}</div></div><div class="usp-table_bottom">{(doc.beforeAfter.beforeItems||[]).map((item:string)=><div><div class="c-text-3">{item}</div><div class="c-line"></div></div>)}</div></div><div class="usp-table"><div class="usp-table_top cc-brigtwave"><div class="c-title-4 cc-dark">{doc.beforeAfter.afterTitle}</div></div><div class="usp-table_bottom">{(doc.beforeAfter.afterItems||[]).map((item:string)=><div><div class="c-text-3">{item}</div><div class="c-line"></div></div>)}</div></div></div></div></section>}
+</MarketingLayout>

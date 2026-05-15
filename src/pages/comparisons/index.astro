@@ -1,0 +1,13 @@
+---
+import MarketingLayout from '@/layouts/MarketingLayout.astro'
+import IndexHero from '@/components/astro/IndexHero.astro'
+import CardGrid from '@/components/astro/CardGrid.astro'
+import { safeFetch } from '@/lib/sanity/client'
+import { comparisonIndexQuery } from '@/lib/sanity/queries/comparisons'
+const data = await safeFetch<any>(comparisonIndexQuery, {}, [])
+const items = Array.isArray(data) ? data : (data.studies ?? data.posts ?? [])
+---
+<MarketingLayout title="Comparisons | Brightwave" description="Compare Brightwave with other research and AI platforms." path="/comparisons">
+  <IndexHero title="Comparisons" description="Compare Brightwave with other research and AI platforms." />
+  <CardGrid items={items} base="/comparisons" imageField="competitorLogo" />
+</MarketingLayout>
